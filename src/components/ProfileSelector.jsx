@@ -58,7 +58,7 @@ export default function ProfileSelector() {
           )}
           <button
             onClick={() => setShowModal(true)}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            className="px-4 py-2 rounded bg-primary text-white hover:bg-primary-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
           >
             Create New Profile
           </button>
@@ -73,27 +73,37 @@ export default function ProfileSelector() {
       )}
 
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full">
-            <h3 className="text-xl font-bold mb-4">Create New Profile</h3>
-            <form onSubmit={handleCreateProfile}>
-              <div className="mb-4">
-                <label className="block text-sm font-medium mb-2">Profile Name</label>
+        <div className="fixed inset-0 z-[1000] bg-black/60 flex items-center justify-center p-4">
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="create-profile-title"
+            className="w-[min(92vw,32rem)] max-h-[85vh] overflow-auto rounded-xl bg-white shadow-2xl"
+          >
+            <form onSubmit={handleCreateProfile} className="p-6 space-y-5">
+              <h2 id="create-profile-title" className="text-2xl font-bold text-text-primary">
+                Create New Profile
+              </h2>
+
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-text-secondary">Profile Name</label>
                 <input
                   type="text"
                   value={newProfileName}
                   onChange={(e) => setNewProfileName(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded"
+                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary"
                   placeholder="Your name"
                   disabled={loading}
+                  required
                 />
               </div>
-              <div className="mb-4">
-                <label className="block text-sm font-medium mb-2">Weapon Group</label>
+
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-text-secondary">Weapon Group</label>
                 <select
                   value={newWeaponGroup}
                   onChange={(e) => setNewWeaponGroup(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded"
+                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary"
                   disabled={loading}
                 >
                   <option value="A">A</option>
@@ -102,10 +112,11 @@ export default function ProfileSelector() {
                   <option value="R">R</option>
                 </select>
               </div>
-              <div className="flex gap-2">
+
+              <div className="flex items-center justify-end gap-3 pt-2">
                 <button
                   type="submit"
-                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                  className="px-4 py-2 rounded bg-primary text-white hover:bg-primary-hover disabled:opacity-50"
                   disabled={loading}
                 >
                   Create
@@ -113,7 +124,7 @@ export default function ProfileSelector() {
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="flex-1 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+                  className="px-4 py-2 rounded border border-gray-300 text-text-primary hover:bg-gray-50"
                   disabled={loading}
                 >
                   Cancel
