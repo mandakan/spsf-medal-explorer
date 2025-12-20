@@ -30,10 +30,24 @@ function readVar(styles, names = []) {
   return null
 }
 
+function isDomElement(el) {
+  return el && typeof el === 'object' && el.nodeType === 1 && typeof el.nodeName === 'string'
+}
+
 // Primary accessor used by runtime rendering. Reads CSS variables off canvas element first.
 export function getThemeColors(canvas) {
   const root = typeof document !== 'undefined' ? document.documentElement : null
-  const styles = canvas ? getComputedStyle(canvas) : (root ? getComputedStyle(root) : null)
+
+  let styles = null
+  try {
+    if (typeof getComputedStyle === 'function' && isDomElement(canvas)) {
+      styles = getComputedStyle(canvas)
+    } else if (root && typeof getComputedStyle === 'function') {
+      styles = getComputedStyle(root)
+    }
+  } catch {
+    styles = null
+  }
 
   // Try CSS vars first, then Tailwind utility class computed values, then hex fallback.
   const palette = {
