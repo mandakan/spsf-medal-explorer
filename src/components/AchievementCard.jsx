@@ -1,24 +1,13 @@
 import React, { useMemo, useState } from 'react'
 import { useAchievementHistory } from '../hooks/useAchievementHistory'
-import { useMedalDatabase } from '../hooks/useMedalDatabase'
-import UniversalAchievementLogger from './UniversalAchievementLogger'
-import { UndoRedoProvider } from '../contexts/UndoRedoContext'
+import AchievementDialog from './AchievementDialog'
 import { getAchievementTypeLabel } from '../utils/labels'
 
 export default function AchievementCard({ achievement }) {
-  const { updateAchievement, removeAchievement } = useAchievementHistory()
-  const [isEditing, setIsEditing] = useState(false)
-  const [editedData, setEditedData] = useState(achievement)
-  const [showLogger, setShowLogger] = useState(false)
-  const { medalDatabase } = useMedalDatabase()
-  const medal = useMemo(
-    () =>
-      medalDatabase?.getMedalById(achievement.medalId) || {
-        id: achievement.medalId,
-        displayName: achievement.medalId,
-      },
-    [medalDatabase, achievement.medalId]
-  )
+  const { addAchievement, updateAchievement, removeAchievement } = useAchievementHistory()
+  const [editorOpen, setEditorOpen] = useState(false)
+  const [editorMode, setEditorMode] = useState('add')
+  const [editorInitial, setEditorInitial] = useState(null)
 
   const handleDelete = async () => {
     if (!confirm('Delete this achievement?')) return
@@ -29,21 +18,117 @@ export default function AchievementCard({ achievement }) {
     }
   }
 
-  const handleSave = async () => {
+  // Map stored achievement -> AchievementDialog row shape
+  const achievementToDialogRow = (a) => ({
+    id: a.id,
+    type: a.type,
+    year: a.year,
+    weaponGroup: a.weaponGroup,
+    date: a.date,
+    points: a.points,
+    timeSeconds: a.timeSeconds,
+    hits: a.hits,
+    competitionType: a.competitionType,
+    medalType: a.medalType,
+    competitionName: a.competitionName,
+    weapon: a.weapon,
+    score: a.score,
+    teamName: a.teamName,
+    position: a.position,
+    participants: Array.isArray(a.participants) ? a.participants.join(', ') : (a.participants || ''),
+    eventName: a.eventName,
+    notes: a.notes,
+  })
+
+  // Map dialog row -> payload for update/add
+  const dialogRowToPayload = (row, { id, medalId } = {}) => {
+    const base = {
+      id,
+      medalId,
+      type: row.type,
+      year: Number(row.year),
+      weaponGroup: row.weaponGroup,
+      date: row.date,
+      notes: row.notes || '',
+    }
+    switch (row.type) {
+      case 'precision_series':
+        return { ...base, points: row.points === '' ? undefined : Number(row.points ?? 0), competitionName: row.competitionName || undefined }
+      case 'application_series':
+        return {
+          ...base,
+          timeSeconds: row.timeSeconds === '' ? undefined : Number(row.timeSeconds ?? 0),
+          hits: row.hits === '' ? undefined : Number(row.hits ?? 0),
+        }
+      case 'competition_result':
+        return {
+          ...base,
+          score: row.score === '' ? undefined : Number(row.score ?? 0),
+          competitionName: row.competitionName || '',
+          competitionType: row.competitionType || '',
+          medalType: row.medalType || '',
+        }
+      case 'qualification_result':
+        return {
+          ...base,
+          weapon: row.weapon || '',
+          score: row.score === '' ? undefined : Number(row.score ?? 0),
+        }
+      case 'team_event':
+        return {
+          ...base,
+          teamName: row.teamName || '',
+          position: row.position === '' ? undefined : Number(row.position ?? 0),
+          participants: String(row.participants || '').split(',').map(s => s.trim()).filter(Boolean),
+        }
+      case 'event':
+      case 'custom':
+      default:
+        return { ...base, eventName: row.eventName || '' }
+    }
+  }
+
+  const openEditDialog = () => {
+    setEditorMode('edit')
+    setEditorInitial(achievementToDialogRow(achievement))
+    setEditorOpen(true)
+  }
+
+  const openAddDialog = () => {
+    setEditorMode('add')
+    const today = new Date().toISOString().slice(0, 10)
+    setEditorInitial({
+      year: new Date(today).getFullYear(),
+      weaponGroup: achievement.weaponGroup || 'A',
+      type: achievement.type || 'precision_series',
+      date: today,
+      points: '',
+      timeSeconds: '',
+      hits: '',
+      competitionType: '',
+      medalType: '',
+      competitionName: '',
+      weapon: '',
+      score: '',
+      teamName: '',
+      position: '',
+      participants: '',
+      eventName: '',
+      notes: '',
+    })
+    setEditorOpen(true)
+  }
+
+  const handleEditorSave = async (row) => {
     try {
-      const yearNum = editedData.year === '' ? undefined : Number(editedData.year)
-      const pointsNum = editedData.points === '' ? undefined : Number(editedData.points)
-      const payload = {
-        ...editedData,
-        id: achievement.id,
-        medalId: achievement.medalId,
-        year: Number.isFinite(yearNum)
-          ? yearNum
-          : (editedData.date ? new Date(editedData.date).getFullYear() : achievement.year),
-        points: Number.isFinite(pointsNum) ? pointsNum : achievement.points,
+      if (editorMode === 'edit') {
+        const payload = dialogRowToPayload(row, { id: achievement.id, medalId: achievement.medalId })
+        await updateAchievement(payload)
+      } else {
+        const payload = dialogRowToPayload(row, { medalId: achievement.medalId })
+        await addAchievement(payload)
       }
-      const ok = await updateAchievement(payload)
-      if (ok) setIsEditing(false)
+      setEditorOpen(false)
     } catch (err) {
       console.error('Failed to save:', err)
     }
@@ -51,54 +136,6 @@ export default function AchievementCard({ achievement }) {
 
   const typeLabel = getAchievementTypeLabel(achievement.type)
 
-  if (isEditing) {
-    return (
-      <div className="card p-4 space-y-3">
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <label className="text-sm font-medium text-foreground">Year</label>
-            <input
-              type="number"
-              value={editedData.year ?? ''}
-              onChange={(e) => {
-                const v = e.target.value
-                setEditedData(prev => ({ ...prev, year: v === '' ? '' : parseInt(v, 10) }))
-              }}
-              className="input"
-            />
-          </div>
-          <div>
-            <label className="text-sm font-medium text-foreground">Points</label>
-            <input
-              type="number"
-              value={editedData.points ?? ''}
-              onChange={(e) => {
-                const v = e.target.value
-                setEditedData(prev => ({ ...prev, points: v === '' ? '' : parseInt(v, 10) }))
-              }}
-              className="input"
-            />
-          </div>
-        </div>
-        <div className="flex gap-2">
-          <button
-            onClick={handleSave}
-            className="btn btn-primary flex-1 text-sm"
-            aria-label="Save achievement changes"
-          >
-            Save
-          </button>
-          <button
-            onClick={() => setIsEditing(false)}
-            className="btn btn-muted flex-1 text-sm"
-            aria-label="Cancel editing"
-          >
-            Cancel
-          </button>
-        </div>
-      </div>
-    )
-  }
 
   return (
     <>
@@ -116,14 +153,14 @@ export default function AchievementCard({ achievement }) {
         </div>
         <div className="flex gap-2">
           <button
-            onClick={() => setIsEditing(true)}
+            onClick={openEditDialog}
             className="btn btn-muted text-sm"
             aria-label={`Edit achievement ${achievement.id}`}
           >
             Edit
           </button>
           <button
-            onClick={() => setShowLogger(true)}
+            onClick={openAddDialog}
             className="btn btn-primary text-sm"
             aria-label={`Log new achievement for medal ${achievement.medalId}`}
           >
@@ -139,40 +176,14 @@ export default function AchievementCard({ achievement }) {
         </div>
       </div>
 
-      {showLogger && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div
-            className="absolute inset-0 bg-black/40"
-            aria-hidden="true"
-            onClick={() => setShowLogger(false)}
-          />
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-label="Log achievement"
-            className="relative z-10 w-full max-w-lg"
-          >
-            <div className="card p-4">
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="text-lg font-semibold text-text-primary">Log achievement</h3>
-                <button
-                  className="btn btn-muted text-sm"
-                  onClick={() => setShowLogger(false)}
-                  aria-label="Close log achievement form"
-                >
-                  Close
-                </button>
-              </div>
-              <UndoRedoProvider>
-                <UniversalAchievementLogger
-                  medal={medal}
-                  onSuccess={() => setShowLogger(false)}
-                />
-              </UndoRedoProvider>
-            </div>
-          </div>
-        </div>
-      )}
+      <AchievementDialog
+        open={editorOpen}
+        onClose={() => setEditorOpen(false)}
+        initialRow={editorInitial}
+        onSave={handleEditorSave}
+        mode="immediate"
+        submitLabel={editorMode === 'edit' ? 'Save' : 'Add'}
+      />
     </>
   )
 }

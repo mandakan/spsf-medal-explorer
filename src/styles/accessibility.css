@@ -1,0 +1,37 @@
+/* WCAG 2.1 AA: Focus visible */
+:where(a, button, [role="button"], .btn, .select, .input):focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+/* Keyboard focus ring with sufficient contrast in both themes */
+:root {
+  --focus-ring: #1d4ed8; /* blue-700 */
+}
+:where(a, button, [role="button"], .btn, .select, .input):focus-visible {
+  box-shadow: 0 0 0 2px var(--focus-ring);
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* High contrast modes (forced colors) */
+@media (forced-colors: active) {
+  * {
+    forced-color-adjust: none;
+  }
+  :where(a, button, [role="button"], .btn, .select, .input) {
+    border: 1px solid ButtonText;
+  }
+  :where(a, button, [role="button"], .btn, .select, .input):focus-visible {
+    outline-color: Highlight;
+    box-shadow: none;
+  }
+}

@@ -13,7 +13,7 @@ export default function RootLayout() {
       <div className="max-w-6xl mx-auto px-4 py-8">
         <ProfileSelector />
         
-        <main className="mt-6">
+        <main id="main" className="mt-6">
           <Outlet />
         </main>
       </div>
