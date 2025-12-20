@@ -45,6 +45,8 @@ export interface EventAchievement extends BaseAchievement {
 
 export interface ApplicationSeriesAchievement extends BaseAchievement {
   type: 'application_series'
+  timeSeconds: number
+  hits: number
 }
 
 export interface CustomAchievement extends BaseAchievement {

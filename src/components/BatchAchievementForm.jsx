@@ -5,12 +5,24 @@ import { useAchievementHistory } from '../hooks/useAchievementHistory'
 const WG = ['A', 'B', 'C', 'R']
 const COMP_TYPES = ['national', 'regional/landsdels', 'crewmate/krets', 'championship']
 const MEDAL_TYPES = ['bronze', 'silver', 'gold']
+const parseTimeToSeconds = (s) => {
+  if (!s) return NaN
+  const m = String(s).trim().match(/^(\d+):(\d{1,2})(?:\.(\d{1,3}))?$/)
+  if (!m) return NaN
+  const mins = Number(m[1])
+  const secs = Number(m[2])
+  const ms = m[3] ? Number(m[3].padEnd(3, '0')) : 0
+  if (!Number.isFinite(mins) || !Number.isFinite(secs) || secs >= 60) return NaN
+  return mins * 60 + secs + ms / 1000
+}
 const currentYear = new Date().getFullYear()
 const newRow = () => ({
   year: currentYear,
   weaponGroup: 'A',
   type: 'precision_series',
   date: new Date().toISOString().slice(0, 10),
+  time: '',
+  hits: '',
   points: '',
   competitionType: '',
   medalType: '',
@@ -85,6 +97,14 @@ export default function BatchAchievementForm() {
             if (d.getTime() > today.getTime()) {
               errs.push('Date cannot be in the future')
             }
+          }
+          const t = parseTimeToSeconds(row.time)
+          if (!Number.isFinite(t) || t <= 0 || t > 36000) {
+            errs.push('Enter time as MM:SS or MM:SS.ms')
+          }
+          const h = Number(row.hits)
+          if (!Number.isFinite(h) || h < 0) {
+            errs.push('Enter a valid hits number')
           }
           break
         }
@@ -242,14 +262,37 @@ export default function BatchAchievementForm() {
                         aria-label={`Points for row ${index + 1}`}
                       />
                     ) : row.type === 'application_series' ? (
-                      <input
-                        type="date"
-                        value={row.date}
-                        onChange={(e) => handleRowChange(index, 'date', e.target.value)}
-                        className="input w-44"
-                        disabled={submitting}
-                        aria-label={`Date for row ${index + 1}`}
-                      />
+                      <div className="flex flex-wrap gap-2">
+                        <input
+                          type="date"
+                          value={row.date}
+                          onChange={(e) => handleRowChange(index, 'date', e.target.value)}
+                          className="input w-44"
+                          disabled={submitting}
+                          aria-label={`Date for row ${index + 1}`}
+                        />
+                        <input
+                          type="text"
+                          value={row.time}
+                          onChange={(e) => handleRowChange(index, 'time', e.target.value)}
+                          className="input w-28"
+                          placeholder="MM:SS[.ms]"
+                          inputMode="numeric"
+                          disabled={submitting}
+                          aria-label={`Time for row ${index + 1}`}
+                        />
+                        <input
+                          type="number"
+                          min="0"
+                          step="1"
+                          value={row.hits}
+                          onChange={(e) => handleRowChange(index, 'hits', e.target.value)}
+                          className="input w-24"
+                          placeholder="Hits"
+                          disabled={submitting}
+                          aria-label={`Hits for row ${index + 1}`}
+                        />
+                      </div>
                     ) : row.type === 'competition_result' ? (
                       <div className="flex flex-wrap gap-2">
                         <select

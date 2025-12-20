@@ -132,5 +132,15 @@ export function validateAchievement(achievement) {
       if (pts < 0 || pts > 50) errors.push('Points must be between 0 and 50')
     }
   }
+  if (type === 'application_series') {
+    const t = achievement.timeSeconds
+    const h = achievement.hits
+    if (typeof t !== 'number' || Number.isNaN(t) || t <= 0) {
+      errors.push('Time required for application series')
+    }
+    if (typeof h !== 'number' || Number.isNaN(h) || h < 0) {
+      errors.push('Hits required for application series')
+    }
+  }
   return { valid: errors.length === 0, errors }
 }

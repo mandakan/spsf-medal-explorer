@@ -28,18 +28,12 @@
           "description": "3 application series (either B100 50m or 1/6 target C30 25m)",
           "minAchievements": 3,
           "timeWindowYears": 1,
-          "options": [
-            {
-              "name": "B100 50m",
-              "minHits": 5,
-              "timeLimit": "60 sec"
-            },
-            {
-              "name": "C30 25m",
-              "minHits": 5,
-              "timeLimit": "60 sec"
-            }
-          ]
+          "thresholds": {
+            "A": { "minHits": 5, "maxTimeSeconds": 60 },
+            "B": { "minHits": 5, "maxTimeSeconds": 60 },
+            "C": { "minHits": 5, "maxTimeSeconds": 60 },
+            "R": { "minHits": 5, "maxTimeSeconds": 60 }
+          }
         }
       ],
       "unlocksFollowingMedals": [
@@ -90,18 +84,12 @@
           "description": "3 application series (either B100 50m or 1/6 target C30 25m)",
           "minAchievements": 3,
           "timeWindowYears": 1,
-          "options": [
-            {
-              "name": "B100 50m",
-              "minHits": 6,
-              "timeLimit": "40 sec"
-            },
-            {
-              "name": "C30 25m",
-              "minHits": 6,
-              "timeLimit": "40 sec"
-            }
-          ]
+          "thresholds": {
+            "A": { "minHits": 6, "maxTimeSeconds": 40 },
+            "B": { "minHits": 6, "maxTimeSeconds": 40 },
+            "C": { "minHits": 6, "maxTimeSeconds": 40 },
+            "R": { "minHits": 6, "maxTimeSeconds": 40 }
+          }
         }
       ],
       "unlocksFollowingMedals": [
@@ -145,18 +133,12 @@
           "description": "3 application series (either B100 50m or 1/6 target C30 25m)",
           "minAchievements": 3,
           "timeWindowYears": 1,
-          "options": [
-            {
-              "name": "B100 50m",
-              "minHits": 6,
-              "timeLimit": "40 sec for A/R, 15 sec for B/C"
-            },
-            {
-              "name": "C30 25m",
-              "minHits": 6,
-              "timeLimit": "40 sec for A/R, 15 sec for B/C"
-            }
-          ]
+          "thresholds": {
+            "A": { "minHits": 6, "maxTimeSeconds": 40 },
+            "B": { "minHits": 6, "maxTimeSeconds": 15 },
+            "C": { "minHits": 6, "maxTimeSeconds": 15 },
+            "R": { "minHits": 6, "maxTimeSeconds": 40 }
+          }
         }
       ],
       "unlocksFollowingMedals": [

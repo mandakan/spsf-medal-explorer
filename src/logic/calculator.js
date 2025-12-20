@@ -213,39 +213,35 @@ export class MedalCalculator {
   checkApplicationSeriesRequirement(req, index) {
     const achievements = (this.profile.prerequisites || []).filter(a => a.type === 'application_series')
 
-    let candidates = achievements
+    const withinWindow = (list) => {
+      if (!(req.timeWindowYears > 0)) return list
+      const currentYear = new Date().getFullYear()
+      const windowStart = currentYear - req.timeWindowYears + 1
+      return list.filter(a => (a.year ?? 0) >= windowStart && (a.year ?? 0) <= currentYear)
+    }
+
+    const passes = (a) => {
+      const g = a.weaponGroup || 'A'
+      const th = req.thresholds?.[g]
+      if (!th) return false
+      const hasTime = typeof a.timeSeconds === 'number' && a.timeSeconds > 0
+      const hasHits = typeof a.hits === 'number' && a.hits >= 0
+      const timeOk = typeof th.maxTimeSeconds === 'number' ? a.timeSeconds <= th.maxTimeSeconds : true
+      const hitsOk = typeof th.minHits === 'number' ? a.hits >= th.minHits : true
+      return hasTime && hasHits && timeOk && hitsOk
+    }
+
+    let candidates
     if (req.timeWindowYears === 1) {
       const byYear = this.groupBy(achievements, a => a.year)
       let bestMatches = []
       Object.values(byYear).forEach(list => {
-        const matches = list.filter(a => {
-          const hasMin = Array.isArray(req.options) && req.options.some(opt => typeof opt.minHits === 'number')
-          if (!hasMin) return true
-          const min = Math.max(...req.options.map(opt => (typeof opt.minHits === 'number' ? opt.minHits : 0)))
-          return typeof a.hits === 'number' && a.hits >= min
-        })
-        if (matches.length > bestMatches.length) {
-          bestMatches = matches
-        }
+        const matches = list.filter(passes)
+        if (matches.length > bestMatches.length) bestMatches = matches
       })
       candidates = bestMatches
-    } else if (typeof req.timeWindowYears === 'number' && req.timeWindowYears > 1) {
-      const currentYear = new Date().getFullYear()
-      const windowStart = currentYear - req.timeWindowYears + 1
-      const withinWindow = achievements.filter(a => (a.year ?? 0) >= windowStart && (a.year ?? 0) <= currentYear)
-      candidates = withinWindow.filter(a => {
-        const hasMin = Array.isArray(req.options) && req.options.some(opt => typeof opt.minHits === 'number')
-        if (!hasMin) return true
-        const min = Math.max(...req.options.map(opt => (typeof opt.minHits === 'number' ? opt.minHits : 0)))
-        return typeof a.hits === 'number' && a.hits >= min
-      })
     } else {
-      candidates = achievements.filter(a => {
-        const hasMin = Array.isArray(req.options) && req.options.some(opt => typeof opt.minHits === 'number')
-        if (!hasMin) return true
-        const min = Math.max(...req.options.map(opt => (typeof opt.minHits === 'number' ? opt.minHits : 0)))
-        return typeof a.hits === 'number' && a.hits >= min
-      })
+      candidates = withinWindow(achievements).filter(passes)
     }
 
     const required = req.minAchievements ?? 1

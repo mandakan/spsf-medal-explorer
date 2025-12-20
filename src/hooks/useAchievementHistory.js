@@ -7,6 +7,16 @@ import { Achievement } from '../models/Achievement'
  * Provides achievement list operations (add/update/delete/batch) with undo/redo support.
  * Assumes ProfileContext provides: currentProfile, addAchievement, updateAchievement, removeAchievement
  */
+const parseTimeToSeconds = (s) => {
+  if (!s) return NaN
+  const m = String(s).trim().match(/^(\d+):(\d{1,2})(?:\.(\d{1,3}))?$/)
+  if (!m) return NaN
+  const mins = Number(m[1])
+  const secs = Number(m[2])
+  const ms = m[3] ? Number(m[3].padEnd(3, '0')) : 0
+  if (!Number.isFinite(mins) || !Number.isFinite(secs) || secs >= 60) return NaN
+  return mins * 60 + secs + ms / 1000
+}
 export function useAchievementHistory() {
   const {
     currentProfile,
@@ -71,7 +81,7 @@ export function useAchievementHistory() {
     for (const tgt of targetList) {
       const cur = byIdCurrent.get(tgt.id)
       if (!cur) continue
-      const changed = ['type', 'year', 'weaponGroup', 'points', 'date', 'competitionName', 'notes']
+      const changed = ['type', 'year', 'weaponGroup', 'points', 'date', 'competitionName', 'notes', 'timeSeconds', 'hits']
         .some(k => String(cur[k] ?? '') !== String(tgt[k] ?? ''))
       if (changed && typeof profileUpdateAchievement === 'function') {
         try {
@@ -116,6 +126,13 @@ export function useAchievementHistory() {
           : undefined,
         // event/custom
         eventName: (row.type === 'event' || row.type === 'custom') ? (row.eventName || '') : undefined,
+        // application_series
+        timeSeconds: row.type === 'application_series'
+          ? (typeof row.timeSeconds === 'number' ? row.timeSeconds : parseTimeToSeconds(row.time))
+          : undefined,
+        hits: row.type === 'application_series'
+          ? (row.hits === '' || row.hits == null ? undefined : Number(row.hits))
+          : undefined,
       })
       if (typeof profileAddAchievement === 'function') {
         try {
