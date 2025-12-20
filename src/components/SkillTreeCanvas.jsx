@@ -20,7 +20,7 @@ export default function SkillTreeCanvas() {
 
   // Generate layout on first render or when database changes
   useEffect(() => {
-    if (medalDatabase && canvasRef.current) {
+    if (medalDatabase) {
       const medals = medalDatabase.getAllMedals()
       const newLayout = generateMedalLayout(medals)
       setLayout(newLayout)
@@ -181,9 +181,9 @@ export default function SkillTreeCanvas() {
     exportCanvasToPNG(canvasRef.current, `skill-tree-${new Date().toISOString().split('T')[0]}.png`)
   }
 
-  if (!layout || !medalDatabase) {
+  if (!medalDatabase) {
     return (
-      <div className="flex items-center justify-center h-96">
+      <div className="flex items-center justify-center h-96" role="status" aria-live="polite" aria-busy="true">
         <p className="text-text-secondary">Loading skill tree...</p>
       </div>
     )
