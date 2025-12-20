@@ -10,6 +10,7 @@ export class Medal {
     this.displayName = data.displayName
     this.color = data.color
     this.icon = data.icon
+    this.reviewed = data.reviewed === true
     this.prerequisites = data.prerequisites || []
     this.requirements = data.requirements || []
     this.unlocksFollowingMedals = data.unlocksFollowingMedals || []

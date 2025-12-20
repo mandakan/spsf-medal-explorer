@@ -44,6 +44,7 @@ function MedalIcon({ iconUrl, alt }) {
 function Row({ data, index, style }) {
   const { medals, onSelect } = data
   const medal = medals[index]
+  const underReview = typeof medal?.isUnderReview === 'function' ? medal.isUnderReview() : (medal?.reviewed !== true)
   return (
     <div
       role="button"
@@ -52,11 +53,21 @@ function Row({ data, index, style }) {
       onKeyDown={(e) => { if (e.key === 'Enter') onSelect?.(medal) }}
       className="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
       style={style}
-      aria-label={`${medal.displayName || medal.name} ${medal.tier || ''}`}
+      aria-label={`${medal.displayName || medal.name} ${medal.tier || ''}${underReview ? ' • Under review' : ''}`}
     >
       <MedalIcon iconUrl={medal.iconUrl || medal.icon} alt={medal.displayName || medal.name} />
       <div className="min-w-0">
-        <div className="font-medium text-text-primary truncate">{medal.displayName || medal.name}</div>
+        <div className="font-medium text-text-primary truncate flex items-center gap-2">
+          <span className="truncate">{medal.displayName || medal.name}</span>
+          {underReview && (
+            <span
+              className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-900 border border-amber-300 dark:bg-amber-900/40 dark:text-amber-200 dark:border-amber-700"
+              aria-label="Medal rules status: under review"
+            >
+              Under review
+            </span>
+          )}
+        </div>
         <div className="text-sm text-text-secondary truncate">{medal.type} • {medal.tier}</div>
       </div>
     </div>

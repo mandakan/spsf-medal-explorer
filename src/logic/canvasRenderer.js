@@ -112,6 +112,53 @@ export function drawMedalNode(ctx, x, y, radius, medal, status, scale) {
   ctx.lineWidth = Math.max(1, 2 / Math.max(scale, 0.001))
   ctx.stroke()
 
+  // Under review indicator: dashed ring and optional label
+  const underReview = medal && (medal.reviewed !== true)
+  if (underReview) {
+    const s = Math.max(scale, 0.001)
+    ctx.save()
+    ctx.setLineDash([6 / s, 6 / s])
+    ctx.strokeStyle = getClassColor('text-amber-500') || palette.accent
+    ctx.lineWidth = Math.max(1.5, 2.5 / s)
+    ctx.beginPath()
+    ctx.arc(x, y, radius + Math.max(2, 3 / s), 0, Math.PI * 2)
+    ctx.stroke()
+    ctx.restore()
+
+    if (scale >= 1.2) {
+      const pad = 4 / s
+      const fontPx = Math.max(8, 10 / s)
+      const label = 'Under review'
+      ctx.save()
+      ctx.font = `${fontPx}px sans-serif`
+      const textW = ctx.measureText(label).width
+      const w = textW + pad * 2
+      const h = fontPx + pad * 1.5
+      const rx = x - w / 2
+      const ry = y + radius + 8 / s
+      const r = 4 / s
+      // Background
+      ctx.fillStyle = 'rgba(251, 191, 36, 0.15)'
+      ctx.strokeStyle = getClassColor('text-amber-500') || palette.accent
+      ctx.lineWidth = Math.max(1, 1.5 / s)
+      ctx.beginPath()
+      ctx.moveTo(rx + r, ry)
+      ctx.arcTo(rx + w, ry, rx + w, ry + h, r)
+      ctx.arcTo(rx + w, ry + h, rx, ry + h, r)
+      ctx.arcTo(rx, ry + h, rx, ry, r)
+      ctx.arcTo(rx, ry, rx + w, ry, r)
+      ctx.closePath()
+      ctx.fill()
+      ctx.stroke()
+      // Text
+      ctx.fillStyle = palette.text
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      ctx.fillText(label, x, ry + h / 2)
+      ctx.restore()
+    }
+  }
+
   // Label text
   ctx.fillStyle = palette.text
   ctx.textAlign = 'center'

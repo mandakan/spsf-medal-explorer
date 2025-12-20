@@ -51,7 +51,10 @@ export default function MedalDetailModal({ medalId, onClose }) {
   const prevFocusRef = useRef(null)
   const [mounted, setMounted] = useState(false)
   const titleId = `medal-detail-title-${medalId || 'unknown'}`
-  const descId = medal?.description ? `medal-detail-desc-${medalId || 'unknown'}` : undefined
+  const underReview = typeof medal?.isUnderReview === 'function' ? medal.isUnderReview() : (medal?.reviewed !== true)
+  const descBaseId = medal?.description ? `medal-detail-desc-${medalId || 'unknown'}` : null
+  const underReviewNoteId = underReview ? `under-review-note-${medal.id}` : null
+  const descId = [descBaseId, underReviewNoteId].filter(Boolean).join(' ') || undefined
 
   // Lock body scroll, set focus, restore focus on close
   useEffect(() => {
@@ -172,6 +175,14 @@ export default function MedalDetailModal({ medalId, onClose }) {
                 tabIndex={-1}
               >
                 {medal.displayName}
+                {underReview && (
+                  <span
+                    className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-900 border border-amber-300 dark:bg-amber-900/40 dark:text-amber-200 dark:border-amber-700"
+                    aria-label="Medal rules status: under review"
+                  >
+                    Under review
+                  </span>
+                )}
               </h2>
               <p className="mt-1 text-sm text-muted-foreground break-words">
                 {medal.type} • {medal.tier}
@@ -200,6 +211,12 @@ export default function MedalDetailModal({ medalId, onClose }) {
                 {statusLabel}
               </span>
             </div>
+
+            {underReview && (
+              <div id={`under-review-note-${medal.id}`} className="mb-4 bg-amber-50 text-amber-900 border border-amber-300 rounded p-3 dark:bg-amber-900/20 dark:text-amber-100 dark:border-amber-700">
+                The rules for this medal are under review and may change.
+              </div>
+            )}
 
             {medal.description && (
               <div className="mb-4">
