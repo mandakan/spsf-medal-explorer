@@ -12,10 +12,12 @@ export default function MedalCard({ medal }) {
     }
   }, [calculator, medal?.id])
 
-  const statusColors = {
-    unlocked: 'bg-yellow-50 border-yellow-200',
-    achievable: 'bg-green-50 border-green-200',
-    locked: 'bg-gray-50 border-gray-200'
+  const statusDecor = {
+    unlocked:
+      'border-amber-300 ring-1 ring-amber-500/20 dark:border-amber-700 dark:ring-amber-400/30',
+    achievable:
+      'border-emerald-300 ring-1 ring-emerald-500/20 dark:border-emerald-700 dark:ring-emerald-400/30',
+    locked: 'border-slate-200 dark:border-slate-700'
   }
 
   const statusBadge = {
@@ -28,7 +30,8 @@ export default function MedalCard({ medal }) {
 
   return (
     <div
-      className={`rounded-lg border p-4 ${statusColors[statusClass]}`}
+      className={`rounded-lg border p-4 bg-bg-secondary ${statusDecor[statusClass]}`}
+      aria-disabled={statusClass === 'locked'}
     >
       <div className="flex justify-between items-start mb-3">
         <h3 className="font-bold text-text-primary">{medal.displayName}</h3>
