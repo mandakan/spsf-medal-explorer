@@ -204,6 +204,33 @@ export function ProfileProvider({ children }) {
     [currentProfile, storage]
   )
 
+  const lockMedal = useCallback(
+    async (medalId) => {
+      if (!currentProfile) throw new Error('No profile selected')
+      if (!medalId) throw new Error('medalId is required')
+      try {
+        setLoading(true)
+        const profile = await storage.getUserProfile(currentProfile.userId)
+        const list = Array.isArray(profile.unlockedMedals) ? profile.unlockedMedals : []
+        const nextList = list.filter(m => m.medalId !== medalId)
+        if (nextList.length === list.length) {
+          // Nothing to remove
+          return false
+        }
+        const nextProfile = { ...profile, unlockedMedals: nextList, lastModified: new Date().toISOString() }
+        const saved = await storage.saveUserProfile(nextProfile)
+        setCurrentProfile(saved)
+        return true
+      } catch (err) {
+        setError(err.message)
+        throw err
+      } finally {
+        setLoading(false)
+      }
+    },
+    [currentProfile, storage]
+  )
+
   const value = {
     currentProfile,
     profiles,
@@ -217,6 +244,7 @@ export function ProfileProvider({ children }) {
     updateAchievement,
     removeAchievement,
     unlockMedal,
+    lockMedal,
   }
 
   return <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>

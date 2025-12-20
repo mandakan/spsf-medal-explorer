@@ -5,6 +5,7 @@ import { useMedalCalculator } from '../hooks/useMedalCalculator'
 import { useProfile } from '../hooks/useProfile'
 import UniversalAchievementLogger from './UniversalAchievementLogger'
 import { UndoRedoProvider } from '../contexts/UndoRedoContext'
+import { useUnlockGuard } from '../hooks/useUnlockGuard'
 
 export default function MedalDetailModal({ medalId, onClose }) {
   const { medalDatabase } = useMedalDatabase()
@@ -13,6 +14,10 @@ export default function MedalDetailModal({ medalId, onClose }) {
   const { currentProfile } = useProfile()
   const medal = medalDatabase?.getMedalById(medalId)
   const [showLogger, setShowLogger] = useState(false)
+
+  const { canRemove, blocking, tryRemove } = useUnlockGuard(medalId)
+  const [showConfirmRemove, setShowConfirmRemove] = useState(false)
+  const [showBlockedInfo, setShowBlockedInfo] = useState(false)
 
   // Compute status once per change
   const status = useMemo(() => {
@@ -37,6 +42,12 @@ export default function MedalDetailModal({ medalId, onClose }) {
       return []
     }
   }, [calculator, medal, status])
+
+  const blockingMedals = useMemo(() => {
+    return (blocking || [])
+      .map(id => medalDatabase?.getMedalById(id))
+      .filter(Boolean)
+  }, [blocking, medalDatabase])
 
   if (!medal) return null
 
@@ -132,6 +143,23 @@ export default function MedalDetailModal({ medalId, onClose }) {
     setShowLogger(true)
   }
 
+  const handleRemoveClick = () => {
+    if (canRemove) {
+      setShowBlockedInfo(false)
+      setShowConfirmRemove(true)
+    } else {
+      setShowConfirmRemove(false)
+      setShowBlockedInfo(true)
+    }
+  }
+
+  const handleConfirmRemove = async () => {
+    const res = await tryRemove()
+    if (res?.ok) {
+      setShowConfirmRemove(false)
+    }
+  }
+
   const statusClass = 'bg-bg-secondary text-foreground ring-1 ring-border'
 
   return (
@@ -212,6 +240,58 @@ export default function MedalDetailModal({ medalId, onClose }) {
               </span>
             </div>
 
+            {showConfirmRemove && status?.status === 'unlocked' && canRemove && (
+              <div className="mb-4 bg-background border border-border rounded p-3" role="dialog" aria-modal="false" aria-labelledby="confirm-remove-title">
+                <p id="confirm-remove-title" className="text-sm font-semibold text-foreground mb-2">
+                  Remove unlocked?
+                </p>
+                <p className="text-sm text-muted-foreground mb-3">
+                  This won’t affect other medals.
+                </p>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmRemove(false)}
+                    className="px-3 py-2 rounded-md bg-background text-foreground hover:bg-bg-secondary ring-1 ring-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleConfirmRemove}
+                    className="px-3 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {showBlockedInfo && status?.status === 'unlocked' && !canRemove && (
+              <div className="mb-4 bg-background border border-border rounded p-3" role="region" aria-labelledby="blocked-remove-title">
+                <p id="blocked-remove-title" className="text-sm font-semibold text-foreground mb-2">
+                  Can’t remove yet
+                </p>
+                <p className="text-sm text-muted-foreground mb-2">
+                  These unlocked medals depend on this one:
+                </p>
+                <ul className="text-sm text-muted-foreground list-disc ml-5 space-y-1">
+                  {blockingMedals.map(m => (
+                    <li key={m.id} className="break-words">{m.displayName || m.name}</li>
+                  ))}
+                </ul>
+                <div className="mt-3">
+                  <button
+                    type="button"
+                    onClick={() => setShowBlockedInfo(false)}
+                    className="px-3 py-2 rounded-md bg-background text-foreground hover:bg-bg-secondary ring-1 ring-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
+                  >
+                    OK
+                  </button>
+                </div>
+              </div>
+            )}
+
             {underReview && (
               <div id={`under-review-note-${medal.id}`} className="mb-4 bg-amber-50 text-amber-900 border border-amber-300 rounded p-3 dark:bg-amber-900/20 dark:text-amber-100 dark:border-amber-700">
                 The rules for this medal are under review and may change.
@@ -291,6 +371,31 @@ export default function MedalDetailModal({ medalId, onClose }) {
             >
               Close
             </button>
+
+            {status?.status === 'unlocked' && currentProfile && (
+              <div className="flex-1 flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleRemoveClick}
+                  aria-haspopup="dialog"
+                  aria-expanded={showConfirmRemove || showBlockedInfo}
+                  className="flex-1 px-4 py-2 rounded-md bg-background text-foreground hover:bg-bg-secondary ring-1 ring-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
+                >
+                  Remove unlocked
+                </button>
+                {!canRemove && (
+                  <button
+                    type="button"
+                    onClick={() => setShowBlockedInfo(true)}
+                    className="text-sm text-muted-foreground underline"
+                    aria-label="Why can’t I remove this medal?"
+                  >
+                    Why can’t I?
+                  </button>
+                )}
+              </div>
+            )}
+
             {status?.status === 'achievable' && currentProfile && (
               <button
                 type="button"
