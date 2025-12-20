@@ -2,12 +2,14 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useMedalDatabase } from '../hooks/useMedalDatabase'
 import { useAllMedalStatuses } from '../hooks/useMedalCalculator'
 import { useProfile } from '../hooks/useProfile'
+import UniversalAchievementLogger from './UniversalAchievementLogger'
 
 export default function MedalDetailModal({ medalId, onClose }) {
   const { medalDatabase } = useMedalDatabase()
   const statuses = useAllMedalStatuses()
   const { currentProfile } = useProfile()
   const medal = medalDatabase?.getMedalById(medalId)
+  const [showLogger, setShowLogger] = useState(false)
 
   // Compute status once per change
   const status = useMemo(() => {
@@ -108,10 +110,7 @@ export default function MedalDetailModal({ medalId, onClose }) {
   }
 
   const handleAddAchievement = () => {
-    // TODO: Integrate with AchievementForm
-    // For now, close modal and dispatch event to be handled elsewhere.
-    window.dispatchEvent(new CustomEvent('openAchievementForm', { detail: { medalId } }))
-    onClose?.()
+    setShowLogger(true)
   }
 
   const statusClass = 'bg-bg-secondary text-foreground ring-1 ring-border'
@@ -236,7 +235,9 @@ export default function MedalDetailModal({ medalId, onClose }) {
             </button>
             {status?.status === 'achievable' && currentProfile && (
               <button
+                type="button"
                 onClick={handleAddAchievement}
+                aria-expanded={showLogger}
                 className="flex-1 px-4 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
               >
                 Add Achievement
