@@ -24,6 +24,10 @@ export default function UniversalAchievementLogger({ medal, onSuccess }) {
   // Detect form variant from medal data
   const medalType = useMemo(() => detectMedalFormType(medal), [medal])
   const FormComponent = formComponents[medalType] || CustomForm
+  const headingId = useMemo(
+    () => `achievement-logger-title-${medal?.id || medal?.medalId || 'unknown'}`,
+    [medal]
+  )
 
   const handleSubmit = async (formData) => {
     try {
@@ -52,13 +56,14 @@ export default function UniversalAchievementLogger({ medal, onSuccess }) {
 
   return (
     <div
-      className="
-        p-4 bg-slate-50 dark:bg-slate-800
-        rounded-lg border border-slate-200 dark:border-slate-700
-        max-w-2xl
-      "
+      role="region"
+      aria-labelledby={headingId}
+      className="card p-4 w-full"
     >
-      <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">
+      <h2
+        id={headingId}
+        className="section-title mb-4 break-words"
+      >
         Log Achievement: {medal?.displayName || medal?.name || medal?.id}
       </h2>
 

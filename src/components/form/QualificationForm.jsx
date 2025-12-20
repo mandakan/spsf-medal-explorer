@@ -18,7 +18,7 @@ export default function QualificationForm({ medal, onSubmit, loading }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4" noValidate>
       <div>
-        <label htmlFor="q-date" className="block text-sm font-medium text-slate-900 dark:text-slate-100 mb-2">
+        <label htmlFor="q-date" className="field-label mb-2">
           Date
         </label>
         <input
@@ -30,14 +30,14 @@ export default function QualificationForm({ medal, onSubmit, loading }) {
           aria-describedby={errors.date ? 'q-error-date' : undefined}
           value={values.date}
           onChange={handleChange}
-          className="w-full px-3 py-3 rounded-lg bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-emerald-600"
+          className="input py-3"
           required
         />
         {errors.date && <p id="q-error-date" className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.date}</p>}
       </div>
 
       <div>
-        <label htmlFor="q-weapon-group" className="block text-sm font-medium text-slate-900 dark:text-slate-100 mb-2">
+        <label htmlFor="q-weapon-group" className="field-label mb-2">
           Weapon Group
         </label>
         <select
@@ -48,7 +48,7 @@ export default function QualificationForm({ medal, onSubmit, loading }) {
           aria-describedby={errors.weaponGroup ? 'q-error-weaponGroup' : undefined}
           value={values.weaponGroup}
           onChange={handleChange}
-          className="w-full px-3 py-3 rounded-lg bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-emerald-600 cursor-pointer"
+          className="select py-3 cursor-pointer"
           required
         >
           <option value="A">Group A</option>
@@ -60,7 +60,7 @@ export default function QualificationForm({ medal, onSubmit, loading }) {
       </div>
 
       <div>
-        <label htmlFor="q-weapon" className="block text-sm font-medium text-slate-900 dark:text-slate-100 mb-2">
+        <label htmlFor="q-weapon" className="field-label mb-2">
           Weapon
         </label>
         <input
@@ -72,14 +72,14 @@ export default function QualificationForm({ medal, onSubmit, loading }) {
           aria-describedby={errors.weapon ? 'q-error-weapon' : undefined}
           value={values.weapon}
           onChange={handleChange}
-          className="w-full px-3 py-3 rounded-lg bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-emerald-600"
+          className="input py-3"
           required
         />
         {errors.weapon && <p id="q-error-weapon" className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.weapon}</p>}
       </div>
 
       <div>
-        <label htmlFor="q-score" className="block text-sm font-medium text-slate-900 dark:text-slate-100 mb-2">
+        <label htmlFor="q-score" className="field-label mb-2">
           Score
         </label>
         <input
@@ -91,14 +91,14 @@ export default function QualificationForm({ medal, onSubmit, loading }) {
           aria-describedby={errors.score ? 'q-error-score' : undefined}
           value={values.score}
           onChange={handleChange}
-          className="w-full px-3 py-3 rounded-lg bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-emerald-600"
+          className="input py-3"
           required
         />
         {errors.score && <p id="q-error-score" className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.score}</p>}
       </div>
 
       <div>
-        <label htmlFor="q-notes" className="block text-sm font-medium text-slate-900 dark:text-slate-100 mb-2">
+        <label htmlFor="q-notes" className="field-label mb-2">
           Notes (optional)
         </label>
         <textarea
@@ -107,7 +107,7 @@ export default function QualificationForm({ medal, onSubmit, loading }) {
           aria-label="Notes"
           value={values.notes}
           onChange={handleChange}
-          className="w-full px-3 py-3 rounded-lg bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-emerald-600 resize-none"
+          className="textarea py-3 resize-none"
           rows={3}
         />
       </div>
@@ -115,7 +115,7 @@ export default function QualificationForm({ medal, onSubmit, loading }) {
       <button
         type="submit"
         disabled={loading}
-        className="w-full py-3 px-4 rounded-lg font-medium bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-emerald-600"
+        className="btn btn-primary w-full py-3 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {loading ? 'Saving...' : 'Log Qualification'}
       </button>
