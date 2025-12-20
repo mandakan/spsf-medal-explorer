@@ -68,11 +68,17 @@ button:focus-visible {
 }
 @import "tailwindcss";
 
-/* Optional: Override Tailwind defaults with design system tokens */
-:root {
+/* Tailwind v4 theme tokens: enables utilities like bg-bg-primary, text-text-primary, etc. */
+@theme {
+  --color-bg-primary: #0f172a;      /* slate-900 */
+  --color-bg-secondary: #1f2937;    /* gray-800 */
+  --color-text-primary: #e5e7eb;    /* gray-200 */
+  --color-text-secondary: #9ca3af;  /* gray-400 */
+
   --color-primary: #208491;
   --color-primary-hover: #1d745f;
   --color-accent: #32b8c6;
+
   --color-medal-gold: #FFD700;
   --color-medal-silver: #C0C0C0;
   --color-medal-bronze: #CD7F32;
