@@ -1,18 +1,44 @@
 /**
  * Canvas rendering utilities
  */
-export const COLORS = {
+export const LIGHT_COLORS = {
   unlocked: '#FFD700',     // Gold
   achievable: '#20C997',   // Bright teal
   locked: '#6C757D',       // Cool gray
-  text: '#212529',         // Text primary
+  text: '#111827',         // slate-900
   connection: '#98a0a3',
   border: '#5e5240'
 }
 
+export const DARK_COLORS = {
+  unlocked: '#FFD54F',     // Softer gold for dark bg
+  achievable: '#34D399',   // Emerald/teal
+  locked: '#94A3B8',       // slate-400
+  text: '#E5E7EB',         // slate-200
+  connection: '#94A3B8',   // slate-400
+  border: 'rgba(255,255,255,0.25)'
+}
+
+// Safe dark-mode detection
+export function isDarkMode() {
+  if (typeof document !== 'undefined') {
+    if (document.documentElement.classList.contains('dark')) return true
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return true
+  }
+  return false
+}
+
+export function getThemeColors(isDark = isDarkMode()) {
+  return isDark ? DARK_COLORS : LIGHT_COLORS
+}
+
+// Back-compat export (static); runtime rendering uses getThemeColors()
+export const COLORS = LIGHT_COLORS
+
 export function drawMedalNode(ctx, x, y, radius, medal, status, scale) {
+  const palette = getThemeColors()
   const statusKey = status?.status || 'locked'
-  const statusColor = COLORS[statusKey]
+  const statusColor = palette[statusKey]
   
   // Node base
   ctx.beginPath()
@@ -21,12 +47,12 @@ export function drawMedalNode(ctx, x, y, radius, medal, status, scale) {
   ctx.fill()
 
   // Border
-  ctx.strokeStyle = COLORS.border
+  ctx.strokeStyle = palette.border
   ctx.lineWidth = Math.max(1, 2 / Math.max(scale, 0.001))
   ctx.stroke()
 
   // Label text
-  ctx.fillStyle = COLORS.text
+  ctx.fillStyle = palette.text
   ctx.textAlign = 'center'
   ctx.textBaseline = 'middle'
 
@@ -39,7 +65,8 @@ export function drawMedalNode(ctx, x, y, radius, medal, status, scale) {
 }
 
 export function drawConnection(ctx, x1, y1, x2, y2, type = 'prerequisite', scale) {
-  ctx.strokeStyle = COLORS.connection
+  const palette = getThemeColors()
+  ctx.strokeStyle = palette.connection
   ctx.lineWidth = Math.max(1, 2 / Math.max(scale, 0.001))
   ctx.beginPath()
   ctx.moveTo(x1, y1)
@@ -55,6 +82,6 @@ export function drawConnection(ctx, x1, y1, x2, y2, type = 'prerequisite', scale
   ctx.lineTo(x2 - arrowSize * Math.cos(angle - Math.PI / 6), y2 - arrowSize * Math.sin(angle - Math.PI / 6))
   ctx.lineTo(x2 - arrowSize * Math.cos(angle + Math.PI / 6), y2 - arrowSize * Math.sin(angle + Math.PI / 6))
   ctx.closePath()
-  ctx.fillStyle = COLORS.connection
+  ctx.fillStyle = palette.connection
   ctx.fill()
 }

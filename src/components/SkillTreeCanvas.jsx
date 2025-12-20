@@ -40,8 +40,9 @@ export default function SkillTreeCanvas() {
       canvas.height = Math.floor(rect.height)
     }
 
-    // Clear canvas
-    ctx.fillStyle = '#fcfcf9'
+    // Clear canvas with computed background color to respect light/dark themes
+    const bgColor = getComputedStyle(canvas).backgroundColor || '#fcfcf9'
+    ctx.fillStyle = bgColor
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
     // Render skill tree
@@ -196,24 +197,27 @@ export default function SkillTreeCanvas() {
         <div className="space-x-2">
           <button
             onClick={resetView}
-            className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+            aria-label="Reset view"
+            className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           >
             Reset View
           </button>
           <button
             onClick={handleExportPNG}
-            className="px-4 py-2 bg-primary text-white rounded hover:bg-primary-hover"
+            aria-label="Export skill tree as PNG"
+            className="px-4 py-2 bg-primary text-white rounded hover:bg-primary-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           >
             📥 Export as PNG
           </button>
         </div>
       </div>
 
-      <div className="border border-gray-200 rounded-lg overflow-hidden bg-white">
+      <div className="border border-gray-200 dark:border-slate-700 rounded-lg overflow-hidden bg-white dark:bg-slate-900" role="region" aria-label="Skill tree canvas">
         <canvas
           ref={canvasRef}
-          className="w-full bg-bg-primary cursor-grab active:cursor-grabbing"
-          style={{ height: '600px' }}
+          role="img"
+          aria-label="Interactive skill tree canvas"
+          className="w-full h-[60vh] sm:h-[600px] bg-bg-primary cursor-grab active:cursor-grabbing"
           onWheel={handleWheel}
           onMouseDown={handleCanvasMouseDown}
           onMouseMove={handleCanvasMouseMove}
