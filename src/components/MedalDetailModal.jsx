@@ -29,7 +29,7 @@ export default function MedalDetailModal({ medalId, onClose }) {
     unlocked: '🏆 Unlocked',
     achievable: '🎯 Achievable',
     locked: '🔒 Locked'
-  }[status?.status] || 'Unknown'
+  }[status?.status] || '🔒 Locked'
 
   const overlayRef = useRef(null)
   const panelRef = useRef(null)

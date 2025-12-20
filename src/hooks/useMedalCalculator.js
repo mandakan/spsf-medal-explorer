@@ -12,11 +12,12 @@ export function useMedalCalculator() {
   const { currentProfile } = useProfile()
 
   return useMemo(() => {
-    if (!medalDatabase || !currentProfile) {
+    if (!medalDatabase) {
       return null
     }
-
-    return new MedalCalculator(medalDatabase, currentProfile)
+    const fallbackProfile = { unlockedMedals: [], prerequisites: [] }
+    const profile = currentProfile ?? fallbackProfile
+    return new MedalCalculator(medalDatabase, profile)
   }, [medalDatabase, currentProfile])
 }
 
