@@ -1,23 +1,31 @@
 import React from 'react'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { MedalProvider } from './contexts/MedalContext'
+import { ProfileProvider } from './contexts/ProfileContext'
+import { CalculatorProvider } from './contexts/CalculatorContext'
+import RootLayout from './layouts/RootLayout'
 import Home from './pages/Home'
+import SkillTree from './pages/SkillTree'
+import MedalsList from './pages/MedalsList'
+import Settings from './pages/Settings'
 
 function App() {
   return (
     <MedalProvider>
-      <div className="min-h-screen bg-bg-primary">
-        <header className="bg-bg-secondary border-b border-gray-200 sticky top-0 z-50">
-          <div className="max-w-6xl mx-auto px-4 py-4">
-            <h1 className="text-2xl font-bold text-text-primary">
-              🎖️ Medal Skill-Tree Explorer
-            </h1>
-          </div>
-        </header>
-        
-        <main className="max-w-6xl mx-auto px-4 py-8">
-          <Home />
-        </main>
-      </div>
+      <ProfileProvider>
+        <CalculatorProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route element={<RootLayout />}>
+                <Route path="/" element={<Home />} />
+                <Route path="/skill-tree" element={<SkillTree />} />
+                <Route path="/medals" element={<MedalsList />} />
+                <Route path="/settings" element={<Settings />} />
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </CalculatorProvider>
+      </ProfileProvider>
     </MedalProvider>
   )
 }
