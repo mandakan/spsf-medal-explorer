@@ -223,6 +223,28 @@ export default function MedalDetailModal({ medalId, onClose }) {
                 </ul>
               </div>
             )}
+
+            {showLogger && (
+              <div className="mt-4">
+                <div className="card p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-lg font-semibold text-text-primary">Log achievement</h3>
+                    <button
+                      type="button"
+                      className="btn btn-muted text-sm"
+                      onClick={() => setShowLogger(false)}
+                      aria-label="Close log achievement form"
+                    >
+                      Close
+                    </button>
+                  </div>
+                  <UniversalAchievementLogger
+                    medal={medal}
+                    onSuccess={() => setShowLogger(false)}
+                  />
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Footer */}
