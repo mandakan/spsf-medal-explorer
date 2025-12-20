@@ -8,6 +8,7 @@ import Home from './pages/Home'
 import SkillTree from './pages/SkillTree'
 import MedalsList from './pages/MedalsList'
 import Settings from './pages/Settings'
+import DataBackup from './pages/DataBackup'
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
                 <Route path="/skill-tree" element={<SkillTree />} />
                 <Route path="/medals" element={<MedalsList />} />
                 <Route path="/settings" element={<Settings />} />
+                <Route path="/data" element={<DataBackup />} />
               </Route>
             </Routes>
           </BrowserRouter>
