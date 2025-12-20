@@ -21,7 +21,7 @@ export default function Header() {
           </Link>
           
           <nav aria-label="Primary">
-            <ul className="flex gap-2">
+            <ul className="flex gap-2 overflow-x-auto whitespace-nowrap [-webkit-overflow-scrolling:touch] pr-1 sm:overflow-visible sm:whitespace-normal">
               {navItems.map(item => {
                 const isActive = location.pathname === item.path
                 return (
