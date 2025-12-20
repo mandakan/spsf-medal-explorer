@@ -13,6 +13,7 @@ export function useAchievementHistory() {
     addAchievement: profileAddAchievement,
     updateAchievement: profileUpdateAchievement,
     removeAchievement: profileRemoveAchievement,
+    unlockMedal: profileUnlockMedal,
   } = useProfile()
 
   const {
@@ -218,6 +219,7 @@ export function useAchievementHistory() {
     addAchievement,
     updateAchievement,
     removeAchievement,
+    unlockMedal: profileUnlockMedal,
     updateOne,
     removeOne,
     undoAchievements,

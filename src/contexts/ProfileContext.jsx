@@ -127,6 +127,83 @@ export function ProfileProvider({ children }) {
     [currentProfile, storage]
   )
 
+  const updateAchievement = useCallback(
+    async (updatedAchievement) => {
+      if (!currentProfile) throw new Error('No profile selected')
+      if (!updatedAchievement?.id) throw new Error('Achievement id is required')
+      try {
+        setLoading(true)
+        const profile = await storage.getUserProfile(currentProfile.userId)
+        const list = Array.isArray(profile.prerequisites) ? [...profile.prerequisites] : []
+        const idx = list.findIndex(a => a.id === updatedAchievement.id)
+        if (idx === -1) throw new Error('Achievement not found')
+        list[idx] = { ...list[idx], ...updatedAchievement }
+        const nextProfile = { ...profile, prerequisites: list, lastModified: new Date().toISOString() }
+        const saved = await storage.saveUserProfile(nextProfile)
+        setCurrentProfile(saved)
+        return saved.prerequisites[idx]
+      } catch (err) {
+        setError(err.message)
+        throw err
+      } finally {
+        setLoading(false)
+      }
+    },
+    [currentProfile, storage]
+  )
+
+  const removeAchievement = useCallback(
+    async (achievementId) => {
+      if (!currentProfile) throw new Error('No profile selected')
+      if (!achievementId) throw new Error('Achievement id is required')
+      try {
+        setLoading(true)
+        const profile = await storage.getUserProfile(currentProfile.userId)
+        const list = Array.isArray(profile.prerequisites) ? profile.prerequisites.filter(a => a.id !== achievementId) : []
+        const nextProfile = { ...profile, prerequisites: list, lastModified: new Date().toISOString() }
+        const saved = await storage.saveUserProfile(nextProfile)
+        setCurrentProfile(saved)
+        return true
+      } catch (err) {
+        setError(err.message)
+        throw err
+      } finally {
+        setLoading(false)
+      }
+    },
+    [currentProfile, storage]
+  )
+
+  const unlockMedal = useCallback(
+    async (medalId, unlockedDate) => {
+      if (!currentProfile) throw new Error('No profile selected')
+      if (!medalId) throw new Error('medalId is required')
+      try {
+        setLoading(true)
+        const profile = await storage.getUserProfile(currentProfile.userId)
+        const list = Array.isArray(profile.unlockedMedals) ? [...profile.unlockedMedals] : []
+        if (list.some(m => m.medalId === medalId)) {
+          // Already unlocked; no changes necessary
+          return false
+        }
+        const entry = {
+          medalId,
+          unlockedDate: unlockedDate || new Date().toISOString().slice(0, 10),
+        }
+        const nextProfile = { ...profile, unlockedMedals: [...list, entry], lastModified: new Date().toISOString() }
+        const saved = await storage.saveUserProfile(nextProfile)
+        setCurrentProfile(saved)
+        return true
+      } catch (err) {
+        setError(err.message)
+        throw err
+      } finally {
+        setLoading(false)
+      }
+    },
+    [currentProfile, storage]
+  )
+
   const value = {
     currentProfile,
     profiles,
@@ -137,6 +214,9 @@ export function ProfileProvider({ children }) {
     updateProfile,
     deleteProfile,
     addAchievement,
+    updateAchievement,
+    removeAchievement,
+    unlockMedal,
   }
 
   return <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>
