@@ -88,16 +88,34 @@ export function useAchievementHistory() {
   const addMany = useCallback(async (rows = []) => {
     if (!rows.length || !currentProfile) return 0
     let added = 0
+    const toNum = (v) => (v === '' || v == null ? undefined : Number(v))
     for (const row of rows) {
       const achievement = new Achievement({
         id: row.id, // allow pre-specified id
         type: row.type,
-        year: parseInt(row.year),
+        year: Number(row.year),
         weaponGroup: row.weaponGroup,
-        points: parseInt(row.points),
-        date: row.date || new Date().toISOString().split('T')[0],
+        date: row.date || new Date().toISOString().slice(0, 10),
         competitionName: row.competitionName || '',
-        notes: row.notes || ''
+        notes: row.notes || '',
+        // gold_series
+        points: row.type === 'gold_series' ? toNum(row.points) : undefined,
+        // competition_result
+        competitionType: row.type === 'competition_result' ? (row.competitionType || '') : undefined,
+        medalType: row.type === 'competition_result' ? (row.medalType || '') : undefined,
+        // qualification_result
+        weapon: row.type === 'qualification_result' ? (row.weapon || '') : undefined,
+        score: row.type === 'qualification_result' ? toNum(row.score) : undefined,
+        // team_event
+        teamName: row.type === 'team_event' ? (row.teamName || '') : undefined,
+        position: row.type === 'team_event' ? toNum(row.position) : undefined,
+        participants: row.type === 'team_event'
+          ? (Array.isArray(row.participants)
+              ? row.participants
+              : String(row.participants || '').split(',').map(s => s.trim()).filter(Boolean))
+          : undefined,
+        // event/custom
+        eventName: (row.type === 'event' || row.type === 'custom') ? (row.eventName || '') : undefined,
       })
       if (typeof profileAddAchievement === 'function') {
         try {
