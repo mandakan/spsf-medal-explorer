@@ -132,23 +132,22 @@ export default function BatchAchievementForm() {
       return
     }
 
-    // Duplicate detection for series types
-    const seriesRows = validRows.filter(r =>
-      r.type === 'precision_series' || r.type === 'application_series'
-    )
+    // Duplicate detection (precision series only)
+    const seriesRows = validRows.filter(r => r.type === 'precision_series')
     const duplicates = detectDuplicateAchievements(seriesRows)
     setDupWarnings(duplicates)
 
     try {
       setSubmitting(true)
-      let added = await addMany(validRows)
-
-      setSuccessCount(added)
-      setRows([ newRow() ])
-      setErrors({})
-
-      // Clear success message after 3 seconds
-      setTimeout(() => setSuccessCount(0), 3000)
+      const added = await addMany(validRows)
+      if (added > 0) {
+        setSuccessCount(added)
+        setRows([ newRow() ])
+        setErrors({})
+        setTimeout(() => setSuccessCount(0), 3000)
+      } else {
+        setErrors({ form: 'No achievements were added. Please review your inputs.' })
+      }
     } catch (err) {
       setErrors({ form: err.message })
     } finally {

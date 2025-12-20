@@ -29,11 +29,12 @@ export function detectDuplicateAchievements(achievements) {
 
   achievements.forEach(ach => {
     if (!ach) return
+    if (ach.type === 'application_series') {
+      return
+    }
     let key
     if (ach.type === 'precision_series') {
       key = `${ach.year}-${ach.type}-${ach.weaponGroup}-${ach.points}`
-    } else if (ach.type === 'application_series') {
-      key = `${ach.year}-${ach.type}-${ach.weaponGroup}-${ach.date || ''}`
     } else {
       key = `${ach.year}-${ach.type}-${ach.weaponGroup}`
     }
