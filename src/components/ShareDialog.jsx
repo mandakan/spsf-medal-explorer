@@ -47,13 +47,10 @@ export default function ShareDialog({ open, onClose, shareData }) {
       onClick={onClose}
     >
       <div
-        className="
-          w-full max-w-md p-6 rounded-lg
-          bg-color-bg-primary border-2 border-color-border
-        "
+        className="w-full max-w-md p-6 rounded-lg bg-bg-secondary border border-border"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="text-xl font-bold text-color-text-primary mb-4">
+        <h2 className="text-xl font-bold text-foreground mb-4">
           Share Your Progress
         </h2>
 
@@ -61,10 +58,11 @@ export default function ShareDialog({ open, onClose, shareData }) {
           <div
             className="
               mb-4 p-3 rounded-lg
-              bg-color-error-bg text-color-error
-              border-2 border-color-error
+              bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-300
+              border border-red-300 dark:border-red-600
             "
             role="alert"
+            aria-live="assertive"
           >
             {error}
           </div>
@@ -79,8 +77,8 @@ export default function ShareDialog({ open, onClose, shareData }) {
                 className="w-48 h-48"
               />
             ) : (
-              <div className="w-48 h-48 flex items-center justify-center border-2 border-dashed border-color-border rounded">
-                <span className="text-color-text-secondary">Generating...</span>
+              <div className="w-48 h-48 flex items-center justify-center border border-dashed border-border rounded">
+                <span className="text-muted-foreground">Generating...</span>
               </div>
             )}
 
@@ -90,22 +88,12 @@ export default function ShareDialog({ open, onClose, shareData }) {
                   type="text"
                   readOnly
                   value={shareLink}
-                  className="
-                    flex-1 px-3 py-2 rounded border-2 border-color-border
-                    bg-color-bg-secondary text-color-text-primary
-                  "
+                  className="flex-1 px-3 py-2 rounded border border-border bg-bg-primary text-foreground"
                   aria-label="Share link"
                 />
                 <button
                   onClick={copyLink}
-                  className="
-                    px-3 py-2 rounded-lg
-                    bg-color-primary text-white
-                    hover:bg-color-primary-hover
-                    focus-visible:outline-none focus-visible:ring-2
-                    focus-visible:ring-offset-2 focus-visible:ring-color-primary
-                    min-w-[96px]
-                  "
+                  className="btn btn-primary min-w-[96px] min-h-[44px]"
                   aria-label="Copy share link"
                 >
                   {copied ? 'Copied' : 'Copy'}
@@ -118,14 +106,7 @@ export default function ShareDialog({ open, onClose, shareData }) {
         <div className="mt-6 flex justify-end">
           <button
             onClick={onClose}
-            className="
-              px-4 py-2 rounded-lg
-              bg-color-bg-secondary text-color-text-primary
-              border-2 border-color-border
-              hover:bg-color-bg-secondary/70
-              focus-visible:outline-none focus-visible:ring-2
-              focus-visible:ring-offset-2 focus-visible:ring-color-primary
-            "
+            className="btn btn-muted min-h-[44px]"
             aria-label="Close share dialog"
           >
             Close

@@ -52,23 +52,14 @@ export default function ExportPanel({ profile }) {
   }
 
   return (
-    <div
-      className="
-        p-6 bg-color-bg-secondary dark:bg-color-bg-secondary
-        rounded-lg border-2 border-color-border
-      "
-    >
-      <h2 className="
-        text-xl font-bold text-color-text-primary mb-6
-      ">
+    <div className="card p-6">
+      <h2 className="text-xl font-bold text-foreground mb-6">
         Export Profile
       </h2>
 
       {/* Format Selection */}
       <fieldset className="mb-6 space-y-3">
-        <legend className="
-          text-sm font-medium text-color-text-primary mb-3
-        ">
+        <legend className="text-sm font-medium text-foreground mb-3">
           Export Format
         </legend>
 
@@ -83,20 +74,15 @@ export default function ExportPanel({ profile }) {
               onChange={(e) => setFormat(e.target.value)}
               className="
                 w-5 h-5 rounded
-                bg-color-bg-primary
-                border-2 border-color-border
-                focus-visible:ring-2 focus-visible:ring-offset-2
-                focus-visible:ring-color-primary
+                bg-bg-primary border border-border
+                focus-visible:ring-2 focus-visible:ring-primary
+                focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary
               "
               aria-label={`Choose ${fmt.toUpperCase()} format`}
             />
             <label
               htmlFor={`format-${fmt}`}
-              className="
-                ml-3 text-base font-medium
-                text-color-text-primary
-                cursor-pointer
-              "
+              className="ml-3 text-base font-medium text-foreground cursor-pointer"
             >
               {fmt.toUpperCase()} {getFormatDescription(fmt)}
             </label>
@@ -108,14 +94,7 @@ export default function ExportPanel({ profile }) {
       <button
         onClick={() => handleExport(format)}
         disabled={loading}
-        className="
-          w-full py-3 px-4 rounded-lg font-medium
-          bg-color-primary text-white
-          hover:bg-color-primary-hover
-          disabled:opacity-50 disabled:cursor-not-allowed
-          focus-visible:outline-none focus-visible:ring-2
-          focus-visible:ring-offset-2 focus-visible:ring-color-primary
-        "
+        className="btn btn-primary w-full min-h-[44px]"
         aria-label={`Export as ${format.toUpperCase()}`}
       >
         {loading ? 'Exporting...' : `Export as ${format.toUpperCase()}`}
@@ -124,12 +103,12 @@ export default function ExportPanel({ profile }) {
       {success && (
         <div
           className="
-            mt-4 p-3 rounded-lg
-            bg-color-success-bg text-color-success
-            border-2 border-color-success
-            flex items-center gap-2
+            mt-4 p-3 rounded-lg flex items-center gap-2
+            bg-green-50 text-green-800 dark:bg-green-900/30 dark:text-green-300
+            border border-green-300 dark:border-green-600
           "
           role="status"
+          aria-live="polite"
         >
           <span aria-hidden="true">✓</span>
           <span>Exported successfully!</span>
@@ -139,12 +118,12 @@ export default function ExportPanel({ profile }) {
       {error && (
         <div
           className="
-            mt-4 p-3 rounded-lg
-            bg-color-error-bg text-color-error
-            border-2 border-color-error
-            flex items-center gap-2
+            mt-4 p-3 rounded-lg flex items-center gap-2
+            bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-300
+            border border-red-300 dark:border-red-600
           "
           role="alert"
+          aria-live="assertive"
         >
           <span aria-hidden="true">✕</span>
           <span>{error}</span>

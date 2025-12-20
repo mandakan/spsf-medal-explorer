@@ -73,15 +73,8 @@ export default function ImportPanel({ onImport }) {
   }
 
   return (
-    <div
-      className="
-        p-6 bg-color-bg-secondary dark:bg-color-bg-secondary
-        rounded-lg border-2 border-color-border
-      "
-    >
-      <h2 className="
-        text-xl font-bold text-color-text-primary mb-6
-      ">
+    <div className="card p-6">
+      <h2 className="text-xl font-bold text-foreground mb-6">
         Import Achievements
       </h2>
 
@@ -91,12 +84,10 @@ export default function ImportPanel({ onImport }) {
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         className={`
-          p-8 rounded-lg border-2 border-dashed
-          text-center cursor-pointer
-          transition-colors
+          p-8 rounded-lg border-2 border-dashed text-center cursor-pointer transition-colors
           ${isDragging
-            ? 'bg-color-primary-light border-color-primary'
-            : 'bg-color-bg-primary border-color-border'
+            ? 'bg-primary/10 border-primary'
+            : 'bg-bg-primary border-border'
           }
         `}
         role="button"
@@ -105,21 +96,15 @@ export default function ImportPanel({ onImport }) {
         onClick={() => fileInputRef.current?.click()}
         onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && fileInputRef.current?.click()}
       >
-        <p className="text-color-text-secondary mb-2">
+        <p className="text-muted-foreground mb-2">
           Drag &amp; drop JSON/CSV file here
         </p>
-        <p className="text-color-text-tertiary text-sm mb-4">
+        <p className="text-sm text-muted-foreground mb-4">
           or
         </p>
         <button
           onClick={() => fileInputRef.current?.click()}
-          className="
-            px-4 py-2 rounded-lg
-            bg-color-primary text-white
-            hover:bg-color-primary-hover
-            focus-visible:outline-none focus-visible:ring-2
-            focus-visible:ring-offset-2 focus-visible:ring-color-primary
-          "
+          className="btn btn-primary min-h-[44px]"
           aria-label="Choose file to import"
         >
           Choose File
@@ -136,18 +121,13 @@ export default function ImportPanel({ onImport }) {
       {/* Preview */}
       {preview && !error && (
         <div className="mt-6">
-          <h3 className="
-            font-medium text-color-text-primary mb-3
-          ">
+          <h3 className="font-medium text-foreground mb-3">
             Preview ({preview.achievements?.length || 0} achievements)
           </h3>
-          <div className="
-            max-h-48 overflow-y-auto
-            border-2 border-color-border rounded-lg p-3
-          ">
+          <div className="max-h-48 overflow-y-auto border border-border rounded-lg p-3">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-color-text-secondary">
+                <tr className="text-muted-foreground">
                   <th className="text-left">Medal</th>
                   <th className="text-left">Type</th>
                   <th className="text-left">Date</th>
@@ -155,7 +135,7 @@ export default function ImportPanel({ onImport }) {
               </thead>
               <tbody>
                 {preview.achievements?.map((ach, i) => (
-                  <tr key={i} className="border-t border-color-border">
+                  <tr key={i} className="border-t border-border">
                     <td className="py-2">{ach.medalId || '-'}</td>
                     <td className="py-2">{ach.type || '-'}</td>
                     <td className="py-2">{ach.date || '-'}</td>
@@ -170,10 +150,11 @@ export default function ImportPanel({ onImport }) {
             <div
               className="
                 mt-4 p-3 rounded-lg
-                bg-color-warning-bg text-color-warning
-                border-2 border-color-warning
+                bg-amber-50 text-amber-900 dark:bg-amber-900/30 dark:text-amber-300
+                border border-amber-300 dark:border-amber-600
               "
               role="status"
+              aria-live="polite"
             >
               Found {conflicts.length} possible duplicate(s). They will be skipped.
             </div>
@@ -183,14 +164,7 @@ export default function ImportPanel({ onImport }) {
           <button
             onClick={handleImport}
             disabled={loading}
-            className="
-              w-full mt-4 py-3 px-4 rounded-lg font-medium
-              bg-color-primary text-white
-              hover:bg-color-primary-hover
-              disabled:opacity-50 disabled:cursor-not-allowed
-              focus-visible:outline-none focus-visible:ring-2
-              focus-visible:ring-offset-2 focus-visible:ring-color-primary
-            "
+            className="btn btn-primary w-full mt-4 min-h-[44px]"
             aria-label="Import achievements"
           >
             {loading ? 'Importing...' : 'Import Achievements'}
@@ -202,12 +176,12 @@ export default function ImportPanel({ onImport }) {
       {error && (
         <div
           className="
-            mt-4 p-3 rounded-lg
-            bg-color-error-bg text-color-error
-            border-2 border-color-error
-            flex items-center gap-2
+            mt-4 p-3 rounded-lg flex items-center gap-2
+            bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-300
+            border border-red-300 dark:border-red-600
           "
           role="alert"
+          aria-live="assertive"
         >
           <span aria-hidden="true">✕</span>
           <span>{error}</span>
