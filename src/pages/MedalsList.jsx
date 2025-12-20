@@ -56,19 +56,19 @@ export default function MedalsList() {
   }, [medals, statuses, filters, term, sortBy])
 
   if (!medalDatabase) {
-    return <div className="text-text-secondary">Loading medals…</div>
+    return <div className="text-muted-foreground">Loading medals…</div>
   }
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-        <h1 className="text-3xl font-bold text-text-primary">Medals</h1>
+        <h1 className="text-3xl font-bold text-foreground">Medals</h1>
 
         <div className="flex items-center gap-3">
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded"
+            className="select"
           >
             <option value="name">Sort by Name</option>
             <option value="type">Sort by Type</option>
@@ -79,7 +79,7 @@ export default function MedalsList() {
           <button
             type="button"
             onClick={() => setShowAdvanced(v => !v)}
-            className="px-3 py-2 border border-gray-300 rounded text-sm text-text-secondary hover:bg-gray-50"
+            className="btn btn-muted text-sm"
             aria-expanded={showAdvanced}
           >
             {showAdvanced ? 'Hide' : 'Show'} Advanced Filters
@@ -129,8 +129,8 @@ export default function MedalsList() {
         <div className="lg:col-span-3">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {finalResults.length === 0 ? (
-              <div className="col-span-full bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
-                <p className="text-text-secondary">No medals match your filters</p>
+              <div className="col-span-full card p-6 text-center">
+                <p className="text-muted-foreground">No medals match your filters</p>
               </div>
             ) : (
               finalResults.map(medal => (

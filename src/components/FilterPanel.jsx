@@ -10,13 +10,14 @@ export default function FilterPanel({
   onClearAll,
 }) {
   return (
-    <div className="bg-white rounded-lg shadow p-4 space-y-4">
+    <div className="card p-4 space-y-4">
       <div className="flex justify-between items-center">
-        <h3 className="font-bold text-text-primary">Filters</h3>
+        <h3 className="font-bold text-foreground">Filters</h3>
         {hasActiveFilters && (
           <button
+            type="button"
             onClick={onClearAll}
-            className="text-sm text-blue-600 hover:text-blue-800"
+            className="btn btn-muted text-sm"
           >
             Clear All
           </button>
@@ -26,13 +27,14 @@ export default function FilterPanel({
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {/* Status Filter */}
         <div>
-          <label className="block text-sm font-medium text-text-secondary mb-1">
+          <label htmlFor="statusSelect" className="block text-sm font-medium text-muted-foreground mb-1">
             Status
           </label>
           <select
+            id="statusSelect"
             value={filters.status || ''}
             onChange={(e) => onFilterChange('status', e.target.value || null)}
-            className="w-full px-3 py-2 border border-gray-300 rounded text-sm"
+            className="select"
           >
             <option value="">All</option>
             <option value="unlocked">Unlocked</option>
@@ -43,13 +45,14 @@ export default function FilterPanel({
 
         {/* Tier Filter */}
         <div>
-          <label className="block text-sm font-medium text-text-secondary mb-1">
+          <label htmlFor="tierSelect" className="block text-sm font-medium text-muted-foreground mb-1">
             Tier
           </label>
           <select
+            id="tierSelect"
             value={filters.tier || ''}
             onChange={(e) => onFilterChange('tier', e.target.value || null)}
-            className="w-full px-3 py-2 border border-gray-300 rounded text-sm"
+            className="select"
           >
             <option value="">All</option>
             {tiers.map(tier => (
@@ -62,13 +65,14 @@ export default function FilterPanel({
 
         {/* Type Filter */}
         <div>
-          <label className="block text-sm font-medium text-text-secondary mb-1">
+          <label htmlFor="typeSelect" className="block text-sm font-medium text-muted-foreground mb-1">
             Type
           </label>
           <select
+            id="typeSelect"
             value={filters.type || ''}
             onChange={(e) => onFilterChange('type', e.target.value || null)}
-            className="w-full px-3 py-2 border border-gray-300 rounded text-sm"
+            className="select"
           >
             <option value="">All</option>
             {medalTypes.map(type => (
@@ -81,13 +85,14 @@ export default function FilterPanel({
 
         {/* Weapon Group Filter */}
         <div>
-          <label className="block text-sm font-medium text-text-secondary mb-1">
+          <label htmlFor="weaponGroupSelect" className="block text-sm font-medium text-muted-foreground mb-1">
             Weapon Group
           </label>
           <select
+            id="weaponGroupSelect"
             value={filters.weaponGroup || ''}
             onChange={(e) => onFilterChange('weaponGroup', e.target.value || null)}
-            className="w-full px-3 py-2 border border-gray-300 rounded text-sm"
+            className="select"
           >
             <option value="">All</option>
             <option value="A">A</option>
@@ -97,7 +102,7 @@ export default function FilterPanel({
         </div>
       </div>
 
-      <div className="text-sm text-text-secondary">
+      <div className="text-sm text-muted-foreground" aria-live="polite">
         {resultCount} medal(s) match filters
       </div>
     </div>

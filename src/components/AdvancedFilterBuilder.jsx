@@ -12,16 +12,16 @@ export default function AdvancedFilterBuilder({ currentFilters, onApply }) {
   const update = (key, value) => setLocal(prev => ({ ...prev, [key]: value }))
 
   return (
-    <div className="bg-white rounded-lg shadow p-4 space-y-4">
-      <h3 className="font-bold text-text-primary">Advanced Filter Builder</h3>
+    <div className="card p-4 space-y-4">
+      <h3 className="font-bold text-foreground">Advanced Filter Builder</h3>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-text-secondary mb-1">Status</label>
+          <label className="block text-sm font-medium text-muted-foreground mb-1">Status</label>
           <select
             value={local.status}
             onChange={(e) => update('status', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded text-sm"
+            className="select"
           >
             <option value="">Any</option>
             <option value="unlocked">Unlocked</option>
@@ -31,33 +31,33 @@ export default function AdvancedFilterBuilder({ currentFilters, onApply }) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-text-secondary mb-1">Tier</label>
+          <label className="block text-sm font-medium text-muted-foreground mb-1">Tier</label>
           <input
             type="text"
             value={local.tier}
             onChange={(e) => update('tier', e.target.value || '')}
             placeholder="bronze, silver, gold, star_1..."
-            className="w-full px-3 py-2 border border-gray-300 rounded text-sm"
+            className="input"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-text-secondary mb-1">Type</label>
+          <label className="block text-sm font-medium text-muted-foreground mb-1">Type</label>
           <input
             type="text"
             value={local.type}
             onChange={(e) => update('type', e.target.value || '')}
             placeholder="pistol_mark, field_mark..."
-            className="w-full px-3 py-2 border border-gray-300 rounded text-sm"
+            className="input"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-text-secondary mb-1">Weapon Group</label>
+          <label className="block text-sm font-medium text-muted-foreground mb-1">Weapon Group</label>
           <select
             value={local.weaponGroup}
             onChange={(e) => update('weaponGroup', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded text-sm"
+            className="select"
           >
             <option value="">Any</option>
             <option value="A">A</option>
@@ -67,13 +67,13 @@ export default function AdvancedFilterBuilder({ currentFilters, onApply }) {
         </div>
 
         <div className="md:col-span-2">
-          <label className="block text-sm font-medium text-text-secondary mb-1">Search</label>
+          <label className="block text-sm font-medium text-muted-foreground mb-1">Search</label>
           <input
             type="text"
             value={local.search}
             onChange={(e) => update('search', e.target.value)}
             placeholder="Keyword in name or type"
-            className="w-full px-3 py-2 border border-gray-300 rounded text-sm"
+            className="input"
           />
         </div>
       </div>
@@ -88,7 +88,7 @@ export default function AdvancedFilterBuilder({ currentFilters, onApply }) {
             weaponGroup: local.weaponGroup || null,
             search: local.search || '',
           })}
-          className="px-4 py-2 bg-teal-700 text-white rounded text-sm hover:bg-teal-800"
+          className="btn btn-primary"
         >
           Apply
         </button>

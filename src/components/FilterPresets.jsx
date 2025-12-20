@@ -18,8 +18,8 @@ export default function FilterPresets({ currentFilters, onApplyPreset }) {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow p-4">
-      <h3 className="font-bold text-text-primary mb-3">Filter Presets</h3>
+    <div className="card p-4">
+      <h3 className="font-bold text-foreground mb-3">Filter Presets</h3>
 
       <div className="mb-4">
         <div className="flex gap-2">
@@ -28,12 +28,13 @@ export default function FilterPresets({ currentFilters, onApplyPreset }) {
             value={presetName}
             onChange={(e) => setPresetName(e.target.value)}
             placeholder="Preset name (e.g., 'My Favorites')"
-            className="flex-1 px-3 py-2 border border-gray-300 rounded text-sm"
+            className="input"
           />
           <button
+            type="button"
             onClick={handleSavePreset}
             disabled={!presetName.trim()}
-            className="px-4 py-2 bg-teal-700 text-white rounded text-sm hover:bg-teal-800 disabled:opacity-50"
+            className="btn btn-primary text-sm disabled:opacity-50"
           >
             Save
           </button>
@@ -45,17 +46,19 @@ export default function FilterPresets({ currentFilters, onApplyPreset }) {
           {presets.map((preset, index) => (
             <div
               key={`${preset.name}-${index}`}
-              className="flex justify-between items-center p-3 bg-gray-50 rounded border border-gray-200"
+              className="flex justify-between items-center p-3 bg-background border border-border rounded"
             >
               <button
+                type="button"
                 onClick={() => onApplyPreset?.(preset.filters)}
-                className="text-left flex-1 text-sm text-blue-600 hover:text-blue-800 font-medium"
+                className="btn btn-muted text-sm flex-1 text-left"
               >
                 {preset.name}
               </button>
               <button
+                type="button"
                 onClick={() => handleDelete(index)}
-                className="text-red-600 hover:text-red-800 text-sm"
+                className="btn btn-muted text-sm"
                 aria-label={`Delete preset ${preset.name}`}
               >
                 Delete

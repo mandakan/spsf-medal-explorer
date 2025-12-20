@@ -23,8 +23,8 @@ export default function SearchBar({
 
   return (
     <div className="relative">
-      <div className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg bg-white">
-        <span className="text-gray-400" aria-hidden>🔍</span>
+      <div className="relative">
+        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" aria-hidden>🔍</span>
         <input
           type="text"
           ref={inputRef}
@@ -33,13 +33,19 @@ export default function SearchBar({
           onFocus={handleFocus}
           onBlur={() => setTimeout(() => setShowSuggestions(false), 100)}
           placeholder={placeholder}
-          className="flex-1 outline-none text-text-primary placeholder-text-secondary"
+          className="input pl-8"
           aria-label="Search medals"
+          role="combobox"
+          aria-autocomplete="list"
+          aria-expanded={showSuggestions}
+          aria-controls="search-suggestions"
+          aria-haspopup="listbox"
         />
         {value ? (
           <button
+            type="button"
             onClick={() => onChange?.('')}
-            className="text-gray-400 hover:text-gray-600"
+            className="btn btn-muted"
             aria-label="Clear search"
           >
             ✕
@@ -48,12 +54,14 @@ export default function SearchBar({
       </div>
 
       {showSuggestions && (suggestions || []).length > 0 && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-10">
+        <div id="search-suggestions" role="listbox" aria-label="Search suggestions" className="absolute top-full left-0 right-0 mt-1 bg-bg-secondary border border-border rounded-lg shadow-lg z-10 text-foreground">
           {suggestions.map((suggestion, index) => (
             <button
               key={`${suggestion}-${index}`}
+              type="button"
+              role="option"
               onClick={() => handleSuggestionClick(suggestion)}
-              className="w-full text-left px-4 py-2 hover:bg-gray-100 border-b last:border-b-0 text-text-primary text-sm"
+              className="w-full text-left px-4 py-2 hover:bg-background border-b border-border last:border-b-0 text-sm"
             >
               {suggestion}
             </button>
