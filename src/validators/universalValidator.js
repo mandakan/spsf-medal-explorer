@@ -121,7 +121,7 @@ export function validateAchievement(achievement) {
   if (typeof year !== 'number' || Number.isNaN(year)) {
     errors.push('Invalid year')
   }
-  if (!WG.includes(weaponGroup || 'A')) {
+  if (!weaponGroup || !WG.includes(weaponGroup)) {
     errors.push('Invalid weapon group')
   }
   if (type === 'gold_series') {
