@@ -1,12 +1,40 @@
 import React, { useState } from 'react'
-import { validateAchievements, detectDuplicateAchievements } from '../logic/achievementValidator'
+import { detectDuplicateAchievements } from '../logic/achievementValidator'
 import { useAchievementHistory } from '../hooks/useAchievementHistory'
+
+const WG = ['A', 'B', 'C', 'R']
+const COMP_TYPES = ['national', 'regional/landsdels', 'crewmate/krets', 'championship']
+const MEDAL_TYPES = ['bronze', 'silver', 'gold']
+const APP_TIME_OPTIONS = [
+  { value: 60, label: '60, Bronze' },
+  { value: 40, label: '40, Silver' },
+  { value: 17, label: '17, Gold A/R' },
+  { value: 15, label: '15, Gold B/C' },
+]
+const currentYear = new Date().getFullYear()
+const newRow = () => ({
+  year: currentYear,
+  weaponGroup: 'A',
+  type: 'precision_series',
+  date: new Date().toISOString().slice(0, 10),
+  timeSeconds: '',
+  hits: '',
+  points: '',
+  competitionType: '',
+  medalType: '',
+  competitionName: '',
+  weapon: '',
+  score: '',
+  teamName: '',
+  position: '',
+  participants: '',
+  eventName: '',
+  notes: ''
+})
 
 export default function BatchAchievementForm() {
   const { addMany } = useAchievementHistory()
-  const [rows, setRows] = useState([
-    { year: new Date().getFullYear(), weaponGroup: 'A', points: '', type: 'gold_series' }
-  ])
+  const [rows, setRows] = useState([ newRow() ])
   const [errors, setErrors] = useState({})
   const [successCount, setSuccessCount] = useState(0)
   const [submitting, setSubmitting] = useState(false)
@@ -21,7 +49,7 @@ export default function BatchAchievementForm() {
   const handleAddRow = () => {
     setRows([
       ...rows,
-      { year: new Date().getFullYear(), weaponGroup: 'A', points: '', type: 'gold_series' }
+      newRow()
     ])
   }
 
@@ -32,33 +60,94 @@ export default function BatchAchievementForm() {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    // Validate all rows
-    const validation = validateAchievements(rows)
-    if (!validation.isValid) {
-      setErrors(validation.errors)
+    // Validate all rows (type-aware)
+    const rowErrors = {}
+    const validRows = []
+
+    rows.forEach((row, idx) => {
+      const errs = []
+      const y = Number(row.year)
+      if (!Number.isFinite(y) || y < 2000 || y > currentYear) {
+        errs.push(`Year must be between 2000 and ${currentYear}`)
+      }
+      if (!WG.includes(row.weaponGroup)) {
+        errs.push('Invalid group (A, B, C, R)')
+      }
+
+      switch (row.type) {
+        case 'precision_series': {
+          const p = Number(row.points)
+          if (!Number.isFinite(p) || p < 0 || p > 50) {
+            errs.push('Points must be 0–50')
+          }
+          break
+        }
+        case 'application_series': {
+          const d = new Date(row.date)
+          if (!row.date || Number.isNaN(d.getTime())) {
+            errs.push('Date is invalid')
+          } else {
+            const today = new Date()
+            today.setHours(0, 0, 0, 0)
+            d.setHours(0, 0, 0, 0)
+            if (d.getTime() > today.getTime()) {
+              errs.push('Date cannot be in the future')
+            }
+          }
+          const allowed = [60, 40, 17, 15]
+          const t = Number(row.timeSeconds)
+          if (!Number.isFinite(t) || !allowed.includes(t)) {
+            errs.push('Select a valid time')
+          }
+          const h = Number(row.hits)
+          if (!Number.isFinite(h) || h < 0) {
+            errs.push('Enter a valid hits number')
+          }
+          break
+        }
+        case 'competition_result': {
+          const ct = String(row.competitionType || '').toLowerCase()
+          const mt = String(row.medalType || '').toLowerCase()
+          if (!COMP_TYPES.includes(ct)) errs.push('Select a valid competition type')
+          if (!MEDAL_TYPES.includes(mt)) errs.push('Select a valid medal type')
+          break
+        }
+        case 'qualification_result':
+        case 'team_event':
+        case 'event':
+        case 'custom':
+        default:
+          break
+      }
+
+      if (errs.length) {
+        rowErrors[idx] = errs
+      } else {
+        validRows.push(row)
+      }
+    })
+
+    if (Object.keys(rowErrors).length) {
+      setErrors(rowErrors)
       return
     }
 
-    // Duplicate detection in the batch
-    const duplicates = detectDuplicateAchievements(validation.validAchievements)
+    // Duplicate detection (precision series only)
+    const seriesRows = validRows.filter(r => r.type === 'precision_series')
+    const duplicates = detectDuplicateAchievements(seriesRows)
     setDupWarnings(duplicates)
-    if (duplicates.length > 0) {
-      // Allow user to proceed anyway; in a fuller UX we might block and require confirm
-      // For now, continue but show warning.
-    }
 
     try {
       setSubmitting(true)
-      let added = await addMany(validation.validAchievements)
-
-      setSuccessCount(added)
-      setRows([
-        { year: new Date().getFullYear(), weaponGroup: 'A', points: '', type: 'gold_series' }
-      ])
-      setErrors({})
-
-      // Clear success message after 3 seconds
-      setTimeout(() => setSuccessCount(0), 3000)
+      const added = await addMany(validRows)
+      if (added > 0) {
+        setSuccessCount(added)
+        setRows([ newRow() ])
+        setErrors({})
+        setTimeout(() => setSuccessCount(0), 3000)
+      } else {
+        setErrors({ form: 'No achievements were added. Please review your inputs.' })
+      }
     } catch (err) {
       setErrors({ form: err.message })
     } finally {
@@ -68,7 +157,11 @@ export default function BatchAchievementForm() {
 
   return (
     <div className="card p-6">
-      <h2 className="text-xl font-bold mb-4 text-text-primary">Batch Add Achievements</h2>
+      <h2 className="text-xl font-bold mb-2 text-text-primary">Batch Add Achievements</h2>
+      <p id="batch-type-help" className="text-sm text-text-secondary mb-4">
+        Batch add supports Precision Series and Application Series. To add competition, qualification,
+        team event, or event entries, use the single-entry logger on a medal card.
+      </p>
 
       {successCount > 0 && (
         <div role="status" aria-live="polite" className="card p-4 mb-4">
@@ -100,12 +193,21 @@ export default function BatchAchievementForm() {
                 <th scope="col" className="text-left px-3 py-2">Year</th>
                 <th scope="col" className="text-left px-3 py-2">Type</th>
                 <th scope="col" className="text-left px-3 py-2">Group</th>
-                <th scope="col" className="text-left px-3 py-2">Points</th>
+                <th scope="col" className="text-left px-3 py-2">Details</th>
                 <th scope="col" className="text-left px-3 py-2">Action</th>
               </tr>
             </thead>
             <tbody>
-              {rows.map((row, index) => (
+              {rows.map((row, index) => {
+                const rowErrs = Array.isArray(errors[index]) ? errors[index] : []
+                const errorId = `row-${index}-errors`
+                const hasYearErr = rowErrs.some(e => /year/i.test(e))
+                const hasGroupErr = rowErrs.some(e => /group/i.test(e))
+                const hasPointsErr = rowErrs.some(e => /points?/i.test(e))
+                const hasDateErr = rowErrs.some(e => /date/i.test(e))
+                const hasTimeErr = rowErrs.some(e => /time/i.test(e))
+                const hasHitsErr = rowErrs.some(e => /hits?/i.test(e))
+                return (
                 <tr key={index} className="border-b border-border hover:bg-bg-secondary/60">
                   <td className="px-3 py-2">
                     <input
@@ -117,6 +219,8 @@ export default function BatchAchievementForm() {
                       className="input w-24"
                       disabled={submitting}
                       aria-label={`Year for row ${index + 1}`}
+                      aria-invalid={hasYearErr || undefined}
+                      aria-describedby={rowErrs.length ? errorId : undefined}
                     />
                   </td>
                   <td className="px-3 py-2">
@@ -126,8 +230,15 @@ export default function BatchAchievementForm() {
                       className="select w-32"
                       disabled={submitting}
                       aria-label={`Type for row ${index + 1}`}
+                      aria-describedby="batch-type-help"
                     >
-                      <option value="gold_series">Gold Series</option>
+                      <option value="precision_series">Precision Series</option>
+                      <option value="application_series">Application Series</option>
+                      <option value="competition_result">Competition Result</option>
+                      <option value="qualification_result">Qualification</option>
+                      <option value="team_event">Team Event</option>
+                      <option value="event">Event</option>
+                      <option value="custom">Custom</option>
                     </select>
                   </td>
                   <td className="px-3 py-2">
@@ -137,6 +248,8 @@ export default function BatchAchievementForm() {
                       className="select w-20"
                       disabled={submitting}
                       aria-label={`Weapon group for row ${index + 1}`}
+                      aria-invalid={hasGroupErr || undefined}
+                      aria-describedby={rowErrs.length ? errorId : undefined}
                     >
                       <option value="A">A</option>
                       <option value="B">B</option>
@@ -145,20 +258,172 @@ export default function BatchAchievementForm() {
                     </select>
                   </td>
                   <td className="px-3 py-2">
-                    <input
-                      type="number"
-                      min="0"
-                      max="50"
-                      value={row.points}
-                      onChange={(e) => handleRowChange(index, 'points', e.target.value)}
-                      className="input w-20"
-                      placeholder="0-50"
-                      disabled={submitting}
-                      aria-label={`Points for row ${index + 1}`}
-                    />
-                    {errors[index]?.length > 0 && (
-                      <div className="text-red-600 text-xs mt-1">
-                        {Array.isArray(errors[index]) ? errors[index].join(', ') : String(errors[index])}
+                    {row.type === 'precision_series' ? (
+                      <input
+                        type="number"
+                        min="0"
+                        max="50"
+                        value={row.points}
+                        onChange={(e) => handleRowChange(index, 'points', e.target.value)}
+                        className="input w-20"
+                        placeholder="0-50"
+                        disabled={submitting}
+                        aria-label={`Points for row ${index + 1}`}
+                        aria-invalid={hasPointsErr || undefined}
+                        aria-describedby={rowErrs.length ? errorId : undefined}
+                      />
+                    ) : row.type === 'application_series' ? (
+                      <div className="flex flex-wrap gap-2">
+                        <input
+                          type="date"
+                          value={row.date}
+                          onChange={(e) => handleRowChange(index, 'date', e.target.value)}
+                          className="input w-44"
+                          disabled={submitting}
+                          aria-label={`Date for row ${index + 1}`}
+                          aria-invalid={hasDateErr || undefined}
+                          aria-describedby={rowErrs.length ? errorId : undefined}
+                        />
+                        <select
+                          value={row.timeSeconds === '' ? '' : Number(row.timeSeconds)}
+                          onChange={(e) =>
+                            handleRowChange(
+                              index,
+                              'timeSeconds',
+                              e.target.value === '' ? '' : Number(e.target.value)
+                            )
+                          }
+                          className="select w-40"
+                          disabled={submitting}
+                          aria-label={`Time for row ${index + 1}`}
+                          aria-invalid={hasTimeErr || undefined}
+                          aria-describedby={rowErrs.length ? errorId : undefined}
+                        >
+                          <option value="">Select time…</option>
+                          {APP_TIME_OPTIONS.map(opt => (
+                            <option key={opt.value} value={opt.value}>{opt.label}</option>
+                          ))}
+                        </select>
+                        <input
+                          type="number"
+                          min="0"
+                          step="1"
+                          value={row.hits}
+                          onChange={(e) => handleRowChange(index, 'hits', e.target.value)}
+                          className="input w-24"
+                          placeholder="Hits"
+                          disabled={submitting}
+                          aria-label={`Hits for row ${index + 1}`}
+                          aria-invalid={hasHitsErr || undefined}
+                          aria-describedby={rowErrs.length ? errorId : undefined}
+                        />
+                      </div>
+                    ) : row.type === 'competition_result' ? (
+                      <div className="flex flex-wrap gap-2">
+                        <select
+                          value={row.competitionType}
+                          onChange={(e) => handleRowChange(index, 'competitionType', e.target.value)}
+                          className="select w-40"
+                          disabled={submitting}
+                          aria-label={`Competition type for row ${index + 1}`}
+                        >
+                          <option value="">Select type…</option>
+                          {COMP_TYPES.map(opt => (
+                            <option key={opt} value={opt}>{opt}</option>
+                          ))}
+                        </select>
+                        <select
+                          value={row.medalType}
+                          onChange={(e) => handleRowChange(index, 'medalType', e.target.value)}
+                          className="select w-32"
+                          disabled={submitting}
+                          aria-label={`Medal type for row ${index + 1}`}
+                        >
+                          <option value="">Select medal…</option>
+                          {MEDAL_TYPES.map(opt => (
+                            <option key={opt} value={opt}>{opt}</option>
+                          ))}
+                        </select>
+                        <input
+                          type="text"
+                          value={row.competitionName}
+                          onChange={(e) => handleRowChange(index, 'competitionName', e.target.value)}
+                          className="input flex-1 min-w-[10rem]"
+                          placeholder="Competition name (optional)"
+                          disabled={submitting}
+                          aria-label={`Competition name for row ${index + 1}`}
+                        />
+                      </div>
+                    ) : row.type === 'qualification_result' ? (
+                      <div className="flex flex-wrap gap-2">
+                        <input
+                          type="text"
+                          value={row.weapon}
+                          onChange={(e) => handleRowChange(index, 'weapon', e.target.value)}
+                          className="input w-32"
+                          placeholder="Weapon"
+                          disabled={submitting}
+                          aria-label={`Weapon for row ${index + 1}`}
+                        />
+                        <input
+                          type="number"
+                          value={row.score}
+                          onChange={(e) => handleRowChange(index, 'score', e.target.value)}
+                          className="input w-24"
+                          placeholder="Score"
+                          disabled={submitting}
+                          aria-label={`Score for row ${index + 1}`}
+                        />
+                      </div>
+                    ) : row.type === 'team_event' ? (
+                      <div className="flex flex-wrap gap-2">
+                        <input
+                          type="text"
+                          value={row.teamName}
+                          onChange={(e) => handleRowChange(index, 'teamName', e.target.value)}
+                          className="input w-40"
+                          placeholder="Team name"
+                          disabled={submitting}
+                          aria-label={`Team name for row ${index + 1}`}
+                        />
+                        <input
+                          type="number"
+                          min="1"
+                          value={row.position}
+                          onChange={(e) => handleRowChange(index, 'position', e.target.value)}
+                          className="input w-24"
+                          placeholder="Position"
+                          disabled={submitting}
+                          aria-label={`Position for row ${index + 1}`}
+                        />
+                        <input
+                          type="text"
+                          value={row.participants}
+                          onChange={(e) => handleRowChange(index, 'participants', e.target.value)}
+                          className="input w-56"
+                          placeholder="Participants (comma separated)"
+                          disabled={submitting}
+                          aria-label={`Participants for row ${index + 1}`}
+                        />
+                      </div>
+                    ) : (
+                      <input
+                        type="text"
+                        value={row.eventName}
+                        onChange={(e) => handleRowChange(index, 'eventName', e.target.value)}
+                        className="input w-48"
+                        placeholder="Event name / details"
+                        disabled={submitting}
+                        aria-label={`Event name for row ${index + 1}`}
+                      />
+                    )}
+                    {rowErrs.length > 0 && (
+                      <div
+                        id={errorId}
+                        role="alert"
+                        className="text-red-600 text-xs mt-1"
+                      >
+                        {rowErrs.join(', ')}
                       </div>
                     )}
                   </td>
@@ -176,7 +441,7 @@ export default function BatchAchievementForm() {
                     )}
                   </td>
                 </tr>
-              ))}
+              )})}
             </tbody>
           </table>
         </div>
@@ -193,7 +458,7 @@ export default function BatchAchievementForm() {
           <button
             type="submit"
             className="btn btn-primary disabled:opacity-50"
-            disabled={submitting || rows.every(r => !r.points)}
+            disabled={submitting || rows.length === 0}
           >
             {submitting ? 'Adding...' : 'Add All Achievements'}
           </button>

@@ -28,9 +28,9 @@ describe('Medal Database', () => {
     expect(medal.prerequisites.some(p => p.medalId === 'pistol-mark-bronze')).toBe(true)
   })
 
-  test('gold series requirement has correct point thresholds', () => {
+  test('precision series requirement has correct point thresholds', () => {
     const medal = medalDb.getMedalById('pistol-mark-bronze')
-    const goldSeriesReq = medal.requirements.find(r => r.type === 'gold_series')
+    const goldSeriesReq = medal.requirements.find(r => r.type === 'precision_series')
     expect(goldSeriesReq.pointThresholds.A.min).toBe(32)
     expect(goldSeriesReq.pointThresholds.B.min).toBe(33)
     expect(goldSeriesReq.pointThresholds.C.min).toBe(34)

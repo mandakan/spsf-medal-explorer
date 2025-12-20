@@ -252,9 +252,20 @@ export class LocalStorageDataManager extends DataManager {
     if (typeof achievement.year !== 'number') return false
     if (!['A', 'B', 'C', 'R'].includes(achievement.weaponGroup || 'A')) return false
 
-    if (achievement.type === 'gold_series') {
+    if (achievement.type === 'precision_series') {
       if (typeof achievement.points !== 'number') return false
       if (achievement.points < 0 || achievement.points > 50) return false
+    }
+
+    if (achievement.type === 'application_series') {
+      if (!achievement.date || Number.isNaN(new Date(achievement.date).getTime())) return false
+      const d = new Date(achievement.date)
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
+      d.setHours(0, 0, 0, 0)
+      if (d.getTime() > today.getTime()) return false
+      if (typeof achievement.timeSeconds !== 'number' || !Number.isFinite(achievement.timeSeconds) || achievement.timeSeconds <= 0) return false
+      if (typeof achievement.hits !== 'number' || !Number.isFinite(achievement.hits) || achievement.hits < 0) return false
     }
 
     if (achievement.type === 'competition_result') {

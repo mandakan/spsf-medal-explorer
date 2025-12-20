@@ -1,13 +1,18 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useMedalDatabase } from '../hooks/useMedalDatabase'
 import { useAllMedalStatuses } from '../hooks/useMedalCalculator'
+import { useMedalCalculator } from '../hooks/useMedalCalculator'
 import { useProfile } from '../hooks/useProfile'
+import UniversalAchievementLogger from './UniversalAchievementLogger'
+import { UndoRedoProvider } from '../contexts/UndoRedoContext'
 
 export default function MedalDetailModal({ medalId, onClose }) {
   const { medalDatabase } = useMedalDatabase()
   const statuses = useAllMedalStatuses()
+  const calculator = useMedalCalculator()
   const { currentProfile } = useProfile()
   const medal = medalDatabase?.getMedalById(medalId)
+  const [showLogger, setShowLogger] = useState(false)
 
   // Compute status once per change
   const status = useMemo(() => {
@@ -20,13 +25,26 @@ export default function MedalDetailModal({ medalId, onClose }) {
     )
   }, [statuses, medalId])
 
+  const requirementItems = useMemo(() => {
+    if (!medal) return []
+    const hasReqFromStatus =
+      status?.details && status.reason !== 'prerequisites_not_met' && Array.isArray(status.details.items)
+    if (hasReqFromStatus) return status.details.items
+    try {
+      const res = calculator?.checkRequirements?.(medal)
+      return res?.items || []
+    } catch {
+      return []
+    }
+  }, [calculator, medal, status])
+
   if (!medal) return null
 
   const statusLabel = {
     unlocked: '🏆 Unlocked',
     achievable: '🎯 Achievable',
     locked: '🔒 Locked'
-  }[status?.status] || 'Unknown'
+  }[status?.status] || '🔒 Locked'
 
   const overlayRef = useRef(null)
   const panelRef = useRef(null)
@@ -108,10 +126,7 @@ export default function MedalDetailModal({ medalId, onClose }) {
   }
 
   const handleAddAchievement = () => {
-    // TODO: Integrate with AchievementForm
-    // For now, close modal and dispatch event to be handled elsewhere.
-    window.dispatchEvent(new CustomEvent('openAchievementForm', { detail: { medalId } }))
-    onClose?.()
+    setShowLogger(true)
   }
 
   const statusClass = 'bg-bg-secondary text-foreground ring-1 ring-border'
@@ -207,21 +222,46 @@ export default function MedalDetailModal({ medalId, onClose }) {
               </div>
             )}
 
-            {status?.details?.items?.length > 0 && (
+            {requirementItems.length > 0 && (
               <div className="mb-4 bg-background border border-border rounded p-3">
                 <p className="text-sm font-semibold text-foreground mb-2">
                   Requirements:
                 </p>
                 <ul className="text-sm text-muted-foreground space-y-1">
-                  {status.details.items.map((item, i) => (
+                  {requirementItems.map((item, i) => (
                     <li key={i} className="break-words">
                       <span className={item.isMet ? 'text-foreground' : 'text-muted-foreground'}>
                         {item.isMet ? '✓' : '○'}
                       </span>{' '}
-                      {item.description}
+                      {item.description || item.type}
                     </li>
                   ))}
                 </ul>
+              </div>
+            )}
+
+            {showLogger && (
+              <div className="mt-4">
+                <div className="card p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-lg font-semibold text-text-primary">Log achievement</h3>
+                    <button
+                      type="button"
+                      className="btn btn-muted text-sm"
+                      onClick={() => setShowLogger(false)}
+                      aria-label="Close log achievement form"
+                    >
+                      Close
+                    </button>
+                  </div>
+                  <UndoRedoProvider>
+                    <UniversalAchievementLogger
+                      medal={medal}
+                      unlockMode={status?.status === 'achievable'}
+                      onSuccess={() => setShowLogger(false)}
+                    />
+                  </UndoRedoProvider>
+                </div>
               </div>
             )}
           </div>
@@ -236,10 +276,12 @@ export default function MedalDetailModal({ medalId, onClose }) {
             </button>
             {status?.status === 'achievable' && currentProfile && (
               <button
+                type="button"
                 onClick={handleAddAchievement}
+                aria-expanded={showLogger}
                 className="flex-1 px-4 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
               >
-                Add Achievement
+                Unlock Now
               </button>
             )}
           </div>

@@ -8,7 +8,7 @@ export function validateAchievements(achievements) {
     if (ach == null) return
     if (ach.points === '' || ach.points == null) return // Skip empty rows
 
-    const validation = InputValidator.validateGoldSeriesInput(ach)
+    const validation = InputValidator.validatePrecisionSeriesInput(ach)
     if (!validation.isValid) {
       errors[index] = validation.errors
     } else {
@@ -29,7 +29,15 @@ export function detectDuplicateAchievements(achievements) {
 
   achievements.forEach(ach => {
     if (!ach) return
-    const key = `${ach.year}-${ach.type}-${ach.weaponGroup}-${ach.points}`
+    if (ach.type === 'application_series') {
+      return
+    }
+    let key
+    if (ach.type === 'precision_series') {
+      key = `${ach.year}-${ach.type}-${ach.weaponGroup}-${ach.points}`
+    } else {
+      key = `${ach.year}-${ach.type}-${ach.weaponGroup}`
+    }
     if (seen.has(key)) {
       duplicates.push(key)
     }

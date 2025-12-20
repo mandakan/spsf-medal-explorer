@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react'
 import { useProfile } from '../hooks/useProfile'
 import AchievementCard from './AchievementCard'
 import { achievementsToCSV, downloadCSV } from '../utils/achievementExport'
+import { getAchievementTypeLabel } from '../utils/labels'
 
 export default function AchievementTimeline() {
   const { currentProfile } = useProfile()
@@ -80,9 +81,9 @@ export default function AchievementTimeline() {
               className="select"
             >
               <option value="">All Types</option>
-              <option value="gold_series">Gold Series</option>
-              <option value="competition_result">Competition Result</option>
-              <option value="standard_medal">Standard Medal</option>
+              {['precision_series','competition_result','standard_medal'].map((t) => (
+                <option key={t} value={t}>{getAchievementTypeLabel(t)}</option>
+              ))}
             </select>
           </div>
           <div>

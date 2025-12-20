@@ -16,7 +16,7 @@ describe('MedalCalculator', () => {
           displayName: 'Pistol Mark - Bronze',
           prerequisites: [],
           requirements: [{
-            type: 'gold_series',
+            type: 'precision_series',
             minAchievements: 3,
             timeWindowYears: 1,
             pointThresholds: {
@@ -33,7 +33,7 @@ describe('MedalCalculator', () => {
           displayName: 'Pistol Mark - Silver',
           prerequisites: [{ type: 'medal', medalId: 'pistol-mark-bronze' }],
           requirements: [{
-            type: 'gold_series',
+            type: 'precision_series',
             minAchievements: 1,
             pointThresholds: {
               A: { min: 38 }
@@ -53,23 +53,23 @@ describe('MedalCalculator', () => {
     calculator = new MedalCalculator(medalDb, profile)
   })
 
-  test('marks bronze as achievable with 3 gold series in same year', () => {
+  test('marks bronze as achievable with 3 precision series in same year', () => {
     const currentYear = new Date().getFullYear()
     profile.prerequisites = [
       new Achievement({
-        type: 'gold_series',
+        type: 'precision_series',
         year: currentYear,
         weaponGroup: 'A',
         points: 35
       }),
       new Achievement({
-        type: 'gold_series',
+        type: 'precision_series',
         year: currentYear,
         weaponGroup: 'A',
         points: 36
       }),
       new Achievement({
-        type: 'gold_series',
+        type: 'precision_series',
         year: currentYear,
         weaponGroup: 'A',
         points: 37
