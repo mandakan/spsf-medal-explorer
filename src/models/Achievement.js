@@ -44,5 +44,13 @@ export class Achievement {
           ? data.participants.split(',').map(s => s.trim()).filter(Boolean)
           : undefined)
     this.eventName = data.eventName
+
+    // Application series fields
+    this.timeSeconds = typeof data.timeSeconds === 'number'
+      ? data.timeSeconds
+      : (data.timeSeconds != null && data.timeSeconds !== '' ? Number(data.timeSeconds) : undefined)
+    this.hits = typeof data.hits === 'number'
+      ? data.hits
+      : (data.hits != null && data.hits !== '' ? Number(data.hits) : undefined)
   }
 }
