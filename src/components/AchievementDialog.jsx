@@ -368,7 +368,7 @@ export default function AchievementDialog({
 
         <div className="flex gap-2 justify-end pt-2">
           <button type="button" className="btn btn-muted" onClick={onClose}>Cancel</button>
-          <button type="button" className="btn btn-muted" onClick={() => onSubmit(true)}>Save & add another</button>
+          <button type="button" className="btn btn-muted" onClick={() => onSubmit(true)}>Save &amp; add another</button>
           <button type="submit" className="btn btn-primary">Save</button>
         </div>
       </form>
