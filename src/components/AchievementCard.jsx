@@ -30,7 +30,18 @@ export default function AchievementCard({ achievement }) {
 
   const handleSave = async () => {
     try {
-      const ok = await updateAchievement(editedData)
+      const yearNum = editedData.year === '' ? undefined : Number(editedData.year)
+      const pointsNum = editedData.points === '' ? undefined : Number(editedData.points)
+      const payload = {
+        ...editedData,
+        id: achievement.id,
+        medalId: achievement.medalId,
+        year: Number.isFinite(yearNum)
+          ? yearNum
+          : (editedData.date ? new Date(editedData.date).getFullYear() : achievement.year),
+        points: Number.isFinite(pointsNum) ? pointsNum : achievement.points,
+      }
+      const ok = await updateAchievement(payload)
       if (ok) setIsEditing(false)
     } catch (err) {
       console.error('Failed to save:', err)
@@ -52,8 +63,11 @@ export default function AchievementCard({ achievement }) {
             <label className="text-sm font-medium text-foreground">Year</label>
             <input
               type="number"
-              value={editedData.year}
-              onChange={(e) => setEditedData({ ...editedData, year: parseInt(e.target.value) })}
+              value={editedData.year ?? ''}
+              onChange={(e) => {
+                const v = e.target.value
+                setEditedData(prev => ({ ...prev, year: v === '' ? '' : parseInt(v, 10) }))
+              }}
               className="input"
             />
           </div>
@@ -61,8 +75,11 @@ export default function AchievementCard({ achievement }) {
             <label className="text-sm font-medium text-foreground">Points</label>
             <input
               type="number"
-              value={editedData.points}
-              onChange={(e) => setEditedData({ ...editedData, points: parseInt(e.target.value) })}
+              value={editedData.points ?? ''}
+              onChange={(e) => {
+                const v = e.target.value
+                setEditedData(prev => ({ ...prev, points: v === '' ? '' : parseInt(v, 10) }))
+              }}
               className="input"
             />
           </div>

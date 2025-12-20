@@ -119,21 +119,25 @@ export function useAchievementHistory() {
   }, [profileAddAchievement, currentProfile, pushCurrent])
 
   const updateOne = useCallback(async (updated) => {
-    if (!currentProfile || !updated?.id) return false
-    let ok = false
-    if (typeof profileUpdateAchievement === 'function') { 
+    if (!currentProfile) return false
+    const payload = updated instanceof Achievement
+      ? updated
+      : new Achievement({ ...updated, id: updated?.id })
+    if (!payload?.id) return false
+    try {
+      await profileUpdateAchievement(payload)
+      pushCurrent()
+      return true
+    } catch (e1) {
       try {
-        await profileUpdateAchievement(updated)
-        ok = true
-      } catch {
-        try {
-          await profileUpdateAchievement(currentProfile.userId, updated.id, updated)
-          ok = true
-        } catch (_) {}
+        await profileUpdateAchievement(currentProfile.userId, payload.id, payload)
+        pushCurrent()
+        return true
+      } catch (e2) {
+        console.error('updateAchievement failed', { e1, e2, payload })
+        return false
       }
     }
-    if (ok) pushCurrent()
-    return ok
   }, [currentProfile, profileUpdateAchievement, pushCurrent])
 
   const removeOne = useCallback(async (achievementId) => {
