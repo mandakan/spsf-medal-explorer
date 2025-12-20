@@ -72,15 +72,15 @@ export function useAchievementHistory() {
       if (!cur) continue
       const changed = ['type', 'year', 'weaponGroup', 'points', 'date', 'competitionName', 'notes']
         .some(k => String(cur[k] ?? '') !== String(tgt[k] ?? ''))
-      if (changed && typeof updateAchievement === 'function') {
+      if (changed && typeof profileUpdateAchievement === 'function') {
         try {
-          await updateAchievement(new Achievement(tgt))
+          await profileUpdateAchievement(new Achievement(tgt))
         } catch {
-          try { await updateAchievement(userId, tgt.id, new Achievement(tgt)) } catch (_) {}
+          try { await profileUpdateAchievement(userId, tgt.id, new Achievement(tgt)) } catch (_) {}
         }
       }
     }
-  }, [addAchievement, removeAchievement, updateAchievement, currentProfile])
+  }, [profileAddAchievement, profileRemoveAchievement, profileUpdateAchievement, currentProfile])
 
   // Public operations
 
