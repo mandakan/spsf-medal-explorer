@@ -1,5 +1,4 @@
 import React, { useMemo, useCallback, useRef, useEffect, useState } from 'react'
-import { FixedSizeList as List } from 'react-window'
 
 function MedalIcon({ iconUrl, alt }) {
   const [loaded, setLoaded] = useState(false)
@@ -49,6 +48,47 @@ function Row({ data, index, style }) {
   )
 }
 
+function VirtualList({ height, itemCount, itemSize, width = '100%', itemData, children }) {
+  const containerRef = useRef(null)
+  const [scrollTop, setScrollTop] = useState(0)
+  const overscan = 4
+
+  const onScroll = (e) => {
+    setScrollTop(e.currentTarget.scrollTop)
+  }
+
+  const totalHeight = itemCount * itemSize
+  const startIndex = Math.max(0, Math.floor(scrollTop / itemSize) - overscan)
+  const viewportCount = Math.ceil(height / itemSize) + overscan * 2
+  const endIndex = Math.min(itemCount, startIndex + viewportCount)
+
+  const items = []
+  for (let i = startIndex; i < endIndex; i++) {
+    const style = {
+      position: 'absolute',
+      top: i * itemSize,
+      height: itemSize,
+      width: '100%',
+    }
+    const element = children({ index: i, style, data: itemData })
+    items.push(React.cloneElement(element, { key: i }))
+  }
+
+  return (
+    <div
+      ref={containerRef}
+      style={{ height, width, overflowY: 'auto', position: 'relative', WebkitOverflowScrolling: 'touch' }}
+      onScroll={onScroll}
+      role="listbox"
+      aria-label="Medal list"
+    >
+      <div style={{ height: totalHeight, position: 'relative' }}>
+        {items}
+      </div>
+    </div>
+  )
+}
+
 export default function MedalList({ medals, onSelect, height = 800, itemSize = 60 }) {
   const itemData = useMemo(() => ({ medals, onSelect }), [medals, onSelect])
   const itemCount = medals?.length || 0
@@ -57,7 +97,7 @@ export default function MedalList({ medals, onSelect, height = 800, itemSize = 6
 
   return (
     <div className="border border-gray-200 dark:border-slate-700 rounded-md overflow-hidden">
-      <List
+      <VirtualList
         height={height}
         itemCount={itemCount}
         itemSize={itemSize}
@@ -65,7 +105,7 @@ export default function MedalList({ medals, onSelect, height = 800, itemSize = 6
         itemData={itemData}
       >
         {RowMemo}
-      </List>
+      </VirtualList>
     </div>
   )
 }
