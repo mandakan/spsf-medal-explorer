@@ -23,7 +23,7 @@ If you don't have Python installed:
 
 ### 1. Initialize Vite + React Project
 ```bash
-npm create vite@latest medal-app -- --template react
+npm create vite@latest spsf-medal-explorer -- --template react
 cd medal-app
 npm install
 npm install -D tailwindcss @tailwindcss/vite react-router-dom
