@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react'
 import { MedalDatabase } from '../models/Medal'
-import medalsData from '../data/medals.json'
+import { loadBestAvailableData, validatePrerequisites } from '../utils/medalDatabase'
 
 /**
  * React context for medal database
@@ -14,17 +14,31 @@ export function MedalProvider({ children }) {
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    // Initialize medal database on mount
-    try {
-      const db = new MedalDatabase(medalsData)
-      setMedalDatabase(db)
-      setError(null)
-    } catch (err) {
-      setError(`Failed to load medal database: ${err.message}`)
-      console.error('Medal database error:', err)
-    } finally {
-      setLoading(false)
+    let cancelled = false
+    async function init() {
+      setLoading(true)
+      try {
+        const data = await loadBestAvailableData()
+        const validation = validatePrerequisites(data)
+        if (!validation.ok) {
+          console.warn('Medal dataset validation errors:', validation.errors)
+        }
+        const db = new MedalDatabase(data)
+        if (!cancelled) {
+          setMedalDatabase(db)
+          setError(null)
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setError(`Failed to load medal database: ${err.message}`)
+          console.error('Medal database error:', err)
+        }
+      } finally {
+        if (!cancelled) setLoading(false)
+      }
     }
+    init()
+    return () => { cancelled = true }
   }, [])
 
   return (

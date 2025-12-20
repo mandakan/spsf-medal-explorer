@@ -40,7 +40,7 @@ function Row({ data, index, style }) {
       style={style}
       aria-label={`${medal.displayName || medal.name} ${medal.tier || ''}`}
     >
-      <MedalIcon iconUrl={medal.iconUrl} alt={medal.displayName || medal.name} />
+      <MedalIcon iconUrl={medal.iconUrl || medal.icon} alt={medal.displayName || medal.name} />
       <div className="min-w-0">
         <div className="font-medium text-text-primary truncate">{medal.displayName || medal.name}</div>
         <div className="text-sm text-text-secondary truncate">{medal.type} • {medal.tier}</div>

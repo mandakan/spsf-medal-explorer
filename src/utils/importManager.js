@@ -10,21 +10,20 @@
 
 import { readFile } from './fileHandlers'
 
-// Prefer existing project validator logic if available
+/**
+ * Prefer existing project validator logic if available.
+ * Load dynamically without top-level await to keep this module sync-friendly.
+ */
 let InputValidator = null
 let detectDuplicateAchievements = null
 
-try {
-  // Optional imports (read-only sources)
-  // eslint-disable-next-line import/no-unresolved
-  const validatorMod = await import('../logic/validator.js').catch(() => null)
-  InputValidator = validatorMod?.InputValidator || null
-} catch {}
-try {
-  // eslint-disable-next-line import/no-unresolved
-  const dupMod = await import('../logic/achievementValidator.js').catch(() => null)
-  detectDuplicateAchievements = dupMod?.detectDuplicateAchievements || null
-} catch {}
+// Best-effort async loads; functions below will use these if/when resolved.
+import('../logic/validator.js')
+  .then(mod => { InputValidator = mod?.InputValidator || null })
+  .catch(() => {})
+import('../logic/achievementValidator.js')
+  .then(mod => { detectDuplicateAchievements = mod?.detectDuplicateAchievements || null })
+  .catch(() => {})
 
 function normalizeAchievementsContainer(parsed) {
   if (Array.isArray(parsed)) {
@@ -119,7 +118,7 @@ export function parseCSV(content) {
       date: get('date') || undefined,
       points: get('score') !== '' ? Number(get('score')) : undefined,
       position: get('position') || undefined,
-      weapon: get('weapon') || undefined,
+      weaponGroup: get('weapon') || undefined,
       team: get('team') || undefined,
       notes: get('notes') || undefined,
       status: get('status') || undefined,
@@ -138,7 +137,7 @@ export function validateData(achievements) {
   const list = Array.isArray(achievements) ? achievements : (achievements?.achievements || [])
   list.forEach((ach, idx) => {
     let errors = []
-    if (InputValidator && ach?.type === 'gold_series') {
+    if (InputValidator && ach?.type === 'precision_series') {
       const res = InputValidator.validatePrecisionSeriesInput(ach)
       if (!res.isValid) {
         errors = res.errors || ['Invalid gold_series entry']
