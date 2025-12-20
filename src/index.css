@@ -66,3 +66,27 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+@import "tailwindcss";
+
+/* Optional: Override Tailwind defaults with design system tokens */
+:root {
+  --color-primary: #208491;
+  --color-primary-hover: #1d745f;
+  --color-accent: #32b8c6;
+  --color-medal-gold: #FFD700;
+  --color-medal-silver: #C0C0C0;
+  --color-medal-bronze: #CD7F32;
+}
+
+html {
+  @apply bg-bg-primary text-text-primary;
+}
+
+body {
+  @apply m-0 p-0;
+}
+
+/* Smooth transitions */
+* {
+  @apply transition-colors duration-200;
+}
