@@ -17,8 +17,7 @@ const formComponents = {
 }
 
 export default function UniversalAchievementLogger({ medal, onSuccess, unlockMode = false }) {
-  const history = useAchievementHistory()
-  const addFn = history?.addOne || history?.addAchievement
+  const { addAchievement } = useAchievementHistory()
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
 
@@ -46,10 +45,7 @@ export default function UniversalAchievementLogger({ medal, onSuccess, unlockMod
       }
 
       // Persist and recalc (context integrates with storage + calculator)
-      if (typeof addFn !== 'function') {
-        throw new Error('Add achievement function not available')
-      }
-      await addFn(achievement)
+      await addAchievement(achievement)
 
       onSuccess?.(achievement)
     } catch (err) {

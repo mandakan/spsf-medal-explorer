@@ -5,7 +5,7 @@ import UniversalAchievementLogger from './UniversalAchievementLogger'
 import { UndoRedoProvider } from '../contexts/UndoRedoContext'
 
 export default function AchievementCard({ achievement }) {
-  const { updateOne, removeOne } = useAchievementHistory()
+  const { updateAchievement, removeAchievement } = useAchievementHistory()
   const [isEditing, setIsEditing] = useState(false)
   const [editedData, setEditedData] = useState(achievement)
   const [showLogger, setShowLogger] = useState(false)
@@ -22,7 +22,7 @@ export default function AchievementCard({ achievement }) {
   const handleDelete = async () => {
     if (!confirm('Delete this achievement?')) return
     try {
-      await removeOne(achievement.id)
+      await removeAchievement(achievement.id)
     } catch (err) {
       console.error('Failed to delete:', err)
     }
@@ -30,7 +30,7 @@ export default function AchievementCard({ achievement }) {
 
   const handleSave = async () => {
     try {
-      const ok = await updateOne(editedData)
+      const ok = await updateAchievement(editedData)
       if (ok) setIsEditing(false)
     } catch (err) {
       console.error('Failed to save:', err)
