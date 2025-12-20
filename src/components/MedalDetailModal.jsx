@@ -3,6 +3,7 @@ import { useMedalDatabase } from '../hooks/useMedalDatabase'
 import { useAllMedalStatuses } from '../hooks/useMedalCalculator'
 import { useProfile } from '../hooks/useProfile'
 import UniversalAchievementLogger from './UniversalAchievementLogger'
+import { UndoRedoProvider } from '../contexts/UndoRedoContext'
 
 export default function MedalDetailModal({ medalId, onClose }) {
   const { medalDatabase } = useMedalDatabase()
@@ -238,10 +239,12 @@ export default function MedalDetailModal({ medalId, onClose }) {
                       Close
                     </button>
                   </div>
-                  <UniversalAchievementLogger
-                    medal={medal}
-                    onSuccess={() => setShowLogger(false)}
-                  />
+                  <UndoRedoProvider>
+                    <UniversalAchievementLogger
+                      medal={medal}
+                      onSuccess={() => setShowLogger(false)}
+                    />
+                  </UndoRedoProvider>
                 </div>
               </div>
             )}

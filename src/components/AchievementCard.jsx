@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react'
 import { useAchievementHistory } from '../hooks/useAchievementHistory'
 import { useMedalDatabase } from '../hooks/useMedalDatabase'
 import UniversalAchievementLogger from './UniversalAchievementLogger'
+import { UndoRedoProvider } from '../contexts/UndoRedoContext'
 
 export default function AchievementCard({ achievement }) {
   const { updateOne, removeOne } = useAchievementHistory()
@@ -149,10 +150,12 @@ export default function AchievementCard({ achievement }) {
                   Close
                 </button>
               </div>
-              <UniversalAchievementLogger
-                medal={medal}
-                onSuccess={() => setShowLogger(false)}
-              />
+              <UndoRedoProvider>
+                <UniversalAchievementLogger
+                  medal={medal}
+                  onSuccess={() => setShowLogger(false)}
+                />
+              </UndoRedoProvider>
             </div>
           </div>
         </div>
