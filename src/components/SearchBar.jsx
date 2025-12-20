@@ -33,7 +33,7 @@ export default function SearchBar({
           onFocus={handleFocus}
           onBlur={() => setTimeout(() => setShowSuggestions(false), 100)}
           placeholder={placeholder}
-          className="input pl-8"
+          className="input pl-8 min-h-[44px]"
           aria-label="Search medals"
           role="combobox"
           aria-autocomplete="list"
@@ -45,7 +45,7 @@ export default function SearchBar({
           <button
             type="button"
             onClick={() => onChange?.('')}
-            className="btn btn-muted"
+            className="btn btn-muted h-11 w-11 flex items-center justify-center ml-2"
             aria-label="Clear search"
           >
             ✕
@@ -61,7 +61,7 @@ export default function SearchBar({
               type="button"
               role="option"
               onClick={() => handleSuggestionClick(suggestion)}
-              className="w-full text-left px-4 py-2 hover:bg-background border-b border-border last:border-b-0 text-sm"
+              className="w-full text-left px-4 py-2 min-h-[44px] hover:bg-background border-b border-border last:border-b-0 text-sm"
             >
               {suggestion}
             </button>

@@ -9,12 +9,14 @@ import FilterPanel from '../components/FilterPanel'
 import FilterPresets from '../components/FilterPresets'
 import AdvancedFilterBuilder from '../components/AdvancedFilterBuilder'
 import MedalList from '../components/MedalList'
+import MobileBottomSheet from '../components/MobileBottomSheet'
 
 export default function MedalsList() {
   const { medalDatabase } = useMedalDatabase()
   const statuses = useAllMedalStatuses()
   const [sortBy, setSortBy] = useState('name')
   const [showAdvanced, setShowAdvanced] = useState(false)
+  const [showFilters, setShowFilters] = useState(false)
   const searchInputRef = useRef(null)
 
   // Responsive, mobile-first list height (~70vh with a sensible minimum)
@@ -108,6 +110,19 @@ export default function MedalsList() {
         placeholder="Search medals… (press / to focus)"
       />
 
+      <div className="sm:hidden flex justify-end">
+        <button
+          type="button"
+          onClick={() => setShowFilters(true)}
+          className="btn btn-muted mt-2 min-h-[44px]"
+          aria-label="Open filters"
+          aria-haspopup="dialog"
+          aria-controls="mobile-filters-sheet"
+        >
+          Filters
+        </button>
+      </div>
+
       {showAdvanced && (
         <AdvancedFilterBuilder
           currentFilters={filters}
@@ -116,7 +131,7 @@ export default function MedalsList() {
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <div className="lg:col-span-1 space-y-4">
+        <div className="hidden lg:block lg:col-span-1 space-y-4">
           <FilterPanel
             filters={filters}
             onFilterChange={setFilter}
@@ -131,6 +146,27 @@ export default function MedalsList() {
             onApplyPreset={(preset) => setFilters(preset)}
           />
         </div>
+
+        <MobileBottomSheet
+          id="mobile-filters-sheet"
+          title="Filters"
+          open={showFilters}
+          onClose={() => setShowFilters(false)}
+          swipeToDismiss
+        >
+          <FilterPanel
+            filters={filters}
+            onFilterChange={setFilter}
+            medalTypes={medalTypes}
+            tiers={tiers}
+            hasActiveFilters={hasActiveFilters}
+            resultCount={finalResults.length}
+            onClearAll={() => {
+              clearAllFilters()
+              setShowFilters(false)
+            }}
+          />
+        </MobileBottomSheet>
 
         <div className="lg:col-span-3">
           {finalResults.length === 0 ? (

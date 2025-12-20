@@ -1,0 +1,44 @@
+/* Mobile-first responsive polish */
+
+:root {
+  --touch-target-min: 44px;
+}
+
+/* Ensure minimum touch target size */
+button,
+input[type="button"],
+input[type="submit"],
+.input,
+.btn,
+select,
+.select {
+  min-height: var(--touch-target-min);
+}
+
+/* Prevent 100vh issues on mobile address bars */
+html, body, #root {
+  height: 100%;
+}
+
+/* Safe-area support */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Simple container spacing for small screens */
+.container {
+  padding-inline: 1rem;
+}
+
+/* Breakpoints */
+@media (min-width: 768px) {
+  .container {
+    padding-inline: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    padding-inline: 2rem;
+  }
+}

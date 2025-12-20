@@ -28,7 +28,7 @@ export default function Header() {
                   <li key={item.path}>
                     <Link
                       to={item.path}
-                      className={`px-4 py-2 rounded transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary ${
+                      className={`inline-flex items-center min-h-[44px] px-4 py-2 rounded transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary ${
                         isActive
                           ? 'bg-primary text-white'
                           : 'text-text-secondary hover:bg-gray-100 dark:hover:bg-white/10'
