@@ -12,6 +12,15 @@ export default function MedalCard({ medal }) {
     }
   }, [calculator, medal?.id])
 
+  const unlockedOn = useMemo(() => {
+    if (!calculator || status?.status !== 'unlocked') return null
+    try {
+      return calculator.getUnlockedDate(medal.id)
+    } catch {
+      return null
+    }
+  }, [calculator, status?.status, medal?.id])
+
   const statusDecor = {
     unlocked:
       'border-amber-300 ring-1 ring-amber-500/20 dark:border-amber-700 dark:ring-amber-400/30',
@@ -46,6 +55,12 @@ export default function MedalCard({ medal }) {
 
       {medal.description && (
         <p className="text-sm mb-3">{medal.description}</p>
+      )}
+
+      {unlockedOn && (
+        <p className="text-xs text-text-secondary mb-2" aria-live="polite">
+          Unlocked on {unlockedOn}
+        </p>
       )}
 
       {status && status.details && (

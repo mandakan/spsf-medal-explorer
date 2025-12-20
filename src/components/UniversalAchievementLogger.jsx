@@ -17,7 +17,7 @@ const formComponents = {
 }
 
 export default function UniversalAchievementLogger({ medal, onSuccess, unlockMode = false }) {
-  const { addAchievement } = useAchievementHistory()
+  const { addAchievement, unlockMedal } = useAchievementHistory()
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
 
@@ -46,6 +46,11 @@ export default function UniversalAchievementLogger({ medal, onSuccess, unlockMod
 
       // Persist and recalc (context integrates with storage + calculator)
       await addAchievement(achievement)
+
+      // If in unlock mode, also mark the medal as unlocked (prevents duplicate unlocks and updates UI)
+      if (unlockMode && medal?.id) {
+        await unlockMedal(medal.id, achievement.date)
+      }
 
       onSuccess?.(achievement)
     } catch (err) {
