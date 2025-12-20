@@ -2,13 +2,13 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useMedalDatabase } from '../hooks/useMedalDatabase'
 import { useAllMedalStatuses } from '../hooks/useMedalCalculator'
 import { useFilter } from '../hooks/useFilter'
-import { useSearch } from '../hooks/useSearch'
+import { useMedalSearch } from '../hooks/useMedalSearch'
 import { applyFilters, sortMedals } from '../logic/filterEngine'
 import SearchBar from '../components/SearchBar'
 import FilterPanel from '../components/FilterPanel'
 import FilterPresets from '../components/FilterPresets'
 import AdvancedFilterBuilder from '../components/AdvancedFilterBuilder'
-import MedalCard from '../components/MedalCard'
+import MedalList from '../components/MedalList'
 
 export default function MedalsList() {
   const { medalDatabase } = useMedalDatabase()
@@ -17,14 +17,20 @@ export default function MedalsList() {
   const [showAdvanced, setShowAdvanced] = useState(false)
   const searchInputRef = useRef(null)
 
+  // Responsive, mobile-first list height (~70vh with a sensible minimum)
+  const [listHeight, setListHeight] = useState(600)
+  useEffect(() => {
+    const update = () => setListHeight(Math.max(360, Math.round(window.innerHeight * 0.7)))
+    update()
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
+  }, [])
+
   const medals = useMemo(() => medalDatabase?.getAllMedals() || [], [medalDatabase])
 
   const { filters, setFilter, setFilters, clearAllFilters, hasActiveFilters } = useFilter(medals)
 
-  const { term, suggestions, handleSearchChange, handleSuggestionSelect } = useSearch(
-    medals,
-    filters.search
-  )
+  const { query, setQuery, suggestions } = useMedalSearch(medals)
 
   // Keyboard shortcut: '/' focuses the search bar
   useEffect(() => {
@@ -50,10 +56,10 @@ export default function MedalsList() {
   }, [medals])
 
   const finalResults = useMemo(() => {
-    const withSearch = { ...filters, search: term }
+    const withSearch = { ...filters, search: query }
     const filtered = applyFilters(medals, statuses, withSearch)
     return sortMedals(filtered, sortBy, statuses)
-  }, [medals, statuses, filters, term, sortBy])
+  }, [medals, statuses, filters, query, sortBy])
 
   if (!medalDatabase) {
     return <div className="text-muted-foreground">Loading medals…</div>
@@ -88,14 +94,14 @@ export default function MedalsList() {
       </div>
 
       <SearchBar
-        value={term}
+        value={query}
         onChange={(val) => {
-          handleSearchChange(val)
+          setQuery(val)
           setFilter('search', val)
         }}
         suggestions={suggestions}
         onSuggestionSelect={(suggestion) => {
-          handleSuggestionSelect(suggestion)
+          setQuery(suggestion)
           setFilter('search', suggestion)
         }}
         inputRef={searchInputRef}
@@ -127,17 +133,15 @@ export default function MedalsList() {
         </div>
 
         <div className="lg:col-span-3">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {finalResults.length === 0 ? (
-              <div className="col-span-full card p-6 text-center">
-                <p className="text-muted-foreground">No medals match your filters</p>
-              </div>
-            ) : (
-              finalResults.map(medal => (
-                <MedalCard key={medal.id} medal={medal} />
-              ))
-            )}
-          </div>
+          {finalResults.length === 0 ? (
+            <div className="card p-6 text-center">
+              <p className="text-muted-foreground">No medals match your filters</p>
+            </div>
+          ) : (
+            <div className="border border-gray-200 dark:border-slate-700 rounded-md overflow-hidden" role="region" aria-label="Medal results">
+              <MedalList medals={finalResults} height={listHeight} itemSize={60} />
+            </div>
+          )}
         </div>
       </div>
     </div>
