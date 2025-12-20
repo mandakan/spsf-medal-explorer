@@ -198,7 +198,16 @@ export default function BatchAchievementForm() {
               </tr>
             </thead>
             <tbody>
-              {rows.map((row, index) => (
+              {rows.map((row, index) => {
+                const rowErrs = Array.isArray(errors[index]) ? errors[index] : []
+                const errorId = `row-${index}-errors`
+                const hasYearErr = rowErrs.some(e => /year/i.test(e))
+                const hasGroupErr = rowErrs.some(e => /group/i.test(e))
+                const hasPointsErr = rowErrs.some(e => /points?/i.test(e))
+                const hasDateErr = rowErrs.some(e => /date/i.test(e))
+                const hasTimeErr = rowErrs.some(e => /time/i.test(e))
+                const hasHitsErr = rowErrs.some(e => /hits?/i.test(e))
+                return (
                 <tr key={index} className="border-b border-border hover:bg-bg-secondary/60">
                   <td className="px-3 py-2">
                     <input
@@ -210,6 +219,8 @@ export default function BatchAchievementForm() {
                       className="input w-24"
                       disabled={submitting}
                       aria-label={`Year for row ${index + 1}`}
+                      aria-invalid={hasYearErr || undefined}
+                      aria-describedby={rowErrs.length ? errorId : undefined}
                     />
                   </td>
                   <td className="px-3 py-2">
@@ -237,6 +248,8 @@ export default function BatchAchievementForm() {
                       className="select w-20"
                       disabled={submitting}
                       aria-label={`Weapon group for row ${index + 1}`}
+                      aria-invalid={hasGroupErr || undefined}
+                      aria-describedby={rowErrs.length ? errorId : undefined}
                     >
                       <option value="A">A</option>
                       <option value="B">B</option>
@@ -256,6 +269,8 @@ export default function BatchAchievementForm() {
                         placeholder="0-50"
                         disabled={submitting}
                         aria-label={`Points for row ${index + 1}`}
+                        aria-invalid={hasPointsErr || undefined}
+                        aria-describedby={rowErrs.length ? errorId : undefined}
                       />
                     ) : row.type === 'application_series' ? (
                       <div className="flex flex-wrap gap-2">
@@ -266,6 +281,8 @@ export default function BatchAchievementForm() {
                           className="input w-44"
                           disabled={submitting}
                           aria-label={`Date for row ${index + 1}`}
+                          aria-invalid={hasDateErr || undefined}
+                          aria-describedby={rowErrs.length ? errorId : undefined}
                         />
                         <select
                           value={row.timeSeconds === '' ? '' : Number(row.timeSeconds)}
@@ -279,6 +296,8 @@ export default function BatchAchievementForm() {
                           className="select w-40"
                           disabled={submitting}
                           aria-label={`Time for row ${index + 1}`}
+                          aria-invalid={hasTimeErr || undefined}
+                          aria-describedby={rowErrs.length ? errorId : undefined}
                         >
                           <option value="">Select time…</option>
                           {APP_TIME_OPTIONS.map(opt => (
@@ -295,6 +314,8 @@ export default function BatchAchievementForm() {
                           placeholder="Hits"
                           disabled={submitting}
                           aria-label={`Hits for row ${index + 1}`}
+                          aria-invalid={hasHitsErr || undefined}
+                          aria-describedby={rowErrs.length ? errorId : undefined}
                         />
                       </div>
                     ) : row.type === 'competition_result' ? (
@@ -396,9 +417,13 @@ export default function BatchAchievementForm() {
                         aria-label={`Event name for row ${index + 1}`}
                       />
                     )}
-                    {errors[index]?.length > 0 && (
-                      <div className="text-red-600 text-xs mt-1">
-                        {Array.isArray(errors[index]) ? errors[index].join(', ') : String(errors[index])}
+                    {rowErrs.length > 0 && (
+                      <div
+                        id={errorId}
+                        role="alert"
+                        className="text-red-600 text-xs mt-1"
+                      >
+                        {rowErrs.join(', ')}
                       </div>
                     )}
                   </td>
@@ -416,7 +441,7 @@ export default function BatchAchievementForm() {
                     )}
                   </td>
                 </tr>
-              ))}
+              })}
             </tbody>
           </table>
         </div>

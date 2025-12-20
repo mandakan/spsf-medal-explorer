@@ -88,8 +88,11 @@ export function useAchievementHistory() {
   const addMany = useCallback(async (rows = []) => {
     if (!rows.length || !currentProfile) return 0
     let added = 0
+    const failures = []
     const toNum = (v) => (v === '' || v == null ? undefined : Number(v))
-    for (const row of rows) {
+
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i]
       const achievement = new Achievement({
         id: row.id, // allow pre-specified id
         type: row.type,
@@ -128,19 +131,28 @@ export function useAchievementHistory() {
         try {
           await profileAddAchievement(achievement)
           added++
-        } catch (e) {
-          // try alt signature
+        } catch (e1) {
           try {
             await profileAddAchievement(currentProfile.userId, achievement)
             added++
-          } catch (_) {}
+          } catch (e2) {
+            failures.push({ index: i, message: e2?.message || e1?.message || 'Failed to add achievement' })
+          }
         }
       }
     }
+
     if (added > 0) {
       pushCurrent()
+      return added
     }
-    return added
+
+    if (failures.length > 0) {
+      const msg = failures.map(f => `Row ${f.index + 1}: ${f.message}`).join(' | ')
+      throw new Error(msg)
+    }
+
+    return 0
   }, [profileAddAchievement, currentProfile, pushCurrent])
 
   const updateOne = useCallback(async (updated) => {
