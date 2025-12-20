@@ -114,19 +114,13 @@ export default function MedalDetailModal({ medalId, onClose }) {
     onClose?.()
   }
 
-  const statusClass =
-    status?.status === 'unlocked'
-      ? 'bg-yellow-200 text-yellow-900 dark:bg-yellow-300/20 dark:text-yellow-200'
-      : status?.status === 'achievable'
-      ? 'bg-green-200 text-green-900 dark:bg-green-300/20 dark:text-green-200'
-      : 'bg-slate-200 text-slate-900 dark:bg-slate-700 dark:text-slate-50'
+  const statusClass = 'bg-bg-secondary text-foreground ring-1 ring-border'
 
   return (
     <div
       ref={overlayRef}
       onClick={handleOverlayClick}
       className="fixed inset-0 z-50 bg-black/50"
-      aria-hidden="true"
     >
       <div
         ref={panelRef}
@@ -143,7 +137,7 @@ export default function MedalDetailModal({ medalId, onClose }) {
           // Desktop right drawer
           'sm:inset-y-0 sm:right-0 sm:left-auto sm:w-[32rem] sm:h-full',
           // Surface
-          'bg-white dark:bg-slate-900 shadow-2xl',
+          'bg-bg-secondary shadow-2xl',
           // Shape
           'rounded-t-2xl sm:rounded-none sm:rounded-l-2xl',
           // Animation
@@ -155,22 +149,22 @@ export default function MedalDetailModal({ medalId, onClose }) {
       >
         <div className="flex h-full flex-col">
           {/* Header */}
-          <div className="sticky top-0 z-10 flex items-start justify-between gap-4 p-4 sm:p-6 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700">
+          <div className="sticky top-0 z-10 flex items-start justify-between gap-4 p-4 sm:p-6 bg-bg-secondary border-b border-border">
             <div className="min-w-0">
               <h2
                 id={titleId}
-                className="text-xl sm:text-2xl font-bold text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900 break-words"
+                className="text-xl sm:text-2xl font-bold text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary break-words"
                 tabIndex={-1}
               >
                 {medal.displayName}
               </h2>
-              <p className="mt-1 text-sm text-text-secondary break-words">
+              <p className="mt-1 text-sm text-muted-foreground break-words">
                 {medal.type} • {medal.tier}
               </p>
             </div>
             <button
               onClick={onClose}
-              className="shrink-0 inline-flex h-10 w-10 items-center justify-center rounded-md text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
+              className="shrink-0 inline-flex h-10 w-10 items-center justify-center rounded-md text-foreground hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
               aria-label="Close medal details"
               title="Close"
             >
@@ -194,18 +188,18 @@ export default function MedalDetailModal({ medalId, onClose }) {
 
             {medal.description && (
               <div className="mb-4">
-                <p id={descId} className="text-text-secondary break-words">
+                <p id={descId} className="text-muted-foreground break-words">
                   {medal.description}
                 </p>
               </div>
             )}
 
             {status?.details?.missingItems?.length > 0 && (
-              <div className="mb-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded p-3">
-                <p className="text-sm font-semibold text-blue-900 dark:text-blue-200 mb-2">
+              <div className="mb-4 bg-background border border-border rounded p-3">
+                <p className="text-sm font-semibold text-foreground mb-2">
                   Missing Prerequisites:
                 </p>
-                <ul className="text-sm text-blue-900 dark:text-blue-200 space-y-1">
+                <ul className="text-sm text-muted-foreground space-y-1">
                   {status.details.missingItems.map((item, i) => (
                     <li key={i} className="break-words">• {item.description}</li>
                   ))}
@@ -214,14 +208,14 @@ export default function MedalDetailModal({ medalId, onClose }) {
             )}
 
             {status?.details?.items?.length > 0 && (
-              <div className="mb-4 bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 rounded p-3">
-                <p className="text-sm font-semibold text-text-primary mb-2">
+              <div className="mb-4 bg-background border border-border rounded p-3">
+                <p className="text-sm font-semibold text-foreground mb-2">
                   Requirements:
                 </p>
-                <ul className="text-sm text-text-secondary space-y-1">
+                <ul className="text-sm text-muted-foreground space-y-1">
                   {status.details.items.map((item, i) => (
                     <li key={i} className="break-words">
-                      <span className={item.isMet ? 'text-green-700 dark:text-green-300' : 'text-slate-600 dark:text-slate-300'}>
+                      <span className={item.isMet ? 'text-foreground' : 'text-muted-foreground'}>
                         {item.isMet ? '✓' : '○'}
                       </span>{' '}
                       {item.description}
@@ -233,17 +227,17 @@ export default function MedalDetailModal({ medalId, onClose }) {
           </div>
 
           {/* Footer */}
-          <div className="flex gap-3 p-4 sm:p-6 border-t border-slate-200 dark:border-slate-700">
+          <div className="flex gap-3 p-4 sm:p-6 border-t border-border">
             <button
               onClick={onClose}
-              className="flex-1 px-4 py-2 rounded-md bg-gray-200 text-slate-900 hover:bg-gray-300 dark:bg-slate-700 dark:text-slate-50 dark:hover:bg-slate-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
+              className="flex-1 px-4 py-2 rounded-md bg-background text-foreground hover:bg-bg-secondary ring-1 ring-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
             >
               Close
             </button>
             {status?.status === 'achievable' && currentProfile && (
               <button
                 onClick={handleAddAchievement}
-                className="flex-1 px-4 py-2 rounded-md bg-primary text-white hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
+                className="flex-1 px-4 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
               >
                 Add Achievement
               </button>
