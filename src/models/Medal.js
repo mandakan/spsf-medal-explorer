@@ -40,6 +40,9 @@ export class Medal {
     }
     return map[this.color] || 'text-foreground'
   }
+  isUnderReview() {
+    return this.reviewed !== true
+  }
 }
 
 /**
