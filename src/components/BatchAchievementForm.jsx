@@ -68,7 +68,11 @@ export default function BatchAchievementForm() {
 
   return (
     <div className="card p-6">
-      <h2 className="text-xl font-bold mb-4 text-text-primary">Batch Add Achievements</h2>
+      <h2 className="text-xl font-bold mb-2 text-text-primary">Batch Add Achievements</h2>
+      <p id="batch-type-help" className="text-sm text-text-secondary mb-4">
+        Batch add currently supports Gold Series achievements only. To add competition, qualification,
+        team event, or event entries, use the single-entry logger on a medal card.
+      </p>
 
       {successCount > 0 && (
         <div role="status" aria-live="polite" className="card p-4 mb-4">
@@ -126,6 +130,7 @@ export default function BatchAchievementForm() {
                       className="select w-32"
                       disabled={submitting}
                       aria-label={`Type for row ${index + 1}`}
+                      aria-describedby="batch-type-help"
                     >
                       <option value="gold_series">Gold Series</option>
                     </select>
