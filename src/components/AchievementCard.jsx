@@ -3,6 +3,7 @@ import { useAchievementHistory } from '../hooks/useAchievementHistory'
 import { useMedalDatabase } from '../hooks/useMedalDatabase'
 import UniversalAchievementLogger from './UniversalAchievementLogger'
 import { UndoRedoProvider } from '../contexts/UndoRedoContext'
+import { getAchievementTypeLabel } from '../utils/labels'
 
 export default function AchievementCard({ achievement }) {
   const { updateAchievement, removeAchievement } = useAchievementHistory()
@@ -48,12 +49,7 @@ export default function AchievementCard({ achievement }) {
     }
   }
 
-  const typeLabel = {
-    'precision_series': 'Precision Series',
-    'competition_result': 'Competition Result',
-    'special_achievement': 'Special Achievement',
-    'standard_medal': 'Standard Medal'
-  }[achievement.type] || achievement.type
+  const typeLabel = getAchievementTypeLabel(achievement.type)
 
   if (isEditing) {
     return (
