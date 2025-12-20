@@ -4,16 +4,57 @@
  */
 export function detectMedalFormType(medal) {
   if (!medal || typeof medal !== 'object') return 'custom'
-  const reqs = Array.isArray(medal.requirements) ? medal.requirements : []
-  const hasGoldSeries = reqs.some(r => (r?.type || '').toLowerCase() === 'gold_series')
-  const hasQualification = reqs.some(r => String(r?.type || '').toLowerCase().includes('qualification'))
-  const teamFlag = Boolean(medal.team_medal) || /team/i.test(medal.type || '')
-  const eventFlag = Boolean(medal.event_only) || /event/i.test(medal.type || '')
 
-  if (hasGoldSeries) return 'competition'
-  if (hasQualification) return 'qualification'
-  if (teamFlag) return 'team_event'
-  if (eventFlag) return 'event'
+  // Normalize commonly available fields to make detection robust across datasets
+  const medalsType = String(medal.medals_type || medal.category || '').toLowerCase()
+  const typeStr = String(medal.type || '').toLowerCase()
+  const nameStr = String(medal.displayName || medal.name || '').toLowerCase()
+  const tierStr = String(medal.tier || '').toLowerCase()
+
+  // Competition heuristics (series/tiers gold/silver/bronze)
+  if (
+    medalsType === 'serie' ||
+    /series|serie/.test(typeStr) ||
+    ['gold', 'silver', 'bronze'].includes(tierStr)
+  ) {
+    return 'competition'
+  }
+
+  // Qualification heuristics
+  if (
+    medalsType === 'kvalificering' ||
+    /qual|kval/.test(typeStr) ||
+    /qual|kval/.test(nameStr)
+  ) {
+    return 'qualification'
+  }
+
+  // Team event heuristics
+  if (
+    Boolean(medal.team_medal) ||
+    /team|lag/.test(typeStr) ||
+    /team|lag/.test(nameStr)
+  ) {
+    return 'team_event'
+  }
+
+  // Event heuristics
+  if (
+    Boolean(medal.event_only) ||
+    /event|cup|championship|mästerskap/.test(typeStr) ||
+    /event|cup|championship|mästerskap/.test(nameStr)
+  ) {
+    return 'event'
+  }
+
+  // Fallback to requirements if present (compatible with earlier data)
+  const reqs = Array.isArray(medal.requirements) ? medal.requirements : []
+  if (reqs.length) {
+    const types = reqs.map(r => String(r?.type || '').toLowerCase())
+    if (types.includes('gold_series')) return 'competition'
+    if (types.some(t => t.includes('qualification'))) return 'qualification'
+  }
+
   return 'custom'
 }
 
