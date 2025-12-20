@@ -98,8 +98,8 @@ export function useAchievementHistory() {
         date: row.date || new Date().toISOString().slice(0, 10),
         competitionName: row.competitionName || '',
         notes: row.notes || '',
-        // gold_series
-        points: row.type === 'gold_series' ? toNum(row.points) : undefined,
+        // precision_series
+        points: row.type === 'precision_series' ? toNum(row.points) : undefined,
         // competition_result
         competitionType: row.type === 'competition_result' ? (row.competitionType || '') : undefined,
         medalType: row.type === 'competition_result' ? (row.medalType || '') : undefined,

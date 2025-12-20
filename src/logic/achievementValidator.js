@@ -8,7 +8,7 @@ export function validateAchievements(achievements) {
     if (ach == null) return
     if (ach.points === '' || ach.points == null) return // Skip empty rows
 
-    const validation = InputValidator.validateGoldSeriesInput(ach)
+    const validation = InputValidator.validatePrecisionSeriesInput(ach)
     if (!validation.isValid) {
       errors[index] = validation.errors
     } else {

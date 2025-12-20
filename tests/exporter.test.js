@@ -28,7 +28,7 @@ describe('Exporter import/export', () => {
     await storage.saveUserProfile(profile)
 
     const a1 = new Achievement({
-      type: 'gold_series',
+      type: 'precision_series',
       year: 2025,
       weaponGroup: 'A',
       points: 40,

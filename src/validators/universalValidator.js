@@ -4,7 +4,7 @@
  * - type: string
  * - year: number
  * - weaponGroup: one of A/B/C/R (defaults to 'A' upstream)
- * - For type 'gold_series': points: number between 0..50
+ * - For type 'precision_series': points: number between 0..50
  */
 
 const WG = ['A', 'B', 'C', 'R']
@@ -124,10 +124,10 @@ export function validateAchievement(achievement) {
   if (!weaponGroup || !WG.includes(weaponGroup)) {
     errors.push('Invalid weapon group')
   }
-  if (type === 'gold_series') {
+  if (type === 'precision_series') {
     const pts = achievement.points
     if (typeof pts !== 'number' || Number.isNaN(pts)) {
-      errors.push('Points required for gold series')
+      errors.push('Points required for precision series')
     } else {
       if (pts < 0 || pts > 50) errors.push('Points must be between 0 and 50')
     }

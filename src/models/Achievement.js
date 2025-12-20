@@ -16,7 +16,7 @@ export class Achievement {
     // Required in storage validator; default to 'A' if missing
     this.weaponGroup = data.weaponGroup || 'A'
 
-    // Numeric normalization for points (used for gold_series)
+    // Numeric normalization for points (used for precision_series)
     this.points = typeof data.points === 'number'
       ? data.points
       : (data.points != null && data.points !== '' ? Number(data.points) : undefined)

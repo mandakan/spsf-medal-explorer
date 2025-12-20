@@ -2,7 +2,7 @@
  * Validates user inputs against SHB rules
  */
 export class InputValidator {
-  static validateGoldSeriesInput(input) {
+  static validatePrecisionSeriesInput(input) {
     const errors = []
     const currentYear = new Date().getFullYear()
 

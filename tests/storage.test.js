@@ -44,7 +44,7 @@ describe('LocalStorageDataManager', () => {
     await storage.saveUserProfile(profile)
 
     const achievement = new Achievement({
-      type: 'gold_series',
+      type: 'precision_series',
       year: 2025,
       weaponGroup: 'A',
       points: 42,

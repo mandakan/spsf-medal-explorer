@@ -18,7 +18,7 @@ export interface BaseAchievement {
 }
 
 export interface CompetitionAchievement extends BaseAchievement {
-  type: 'competition' | 'gold_series' | 'competition_result'
+  type: 'competition' | 'precision_series' | 'competition_result'
   score?: number
   points?: number
   competitionName?: string

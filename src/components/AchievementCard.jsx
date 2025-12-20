@@ -49,7 +49,7 @@ export default function AchievementCard({ achievement }) {
   }
 
   const typeLabel = {
-    'gold_series': 'Gold Series',
+    'precision_series': 'Precision Series',
     'competition_result': 'Competition Result',
     'special_achievement': 'Special Achievement',
     'standard_medal': 'Standard Medal'

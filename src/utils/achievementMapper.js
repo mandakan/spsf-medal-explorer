@@ -51,7 +51,7 @@ export function detectMedalFormType(medal) {
   const reqs = Array.isArray(medal.requirements) ? medal.requirements : []
   if (reqs.length) {
     const types = reqs.map(r => String(r?.type || '').toLowerCase())
-    if (types.includes('gold_series')) return 'competition'
+    if (types.includes('precision_series')) return 'competition'
     if (types.some(t => t.includes('qualification'))) return 'qualification'
   }
 
@@ -68,7 +68,7 @@ function ensureISODate(dateStr) {
  * Map UI form data into the app's persisted achievement shape.
  * Ensures fields required by LocalStorageDataManager.validateAchievement are present:
  * - type, year (number), weaponGroup in A/B/C/R
- * Adds points for gold_series.
+ * Adds points for precision_series.
  */
 export function mapFormToAchievement({ medal, medalType, formData }) {
   const date = ensureISODate(formData?.date)
@@ -78,8 +78,8 @@ export function mapFormToAchievement({ medal, medalType, formData }) {
   // Decide internal storage type
   let storageType = 'custom'
   if (medalType === 'competition') {
-    const hasGoldSeries = Array.isArray(medal?.requirements) && medal.requirements.some(r => (r?.type || '').toLowerCase() === 'gold_series')
-    storageType = hasGoldSeries ? 'gold_series' : 'competition_result'
+    const hasPrecisionSeries = Array.isArray(medal?.requirements) && medal.requirements.some(r => (r?.type || '').toLowerCase() === 'precision_series')
+    storageType = hasPrecisionSeries ? 'precision_series' : 'competition_result'
   } else if (medalType === 'qualification') {
     storageType = 'qualification_result'
   } else if (medalType === 'team_event') {
@@ -103,7 +103,7 @@ export function mapFormToAchievement({ medal, medalType, formData }) {
   }
 
   switch (storageType) {
-    case 'gold_series':
+    case 'precision_series':
       return {
         ...base,
         points: Number(formData?.score ?? 0),

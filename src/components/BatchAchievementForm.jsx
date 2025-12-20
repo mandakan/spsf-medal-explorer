@@ -9,7 +9,7 @@ const currentYear = new Date().getFullYear()
 const newRow = () => ({
   year: currentYear,
   weaponGroup: 'A',
-  type: 'gold_series',
+  type: 'precision_series',
   points: '',
   competitionType: '',
   medalType: '',
@@ -66,7 +66,7 @@ export default function BatchAchievementForm() {
       }
 
       switch (row.type) {
-        case 'gold_series': {
+        case 'precision_series': {
           const p = Number(row.points)
           if (!Number.isFinite(p) || p < 0 || p > 50) {
             errs.push('Points must be 0–50')
@@ -100,9 +100,9 @@ export default function BatchAchievementForm() {
       return
     }
 
-    // Duplicate detection only for gold series
-    const goldRows = validRows.filter(r => r.type === 'gold_series')
-    const duplicates = detectDuplicateAchievements(goldRows)
+    // Duplicate detection only for precision series
+    const precisionRows = validRows.filter(r => r.type === 'precision_series')
+    const duplicates = detectDuplicateAchievements(precisionRows)
     setDupWarnings(duplicates)
 
     try {
@@ -126,7 +126,7 @@ export default function BatchAchievementForm() {
     <div className="card p-6">
       <h2 className="text-xl font-bold mb-2 text-text-primary">Batch Add Achievements</h2>
       <p id="batch-type-help" className="text-sm text-text-secondary mb-4">
-        Batch add currently supports Gold Series achievements only. To add competition, qualification,
+        Batch add currently supports Precision Series achievements only. To add competition, qualification,
         team event, or event entries, use the single-entry logger on a medal card.
       </p>
 
@@ -188,7 +188,7 @@ export default function BatchAchievementForm() {
                       aria-label={`Type for row ${index + 1}`}
                       aria-describedby="batch-type-help"
                     >
-                      <option value="gold_series">Gold Series</option>
+                      <option value="precision_series">Precision Series</option>
                       <option value="competition_result">Competition Result</option>
                       <option value="qualification_result">Qualification</option>
                       <option value="team_event">Team Event</option>
@@ -211,7 +211,7 @@ export default function BatchAchievementForm() {
                     </select>
                   </td>
                   <td className="px-3 py-2">
-                    {row.type === 'gold_series' ? (
+                    {row.type === 'precision_series' ? (
                       <input
                         type="number"
                         min="0"

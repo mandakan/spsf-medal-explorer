@@ -5,7 +5,7 @@ describe('achievementMapper', () => {
     id: 'pistol-mark-silver',
     type: 'pistol_mark',
     tier: 'silver',
-    requirements: [{ type: 'gold_series' }]
+    requirements: [{ type: 'precision_series' }]
   }
 
   const medalTeam = {
@@ -14,7 +14,7 @@ describe('achievementMapper', () => {
     requirements: []
   }
 
-  test('detectMedalFormType detects competition for gold_series', () => {
+  test('detectMedalFormType detects competition for precision_series', () => {
     expect(detectMedalFormType(medalGoldSeries)).toBe('competition')
   })
 
@@ -22,10 +22,10 @@ describe('achievementMapper', () => {
     expect(detectMedalFormType(medalTeam)).toBe('team_event')
   })
 
-  test('mapFormToAchievement maps competition to gold_series with points', () => {
+  test('mapFormToAchievement maps competition to precision_series with points', () => {
     const form = { date: '2025-06-15', weaponGroup: 'A', score: 42, competitionName: 'Club' }
     const mapped = mapFormToAchievement({ medal: medalGoldSeries, medalType: 'competition', formData: form })
-    expect(mapped.type).toBe('gold_series')
+    expect(mapped.type).toBe('precision_series')
     expect(mapped.points).toBe(42)
     expect(mapped.year).toBe(2025)
     expect(mapped.weaponGroup).toBe('A')

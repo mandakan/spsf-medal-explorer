@@ -80,7 +80,7 @@ export default function AchievementTimeline() {
               className="select"
             >
               <option value="">All Types</option>
-              <option value="gold_series">Gold Series</option>
+              <option value="precision_series">Precision Series</option>
               <option value="competition_result">Competition Result</option>
               <option value="standard_medal">Standard Medal</option>
             </select>

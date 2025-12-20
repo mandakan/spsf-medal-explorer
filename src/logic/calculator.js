@@ -139,8 +139,8 @@ export class MedalCalculator {
     const items = []
 
     medal.requirements.forEach((req, idx) => {
-      if (req.type === 'gold_series') {
-        items.push(this.checkGoldSeriesRequirement(req, idx))
+      if (req.type === 'precision_series') {
+        items.push(this.checkPrecisionSeriesRequirement(req, idx))
       } else if (req.type === 'sustained_achievement') {
         items.push(this.checkSustainedAchievementRequirement(req, idx))
       } else if (req.type === 'championship_competition') {
@@ -161,8 +161,8 @@ export class MedalCalculator {
     }
   }
 
-  checkGoldSeriesRequirement(req, index) {
-    const achievements = (this.profile.prerequisites || []).filter(a => a.type === 'gold_series')
+  checkPrecisionSeriesRequirement(req, index) {
+    const achievements = (this.profile.prerequisites || []).filter(a => a.type === 'precision_series')
 
     // Optionally filter to a specific year if timeWindowYears === 1 by grouping by year
     let candidates = achievements
@@ -172,7 +172,7 @@ export class MedalCalculator {
       let bestYear = null
       let bestMatches = []
       Object.entries(byYear).forEach(([year, list]) => {
-        const matches = this.filterByGoldSeriesThreshold(list, req)
+        const matches = this.filterByPrecisionSeriesThreshold(list, req)
         if (matches.length > bestMatches.length) {
           bestMatches = matches
           bestYear = Number(year)
@@ -183,9 +183,9 @@ export class MedalCalculator {
       const currentYear = new Date().getFullYear()
       const windowStart = currentYear - req.timeWindowYears + 1
       const withinWindow = achievements.filter(a => (a.year ?? 0) >= windowStart && (a.year ?? 0) <= currentYear)
-      candidates = this.filterByGoldSeriesThreshold(withinWindow, req)
+      candidates = this.filterByPrecisionSeriesThreshold(withinWindow, req)
     } else {
-      candidates = this.filterByGoldSeriesThreshold(achievements, req)
+      candidates = this.filterByPrecisionSeriesThreshold(achievements, req)
     }
 
     const required = req.minAchievements ?? 1
@@ -193,7 +193,7 @@ export class MedalCalculator {
     const met = progress.current >= required
 
     return {
-      type: 'gold_series',
+      type: 'precision_series',
       index,
       isMet: met,
       progress,
@@ -207,7 +207,7 @@ export class MedalCalculator {
     }
   }
 
-  filterByGoldSeriesThreshold(list, req) {
+  filterByPrecisionSeriesThreshold(list, req) {
     const thresholds = {
       A: req.pointThresholds?.A?.min ?? 0,
       B: req.pointThresholds?.B?.min ?? 0,
@@ -232,7 +232,7 @@ export class MedalCalculator {
 
   checkSustainedAchievementRequirement(req, index) {
     // Star progression: require N years of achievement at/above minPointsPerYear over timeWindowYears
-    const achievements = (this.profile.prerequisites || []).filter(a => a.type === 'gold_series')
+    const achievements = (this.profile.prerequisites || []).filter(a => a.type === 'precision_series')
     const byYear = this.groupBy(achievements, a => a.year)
     const minYears = req.yearsOfAchievement ?? 3
     const minPoints = req.minPointsPerYear ?? 0

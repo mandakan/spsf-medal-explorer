@@ -6,7 +6,7 @@ import { InputValidator } from '../logic/validator'
 export default function AchievementForm() {
   const { addAchievement, loading } = useProfile()
   const [formData, setFormData] = useState({
-    type: 'gold_series',
+    type: 'precision_series',
     year: new Date().getFullYear(),
     weaponGroup: 'A',
     points: '',
@@ -19,7 +19,7 @@ export default function AchievementForm() {
 
     // Validate (support validators returning array or { errors, isValid })
     const normalized = { ...formData, points: formData.points === '' ? NaN : Number(formData.points) }
-    const validation = InputValidator.validateGoldSeriesInput(normalized)
+    const validation = InputValidator.validatePrecisionSeriesInput(normalized)
     const errs = Array.isArray(validation) ? validation : (validation?.errors ?? [])
     const isValid = Array.isArray(validation) ? errs.length === 0 : (validation?.isValid ?? errs.length === 0)
 
@@ -67,7 +67,7 @@ export default function AchievementForm() {
             className="select"
             disabled={loading}
           >
-            <option value="gold_series">Gold Series</option>
+            <option value="precision_series">Precision Series</option>
           </select>
         </div>
 

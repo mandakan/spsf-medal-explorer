@@ -2,7 +2,7 @@ import { validateAchievements, detectDuplicateAchievements } from '../src/logic/
 
 jest.mock('../src/logic/validator', () => ({
   InputValidator: {
-    validateGoldSeriesInput: (input) => {
+    validatePrecisionSeriesInput: (input) => {
       const errors = []
       const currentYear = new Date().getFullYear()
       if (typeof input.year !== 'number' || input.year < 2000 || input.year > currentYear) {
@@ -22,10 +22,10 @@ jest.mock('../src/logic/validator', () => ({
 describe('achievementValidator', () => {
   test('validateAchievements filters invalid and reports errors', () => {
     const rows = [
-      { year: 2025, weaponGroup: 'A', points: 42, type: 'gold_series' },
-      { year: 1999, weaponGroup: 'A', points: 42, type: 'gold_series' }, // invalid year
-      { year: 2025, weaponGroup: 'Z', points: 42, type: 'gold_series' }, // invalid group
-      { year: 2025, weaponGroup: 'A', points: 99, type: 'gold_series' }  // invalid points
+      { year: 2025, weaponGroup: 'A', points: 42, type: 'precision_series' },
+      { year: 1999, weaponGroup: 'A', points: 42, type: 'precision_series' }, // invalid year
+      { year: 2025, weaponGroup: 'Z', points: 42, type: 'precision_series' }, // invalid group
+      { year: 2025, weaponGroup: 'A', points: 99, type: 'precision_series' }  // invalid points
     ]
     const res = validateAchievements(rows)
     expect(res.isValid).toBe(true) // at least one valid
@@ -35,12 +35,12 @@ describe('achievementValidator', () => {
 
   test('detectDuplicateAchievements identifies duplicates', () => {
     const rows = [
-      { year: 2025, type: 'gold_series', weaponGroup: 'A', points: 40 },
-      { year: 2025, type: 'gold_series', weaponGroup: 'A', points: 40 }, // dup
-      { year: 2025, type: 'gold_series', weaponGroup: 'B', points: 40 }
+      { year: 2025, type: 'precision_series', weaponGroup: 'A', points: 40 },
+      { year: 2025, type: 'precision_series', weaponGroup: 'A', points: 40 }, // dup
+      { year: 2025, type: 'precision_series', weaponGroup: 'B', points: 40 }
     ]
     const dups = detectDuplicateAchievements(rows)
     expect(dups.length).toBe(1)
-    expect(dups[0]).toBe('2025-gold_series-A-40')
+    expect(dups[0]).toBe('2025-precision_series-A-40')
   })
 })

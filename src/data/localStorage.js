@@ -252,7 +252,7 @@ export class LocalStorageDataManager extends DataManager {
     if (typeof achievement.year !== 'number') return false
     if (!['A', 'B', 'C', 'R'].includes(achievement.weaponGroup || 'A')) return false
 
-    if (achievement.type === 'gold_series') {
+    if (achievement.type === 'precision_series') {
       if (typeof achievement.points !== 'number') return false
       if (achievement.points < 0 || achievement.points > 50) return false
     }
