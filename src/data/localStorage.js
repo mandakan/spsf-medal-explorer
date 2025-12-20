@@ -183,6 +183,8 @@ export class LocalStorageDataManager extends DataManager {
   /**
    * Import profile data from JSON string
    * Returns the saved profile
+   * - Always creates a brand-new unique userId
+   * - Normalizes achievements with ids if missing
    */
   async importData(jsonData) {
     const parsed = this.parseImportedJson(jsonData)
@@ -190,11 +192,35 @@ export class LocalStorageDataManager extends DataManager {
     // Basic validation of export payload
     this.validateExportPayload(parsed)
 
-    // Construct a new profile (new userId)
+    // Generate a brand-new unique userId
+    const existing = await this.getAllProfiles()
+    const makeId = () => {
+      try {
+        // Prefer crypto.randomUUID when available (browser/jsdom)
+        if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+          return `user-${crypto.randomUUID()}`
+        }
+      } catch (_) {
+        // ignore
+      }
+      return `user-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
+    }
+    let newId = makeId()
+    while (existing.some(p => p.userId === newId)) {
+      newId = makeId()
+    }
+
+    // Normalize achievements: ensure each has an id
+    const achievements = Array.isArray(parsed.achievements) ? parsed.achievements.map(a => {
+      const id = a && a.id ? a.id : `achievement-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+      return { ...a, id }
+    }) : []
+
     const profile = new UserProfile({
-      displayName: parsed.userProfile.displayName || '',
-      weaponGroupPreference: parsed.userProfile.weaponGroupPreference || 'A',
-      prerequisites: Array.isArray(parsed.achievements) ? parsed.achievements : [],
+      userId: newId,
+      displayName: (parsed.userProfile && parsed.userProfile.displayName) || '',
+      weaponGroupPreference: (parsed.userProfile && parsed.userProfile.weaponGroupPreference) || 'A',
+      prerequisites: achievements,
       unlockedMedals: Array.isArray(parsed.unlockedMedals) ? parsed.unlockedMedals : [],
     })
 

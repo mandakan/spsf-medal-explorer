@@ -11,11 +11,21 @@
   --color-primary: #208491;
   --color-primary-hover: #1d745f;
   --color-accent: #32b8c6;
+  --color-primary-foreground: #ffffff;
+  --color-primary-foreground: #ffffff;
 
   /* Medal colors */
   --color-medal-gold: #FFD700;
   --color-medal-silver: #C0C0C0;
   --color-medal-bronze: #CD7F32;
+
+  /* Canvas/status palette (consumed by canvasRenderer) */
+  --color-medal-unlocked: var(--color-medal-gold);
+  --color-achievable: #20C997;
+  --color-locked: #6C757D;
+  --color-connection: #94A3B8;
+  --color-border: #5e5240;
+  --color-muted-foreground: var(--color-text-secondary);
 
   /* Spacing scale */
   --spacing-xs: 4px;
@@ -48,6 +58,14 @@
   --color-medal-silver: #C0C0C0;
   --color-medal-bronze: #CD7F32;
 
+  /* Canvas/status palette (consumed by canvasRenderer) */
+  --color-medal-unlocked: #FFD54F;     /* softer gold on dark */
+  --color-achievable: #34D399;         /* emerald */
+  --color-locked: #94A3B8;             /* slate-400 */
+  --color-connection: #94A3B8;         /* slate-400 */
+  --color-border: rgba(255,255,255,0.25);
+  --color-muted-foreground: var(--color-text-secondary);
+
   --color-bg-primary: var(--color-background);
   --color-bg-secondary: var(--color-surface);
   --color-text-primary: var(--color-foreground);
@@ -60,4 +78,39 @@ html {
 
 body {
   @apply m-0 p-0;
+}
+
+@layer components {
+  .card {
+    @apply bg-bg-secondary text-foreground border border-border rounded-xl shadow-sm;
+  }
+  .section-title {
+    @apply text-lg font-semibold text-foreground;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md font-medium
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary
+           focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary;
+  }
+  .btn-primary {
+    @apply bg-primary text-primary-foreground hover:bg-primary-hover;
+  }
+  .btn-muted {
+    @apply bg-background text-foreground ring-1 ring-border hover:bg-bg-secondary;
+  }
+  .field-label {
+    @apply block text-sm font-medium text-foreground;
+  }
+  .field-hint {
+    @apply mt-1 text-xs text-muted-foreground;
+  }
+  .input, .select, .textarea {
+    @apply w-full rounded-md bg-bg-secondary text-foreground placeholder:text-muted-foreground
+           border border-border px-3 py-2
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary
+           focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary;
+  }
+  .input[disabled], .select[disabled], .textarea[disabled] {
+    @apply opacity-100 text-muted-foreground bg-bg-secondary/70;
+  }
 }
