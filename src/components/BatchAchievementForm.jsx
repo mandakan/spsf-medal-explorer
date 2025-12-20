@@ -502,7 +502,7 @@ export default function BatchAchievementForm() {
           </button>
         </div>
 
-        <div className="flex gap-2 mb-4">
+        <div className="hidden sm:flex gap-2 mb-4">
           <button
             type="button"
             onClick={handleAddRow}
