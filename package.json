@@ -1,0 +1,23 @@
+{
+  "name": "medal-skill-tree-explorer",
+  "version": "0.1.0",
+  "description": "Interactive skill-tree explorer for SHB medal achievements",
+  "main": "index.html",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "dev": "python -m http.server 8000"
+  },
+  "keywords": [
+    "shooting",
+    "medals",
+    "skill-tree",
+    "swe"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^29.0.0"
+  }
+}

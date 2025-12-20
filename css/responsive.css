@@ -1,0 +1,6 @@
+/* Responsive styles placeholder (PR-001) */
+@media (max-width: 640px) {
+  #app-root {
+    padding: 8px;
+  }
+}

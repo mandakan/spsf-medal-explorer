@@ -1,0 +1,583 @@
+{
+  "version": "1.0",
+  "medals": [
+    {
+      "id": "pistol-mark-bronze",
+      "type": "pistol_mark",
+      "tier": "bronze",
+      "name": "Pistolskyttemärket - Brons",
+      "displayName": "Pistol Mark - Bronze",
+      "color": "#CD7F32",
+      "icon": "medal-bronze",
+      "description": "Entry-level award for demonstrating shooting competency",
+      "prerequisites": [],
+      "requirements": [
+        {
+          "type": "gold_series",
+          "description": "3 precision series vs Pistol target 25m",
+          "minAchievements": 3,
+          "timeWindowYears": 1,
+          "seriesType": "precision",
+          "pointThresholds": {
+            "A": { "min": 32 },
+            "B": { "min": 33 },
+            "C": { "min": 34 }
+          }
+        }
+      ],
+      "unlocksFollowingMedals": [
+        "pistol-mark-silver",
+        "elite-mark-bronze",
+        "field-mark-bronze",
+        "skis-mark-bronze",
+        "spring-mark-bronze",
+        "precision-mark-bronze",
+        "national-match-mark-bronze"
+      ],
+      "yearIntroduced": 2000,
+      "sortOrder": 1
+    },
+    {
+      "id": "pistol-mark-silver",
+      "type": "pistol_mark",
+      "tier": "silver",
+      "name": "Pistolskyttemärket - Silver",
+      "displayName": "Pistol Mark - Silver",
+      "color": "#C0C0C0",
+      "icon": "medal-silver",
+      "description": "Awarded the year after Bronze with higher gold series results",
+      "prerequisites": [
+        {
+          "type": "medal",
+          "medalId": "pistol-mark-bronze",
+          "yearOffset": 1,
+          "description": "Bronze Pistol Mark (previous year or earlier)"
+        }
+      ],
+      "requirements": [
+        {
+          "type": "gold_series",
+          "seriesType": "precision",
+          "minAchievements": 3,
+          "timeWindowYears": 1,
+          "pointThresholds": {
+            "A": { "min": 38 },
+            "B": { "min": 39 },
+            "C": { "min": 45 }
+          }
+        }
+      ],
+      "unlocksFollowingMedals": [
+        "pistol-mark-gold",
+        "elite-mark-silver"
+      ],
+      "yearIntroduced": 2000,
+      "sortOrder": 2
+    },
+    {
+      "id": "pistol-mark-gold",
+      "type": "pistol_mark",
+      "tier": "gold",
+      "name": "Pistolskyttemärket - Guld",
+      "displayName": "Pistol Mark - Gold",
+      "color": "#FFD700",
+      "icon": "medal-gold",
+      "prerequisites": [
+        {
+          "type": "medal",
+          "medalId": "pistol-mark-silver",
+          "yearOffset": 1
+        }
+      ],
+      "requirements": [
+        {
+          "type": "gold_series",
+          "seriesType": "precision",
+          "minAchievements": 3,
+          "timeWindowYears": 1,
+          "pointThresholds": {
+            "A": { "min": 43 },
+            "B": { "min": 44 },
+            "C": { "min": 46 }
+          }
+        }
+      ],
+      "unlocksFollowingMedals": [
+        "pistol-mark-gold-star-1",
+        "elite-mark-bronze",
+        "championship-mark-bronze"
+      ],
+      "yearIntroduced": 2000,
+      "sortOrder": 3
+    },
+    {
+      "id": "pistol-mark-gold-star-1",
+      "type": "pistol_mark",
+      "tier": "star_1",
+      "name": "Pistolskyttemärket - Guld med en stjärna",
+      "displayName": "Pistol Mark - Gold + ★",
+      "color": "#FFD700",
+      "icon": "medal-gold-star-1",
+      "prerequisites": [
+        { "type": "medal", "medalId": "pistol-mark-gold" }
+      ],
+      "requirements": [
+        {
+          "type": "sustained_achievement",
+          "description": "3 years of Gold-level achievement",
+          "timeWindowYears": 3,
+          "yearsOfAchievement": 3,
+          "minPointsPerYear": { "A": 43, "B": 44, "C": 46 }
+        }
+      ],
+      "unlocksFollowingMedals": [
+        "pistol-mark-gold-star-2"
+      ],
+      "sortOrder": 4
+    },
+    {
+      "id": "pistol-mark-gold-star-2",
+      "type": "pistol_mark",
+      "tier": "star_2",
+      "name": "Pistolskyttemärket - Guld med två stjärnor",
+      "displayName": "Pistol Mark - Gold + ★★",
+      "color": "#FFD700",
+      "icon": "medal-gold-star-2",
+      "prerequisites": [
+        { "type": "medal", "medalId": "pistol-mark-gold-star-1" }
+      ],
+      "requirements": [
+        {
+          "type": "sustained_achievement",
+          "description": "Additional 3 years of Gold-level achievement",
+          "timeWindowYears": 3,
+          "yearsOfAchievement": 3,
+          "minPointsPerYear": { "A": 43, "B": 44, "C": 46 }
+        }
+      ],
+      "unlocksFollowingMedals": [
+        "pistol-mark-gold-star-3"
+      ],
+      "sortOrder": 5
+    },
+    {
+      "id": "pistol-mark-gold-star-3",
+      "type": "pistol_mark",
+      "tier": "star_3",
+      "name": "Pistolskyttemärket - Guld med tre stjärnor",
+      "displayName": "Pistol Mark - Gold + ★★★",
+      "color": "#FFD700",
+      "icon": "medal-gold-star-3",
+      "prerequisites": [
+        { "type": "medal", "medalId": "pistol-mark-gold-star-2" }
+      ],
+      "requirements": [
+        {
+          "type": "sustained_achievement",
+          "description": "Additional 3 years of Gold-level achievement",
+          "timeWindowYears": 3,
+          "yearsOfAchievement": 3,
+          "minPointsPerYear": { "A": 43, "B": 44, "C": 46 }
+        }
+      ],
+      "sortOrder": 6
+    },
+
+    {
+      "id": "elite-mark-bronze",
+      "type": "elite_mark",
+      "tier": "bronze",
+      "name": "Elitmärket - Brons",
+      "displayName": "Elite Mark - Bronze",
+      "color": "#CD7F32",
+      "icon": "elite-bronze",
+      "prerequisites": [
+        {
+          "type": "medal",
+          "medalId": "pistol-mark-gold",
+          "description": "Must achieve Gold Pistol Mark first"
+        }
+      ],
+      "requirements": [
+        {
+          "type": "precision_series",
+          "minAchievements": 5,
+          "description": "5 precision series"
+        },
+        {
+          "type": "speed_shooting_series",
+          "minAchievements": 5,
+          "description": "5 speed-shooting series (3 sec per shot at 25m)"
+        }
+      ],
+      "unlocksFollowingMedals": [
+        "elite-mark-silver"
+      ],
+      "sortOrder": 10
+    },
+    {
+      "id": "elite-mark-silver",
+      "type": "elite_mark",
+      "tier": "silver",
+      "name": "Elitmärket - Silver",
+      "displayName": "Elite Mark - Silver",
+      "color": "#C0C0C0",
+      "icon": "elite-silver",
+      "prerequisites": [
+        { "type": "medal", "medalId": "elite-mark-bronze" }
+      ],
+      "requirements": [
+        {
+          "type": "sustained_achievement",
+          "description": "Sustained elite performance",
+          "timeWindowYears": 1,
+          "minAchievements": 2
+        }
+      ],
+      "unlocksFollowingMedals": [
+        "elite-mark-gold"
+      ],
+      "sortOrder": 11
+    },
+    {
+      "id": "elite-mark-gold",
+      "type": "elite_mark",
+      "tier": "gold",
+      "name": "Elitmärket - Guld",
+      "displayName": "Elite Mark - Gold",
+      "color": "#FFD700",
+      "icon": "elite-gold",
+      "prerequisites": [
+        { "type": "medal", "medalId": "elite-mark-silver" }
+      ],
+      "requirements": [
+        {
+          "type": "sustained_achievement",
+          "description": "Continued elite performance",
+          "timeWindowYears": 1,
+          "minAchievements": 3
+        }
+      ],
+      "sortOrder": 12
+    },
+
+    {
+      "id": "field-mark-bronze",
+      "type": "field_mark",
+      "tier": "bronze",
+      "name": "Fältskyttemärket - Brons",
+      "displayName": "Field Mark - Bronze",
+      "color": "#CD7F32",
+      "icon": "field-bronze",
+      "prerequisites": [
+        { "type": "medal", "medalId": "pistol-mark-bronze", "description": "Bronze Pistol Mark required" },
+        { "type": "age_requirement", "minAge": 15, "description": "Must be at least 15 years old" }
+      ],
+      "requirements": [
+        {
+          "type": "competition_performance",
+          "minAchievements": 3,
+          "timeWindowYears": 1,
+          "competitionTypes": ["national", "regional/landsdels", "crewmate/krets"],
+          "pointThresholdPercent": {
+            "A": { "min": 52 },
+            "B": { "min": 60 },
+            "C": { "min": 60 }
+          }
+        }
+      ],
+      "unlocksFollowingMedals": [
+        "field-mark-silver"
+      ],
+      "sortOrder": 20
+    },
+    {
+      "id": "field-mark-silver",
+      "type": "field_mark",
+      "tier": "silver",
+      "name": "Fältskyttemärket - Silver",
+      "displayName": "Field Mark - Silver",
+      "color": "#C0C0C0",
+      "icon": "field-silver",
+      "prerequisites": [
+        { "type": "medal", "medalId": "field-mark-bronze" }
+      ],
+      "requirements": [
+        {
+          "type": "competition_performance",
+          "minAchievements": 3,
+          "timeWindowYears": 1,
+          "pointThresholdPercent": {
+            "A": { "min": 60 },
+            "B": { "min": 65 },
+            "C": { "min": 65 }
+          }
+        }
+      ],
+      "unlocksFollowingMedals": [
+        "field-mark-gold"
+      ],
+      "sortOrder": 21
+    },
+    {
+      "id": "field-mark-gold",
+      "type": "field_mark",
+      "tier": "gold",
+      "name": "Fältskyttemärket - Guld",
+      "displayName": "Field Mark - Gold",
+      "color": "#FFD700",
+      "icon": "field-gold",
+      "prerequisites": [
+        { "type": "medal", "medalId": "field-mark-silver" }
+      ],
+      "requirements": [
+        {
+          "type": "competition_performance",
+          "minAchievements": 3,
+          "timeWindowYears": 1,
+          "pointThresholdPercent": {
+            "A": { "min": 68 },
+            "B": { "min": 72 },
+            "C": { "min": 72 }
+          }
+        }
+      ],
+      "sortOrder": 22
+    },
+
+    {
+      "id": "championship-mark-bronze",
+      "type": "championship_mark",
+      "tier": "bronze",
+      "name": "Mästarmerket - Brons",
+      "displayName": "Championship Mark - Bronze",
+      "color": "#CD7F32",
+      "icon": "champ-bronze",
+      "prerequisites": [
+        { "type": "medal", "medalId": "pistol-mark-gold" }
+      ],
+      "requirements": [
+        {
+          "type": "championship_competition",
+          "minAchievements": 1,
+          "timeWindowYears": 1,
+          "competitionType": "championship",
+          "medalTier": "bronze",
+          "description": "At least one bronze-level result at championship"
+        }
+      ],
+      "unlocksFollowingMedals": [
+        "championship-mark-silver"
+      ],
+      "sortOrder": 30
+    },
+    {
+      "id": "championship-mark-silver",
+      "type": "championship_mark",
+      "tier": "silver",
+      "name": "Mästarmerket - Silver",
+      "displayName": "Championship Mark - Silver",
+      "color": "#C0C0C0",
+      "icon": "champ-silver",
+      "prerequisites": [
+        { "type": "medal", "medalId": "championship-mark-bronze" }
+      ],
+      "requirements": [
+        {
+          "type": "championship_competition",
+          "minAchievements": 1,
+          "timeWindowYears": 1,
+          "competitionType": "championship",
+          "medalTier": "silver"
+        }
+      ],
+      "unlocksFollowingMedals": [
+        "championship-mark-gold"
+      ],
+      "sortOrder": 31
+    },
+    {
+      "id": "championship-mark-gold",
+      "type": "championship_mark",
+      "tier": "gold",
+      "name": "Mästarmerket - Guld",
+      "displayName": "Championship Mark - Gold",
+      "color": "#FFD700",
+      "icon": "champ-gold",
+      "prerequisites": [
+        { "type": "medal", "medalId": "championship-mark-silver" }
+      ],
+      "requirements": [
+        {
+          "type": "championship_competition",
+          "minAchievements": 1,
+          "timeWindowYears": 1,
+          "competitionType": "championship",
+          "medalTier": "gold"
+        }
+      ],
+      "sortOrder": 32
+    },
+
+    {
+      "id": "precision-mark-bronze",
+      "type": "precision_mark",
+      "tier": "bronze",
+      "name": "Precisionsskyttemärket - Brons",
+      "displayName": "Precision Mark - Bronze",
+      "color": "#CD7F32",
+      "icon": "precision-bronze",
+      "prerequisites": [
+        {
+          "type": "medal",
+          "medalId": "pistol-mark-bronze",
+          "yearOffset": 1,
+          "description": "Must achieve in previous calendar year"
+        }
+      ],
+      "requirements": [
+        {
+          "type": "cumulative_competition_score",
+          "minCompetitions": 3,
+          "timeWindowYears": 1,
+          "pointThresholds": {
+            "A": { "min": 194 },
+            "B": { "min": 200 },
+            "C": { "min": 206 }
+          }
+        }
+      ],
+      "unlocksFollowingMedals": [
+        "precision-mark-silver"
+      ],
+      "sortOrder": 40
+    },
+    {
+      "id": "precision-mark-silver",
+      "type": "precision_mark",
+      "tier": "silver",
+      "name": "Precisionsskyttemärket - Silver",
+      "displayName": "Precision Mark - Silver",
+      "color": "#C0C0C0",
+      "icon": "precision-silver",
+      "prerequisites": [
+        { "type": "medal", "medalId": "precision-mark-bronze" }
+      ],
+      "requirements": [
+        {
+          "type": "cumulative_competition_score",
+          "minCompetitions": 3,
+          "timeWindowYears": 1,
+          "pointThresholds": {
+            "A": { "min": 210 },
+            "B": { "min": 216 },
+            "C": { "min": 222 }
+          }
+        }
+      ],
+      "unlocksFollowingMedals": [
+        "precision-mark-gold"
+      ],
+      "sortOrder": 41
+    },
+    {
+      "id": "precision-mark-gold",
+      "type": "precision_mark",
+      "tier": "gold",
+      "name": "Precisionsskyttemärket - Guld",
+      "displayName": "Precision Mark - Gold",
+      "color": "#FFD700",
+      "icon": "precision-gold",
+      "prerequisites": [
+        { "type": "medal", "medalId": "precision-mark-silver" }
+      ],
+      "requirements": [
+        {
+          "type": "cumulative_competition_score",
+          "minCompetitions": 3,
+          "timeWindowYears": 1,
+          "pointThresholds": {
+            "A": { "min": 226 },
+            "B": { "min": 232 },
+            "C": { "min": 238 }
+          }
+        }
+      ],
+      "sortOrder": 42
+    },
+
+    {
+      "id": "skis-mark-bronze",
+      "type": "skis_mark",
+      "tier": "bronze",
+      "name": "Skidskyttemärket - Brons",
+      "displayName": "Skis Shooting Mark - Bronze",
+      "color": "#CD7F32",
+      "icon": "skis-bronze",
+      "prerequisites": [
+        { "type": "medal", "medalId": "pistol-mark-bronze" }
+      ],
+      "requirements": [
+        {
+          "type": "skis_shooting_course",
+          "description": "3x2km ski course with shooting stations",
+          "minAchievements": 1,
+          "timeWindowYears": 1,
+          "pointThresholds": {
+            "male": { "max": 40 },
+            "female": { "max": 46 }
+          }
+        }
+      ],
+      "sortOrder": 50
+    },
+
+    {
+      "id": "spring-mark-bronze",
+      "type": "spring_mark",
+      "tier": "bronze",
+      "name": "Springskyttemärket - Brons",
+      "displayName": "Spring Running Mark - Bronze",
+      "color": "#CD7F32",
+      "icon": "spring-bronze",
+      "prerequisites": [
+        { "type": "medal", "medalId": "pistol-mark-bronze" }
+      ],
+      "requirements": [
+        {
+          "type": "running_shooting_course",
+          "description": "3x1km running course with shooting stations",
+          "minAchievements": 1,
+          "timeWindowYears": 1,
+          "pointThresholds": {
+            "male": { "max": 35 },
+            "female": { "max": 41 }
+          }
+        }
+      ],
+      "sortOrder": 60
+    },
+
+    {
+      "id": "national-match-mark-bronze",
+      "type": "national_full_match_mark",
+      "tier": "bronze",
+      "name": "Märke i Nationell Helmatch - Brons",
+      "displayName": "National Full Match Mark - Bronze",
+      "color": "#CD7F32",
+      "icon": "national-bronze",
+      "prerequisites": [
+        { "type": "medal", "medalId": "pistol-mark-bronze", "yearOffset": 1 }
+      ],
+      "requirements": [
+        {
+          "type": "combined_discipline_requirement",
+          "description": "Precision + Speed + Field in same calendar year at 2+ events",
+          "minEvents": 2,
+          "timeWindowYears": 1
+        }
+      ],
+      "sortOrder": 70
+    }
+  ]
+}
