@@ -17,7 +17,7 @@ export function validateAchievements(achievements) {
   })
 
   return {
-    isValid: Object.keys(errors).length === 0 && validAchievements.length > 0,
+    isValid: validAchievements.length > 0,
     errors,
     validAchievements
   }
