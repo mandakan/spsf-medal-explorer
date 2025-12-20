@@ -10,9 +10,9 @@ import { Achievement } from '../models/Achievement'
 export function useAchievementHistory() {
   const {
     currentProfile,
-    addAchievement,
-    updateAchievement,
-    removeAchievement,
+    addAchievement: profileAddAchievement,
+    updateAchievement: profileUpdateAchievement,
+    removeAchievement: profileRemoveAchievement,
   } = useProfile()
 
   const {
@@ -42,12 +42,12 @@ export function useAchievementHistory() {
     // Remove missing
     for (const cur of current) {
       if (!byIdTarget.has(cur.id)) {
-        if (typeof removeAchievement === 'function') {
+        if (typeof profileRemoveAchievement === 'function') {
           // removeAchievement likely signature: (userId, achievementId) or (achievementId)
           try {
-            await removeAchievement(userId, cur.id)
+            await profileRemoveAchievement(userId, cur.id)
           } catch {
-            try { await removeAchievement(cur.id) } catch (e) { /* ignore */ }
+            try { await profileRemoveAchievement(cur.id) } catch (e) { /* ignore */ }
           }
         }
       }
@@ -56,11 +56,11 @@ export function useAchievementHistory() {
     // Add new
     for (const tgt of targetList) {
       if (!byIdCurrent.has(tgt.id)) {
-        if (typeof addAchievement === 'function') {
+        if (typeof profileAddAchievement === 'function') {
           try {
-            await addAchievement(new Achievement(tgt))
+            await profileAddAchievement(new Achievement(tgt))
           } catch (e) {
-            try { await addAchievement(userId, new Achievement(tgt)) } catch (_) {}
+            try { await profileAddAchievement(userId, new Achievement(tgt)) } catch (_) {}
           }
         }
       }
@@ -98,14 +98,14 @@ export function useAchievementHistory() {
         competitionName: row.competitionName || '',
         notes: row.notes || ''
       })
-      if (typeof addAchievement === 'function') {
+      if (typeof profileAddAchievement === 'function') {
         try {
-          await addAchievement(achievement)
+          await profileAddAchievement(achievement)
           added++
         } catch (e) {
           // try alt signature
           try {
-            await addAchievement(currentProfile.userId, achievement)
+            await profileAddAchievement(currentProfile.userId, achievement)
             added++
           } catch (_) {}
         }
@@ -115,43 +115,43 @@ export function useAchievementHistory() {
       pushCurrent()
     }
     return added
-  }, [addAchievement, currentProfile, pushCurrent])
+  }, [profileAddAchievement, currentProfile, pushCurrent])
 
   const updateOne = useCallback(async (updated) => {
     if (!currentProfile || !updated?.id) return false
     let ok = false
-    if (typeof updateAchievement === 'function') {
+    if (typeof profileUpdateAchievement === 'function') { 
       try {
-        await updateAchievement(updated)
+        await profileUpdateAchievement(updated)
         ok = true
       } catch {
         try {
-          await updateAchievement(currentProfile.userId, updated.id, updated)
+          await profileUpdateAchievement(currentProfile.userId, updated.id, updated)
           ok = true
         } catch (_) {}
       }
     }
     if (ok) pushCurrent()
     return ok
-  }, [currentProfile, updateAchievement, pushCurrent])
+  }, [currentProfile, profileUpdateAchievement, pushCurrent])
 
   const removeOne = useCallback(async (achievementId) => {
     if (!currentProfile || !achievementId) return false
     let ok = false
-    if (typeof removeAchievement === 'function') {
+    if (typeof profileRemoveAchievement === 'function') {
       try {
-        await removeAchievement(achievementId)
+        await profileRemoveAchievement(achievementId)
         ok = true
       } catch {
         try {
-          await removeAchievement(currentProfile.userId, achievementId)
+          await profileRemoveAchievement(currentProfile.userId, achievementId)
           ok = true
         } catch (_) {}
       }
     }
     if (ok) pushCurrent()
     return ok
-  }, [currentProfile, removeAchievement, pushCurrent])
+  }, [currentProfile, profileRemoveAchievement, pushCurrent])
 
   // Undo/Redo helpers for achievements
   const undoAchievements = useCallback(async () => {
@@ -194,9 +194,30 @@ export function useAchievementHistory() {
     return () => window.removeEventListener('keydown', onKey)
   }, [undoAchievements, redoAchievements])
 
+  // Canonical single-item operations exposed by this hook
+  const addAchievement = useCallback(async (row) => {
+    if (!currentProfile || !row) return false
+    const achievement = row instanceof Achievement ? row : new Achievement(row)
+    if (typeof profileAddAchievement !== 'function') return false
+    try {
+      await profileAddAchievement(achievement)
+    } catch {
+      // alt signature (userId, achievement)
+      await profileAddAchievement(currentProfile.userId, achievement)
+    }
+    pushCurrent()
+    return true
+  }, [currentProfile, profileAddAchievement, pushCurrent])
+
+  const updateAchievement = updateOne
+  const removeAchievement = removeOne
+
   return {
     achievements: currentProfile?.prerequisites || [],
     addMany,
+    addAchievement,
+    updateAchievement,
+    removeAchievement,
     updateOne,
     removeOne,
     undoAchievements,
