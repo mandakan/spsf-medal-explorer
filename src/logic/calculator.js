@@ -27,6 +27,21 @@ export class MedalCalculator {
       }
     }
 
+    // Basic prerequisite presence check (ignore yearOffset to ensure precedence)
+    if (Array.isArray(medal.prerequisites)) {
+      const missing = medal.prerequisites
+        .filter(p => p?.type === 'medal')
+        .filter(p => !this.hasUnlockedMedal(p.medalId))
+      if (missing.length) {
+        return {
+          medalId,
+          status: 'locked',
+          reason: 'prerequisites_not_met',
+          details: { prerequisites: { missingMedals: missing.map(p => p.medalId) } }
+        }
+      }
+    }
+
     // Check requirements first to determine calendar unlock year
     const reqsCheck = this.checkRequirements(medal)
     if (!reqsCheck.allMet) {
