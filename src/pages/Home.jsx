@@ -19,9 +19,9 @@ export default function Home() {
       <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Link
           to="/skill-tree"
-          className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow cursor-pointer"
+          className="bg-bg-secondary border border-slate-200 dark:border-slate-700 rounded-lg p-6 shadow hover:shadow-lg transition-shadow cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
         >
-          <h3 className="text-xl font-bold mb-2">🎯 Skill Tree</h3>
+          <h3 className="text-xl font-bold mb-2 text-text-primary">🎯 Skill Tree</h3>
           <p className="text-text-secondary">
             Explore medals in an interactive tree view
           </p>
@@ -29,9 +29,9 @@ export default function Home() {
 
         <Link
           to="/medals"
-          className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow cursor-pointer"
+          className="bg-bg-secondary border border-slate-200 dark:border-slate-700 rounded-lg p-6 shadow hover:shadow-lg transition-shadow cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
         >
-          <h3 className="text-xl font-bold mb-2">📊 Medal List</h3>
+          <h3 className="text-xl font-bold mb-2 text-text-primary">📊 Medal List</h3>
           <p className="text-text-secondary">
             Browse all medals with filters and search
           </p>
@@ -39,9 +39,9 @@ export default function Home() {
 
         <Link
           to="/settings"
-          className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow cursor-pointer"
+          className="bg-bg-secondary border border-slate-200 dark:border-slate-700 rounded-lg p-6 shadow hover:shadow-lg transition-shadow cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
         >
-          <h3 className="text-xl font-bold mb-2">📝 Settings</h3>
+          <h3 className="text-xl font-bold mb-2 text-text-primary">📝 Settings</h3>
           <p className="text-text-secondary">
             Log achievements and manage your profile
           </p>
@@ -49,7 +49,7 @@ export default function Home() {
       </section>
 
       {!loading && medalDatabase && (
-        <section className="bg-white rounded-lg shadow p-6">
+        <section className="bg-bg-secondary border border-slate-200 dark:border-slate-700 rounded-lg p-6 shadow">
           <h2 className="text-xl font-bold mb-4">Status</h2>
           <p className="text-text-secondary">
             ✓ {medalDatabase.getAllMedals().length} medals loaded
