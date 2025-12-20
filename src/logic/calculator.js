@@ -152,7 +152,8 @@ export class MedalCalculator {
           type: req.type,
           index: idx,
           isMet: false,
-          reason: 'unsupported_requirement_type'
+          reason: 'unsupported_requirement_type',
+          description: req.description
         })
       }
     })

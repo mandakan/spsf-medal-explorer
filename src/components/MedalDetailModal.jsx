@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useMedalDatabase } from '../hooks/useMedalDatabase'
 import { useAllMedalStatuses } from '../hooks/useMedalCalculator'
+import { useMedalCalculator } from '../hooks/useMedalCalculator'
 import { useProfile } from '../hooks/useProfile'
 import UniversalAchievementLogger from './UniversalAchievementLogger'
 import { UndoRedoProvider } from '../contexts/UndoRedoContext'
@@ -8,6 +9,7 @@ import { UndoRedoProvider } from '../contexts/UndoRedoContext'
 export default function MedalDetailModal({ medalId, onClose }) {
   const { medalDatabase } = useMedalDatabase()
   const statuses = useAllMedalStatuses()
+  const calculator = useMedalCalculator()
   const { currentProfile } = useProfile()
   const medal = medalDatabase?.getMedalById(medalId)
   const [showLogger, setShowLogger] = useState(false)
@@ -22,6 +24,19 @@ export default function MedalDetailModal({ medalId, onClose }) {
       null
     )
   }, [statuses, medalId])
+
+  const requirementItems = useMemo(() => {
+    if (!medal) return []
+    const hasReqFromStatus =
+      status?.details && status.reason !== 'prerequisites_not_met' && Array.isArray(status.details.items)
+    if (hasReqFromStatus) return status.details.items
+    try {
+      const res = calculator?.checkRequirements?.(medal)
+      return res?.items || []
+    } catch {
+      return []
+    }
+  }, [calculator, medal, status])
 
   if (!medal) return null
 
@@ -207,18 +222,18 @@ export default function MedalDetailModal({ medalId, onClose }) {
               </div>
             )}
 
-            {status?.details?.items?.length > 0 && (
+            {requirementItems.length > 0 && (
               <div className="mb-4 bg-background border border-border rounded p-3">
                 <p className="text-sm font-semibold text-foreground mb-2">
                   Requirements:
                 </p>
                 <ul className="text-sm text-muted-foreground space-y-1">
-                  {status.details.items.map((item, i) => (
+                  {requirementItems.map((item, i) => (
                     <li key={i} className="break-words">
                       <span className={item.isMet ? 'text-foreground' : 'text-muted-foreground'}>
                         {item.isMet ? '✓' : '○'}
                       </span>{' '}
-                      {item.description}
+                      {item.description || item.type}
                     </li>
                   ))}
                 </ul>
