@@ -5,23 +5,19 @@ import { useAchievementHistory } from '../hooks/useAchievementHistory'
 const WG = ['A', 'B', 'C', 'R']
 const COMP_TYPES = ['national', 'regional/landsdels', 'crewmate/krets', 'championship']
 const MEDAL_TYPES = ['bronze', 'silver', 'gold']
-const parseTimeToSeconds = (s) => {
-  if (!s) return NaN
-  const m = String(s).trim().match(/^(\d+):(\d{1,2})(?:\.(\d{1,3}))?$/)
-  if (!m) return NaN
-  const mins = Number(m[1])
-  const secs = Number(m[2])
-  const ms = m[3] ? Number(m[3].padEnd(3, '0')) : 0
-  if (!Number.isFinite(mins) || !Number.isFinite(secs) || secs >= 60) return NaN
-  return mins * 60 + secs + ms / 1000
-}
+const APP_TIME_OPTIONS = [
+  { value: 60, label: '60, Bronze' },
+  { value: 40, label: '40, Silver' },
+  { value: 17, label: '17, Gold A/R' },
+  { value: 15, label: '15, Gold B/C' },
+]
 const currentYear = new Date().getFullYear()
 const newRow = () => ({
   year: currentYear,
   weaponGroup: 'A',
   type: 'precision_series',
   date: new Date().toISOString().slice(0, 10),
-  time: '',
+  timeSeconds: '',
   hits: '',
   points: '',
   competitionType: '',
@@ -98,9 +94,10 @@ export default function BatchAchievementForm() {
               errs.push('Date cannot be in the future')
             }
           }
-          const t = parseTimeToSeconds(row.time)
-          if (!Number.isFinite(t) || t <= 0 || t > 36000) {
-            errs.push('Enter time as MM:SS or MM:SS.ms')
+          const allowed = [60, 40, 17, 15]
+          const t = Number(row.timeSeconds)
+          if (!Number.isFinite(t) || !allowed.includes(t)) {
+            errs.push('Select a valid time')
           }
           const h = Number(row.hits)
           if (!Number.isFinite(h) || h < 0) {
@@ -271,16 +268,24 @@ export default function BatchAchievementForm() {
                           disabled={submitting}
                           aria-label={`Date for row ${index + 1}`}
                         />
-                        <input
-                          type="text"
-                          value={row.time}
-                          onChange={(e) => handleRowChange(index, 'time', e.target.value)}
-                          className="input w-28"
-                          placeholder="MM:SS[.ms]"
-                          inputMode="numeric"
+                        <select
+                          value={row.timeSeconds === '' ? '' : Number(row.timeSeconds)}
+                          onChange={(e) =>
+                            handleRowChange(
+                              index,
+                              'timeSeconds',
+                              e.target.value === '' ? '' : Number(e.target.value)
+                            )
+                          }
+                          className="select w-40"
                           disabled={submitting}
                           aria-label={`Time for row ${index + 1}`}
-                        />
+                        >
+                          <option value="">Select time…</option>
+                          {APP_TIME_OPTIONS.map(opt => (
+                            <option key={opt.value} value={opt.value}>{opt.label}</option>
+                          ))}
+                        </select>
                         <input
                           type="number"
                           min="0"
