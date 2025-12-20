@@ -492,6 +492,16 @@ export default function BatchAchievementForm() {
           </table>
         </div>
 
+        <div className="sm:hidden sticky bottom-0 safe-bottom bg-bg-secondary/80 backdrop-blur p-3 border-t border-border">
+          <button
+            type="submit"
+            className="btn btn-primary w-full min-h-[44px]"
+            disabled={submitting || rows.length === 0}
+          >
+            {submitting ? 'Adding...' : 'Add All Achievements'}
+          </button>
+        </div>
+
         <div className="flex gap-2 mb-4">
           <button
             type="button"
