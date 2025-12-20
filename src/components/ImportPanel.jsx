@@ -106,7 +106,7 @@ export default function ImportPanel({ onImport }) {
         onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && fileInputRef.current?.click()}
       >
         <p className="text-color-text-secondary mb-2">
-          Drag & drop JSON/CSV file here
+          Drag &amp; drop JSON/CSV file here
         </p>
         <p className="text-color-text-tertiary text-sm mb-4">
           or
