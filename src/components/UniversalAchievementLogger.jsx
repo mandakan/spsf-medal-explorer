@@ -16,14 +16,15 @@ const formComponents = {
   custom: CustomForm,
 }
 
-export default function UniversalAchievementLogger({ medal, onSuccess }) {
+export default function UniversalAchievementLogger({ medal, onSuccess, unlockMode = false }) {
   const { addAchievement } = useAchievementHistory()
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
 
   // Detect form variant from medal data
   const medalType = useMemo(() => detectMedalFormType(medal), [medal])
-  const FormComponent = formComponents[medalType] || CustomForm
+  const effectiveType = unlockMode ? 'event' : medalType
+  const FormComponent = unlockMode ? CustomForm : (formComponents[medalType] || CustomForm)
   const headingId = useMemo(
     () => `achievement-logger-title-${medal?.id || medal?.medalId || 'unknown'}`,
     [medal]
@@ -35,7 +36,7 @@ export default function UniversalAchievementLogger({ medal, onSuccess }) {
       setError(null)
 
       // Map to app's internal achievement shape (compatible with LocalStorageDataManager)
-      const achievement = mapFormToAchievement({ medal, medalType, formData })
+      const achievement = mapFormToAchievement({ medal, medalType: effectiveType, formData })
 
       // Validate the mapped achievement object
       const validation = validateAchievementObject(achievement)
@@ -64,7 +65,7 @@ export default function UniversalAchievementLogger({ medal, onSuccess }) {
         id={headingId}
         className="section-title mb-4 break-words"
       >
-        Log Achievement: {medal?.displayName || medal?.name || medal?.id}
+        {unlockMode ? 'Unlock Medal' : 'Log Achievement'}: {medal?.displayName || medal?.name || medal?.id}
       </h2>
 
       {error && (

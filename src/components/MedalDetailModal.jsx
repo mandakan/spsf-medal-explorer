@@ -242,6 +242,7 @@ export default function MedalDetailModal({ medalId, onClose }) {
                   <UndoRedoProvider>
                     <UniversalAchievementLogger
                       medal={medal}
+                      unlockMode={status?.status === 'achievable'}
                       onSuccess={() => setShowLogger(false)}
                     />
                   </UndoRedoProvider>
@@ -265,7 +266,7 @@ export default function MedalDetailModal({ medalId, onClose }) {
                 aria-expanded={showLogger}
                 className="flex-1 px-4 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
               >
-                Add Achievement
+                Unlock Now
               </button>
             )}
           </div>
