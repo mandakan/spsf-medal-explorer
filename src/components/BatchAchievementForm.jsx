@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import AchievementDialog from './AchievementDialog'
+import AchievementRowCard from './AchievementRowCard'
 import { detectDuplicateAchievements } from '../logic/achievementValidator'
 import { useAchievementHistory } from '../hooks/useAchievementHistory'
 
@@ -35,6 +37,8 @@ const newRow = () => ({
 export default function BatchAchievementForm() {
   const { addMany } = useAchievementHistory()
   const [rows, setRows] = useState([ newRow() ])
+  const [editorOpen, setEditorOpen] = useState(false)
+  const [editIndex, setEditIndex] = useState(-1)
   const [errors, setErrors] = useState({})
   const [successCount, setSuccessCount] = useState(0)
   const [submitting, setSubmitting] = useState(false)
@@ -47,10 +51,29 @@ export default function BatchAchievementForm() {
   }
 
   const handleAddRow = () => {
-    setRows([
-      ...rows,
-      newRow()
-    ])
+    setRows([...rows, newRow()])
+  }
+
+  const openAddEditor = () => {
+    setEditIndex(-1)
+    setEditorOpen(true)
+  }
+
+  const openEditEditor = (index) => {
+    setEditIndex(index)
+    setEditorOpen(true)
+  }
+
+  const handleEditorSave = (row, { addAnother } = {}) => {
+    if (editIndex >= 0) {
+      setRows(prev => prev.map((r, i) => (i === editIndex ? row : r)))
+    } else {
+      setRows(prev => [...prev, row])
+    }
+    if (!addAnother) {
+      setEditorOpen(false)
+      setEditIndex(-1)
+    }
   }
 
   const handleRemoveRow = (index) => {
@@ -184,8 +207,31 @@ export default function BatchAchievementForm() {
         </div>
       )}
 
+      {/* Mobile: card list + sticky add button */}
+      <div className="sm:hidden space-y-3 mb-4">
+        {rows.map((row, idx) => (
+          <AchievementRowCard
+            key={idx}
+            row={row}
+            index={idx}
+            onEdit={openEditEditor}
+            onRemove={handleRemoveRow}
+          />
+        ))}
+        <div className="sticky bottom-0 safe-bottom pt-2 bg-transparent">
+          <button
+            type="button"
+            onClick={openAddEditor}
+            className="btn btn-primary w-full min-h-[44px]"
+            aria-label="Add achievement"
+          >
+            + Add achievement
+          </button>
+        </div>
+      </div>
+
       <form onSubmit={handleSubmit}>
-        <div className="overflow-x-auto mb-4">
+        <div className="hidden sm:block overflow-x-auto mb-4">
           <table className="w-full text-sm text-foreground">
             <caption className="sr-only">Batch achievement input</caption>
             <thead>
@@ -464,6 +510,17 @@ export default function BatchAchievementForm() {
           </button>
         </div>
       </form>
+
+      <AchievementDialog
+        open={editorOpen}
+        onClose={() => { setEditorOpen(false); setEditIndex(-1) }}
+        initialRow={editIndex >= 0 ? rows[editIndex] : newRow()}
+        onSave={handleEditorSave}
+        WG={WG}
+        COMP_TYPES={COMP_TYPES}
+        MEDAL_TYPES={MEDAL_TYPES}
+        APP_TIME_OPTIONS={APP_TIME_OPTIONS}
+      />
     </div>
   )
 }
