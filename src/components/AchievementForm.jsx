@@ -18,7 +18,8 @@ export default function AchievementForm() {
     e.preventDefault()
 
     // Validate (support validators returning array or { errors, isValid })
-    const validation = InputValidator.validateGoldSeriesInput(formData)
+    const normalized = { ...formData, points: formData.points === '' ? NaN : Number(formData.points) }
+    const validation = InputValidator.validateGoldSeriesInput(normalized)
     const errs = Array.isArray(validation) ? validation : (validation?.errors ?? [])
     const isValid = Array.isArray(validation) ? errs.length === 0 : (validation?.isValid ?? errs.length === 0)
 
@@ -30,7 +31,7 @@ export default function AchievementForm() {
     try {
       const achievement = new Achievement({
         ...formData,
-        points: parseInt(formData.points, 10)
+        points: normalized.points
       })
       await addAchievement(achievement)
       setFormData((prev) => ({
@@ -48,7 +49,7 @@ export default function AchievementForm() {
       <h2 className="text-xl font-bold mb-4">Add Achievement</h2>
 
       {errors.length > 0 && (
-        <div className="bg-background border border-border rounded p-4 mb-4">
+        <div id="achievement-errors" className="bg-background border border-border rounded p-4 mb-4" role="alert" aria-live="polite">
           {errors.map((err, i) => (
             <p key={i} className="text-foreground text-sm">• {err}</p>
           ))}
@@ -57,8 +58,10 @@ export default function AchievementForm() {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="field-label mb-1">Type</label>
+          <label htmlFor="achievement-type" className="field-label mb-1">Type</label>
           <select
+            id="achievement-type"
+            aria-describedby={errors.length > 0 ? 'achievement-errors' : undefined}
             value={formData.type}
             onChange={(e) => setFormData({ ...formData, type: e.target.value })}
             className="select"
@@ -70,9 +73,13 @@ export default function AchievementForm() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="field-label mb-1">Year</label>
+            <label htmlFor="achievement-year" className="field-label mb-1">Year</label>
             <input
+              id="achievement-year"
               type="number"
+              inputMode="numeric"
+              step="1"
+              aria-describedby={errors.length > 0 ? 'achievement-errors' : undefined}
               value={formData.year}
               onChange={(e) => setFormData({ ...formData, year: parseInt(e.target.value || '0', 10) })}
               className="input"
@@ -80,8 +87,10 @@ export default function AchievementForm() {
             />
           </div>
           <div>
-            <label className="field-label mb-1">Weapon Group</label>
+            <label htmlFor="achievement-weaponGroup" className="field-label mb-1">Weapon Group</label>
             <select
+              id="achievement-weaponGroup"
+              aria-describedby={errors.length > 0 ? 'achievement-errors' : undefined}
               value={formData.weaponGroup}
               onChange={(e) => setFormData({ ...formData, weaponGroup: e.target.value })}
               className="select"
@@ -96,23 +105,33 @@ export default function AchievementForm() {
         </div>
 
         <div>
-          <label className="field-label mb-1">Points</label>
+          <label htmlFor="achievement-points" className="field-label mb-1">Points</label>
           <input
+            id="achievement-points"
             type="number"
+            inputMode="numeric"
+            step="1"
             min="0"
             max="50"
             value={formData.points}
-            onChange={(e) => setFormData({ ...formData, points: e.target.value })}
+            onChange={(e) => {
+              const v = e.target.value
+              setFormData({ ...formData, points: v === '' ? '' : Number(v) })
+            }}
             className="input"
             placeholder="0-50"
+            aria-describedby={errors.length > 0 ? 'achievement-errors' : undefined}
+            aria-invalid={errors.length > 0 ? true : undefined}
             disabled={loading}
           />
         </div>
 
         <div>
-          <label className="field-label mb-1">Date</label>
+          <label htmlFor="achievement-date" className="field-label mb-1">Date</label>
           <input
+            id="achievement-date"
             type="date"
+            aria-describedby={errors.length > 0 ? 'achievement-errors' : undefined}
             value={formData.date}
             onChange={(e) => setFormData({ ...formData, date: e.target.value })}
             className="input"
