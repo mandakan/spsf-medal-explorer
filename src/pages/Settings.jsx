@@ -1,9 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useProfile } from '../hooks/useProfile'
-import AchievementForm from '../components/AchievementForm'
+import BatchAchievementForm from '../components/BatchAchievementForm'
+import AchievementTimeline from '../components/AchievementTimeline'
+import StatisticsDashboard from '../components/StatisticsDashboard'
+import { UndoRedoProvider } from '../contexts/UndoRedoContext'
 
 export default function Settings() {
   const { currentProfile } = useProfile()
+  const [activeTab, setActiveTab] = useState('add') // 'add' or 'history'
 
   if (!currentProfile) {
     return (
@@ -14,46 +18,51 @@ export default function Settings() {
   }
 
   return (
-    <div className="space-y-8">
-      <h1 className="text-3xl font-bold text-foreground">Settings</h1>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2">
-          <div className="card p-6 mb-6">
-            <h2 className="text-xl font-bold mb-4">Profile</h2>
-            <div className="space-y-4">
-              <div>
-                <label className="field-label">Name</label>
-                <p className="text-lg font-semibold text-foreground">
-                  {currentProfile.displayName}
-                </p>
-              </div>
-              <div>
-                <label className="field-label">
-                  Weapon Group
-                </label>
-                <p className="text-lg font-semibold text-foreground">
-                  {currentProfile.weaponGroupPreference}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <AchievementForm />
+    <UndoRedoProvider>
+      <div className="space-y-8">
+        <div>
+          <h1 className="text-3xl font-bold text-text-primary mb-2">Settings</h1>
+          <p className="text-text-secondary">
+            Profile: <span className="font-semibold">{currentProfile.displayName}</span> (Group {currentProfile.weaponGroupPreference})
+          </p>
         </div>
 
-        <div className="card p-6">
-          <h2 className="text-xl font-bold mb-4">Data</h2>
-          <div className="space-y-3">
-            <button className="btn btn-primary w-full">
-              📥 Export Data
-            </button>
-            <button className="btn btn-primary w-full">
-              📤 Import Data
-            </button>
-          </div>
+        <StatisticsDashboard />
+
+        <div
+          className="flex gap-2 border-b border-border"
+          role="tablist"
+          aria-label="Settings sections"
+        >
+          <button
+            role="tab"
+            aria-selected={activeTab === 'add'}
+            onClick={() => setActiveTab('add')}
+            className={`px-4 py-2 font-medium border-b-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
+              activeTab === 'add'
+                ? 'border-primary text-primary'
+                : 'border-transparent text-text-secondary hover:text-text-primary'
+            }`}
+          >
+            Add Achievements
+          </button>
+          <button
+            role="tab"
+            aria-selected={activeTab === 'history'}
+            onClick={() => setActiveTab('history')}
+            className={`px-4 py-2 font-medium border-b-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
+              activeTab === 'history'
+                ? 'border-primary text-primary'
+                : 'border-transparent text-text-secondary hover:text-text-primary'
+            }`}
+          >
+            History
+          </button>
         </div>
+
+        {activeTab === 'add' && <BatchAchievementForm />}
+        {activeTab === 'history' && <AchievementTimeline />}
       </div>
-    </div>
+    </UndoRedoProvider>
   )
 }
