@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+/* Design tokens (Tailwind v4) */
+@theme {
+  /* Semantic colors */
+  --color-background: #fcfcf9;
+  --color-surface: #ffffff;
+  --color-foreground: #133452;
+  --color-muted: #626c71;
+
+  --color-primary: #208491;
+  --color-primary-hover: #1d745f;
+  --color-accent: #32b8c6;
+
+  /* Medal colors */
+  --color-medal-gold: #FFD700;
+  --color-medal-silver: #C0C0C0;
+  --color-medal-bronze: #CD7F32;
+
+  /* Spacing scale */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-base: 16px;
+  --spacing-lg: 20px;
+  --spacing-xl: 24px;
+  --spacing-2xl: 32px;
+
+  /* Backwards-compatible aliases (keep existing classes working) */
+  --color-bg-primary: var(--color-background);
+  --color-bg-secondary: var(--color-surface);
+  --color-text-primary: var(--color-foreground);
+  --color-text-secondary: var(--color-muted);
+}
+
+/* Optional dark mode: toggle by adding 'dark' class to <html> */
+.dark { @theme {
+  --color-background: #0f172a;      /* slate-900 */
+  --color-surface: #1f2937;         /* gray-800 */
+  --color-foreground: #e5e7eb;      /* gray-200 */
+  --color-muted: #9ca3af;           /* gray-400 */
+
+  --color-primary: #208491;
+  --color-primary-hover: #1d745f;
+  --color-accent: #32b8c6;
+
+  --color-medal-gold: #FFD700;
+  --color-medal-silver: #C0C0C0;
+  --color-medal-bronze: #CD7F32;
+
+  --color-bg-primary: var(--color-background);
+  --color-bg-secondary: var(--color-surface);
+  --color-text-primary: var(--color-foreground);
+  --color-text-secondary: var(--color-muted);
+}}
+
+html {
+  @apply bg-background text-foreground;
+}
+
+body {
+  @apply m-0 p-0;
+}
