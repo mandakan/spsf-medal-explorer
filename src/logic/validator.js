@@ -32,4 +32,8 @@ export class InputValidator {
       errors
     }
   }
+
+  static validateApplicationSeriesInput(input) {
+    return this.validatePrecisionSeriesInput(input)
+  }
 }

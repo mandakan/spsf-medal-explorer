@@ -29,7 +29,14 @@ export function detectDuplicateAchievements(achievements) {
 
   achievements.forEach(ach => {
     if (!ach) return
-    const key = `${ach.year}-${ach.type}-${ach.weaponGroup}-${ach.points}`
+    let key
+    if (ach.type === 'precision_series') {
+      key = `${ach.year}-${ach.type}-${ach.weaponGroup}-${ach.points}`
+    } else if (ach.type === 'application_series') {
+      key = `${ach.year}-${ach.type}-${ach.weaponGroup}-${ach.date || ''}`
+    } else {
+      key = `${ach.year}-${ach.type}-${ach.weaponGroup}`
+    }
     if (seen.has(key)) {
       duplicates.push(key)
     }

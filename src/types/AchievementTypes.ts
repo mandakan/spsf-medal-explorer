@@ -1,5 +1,6 @@
 export type AchievementType =
   | 'competition'
+  | 'application_series'
   | 'qualification'
   | 'team_event'
   | 'event'
@@ -42,6 +43,10 @@ export interface EventAchievement extends BaseAchievement {
   eventName: string
 }
 
+export interface ApplicationSeriesAchievement extends BaseAchievement {
+  type: 'application_series'
+}
+
 export interface CustomAchievement extends BaseAchievement {
   type: 'custom'
   eventName?: string
@@ -52,4 +57,5 @@ export type AnyAchievement =
   | QualificationAchievement
   | TeamEventAchievement
   | EventAchievement
+  | ApplicationSeriesAchievement
   | CustomAchievement

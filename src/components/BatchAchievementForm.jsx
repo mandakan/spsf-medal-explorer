@@ -10,6 +10,7 @@ const newRow = () => ({
   year: currentYear,
   weaponGroup: 'A',
   type: 'precision_series',
+  date: new Date().toISOString().slice(0, 10),
   points: '',
   competitionType: '',
   medalType: '',
@@ -73,6 +74,20 @@ export default function BatchAchievementForm() {
           }
           break
         }
+        case 'application_series': {
+          const d = new Date(row.date)
+          if (!row.date || Number.isNaN(d.getTime())) {
+            errs.push('Date is invalid')
+          } else {
+            const today = new Date()
+            today.setHours(0, 0, 0, 0)
+            d.setHours(0, 0, 0, 0)
+            if (d.getTime() > today.getTime()) {
+              errs.push('Date cannot be in the future')
+            }
+          }
+          break
+        }
         case 'competition_result': {
           const ct = String(row.competitionType || '').toLowerCase()
           const mt = String(row.medalType || '').toLowerCase()
@@ -100,9 +115,11 @@ export default function BatchAchievementForm() {
       return
     }
 
-    // Duplicate detection only for precision series
-    const precisionRows = validRows.filter(r => r.type === 'precision_series')
-    const duplicates = detectDuplicateAchievements(precisionRows)
+    // Duplicate detection for series types
+    const seriesRows = validRows.filter(r =>
+      r.type === 'precision_series' || r.type === 'application_series'
+    )
+    const duplicates = detectDuplicateAchievements(seriesRows)
     setDupWarnings(duplicates)
 
     try {
@@ -126,7 +143,7 @@ export default function BatchAchievementForm() {
     <div className="card p-6">
       <h2 className="text-xl font-bold mb-2 text-text-primary">Batch Add Achievements</h2>
       <p id="batch-type-help" className="text-sm text-text-secondary mb-4">
-        Batch add currently supports Precision Series achievements only. To add competition, qualification,
+        Batch add supports Precision Series and Application Series. To add competition, qualification,
         team event, or event entries, use the single-entry logger on a medal card.
       </p>
 
@@ -189,6 +206,7 @@ export default function BatchAchievementForm() {
                       aria-describedby="batch-type-help"
                     >
                       <option value="precision_series">Precision Series</option>
+                      <option value="application_series">Application Series</option>
                       <option value="competition_result">Competition Result</option>
                       <option value="qualification_result">Qualification</option>
                       <option value="team_event">Team Event</option>
@@ -222,6 +240,15 @@ export default function BatchAchievementForm() {
                         placeholder="0-50"
                         disabled={submitting}
                         aria-label={`Points for row ${index + 1}`}
+                      />
+                    ) : row.type === 'application_series' ? (
+                      <input
+                        type="date"
+                        value={row.date}
+                        onChange={(e) => handleRowChange(index, 'date', e.target.value)}
+                        className="input w-44"
+                        disabled={submitting}
+                        aria-label={`Date for row ${index + 1}`}
                       />
                     ) : row.type === 'competition_result' ? (
                       <div className="flex flex-wrap gap-2">

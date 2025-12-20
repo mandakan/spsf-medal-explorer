@@ -257,6 +257,15 @@ export class LocalStorageDataManager extends DataManager {
       if (achievement.points < 0 || achievement.points > 50) return false
     }
 
+    if (achievement.type === 'application_series') {
+      if (!achievement.date || Number.isNaN(new Date(achievement.date).getTime())) return false
+      const d = new Date(achievement.date)
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
+      d.setHours(0, 0, 0, 0)
+      if (d.getTime() > today.getTime()) return false
+    }
+
     if (achievement.type === 'competition_result') {
       const allowedTypes = ['national', 'regional/landsdels', 'crewmate/krets', 'championship']
       const allowedMedals = ['bronze', 'silver', 'gold']
