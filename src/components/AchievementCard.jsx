@@ -181,6 +181,8 @@ export default function AchievementCard({ achievement }) {
         onClose={() => setEditorOpen(false)}
         initialRow={editorInitial}
         onSave={handleEditorSave}
+        mode="immediate"
+        submitLabel={editorMode === 'edit' ? 'Save' : 'Add'}
       />
     </>
   )

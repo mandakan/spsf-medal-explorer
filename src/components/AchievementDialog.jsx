@@ -8,6 +8,8 @@ export default function AchievementDialog({
   onClose,
   initialRow,
   onSave,
+  mode = 'batch',
+  submitLabel,
   WG = ['A', 'B', 'C', 'R'],
   COMP_TYPES = ['national', 'regional/landsdels', 'crewmate/krets', 'championship'],
   MEDAL_TYPES = ['bronze', 'silver', 'gold'],
@@ -366,11 +368,18 @@ export default function AchievementDialog({
           </div>
         ) : null}
 
-        <div className="flex gap-2 justify-end pt-2">
-          <button type="button" className="btn btn-muted" onClick={onClose}>Cancel</button>
-          <button type="button" className="btn btn-muted" onClick={() => onSubmit(true)}>Add &amp; add another</button>
-          <button type="submit" className="btn btn-primary">Add to batch</button>
-        </div>
+        {mode === 'batch' ? (
+          <div className="flex gap-2 justify-end pt-2">
+            <button type="button" className="btn btn-muted" onClick={onClose}>Cancel</button>
+            <button type="button" className="btn btn-muted" onClick={() => onSubmit(true)}>Add &amp; add another</button>
+            <button type="submit" className="btn btn-primary">Add to batch</button>
+          </div>
+        ) : (
+          <div className="flex gap-2 justify-end pt-2">
+            <button type="button" className="btn btn-muted" onClick={onClose}>Cancel</button>
+            <button type="submit" className="btn btn-primary">{submitLabel || 'Save'}</button>
+          </div>
+        )}
       </form>
     </MobileBottomSheet>
   )
