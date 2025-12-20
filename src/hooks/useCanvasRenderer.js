@@ -24,10 +24,10 @@ export function useCanvasRenderer() {
       const toMedal = layout.medals.find(m => m.medalId === conn.to)
       if (!fromMedal || !toMedal) return
 
-      const x1 = (fromMedal.x - panX) * scale + ctx.canvas.width / 2
-      const y1 = (fromMedal.y - panY) * scale + ctx.canvas.height / 2
-      const x2 = (toMedal.x - panX) * scale + ctx.canvas.width / 2
-      const y2 = (toMedal.y - panY) * scale + ctx.canvas.height / 2
+      const x1 = (fromMedal.x + panX) * scale + ctx.canvas.width / 2
+      const y1 = (fromMedal.y + panY) * scale + ctx.canvas.height / 2
+      const x2 = (toMedal.x + panX) * scale + ctx.canvas.width / 2
+      const y2 = (toMedal.y + panY) * scale + ctx.canvas.height / 2
 
       drawConnection(ctx, x1, y1, x2, y2, conn.type, scale)
     })
@@ -37,8 +37,8 @@ export function useCanvasRenderer() {
       const medal = medalMap[medalNode.medalId]
       if (!medal) return
 
-      const x = (medalNode.x - panX) * scale + ctx.canvas.width / 2
-      const y = (medalNode.y - panY) * scale + ctx.canvas.height / 2
+      const x = (medalNode.x + panX) * scale + ctx.canvas.width / 2
+      const y = (medalNode.y + panY) * scale + ctx.canvas.height / 2
       const radius = medalNode.radius * scale
 
       const status =

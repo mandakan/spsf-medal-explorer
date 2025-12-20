@@ -80,13 +80,13 @@ export default function SkillTreeCanvas() {
         e.preventDefault()
       }
       if (e.key === 'ArrowLeft') {
-        handleMouseMove({ clientX: 0, clientY: 0, syntheticPan: { dx: step, dy: 0 } })
-      } else if (e.key === 'ArrowRight') {
         handleMouseMove({ clientX: 0, clientY: 0, syntheticPan: { dx: -step, dy: 0 } })
+      } else if (e.key === 'ArrowRight') {
+        handleMouseMove({ clientX: 0, clientY: 0, syntheticPan: { dx: step, dy: 0 } })
       } else if (e.key === 'ArrowUp') {
-        handleMouseMove({ clientX: 0, clientY: 0, syntheticPan: { dx: 0, dy: step } })
-      } else if (e.key === 'ArrowDown') {
         handleMouseMove({ clientX: 0, clientY: 0, syntheticPan: { dx: 0, dy: -step } })
+      } else if (e.key === 'ArrowDown') {
+        handleMouseMove({ clientX: 0, clientY: 0, syntheticPan: { dx: 0, dy: step } })
       }
     }
     window.addEventListener('keydown', onKeyDown)
@@ -114,8 +114,8 @@ export default function SkillTreeCanvas() {
 
     // Hover hit test uses same transform as renderer (centered origin)
     for (const medal of layout.medals) {
-      const nodeX = (medal.x - panX) * scale + canvasRef.current.width / 2
-      const nodeY = (medal.y - panY) * scale + canvasRef.current.height / 2
+      const nodeX = (medal.x + panX) * scale + canvasRef.current.width / 2
+      const nodeY = (medal.y + panY) * scale + canvasRef.current.height / 2
       const radius = (medal.radius || 20) * scale
       const dx = mouseX - nodeX
       const dy = mouseY - nodeY
@@ -141,8 +141,8 @@ export default function SkillTreeCanvas() {
 
     // Determine clicked medal node
     for (const medal of layout.medals) {
-      const nodeX = (medal.x - panX) * scale + canvasRef.current.width / 2
-      const nodeY = (medal.y - panY) * scale + canvasRef.current.height / 2
+      const nodeX = (medal.x + panX) * scale + canvasRef.current.width / 2
+      const nodeY = (medal.y + panY) * scale + canvasRef.current.height / 2
       const radius = (medal.radius || 20) * scale
       const dx = mouseX - nodeX
       const dy = mouseY - nodeY
@@ -162,8 +162,8 @@ export default function SkillTreeCanvas() {
     const mouseY = e.clientY - rect.top
 
     for (const medal of layout.medals) {
-      const nodeX = (medal.x - panX) * scale + canvasRef.current.width / 2
-      const nodeY = (medal.y - panY) * scale + canvasRef.current.height / 2
+      const nodeX = (medal.x + panX) * scale + canvasRef.current.width / 2
+      const nodeY = (medal.y + panY) * scale + canvasRef.current.height / 2
       const radius = (medal.radius || 20) * scale
       const dx = mouseX - nodeX
       const dy = mouseY - nodeY
