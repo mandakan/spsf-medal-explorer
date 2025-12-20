@@ -18,6 +18,30 @@ export default function SkillTreeCanvas() {
   const [layout, setLayout] = useState(null)
   const [isDragging, setIsDragging] = useState(false)
 
+  // Determine which medals are visible in the current viewport for culling
+  const getVisibleMedalsForCanvas = (canvas, margin = 120) => {
+    if (!layout || !canvas) return []
+    const width = canvas.width
+    const height = canvas.height
+    const medals = layout.medals || []
+    const result = []
+    for (let i = 0; i < medals.length; i++) {
+      const m = medals[i]
+      const nodeX = (m.x + panX) * scale + width / 2
+      const nodeY = (m.y + panY) * scale + height / 2
+      const r = (m.radius || 20) * scale
+      if (
+        nodeX + r >= -margin &&
+        nodeX - r <= width + margin &&
+        nodeY + r >= -margin &&
+        nodeY - r <= height + margin
+      ) {
+        result.push(m)
+      }
+    }
+    return result
+  }
+
   // Generate layout on first render or when database changes
   useEffect(() => {
     if (medalDatabase) {
@@ -45,11 +69,17 @@ export default function SkillTreeCanvas() {
     ctx.fillStyle = bgColor
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-    // Render skill tree
+    // Render skill tree with view culling for performance
+    const allMedals = medalDatabase.getAllMedals()
+    const visibleMedals = getVisibleMedalsForCanvas(canvas)
+    const visibleIds = new Set(visibleMedals.map(m => m.medalId))
+    const filteredLayout = { ...layout, medals: visibleMedals }
+    const filteredMedals = allMedals.filter(m => visibleIds.has(m.id))
+
     render(
       ctx,
-      medalDatabase.getAllMedals(),
-      layout,
+      filteredMedals,
+      filteredLayout,
       statuses,
       panX,
       panY,
@@ -114,7 +144,8 @@ export default function SkillTreeCanvas() {
     const mouseY = e.clientY - rect.top
 
     // Hover hit test uses same transform as renderer (centered origin)
-    for (const medal of layout.medals) {
+    const visibleMedals = getVisibleMedalsForCanvas(canvasRef.current)
+    for (const medal of visibleMedals) {
       const nodeX = (medal.x + panX) * scale + canvasRef.current.width / 2
       const nodeY = (medal.y + panY) * scale + canvasRef.current.height / 2
       const radius = (medal.radius || 20) * scale
@@ -140,8 +171,9 @@ export default function SkillTreeCanvas() {
     const mouseX = e.clientX - rect.left
     const mouseY = e.clientY - rect.top
 
-    // Determine clicked medal node
-    for (const medal of layout.medals) {
+    // Determine clicked medal node (use culled set)
+    const visibleMedals = getVisibleMedalsForCanvas(canvasRef.current)
+    for (const medal of visibleMedals) {
       const nodeX = (medal.x + panX) * scale + canvasRef.current.width / 2
       const nodeY = (medal.y + panY) * scale + canvasRef.current.height / 2
       const radius = (medal.radius || 20) * scale
@@ -162,7 +194,8 @@ export default function SkillTreeCanvas() {
     const mouseX = e.clientX - rect.left
     const mouseY = e.clientY - rect.top
 
-    for (const medal of layout.medals) {
+    const visibleMedals = getVisibleMedalsForCanvas(canvasRef.current)
+    for (const medal of visibleMedals) {
       const nodeX = (medal.x + panX) * scale + canvasRef.current.width / 2
       const nodeY = (medal.y + panY) * scale + canvasRef.current.height / 2
       const radius = (medal.radius || 20) * scale

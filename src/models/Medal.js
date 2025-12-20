@@ -10,6 +10,7 @@ export class Medal {
     this.displayName = data.displayName
     this.color = data.color
     this.icon = data.icon
+    this.reviewed = data.reviewed === true
     this.prerequisites = data.prerequisites || []
     this.requirements = data.requirements || []
     this.unlocksFollowingMedals = data.unlocksFollowingMedals || []
@@ -38,6 +39,9 @@ export class Medal {
       '#CD7F32': 'text-medal-bronze',
     }
     return map[this.color] || 'text-foreground'
+  }
+  isUnderReview() {
+    return this.reviewed !== true
   }
 }
 

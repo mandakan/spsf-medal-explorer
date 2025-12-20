@@ -25,6 +25,11 @@ export function applyFilters(medals, statuses, filters = {}) {
     // Weapon group (optional property)
     if (filters.weaponGroup && medal.weaponGroup !== filters.weaponGroup) return false
 
+    // Review state (absence of 'reviewed' means under review)
+    const underReview = medal.reviewed !== true
+    if (filters.reviewState === 'reviewed' && underReview) return false
+    if (filters.reviewState === 'under_review' && !underReview) return false
+
     // Search
     if (searchLower) {
       const matches =
@@ -69,6 +74,8 @@ export function generateFilterSummary(filters) {
   if (filters.tier) parts.push(`Tier: ${filters.tier}`)
   if (filters.type) parts.push(`Type: ${filters.type}`)
   if (filters.weaponGroup) parts.push(`Group: ${filters.weaponGroup}`)
+  if (filters.reviewState === 'reviewed') parts.push('Review: Reviewed')
+  if (filters.reviewState === 'under_review') parts.push('Review: Under review')
   if (filters.search) parts.push(`Search: ${filters.search}`)
   return parts.length > 0 ? parts.join(' • ') : 'No filters applied'
 }

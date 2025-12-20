@@ -100,6 +100,23 @@ export default function FilterPanel({
             <option value="C">C</option>
           </select>
         </div>
+
+        {/* Review Status Filter */}
+        <div>
+          <label htmlFor="reviewStatusSelect" className="block text-sm font-medium text-muted-foreground mb-1">
+            Review status
+          </label>
+          <select
+            id="reviewStatusSelect"
+            value={filters.reviewState || ''}
+            onChange={(e) => onFilterChange('reviewState', e.target.value || null)}
+            className="select"
+          >
+            <option value="">All</option>
+            <option value="reviewed">Reviewed</option>
+            <option value="under_review">Under review</option>
+          </select>
+        </div>
       </div>
 
       <div className="text-sm text-muted-foreground" aria-live="polite">

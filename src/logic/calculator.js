@@ -27,18 +27,22 @@ export class MedalCalculator {
       }
     }
 
-    // Check prerequisites
-    const prereqsCheck = this.checkPrerequisites(medal)
-    if (!prereqsCheck.allMet) {
-      return {
-        medalId,
-        status: 'locked',
-        reason: 'prerequisites_not_met',
-        details: prereqsCheck
+    // Basic prerequisite presence check (ignore yearOffset to ensure precedence)
+    if (Array.isArray(medal.prerequisites)) {
+      const missing = medal.prerequisites
+        .filter(p => p?.type === 'medal')
+        .filter(p => !this.hasUnlockedMedal(p.medalId))
+      if (missing.length) {
+        return {
+          medalId,
+          status: 'locked',
+          reason: 'prerequisites_not_met',
+          details: { prerequisites: { missingMedals: missing.map(p => p.medalId) } }
+        }
       }
     }
 
-    // Check requirements
+    // Check requirements first to determine calendar unlock year
     const reqsCheck = this.checkRequirements(medal)
     if (!reqsCheck.allMet) {
       return {
@@ -49,10 +53,22 @@ export class MedalCalculator {
       }
     }
 
+    // Check prerequisites using the planned unlock year (calendar-year semantics)
+    const prereqsCheck = this.checkPrerequisites(medal, reqsCheck.unlockYear)
+    if (!prereqsCheck.allMet) {
+      return {
+        medalId,
+        status: 'locked',
+        reason: 'prerequisites_not_met',
+        details: prereqsCheck
+      }
+    }
+
     return {
       medalId,
       status: 'achievable',
-      details: reqsCheck
+      achievableYear: reqsCheck.unlockYear ?? null,
+      details: { ...reqsCheck, prerequisites: prereqsCheck }
     }
   }
 
@@ -65,7 +81,7 @@ export class MedalCalculator {
     return unlocked ? unlocked.unlockedDate : null
   }
 
-  checkPrerequisites(medal) {
+  checkPrerequisites(medal, targetYear) {
     if (!medal.prerequisites || medal.prerequisites.length === 0) {
       return { allMet: true, items: [], missingItems: [] }
     }
@@ -88,11 +104,13 @@ export class MedalCalculator {
         if (!isMet) {
           missingItems.push(item)
         } else if (typeof prereq.yearOffset === 'number') {
-          // Optional: ensure at least yearOffset gap if provided
+          // Ensure at least yearOffset gap in calendar years if provided
           const achievedYear = this.getUnlockedYear(prereq.medalId)
-          const currentYear = this.getMostRecentAchievementYear() ?? new Date().getFullYear()
-          const gapOk = achievedYear !== null ? (currentYear - achievedYear) >= prereq.yearOffset : false
-          const offsetItem = { ...item, isMet: gapOk, offsetChecked: true }
+          const plannedYear = typeof targetYear === 'number'
+            ? targetYear
+            : (this.getMostRecentAchievementYear() ?? new Date().getFullYear())
+          const gapOk = achievedYear !== null ? (plannedYear - achievedYear) >= prereq.yearOffset : false
+          const offsetItem = { ...item, isMet: gapOk, offsetChecked: true, plannedYear }
           if (!gapOk) missingItems.push(offsetItem)
         }
       } else if (prereq.type === 'age_requirement') {
@@ -133,7 +151,7 @@ export class MedalCalculator {
 
   checkRequirements(medal) {
     if (!medal.requirements || medal.requirements.length === 0) {
-      return { allMet: true, items: [] }
+      return { allMet: true, items: [], unlockYear: null }
     }
 
     const items = []
@@ -158,37 +176,60 @@ export class MedalCalculator {
       }
     })
 
+    const years = items.filter(i => i.isMet && i.windowYear != null).map(i => i.windowYear)
+    const uniqueYears = Array.from(new Set(years))
+    const yearConflict = uniqueYears.length > 1
+    const unlockYear = uniqueYears.length === 1 ? uniqueYears[0] : null
+
     return {
-      allMet: items.every(item => item.isMet),
-      items
+      allMet: items.every(item => item.isMet) && !yearConflict,
+      items,
+      unlockYear,
+      ...(yearConflict ? { yearConflict: { years: uniqueYears } } : {})
     }
   }
 
   checkPrecisionSeriesRequirement(req, index) {
     const achievements = (this.profile.prerequisites || []).filter(a => a.type === 'precision_series')
 
-    // Optionally filter to a specific year if timeWindowYears === 1 by grouping by year
-    let candidates = achievements
+    let candidates = []
+    let windowYear = null
+
+    const applyThresholds = (list) => this.filterByPrecisionSeriesThreshold(list, req)
+
     if (req.timeWindowYears === 1) {
       const byYear = this.groupBy(achievements, a => a.year)
-      // Pick the year with max qualifying results
+      // Pick the calendar year with max qualifying results
       let bestYear = null
       let bestMatches = []
       Object.entries(byYear).forEach(([year, list]) => {
-        const matches = this.filterByPrecisionSeriesThreshold(list, req)
+        const matches = applyThresholds(list)
         if (matches.length > bestMatches.length) {
           bestMatches = matches
           bestYear = Number(year)
         }
       })
       candidates = bestMatches
+      windowYear = bestYear
     } else if (typeof req.timeWindowYears === 'number' && req.timeWindowYears > 1) {
-      const currentYear = new Date().getFullYear()
-      const windowStart = currentYear - req.timeWindowYears + 1
-      const withinWindow = achievements.filter(a => (a.year ?? 0) >= windowStart && (a.year ?? 0) <= currentYear)
-      candidates = this.filterByPrecisionSeriesThreshold(withinWindow, req)
+      // Use calendar-year blocks; evaluate all possible end years in the data
+      const years = Array.from(new Set(achievements.map(a => a.year).filter(y => typeof y === 'number'))).sort((a, b) => a - b)
+      let bestEndYear = null
+      let bestMatches = []
+      for (const endYear of years) {
+        const startYear = endYear - req.timeWindowYears + 1
+        const inBlock = achievements.filter(a => (a.year ?? 0) >= startYear && (a.year ?? 0) <= endYear)
+        const matches = applyThresholds(inBlock)
+        if (matches.length > bestMatches.length) {
+          bestMatches = matches
+          bestEndYear = endYear
+        }
+      }
+      candidates = bestMatches
+      windowYear = bestEndYear
     } else {
-      candidates = this.filterByPrecisionSeriesThreshold(achievements, req)
+      candidates = applyThresholds(achievements)
+      // no specific window; do not assign windowYear
     }
 
     const required = req.minAchievements ?? 1
@@ -206,19 +247,13 @@ export class MedalCalculator {
         B: req.pointThresholds?.B?.min,
         C: req.pointThresholds?.C?.min,
         R: req.pointThresholds?.R?.min
-      }
+      },
+      windowYear: met ? windowYear : null
     }
   }
 
   checkApplicationSeriesRequirement(req, index) {
     const achievements = (this.profile.prerequisites || []).filter(a => a.type === 'application_series')
-
-    const withinWindow = (list) => {
-      if (!(req.timeWindowYears > 0)) return list
-      const currentYear = new Date().getFullYear()
-      const windowStart = currentYear - req.timeWindowYears + 1
-      return list.filter(a => (a.year ?? 0) >= windowStart && (a.year ?? 0) <= currentYear)
-    }
 
     const passes = (a) => {
       const g = a.weaponGroup || 'A'
@@ -231,17 +266,41 @@ export class MedalCalculator {
       return hasTime && hasHits && timeOk && hitsOk
     }
 
-    let candidates
+    let candidates = []
+    let windowYear = null
+
     if (req.timeWindowYears === 1) {
       const byYear = this.groupBy(achievements, a => a.year)
       let bestMatches = []
-      Object.values(byYear).forEach(list => {
+      let bestYear = null
+      Object.entries(byYear).forEach(([year, list]) => {
         const matches = list.filter(passes)
-        if (matches.length > bestMatches.length) bestMatches = matches
+        if (matches.length > bestMatches.length) {
+          bestMatches = matches
+          bestYear = Number(year)
+        }
       })
       candidates = bestMatches
+      windowYear = bestYear
+    } else if (typeof req.timeWindowYears === 'number' && req.timeWindowYears > 1) {
+      // Calendar-year blocks across the data; choose the best end year
+      const years = Array.from(new Set(achievements.map(a => a.year).filter(y => typeof y === 'number'))).sort((a, b) => a - b)
+      let bestEndYear = null
+      let bestMatches = []
+      for (const endYear of years) {
+        const startYear = endYear - req.timeWindowYears + 1
+        const inBlock = achievements.filter(a => (a.year ?? 0) >= startYear && (a.year ?? 0) <= endYear)
+        const matches = inBlock.filter(passes)
+        if (matches.length > bestMatches.length) {
+          bestMatches = matches
+          bestEndYear = endYear
+        }
+      }
+      candidates = bestMatches
+      windowYear = bestEndYear
     } else {
-      candidates = withinWindow(achievements).filter(passes)
+      candidates = achievements.filter(passes)
+      // no specific window; do not assign windowYear
     }
 
     const required = req.minAchievements ?? 1
@@ -253,7 +312,8 @@ export class MedalCalculator {
       index,
       isMet: met,
       progress,
-      description: req.description
+      description: req.description,
+      windowYear: met ? windowYear : null
     }
   }
 
@@ -287,24 +347,58 @@ export class MedalCalculator {
     const minYears = req.yearsOfAchievement ?? 3
     const minPoints = req.minPointsPerYear ?? 0
 
-    const qualifyingYears = Object.entries(byYear).filter(([year, list]) => {
+    // Determine which years qualify based on per-group thresholds or minPointsPerYear
+    const yearQualifies = (list) => {
       return list.some(a => {
         const group = a.weaponGroup || 'A'
-        // If requirements provide thresholds per group use them, else use minPointsPerYear
         const groupThreshold = req.pointThresholds?.[group]?.min ?? minPoints
         return typeof a.points === 'number' && a.points >= groupThreshold
       })
-    })
+    }
 
-    const progress = { current: qualifyingYears.length, required: minYears }
-    const met = progress.current >= progress.required
+    const allYears = Object.keys(byYear).map(y => Number(y)).filter(y => !Number.isNaN(y)).sort((a, b) => a - b)
+
+    let qualifyingYearsSet = new Set(
+      allYears.filter(y => yearQualifies(byYear[y]))
+    )
+
+    let progress
+    let met
+    let windowYear = null
+
+    if (typeof req.timeWindowYears === 'number' && req.timeWindowYears > 0) {
+      // Use calendar-year blocks; evaluate all possible end years and choose the best block
+      let bestEndYear = null
+      let bestCount = 0
+      for (const endYear of allYears) {
+        const startYear = endYear - req.timeWindowYears + 1
+        let count = 0
+        for (let y = startYear; y <= endYear; y++) {
+          if (qualifyingYearsSet.has(y)) count++
+        }
+        if (count > bestCount) {
+          bestCount = count
+          bestEndYear = endYear
+        }
+      }
+      progress = { current: bestCount, required: minYears }
+      met = progress.current >= progress.required
+      windowYear = met ? bestEndYear : null
+    } else {
+      // No explicit time window; count across all qualifying calendar years
+      const total = qualifyingYearsSet.size
+      progress = { current: total, required: minYears }
+      met = progress.current >= progress.required
+      // No specific window chosen; leave windowYear null
+    }
 
     return {
       type: 'sustained_achievement',
       index,
       isMet: met,
       progress,
-      description: req.description
+      description: req.description,
+      windowYear
     }
   }
 

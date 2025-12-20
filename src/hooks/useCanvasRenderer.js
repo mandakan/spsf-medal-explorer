@@ -14,14 +14,15 @@ export function useCanvasRenderer() {
   ) => {
     if (!layout || !medals || !statuses) return
 
-    // Create map for quick lookup
+    // Create maps for quick lookup
     const medalMap = {}
     medals.forEach(m => { medalMap[m.id] = m })
+    const nodeIndex = new Map((layout.medals || []).map(n => [n.medalId, n]))
 
     // Draw connections behind nodes
     layout.connections?.forEach(conn => {
-      const fromMedal = layout.medals.find(m => m.medalId === conn.from)
-      const toMedal = layout.medals.find(m => m.medalId === conn.to)
+      const fromMedal = nodeIndex.get(conn.from)
+      const toMedal = nodeIndex.get(conn.to)
       if (!fromMedal || !toMedal) return
 
       const x1 = (fromMedal.x + panX) * scale + ctx.canvas.width / 2
