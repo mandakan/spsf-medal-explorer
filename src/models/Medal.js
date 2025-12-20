@@ -32,10 +32,12 @@ export class Medal {
    * Get color for UI display
    */
   getColorClass() {
-    if (this.color === '#FFD700') return 'text-yellow-500'
-    if (this.color === '#C0C0C0') return 'text-gray-400'
-    if (this.color === '#CD7F32') return 'text-orange-700'
-    return 'text-gray-500'
+    const map = {
+      '#FFD700': 'text-medal-gold',
+      '#C0C0C0': 'text-medal-silver',
+      '#CD7F32': 'text-medal-bronze',
+    }
+    return map[this.color] || 'text-foreground'
   }
 }
 
