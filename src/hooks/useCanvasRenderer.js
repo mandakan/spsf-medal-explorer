@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { drawMedalNode, drawConnection } from '../logic/canvasRenderer'
+import { drawMedalNode, drawConnection, getThemeColors } from '../logic/canvasRenderer'
 
 export function useCanvasRenderer() {
   const render = useCallback((
@@ -48,7 +48,8 @@ export function useCanvasRenderer() {
         { status: 'locked' }
 
       if (selectedMedal === medal.id) {
-        ctx.strokeStyle = '#ff6b6b'
+        const palette = getThemeColors(ctx.canvas)
+        ctx.strokeStyle = palette.accent
         ctx.lineWidth = Math.max(2, 4 / Math.max(scale, 0.001))
         ctx.beginPath()
         ctx.arc(x, y, radius + 6, 0, Math.PI * 2)

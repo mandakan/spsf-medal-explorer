@@ -17,6 +17,14 @@
   --color-medal-silver: #C0C0C0;
   --color-medal-bronze: #CD7F32;
 
+  /* Canvas/status palette (consumed by canvasRenderer) */
+  --color-medal-unlocked: var(--color-medal-gold);
+  --color-achievable: #20C997;
+  --color-locked: #6C757D;
+  --color-connection: #94A3B8;
+  --color-border: #5e5240;
+  --color-muted-foreground: var(--color-text-secondary);
+
   /* Spacing scale */
   --spacing-xs: 4px;
   --spacing-sm: 8px;
@@ -47,6 +55,14 @@
   --color-medal-gold: #FFD700;
   --color-medal-silver: #C0C0C0;
   --color-medal-bronze: #CD7F32;
+
+  /* Canvas/status palette (consumed by canvasRenderer) */
+  --color-medal-unlocked: #FFD54F;     /* softer gold on dark */
+  --color-achievable: #34D399;         /* emerald */
+  --color-locked: #94A3B8;             /* slate-400 */
+  --color-connection: #94A3B8;         /* slate-400 */
+  --color-border: rgba(255,255,255,0.25);
+  --color-muted-foreground: var(--color-text-secondary);
 
   --color-bg-primary: var(--color-background);
   --color-bg-secondary: var(--color-surface);
