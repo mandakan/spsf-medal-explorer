@@ -441,7 +441,7 @@ export default function BatchAchievementForm() {
                     )}
                   </td>
                 </tr>
-              })}
+              )})}
             </tbody>
           </table>
         </div>
