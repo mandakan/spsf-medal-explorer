@@ -75,6 +75,7 @@
       "requirements": [
         {
           "type": "precision_series",
+          "description": "3 precision series vs Pistol target 25m",
           "seriesType": "precision",
           "minAchievements": 3,
           "timeWindowYears": 1,
@@ -86,6 +87,7 @@
         },
         {
           "type": "application_series",
+          "description": "3 application series (either B100 50m or 1/6 target C30 25m)",
           "minAchievements": 3,
           "timeWindowYears": 1,
           "options": [
@@ -121,12 +123,14 @@
         {
           "type": "medal",
           "medalId": "pistol-mark-silver",
-          "yearOffset": 1
+          "yearOffset": 1,
+          "description": "Silver Pistol Mark (previous year or earlier)"
         }
       ],
       "requirements": [
         {
           "type": "precision_series",
+          "description": "3 precision series vs Pistol target 25m",
           "seriesType": "precision",
           "minAchievements": 3,
           "timeWindowYears": 1,
@@ -138,6 +142,7 @@
         },
         {
           "type": "application_series",
+          "description": "3 application series (either B100 50m or 1/6 target C30 25m)",
           "minAchievements": 3,
           "timeWindowYears": 1,
           "options": [
