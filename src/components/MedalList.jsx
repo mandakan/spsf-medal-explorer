@@ -1,5 +1,6 @@
 import React, { useMemo, useCallback, useRef, useEffect, useState } from 'react'
-import { FixedSizeList as List } from 'react-window'
+import ReactWindow from 'react-window'
+const List = ReactWindow.FixedSizeList
 
 function MedalIcon({ iconUrl, alt }) {
   const [loaded, setLoaded] = useState(false)
