@@ -67,45 +67,46 @@ export default function BatchAchievementForm() {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
+    <div className="card p-6">
       <h2 className="text-xl font-bold mb-4 text-text-primary">Batch Add Achievements</h2>
 
       {successCount > 0 && (
-        <div className="bg-green-50 border border-green-200 rounded p-4 mb-4">
-          <p className="text-green-700">✓ Successfully added {successCount} achievement(s)</p>
+        <div role="status" aria-live="polite" className="card p-4 mb-4">
+          <p className="text-foreground">✓ Successfully added {successCount} achievement(s)</p>
         </div>
       )}
 
       {dupWarnings.length > 0 && (
-        <div className="bg-yellow-50 border border-yellow-200 rounded p-4 mb-4">
-          <p className="text-yellow-800 font-medium mb-1">Possible duplicates detected:</p>
-          <ul className="list-disc list-inside text-yellow-800 text-sm">
+        <div role="alert" className="card p-4 mb-4">
+          <p className="font-medium text-foreground mb-1">Possible duplicates detected:</p>
+          <ul className="list-disc list-inside text-muted-foreground text-sm">
             {dupWarnings.map((d, i) => <li key={i}>{d}</li>)}
           </ul>
         </div>
       )}
 
       {errors.form && (
-        <div className="bg-red-50 border border-red-200 rounded p-4 mb-4">
-          <p className="text-red-700">{errors.form}</p>
+        <div role="alert" className="card p-4 mb-4">
+          <p className="text-foreground">{errors.form}</p>
         </div>
       )}
 
       <form onSubmit={handleSubmit}>
         <div className="overflow-x-auto mb-4">
-          <table className="w-full text-sm">
+          <table className="w-full text-sm text-foreground">
+            <caption className="sr-only">Batch achievement input</caption>
             <thead>
-              <tr className="bg-gray-100 border-b">
-                <th className="text-left px-3 py-2">Year</th>
-                <th className="text-left px-3 py-2">Type</th>
-                <th className="text-left px-3 py-2">Group</th>
-                <th className="text-left px-3 py-2">Points</th>
-                <th className="text-left px-3 py-2">Action</th>
+              <tr className="border-b border-border bg-bg-secondary">
+                <th scope="col" className="text-left px-3 py-2">Year</th>
+                <th scope="col" className="text-left px-3 py-2">Type</th>
+                <th scope="col" className="text-left px-3 py-2">Group</th>
+                <th scope="col" className="text-left px-3 py-2">Points</th>
+                <th scope="col" className="text-left px-3 py-2">Action</th>
               </tr>
             </thead>
             <tbody>
               {rows.map((row, index) => (
-                <tr key={index} className="border-b hover:bg-gray-50">
+                <tr key={index} className="border-b border-border hover:bg-bg-secondary/60">
                   <td className="px-3 py-2">
                     <input
                       type="number"
@@ -113,16 +114,18 @@ export default function BatchAchievementForm() {
                       max={new Date().getFullYear()}
                       value={row.year}
                       onChange={(e) => handleRowChange(index, 'year', e.target.value)}
-                      className="w-24 px-2 py-1 border border-gray-300 rounded"
+                      className="input w-24"
                       disabled={submitting}
+                      aria-label={`Year for row ${index + 1}`}
                     />
                   </td>
                   <td className="px-3 py-2">
                     <select
                       value={row.type}
                       onChange={(e) => handleRowChange(index, 'type', e.target.value)}
-                      className="w-32 px-2 py-1 border border-gray-300 rounded"
+                      className="select w-32"
                       disabled={submitting}
+                      aria-label={`Type for row ${index + 1}`}
                     >
                       <option value="gold_series">Gold Series</option>
                     </select>
@@ -131,8 +134,9 @@ export default function BatchAchievementForm() {
                     <select
                       value={row.weaponGroup}
                       onChange={(e) => handleRowChange(index, 'weaponGroup', e.target.value)}
-                      className="w-20 px-2 py-1 border border-gray-300 rounded"
+                      className="select w-20"
                       disabled={submitting}
+                      aria-label={`Weapon group for row ${index + 1}`}
                     >
                       <option value="A">A</option>
                       <option value="B">B</option>
@@ -147,9 +151,10 @@ export default function BatchAchievementForm() {
                       max="50"
                       value={row.points}
                       onChange={(e) => handleRowChange(index, 'points', e.target.value)}
-                      className="w-20 px-2 py-1 border border-gray-300 rounded"
+                      className="input w-20"
                       placeholder="0-50"
                       disabled={submitting}
+                      aria-label={`Points for row ${index + 1}`}
                     />
                     {errors[index]?.length > 0 && (
                       <div className="text-red-600 text-xs mt-1">
@@ -162,8 +167,9 @@ export default function BatchAchievementForm() {
                       <button
                         type="button"
                         onClick={() => handleRemoveRow(index)}
-                        className="text-red-600 hover:text-red-800 text-sm"
+                        className="btn btn-muted text-red-600"
                         disabled={submitting}
+                        aria-label={`Remove row ${index + 1}`}
                       >
                         Remove
                       </button>
@@ -179,14 +185,14 @@ export default function BatchAchievementForm() {
           <button
             type="button"
             onClick={handleAddRow}
-            className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
+            className="btn btn-muted disabled:opacity-50"
             disabled={submitting}
           >
             + Add Row
           </button>
           <button
             type="submit"
-            className="px-6 py-2 bg-primary text-white rounded hover:bg-primary-hover disabled:opacity-50"
+            className="btn btn-primary disabled:opacity-50"
             disabled={submitting || rows.every(r => !r.points)}
           >
             {submitting ? 'Adding...' : 'Add All Achievements'}

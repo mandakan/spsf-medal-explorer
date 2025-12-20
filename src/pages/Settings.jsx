@@ -11,8 +11,8 @@ export default function Settings() {
 
   if (!currentProfile) {
     return (
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <p className="text-blue-700">Please select or create a profile first</p>
+      <div className="card p-4">
+        <p className="text-foreground">Please select or create a profile first</p>
       </div>
     )
   }
@@ -29,10 +29,16 @@ export default function Settings() {
 
         <StatisticsDashboard />
 
-        <div className="flex gap-2 border-b border-gray-200">
+        <div
+          className="flex gap-2 border-b border-border"
+          role="tablist"
+          aria-label="Settings sections"
+        >
           <button
+            role="tab"
+            aria-selected={activeTab === 'add'}
             onClick={() => setActiveTab('add')}
-            className={`px-4 py-2 font-medium border-b-2 ${
+            className={`px-4 py-2 font-medium border-b-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
               activeTab === 'add'
                 ? 'border-primary text-primary'
                 : 'border-transparent text-text-secondary hover:text-text-primary'
@@ -41,8 +47,10 @@ export default function Settings() {
             Add Achievements
           </button>
           <button
+            role="tab"
+            aria-selected={activeTab === 'history'}
             onClick={() => setActiveTab('history')}
-            className={`px-4 py-2 font-medium border-b-2 ${
+            className={`px-4 py-2 font-medium border-b-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
               activeTab === 'history'
                 ? 'border-primary text-primary'
                 : 'border-transparent text-text-secondary hover:text-text-primary'

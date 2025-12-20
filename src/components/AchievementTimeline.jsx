@@ -34,8 +34,8 @@ export default function AchievementTimeline() {
 
   if (!currentProfile) {
     return (
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <p className="text-blue-700">Please select a profile to view achievements</p>
+      <div className="card p-4">
+        <p className="text-foreground">Please select a profile to view achievements</p>
       </div>
     )
   }
@@ -47,23 +47,24 @@ export default function AchievementTimeline() {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-lg shadow p-4">
+      <div className="card p-4">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-bold text-text-primary">Filters</h3>
           <button
             onClick={handleExport}
-            className="px-3 py-2 bg-primary text-white rounded hover:bg-primary-hover text-sm"
+            className="btn btn-primary text-sm"
+            aria-label="Export achievement history as CSV"
           >
             Export CSV
           </button>
         </div>
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Year</label>
+            <label className="block text-sm font-medium mb-1 text-foreground">Year</label>
             <select
               value={filterYear || ''}
               onChange={(e) => setFilterYear(e.target.value ? parseInt(e.target.value) : null)}
-              className="w-full px-3 py-2 border border-gray-300 rounded"
+              className="select"
             >
               <option value="">All Years</option>
               {years.map(year => (
@@ -72,11 +73,11 @@ export default function AchievementTimeline() {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Type</label>
+            <label className="block text-sm font-medium mb-1 text-foreground">Type</label>
             <select
               value={filterType || ''}
               onChange={(e) => setFilterType(e.target.value || null)}
-              className="w-full px-3 py-2 border border-gray-300 rounded"
+              className="select"
             >
               <option value="">All Types</option>
               <option value="gold_series">Gold Series</option>
@@ -85,11 +86,11 @@ export default function AchievementTimeline() {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Weapon Group</label>
+            <label className="block text-sm font-medium mb-1 text-foreground">Weapon Group</label>
             <select
               value={filterGroup || ''}
               onChange={(e) => setFilterGroup(e.target.value || null)}
-              className="w-full px-3 py-2 border border-gray-300 rounded"
+              className="select"
             >
               <option value="">All Groups</option>
               <option value="A">A</option>
@@ -107,7 +108,7 @@ export default function AchievementTimeline() {
         </h3>
 
         {sortedAchievements.length === 0 ? (
-          <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
+          <div className="card p-6 text-center">
             <p className="text-text-secondary">No achievements yet</p>
           </div>
         ) : (

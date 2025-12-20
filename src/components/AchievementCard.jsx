@@ -33,37 +33,39 @@ export default function AchievementCard({ achievement }) {
 
   if (isEditing) {
     return (
-      <div className="bg-white border border-gray-200 rounded-lg p-4 space-y-3">
+      <div className="card p-4 space-y-3">
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="text-sm font-medium">Year</label>
+            <label className="text-sm font-medium text-foreground">Year</label>
             <input
               type="number"
               value={editedData.year}
               onChange={(e) => setEditedData({ ...editedData, year: parseInt(e.target.value) })}
-              className="w-full px-2 py-1 border border-gray-300 rounded"
+              className="input"
             />
           </div>
           <div>
-            <label className="text-sm font-medium">Points</label>
+            <label className="text-sm font-medium text-foreground">Points</label>
             <input
               type="number"
               value={editedData.points}
               onChange={(e) => setEditedData({ ...editedData, points: parseInt(e.target.value) })}
-              className="w-full px-2 py-1 border border-gray-300 rounded"
+              className="input"
             />
           </div>
         </div>
         <div className="flex gap-2">
           <button
             onClick={handleSave}
-            className="flex-1 px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700"
+            className="btn btn-primary flex-1 text-sm"
+            aria-label="Save achievement changes"
           >
             Save
           </button>
           <button
             onClick={() => setIsEditing(false)}
-            className="flex-1 px-3 py-1 bg-gray-300 rounded text-sm hover:bg-gray-400"
+            className="btn btn-muted flex-1 text-sm"
+            aria-label="Cancel editing"
           >
             Cancel
           </button>
@@ -73,11 +75,11 @@ export default function AchievementCard({ achievement }) {
   }
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-4 flex justify-between items-start">
+    <div className="card p-4 flex justify-between items-start">
       <div>
         <div className="flex gap-2 items-center mb-1">
           <span className="font-semibold text-text-primary">{typeLabel}</span>
-          <span className="text-xs bg-gray-100 px-2 py-1 rounded text-text-secondary">
+          <span className="text-xs px-2 py-1 rounded bg-bg-secondary text-text-secondary">
             Group {achievement.weaponGroup}
           </span>
         </div>
@@ -88,13 +90,15 @@ export default function AchievementCard({ achievement }) {
       <div className="flex gap-2">
         <button
           onClick={() => setIsEditing(true)}
-          className="text-blue-600 hover:text-blue-800 text-sm"
+          className="btn btn-muted text-sm"
+          aria-label={`Edit achievement ${achievement.id}`}
         >
           Edit
         </button>
         <button
           onClick={handleDelete}
-          className="text-red-600 hover:text-red-800 text-sm"
+          className="btn btn-muted text-red-600 text-sm"
+          aria-label={`Delete achievement ${achievement.id}`}
         >
           Delete
         </button>
