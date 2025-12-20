@@ -410,66 +410,56 @@ class MedalCalculator {
 
 ```json
 {
-  "exportVersion": "1.0",
-  "exportDate": "2025-12-20T07:32:00Z",
-  "userProfile": {
-    "displayName": "Anna Skytteson",
-    "createdDate": "2025-01-15T10:00:00Z",
-    "weaponGroupPreference": "A"
+  "version": "1.0",
+  "exportDate": "2025-12-20T10:00:00Z",
+  "profile": {
+    "id": "user-123",
+    "name": "John Doe",
+    "createdAt": "2025-01-01T00:00:00Z"
   },
   "achievements": [
     {
-      "id": "gold-series-001",
-      "type": "gold_series",
-      "year": 2025,
-      "weaponGroup": "A",
-      "points": 42,
-      "date": "2025-06-15"
+      "id": "ach-001",
+      "medalId": "medal-gold-100",
+      "type": "competition",
+      "date": "2025-12-15",
+      "score": 95,
+      "notes": "Championship",
+      "createdAt": "2025-12-15T10:00:00Z"
     }
   ],
-  "unlockedMedals": [
+  "filters": [
     {
-      "medalId": "pistol-mark-bronze",
-      "unlockedDate": "2025-01-15",
-      "year": 2025
+      "id": "filter-001",
+      "name": "Rifle Medals",
+      "criteria": { "weapon": "rifle" }
     }
   ]
 }
 ```
 
-### CSV Export (Achievement List)
+### CSV Export Format
 
 ```csv
-Medal ID,Medal Name,Tier,Status,Unlocked Date,Weapon Group,Points/Score
-pistol-mark-bronze,Pistol Mark,Bronze,Unlocked,2025-01-15,A,42
-pistol-mark-silver,Pistol Mark,Silver,Achievable,--,A,38+
-elite-mark-bronze,Elite Mark,Bronze,Locked,--,A,-
+Medal,Type,Date,Score,Position,Weapon,Team,Notes,Status
+Medal Name,competition,2025-12-15,95,,rifle,,Championship,unlocked
+Medal Name,qualification,2025-12-14,285,,pistol,,25m qualification,achievable
 ```
 
----
+### PDF Export
 
-## Future Backend Integration Points
+```
+Medal Progress Report
+────────────────────
+Generated: 2025-12-20
 
-When moving from localStorage to backend API:
+Summary:
+├─ Total Achievements: 45
+├─ Unlocked Medals: 32
+├─ Achievable Medals: 8
+└─ Locked Medals: 5
 
-1. **Authentication**: Add user login, session management
-2. **Sync**: Cloud sync of achievements, conflict resolution
-3. **Real-time updates**: Get competition results from SHB API
-4. **Analytics**: Track medal achievement trends across user base
-5. **Notifications**: Push notifications for milestone achievements
-6. **Social**: Leaderboards, achievements, sharing
-
-The modular data layer makes this transition straightforward—just replace LocalStorageDataManager with ApiDataManager.
-
----
-
-## Data Size & Performance Estimates
-
-- **Medal database**: ~200 medals × ~500 bytes = ~100 KB
-- **User profile**: ~10 KB
-- **Achievement history**: ~1 KB per achievement (typically 10-50 = 10-50 KB)
-- **Total per user**: ~120-200 KB
-- **Local storage limit**: 5-10 MB (browser dependent)
-- **Users per storage**: Thousands without performance issue
-
-**Import/Export**: <1 second even with large history
+Detailed List:
+├─ Medal Name │ Type │ Date │ Score │ Status
+└─ ...
+```

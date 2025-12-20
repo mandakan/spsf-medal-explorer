@@ -5,7 +5,8 @@ const navItems = [
   { path: '/', label: 'Home' },
   { path: '/skill-tree', label: 'Skill Tree' },
   { path: '/medals', label: 'Medals' },
-  { path: '/settings', label: 'Settings' }
+  { path: '/settings', label: 'Settings' },
+  { path: '/data', label: 'Data' }
 ]
 
 export default function Header() {

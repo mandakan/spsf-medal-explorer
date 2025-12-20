@@ -1,0 +1,147 @@
+import { useState } from 'react'
+import * as exportManager from '../utils/exportManager'
+import { downloadFile } from '../utils/fileHandlers'
+
+export default function ExportPanel({ profile }) {
+  const [format, setFormat] = useState('json')
+  const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState(false)
+  const [error, setError] = useState(null)
+
+  const handleExport = async (exportFormat) => {
+    try {
+      setLoading(true)
+      setError(null)
+      let data, filename, mime
+
+      const dateStr = new Date().toISOString().split('T')[0]
+
+      switch (exportFormat) {
+        case 'json': {
+          data = await exportManager.toJSON(profile)
+          filename = `medal-profile-${dateStr}.json`
+          mime = 'application/json'
+          break
+        }
+        case 'csv': {
+          const achievements = profile?.achievements ?? profile?.prerequisites ?? []
+          data = await exportManager.toCSV(achievements)
+          filename = `achievements-${dateStr}.csv`
+          mime = 'text/csv'
+          break
+        }
+        case 'pdf': {
+          data = await exportManager.toPDF(profile)
+          filename = `medal-report-${dateStr}.pdf`
+          mime = 'application/pdf'
+          break
+        }
+        default:
+          throw new Error('Unsupported export format')
+      }
+
+      downloadFile(data, filename, mime)
+      setSuccess(true)
+      setTimeout(() => setSuccess(false), 3000)
+    } catch (err) {
+      console.error('Export error:', err)
+      setError(err.message || 'Export failed')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div className="card p-6">
+      <h2 className="text-xl font-bold text-foreground mb-6">
+        Export Profile
+      </h2>
+
+      {/* Format Selection */}
+      <fieldset className="mb-6 space-y-3">
+        <legend className="text-sm font-medium text-foreground mb-3">
+          Export Format
+        </legend>
+
+        {['json', 'csv', 'pdf'].map((fmt) => (
+          <div key={fmt} className="flex items-center">
+            <input
+              id={`format-${fmt}`}
+              type="radio"
+              name="format"
+              value={fmt}
+              checked={format === fmt}
+              onChange={(e) => setFormat(e.target.value)}
+              className="
+                w-5 h-5 rounded
+                bg-bg-primary border border-border
+                focus-visible:ring-2 focus-visible:ring-primary
+                focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary
+              "
+              aria-label={`Choose ${fmt.toUpperCase()} format`}
+            />
+            <label
+              htmlFor={`format-${fmt}`}
+              className="ml-3 text-base font-medium text-foreground cursor-pointer"
+            >
+              {fmt.toUpperCase()} {getFormatDescription(fmt)}
+            </label>
+          </div>
+        ))}
+      </fieldset>
+
+      {/* Export Button */}
+      <button
+        onClick={() => handleExport(format)}
+        disabled={loading}
+        className="btn btn-primary w-full min-h-[44px]"
+        aria-label={`Export as ${format.toUpperCase()}`}
+      >
+        {loading ? 'Exporting...' : `Export as ${format.toUpperCase()}`}
+      </button>
+
+      {success && (
+        <div
+          className="
+            mt-4 p-3 rounded-lg flex items-center gap-2
+            bg-green-50 text-green-800 dark:bg-green-900/30 dark:text-green-300
+            border border-green-300 dark:border-green-600
+          "
+          role="status"
+          aria-live="polite"
+        >
+          <span aria-hidden="true">✓</span>
+          <span>Exported successfully!</span>
+        </div>
+      )}
+
+      {error && (
+        <div
+          className="
+            mt-4 p-3 rounded-lg flex items-center gap-2
+            bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-300
+            border border-red-300 dark:border-red-600
+          "
+          role="alert"
+          aria-live="assertive"
+        >
+          <span aria-hidden="true">✕</span>
+          <span>{error}</span>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function getFormatDescription(format) {
+  switch (format) {
+    case 'json':
+      return '(Complete profile backup)'
+    case 'csv':
+      return '(Spreadsheet compatible)'
+    case 'pdf':
+      return '(Printable report)'
+    default:
+      return ''
+  }
+}
