@@ -2,25 +2,40 @@ import React, { useMemo, useCallback, useRef, useEffect, useState } from 'react'
 
 function MedalIcon({ iconUrl, alt }) {
   const [loaded, setLoaded] = useState(false)
+  const [errored, setErrored] = useState(false)
   const ref = useRef(null)
+
+  // Accept only URL-like values (http(s), absolute, relative, or data URI)
+  const isUrlLike = (s) => !!s && /^(https?:\/\/|\/|\.{1,2}\/|data:image\/)/.test(s)
+  const validSrc = isUrlLike(iconUrl) ? iconUrl : null
 
   useEffect(() => {
     if (!ref.current) return
     const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        setLoaded(true)
-      }
+      if (entry.isIntersecting) setLoaded(true)
     }, { rootMargin: '200px' })
     observer.observe(ref.current)
     return () => observer.disconnect()
   }, [])
 
+  const showImg = loaded && validSrc && !errored
+
   return (
-    <div ref={ref} className="w-10 h-10 flex items-center justify-center rounded bg-gray-200 dark:bg-slate-700 overflow-hidden">
-      {loaded && iconUrl ? (
-        <img src={iconUrl} alt={alt} className="w-full h-full object-contain" loading="lazy" />
+    <div
+      ref={ref}
+      className="w-10 h-10 flex items-center justify-center rounded bg-gray-200 dark:bg-slate-700 overflow-hidden"
+      aria-hidden="true"
+    >
+      {showImg ? (
+        <img
+          src={validSrc}
+          alt={alt}
+          className="w-full h-full object-contain"
+          loading="lazy"
+          onError={() => setErrored(true)}
+        />
       ) : (
-        <div className="w-6 h-6 bg-gray-300 dark:bg-slate-600 rounded animate-pulse" />
+        <div className="w-6 h-6 bg-gray-300 dark:bg-slate-600 rounded" />
       )}
     </div>
   )
