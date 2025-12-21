@@ -11,18 +11,16 @@ const navItems = [
 
 export default function Header() {
   const location = useLocation()
-  const [open, setOpen] = useState(false)
+  const [openedAtPath, setOpenedAtPath] = useState(null)
+  const open = openedAtPath === location.pathname
 
-  // Close the mobile menu on route change
-  useEffect(() => {
-    setOpen(false)
-  }, [location.pathname])
+  // Derive "open" from the current route to avoid setState in effect
 
   // Allow closing with Escape
   useEffect(() => {
     if (!open) return
     const onKey = (e) => {
-      if (e.key === 'Escape') setOpen(false)
+      if (e.key === 'Escape') setOpenedAtPath(null)
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
@@ -52,7 +50,7 @@ export default function Header() {
             {/* Hamburger (mobile only) */}
             <button
               type="button"
-              onClick={() => setOpen(v => !v)}
+              onClick={() => setOpenedAtPath(cur => (cur === location.pathname ? null : location.pathname))}
               className="sm:hidden inline-flex items-center justify-center h-11 w-11 rounded-md btn btn-muted"
               aria-label="Toggle main menu"
               aria-controls="mobile-primary-nav"
