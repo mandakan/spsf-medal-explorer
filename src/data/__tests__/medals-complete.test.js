@@ -1,4 +1,3 @@
-/* eslint-env jest */
 
 const medalsData = require('../../data/medals.json')
 

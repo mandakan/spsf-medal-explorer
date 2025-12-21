@@ -28,7 +28,7 @@ export default defineConfig([
     },
   },
   {
-    files: ['**/*.test.{js,jsx}', '**/__tests__/**/*.{js,jsx}', 'tests/**/*.{js,jsx}'],
+    files: ['**/*.test.{js,jsx}', '**/*.spec.{js,jsx}', '**/__tests__/**/*.{js,jsx}', 'tests/**/*.{js,jsx}'],
     extends: [
       jest.configs['flat/recommended'],
     ],
