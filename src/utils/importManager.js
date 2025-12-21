@@ -12,18 +12,10 @@ import { readFile } from './fileHandlers'
 
 /**
  * Prefer existing project validator logic if available.
- * Load dynamically without top-level await to keep this module sync-friendly.
+ * Use static imports to avoid mixed static/dynamic import warnings and ensure consistent bundling.
  */
-let InputValidator = null
-let detectDuplicateAchievements = null
-
-// Best-effort async loads; functions below will use these if/when resolved.
-import('../logic/validator.js')
-  .then(mod => { InputValidator = mod?.InputValidator || null })
-  .catch(() => {})
-import('../logic/achievementValidator.js')
-  .then(mod => { detectDuplicateAchievements = mod?.detectDuplicateAchievements || null })
-  .catch(() => {})
+import { InputValidator } from '../logic/validator.js'
+import { detectDuplicateAchievements } from '../logic/achievementValidator.js'
 
 function normalizeAchievementsContainer(parsed) {
   if (Array.isArray(parsed)) {

@@ -4,7 +4,7 @@ import { useAllMedalStatuses } from '../hooks/useMedalCalculator'
 import { useMedalCalculator } from '../hooks/useMedalCalculator'
 import { useProfile } from '../hooks/useProfile'
 import UniversalAchievementLogger from './UniversalAchievementLogger'
-import { UndoRedoProvider } from '../contexts/UndoRedoContext'
+import { UndoRedoProvider } from '../contexts/UndoRedoContext.jsx'
 import { useUnlockGuard } from '../hooks/useUnlockGuard'
 
 export default function MedalDetailModal({ medalId, onClose }) {
