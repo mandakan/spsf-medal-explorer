@@ -14,13 +14,13 @@ jest.mock('react-router-dom', () => {
 
 // Mock providers to pass through children for routing isolation in tests
 jest.mock('../src/contexts/MedalContext', () => ({
-  MedalProvider: ({ children }) => <>{children}</>,
+  MedalProvider: ({ children }) => React.createElement(React.Fragment, null, children),
 }))
 jest.mock('../src/contexts/ProfileContext', () => ({
-  ProfileProvider: ({ children }) => <>{children}</>,
+  ProfileProvider: ({ children }) => React.createElement(React.Fragment, null, children),
 }))
 jest.mock('../src/contexts/CalculatorContext', () => ({
-  CalculatorProvider: ({ children }) => <>{children}</>,
+  CalculatorProvider: ({ children }) => React.createElement(React.Fragment, null, children),
 }))
 
 // Stub Home to avoid requiring MedalContext in this routing test
@@ -39,7 +39,7 @@ import App from '../src/App.jsx'
 
 describe('Routing', () => {
   it('renders app shell without crashing', () => {
-    render(<App />)
+    render(React.createElement(App))
     expect(true).toBe(true)
   })
 })
