@@ -190,6 +190,3 @@ dist/
 .history
 .ionide
 .aider*
-
-# Git hooks
-.husky/
