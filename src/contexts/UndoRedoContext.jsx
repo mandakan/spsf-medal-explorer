@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useMemo } from 'react'
 import { UndoRedoContext } from './undoRedoContext'
+export { UndoRedoContext } from './undoRedoContext'
 
 
 const HISTORY_LIMIT = 200

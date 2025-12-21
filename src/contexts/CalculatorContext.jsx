@@ -1,6 +1,7 @@
 import React from 'react'
 import { CalculatorContext } from './calculatorContext'
 import { useMedalCalculator, useAllMedalStatuses } from '../hooks/useMedalCalculator'
+export { CalculatorContext } from './calculatorContext'
 
 
 export function CalculatorProvider({ children }) {

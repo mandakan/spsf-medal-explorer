@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { UndoRedoContext } from '../contexts/UndoRedoContext.jsx'
+import { UndoRedoContext } from '../contexts/undoRedoContext'
 
 export function useUndoRedo() {
   const context = useContext(UndoRedoContext)

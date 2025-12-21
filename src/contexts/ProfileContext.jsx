@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react'
 import { ProfileContext } from './profileContext'
 import { LocalStorageDataManager } from '../data/localStorage'
 import { UserProfile } from '../models/Profile'
+export { ProfileContext } from './profileContext'
 
 
 export function ProfileProvider({ children }) {
