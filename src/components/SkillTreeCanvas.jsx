@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react'
+import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react'
 import { useMedalDatabase } from '../hooks/useMedalDatabase'
 import { useAllMedalStatuses } from '../hooks/useMedalCalculator'
 import { usePanZoom } from '../hooks/usePanZoom'
@@ -15,11 +15,15 @@ export default function SkillTreeCanvas() {
   const { render } = useCanvasRenderer()
   
   const [selectedMedal, setSelectedMedal] = useState(null)
-  const [layout, setLayout] = useState(null)
+  const layout = useMemo(() => {
+    if (!medalDatabase) return null
+    const medals = medalDatabase.getAllMedals()
+    return generateMedalLayout(medals)
+  }, [medalDatabase])
   const [isDragging, setIsDragging] = useState(false)
 
   // Determine which medals are visible in the current viewport for culling
-  const getVisibleMedalsForCanvas = (canvas, margin = 120) => {
+  const getVisibleMedalsForCanvas = useCallback((canvas, margin = 120) => {
     if (!layout || !canvas) return []
     const width = canvas.width
     const height = canvas.height
@@ -40,16 +44,8 @@ export default function SkillTreeCanvas() {
       }
     }
     return result
-  }
+  }, [layout, panX, panY, scale])
 
-  // Generate layout on first render or when database changes
-  useEffect(() => {
-    if (medalDatabase) {
-      const medals = medalDatabase.getAllMedals()
-      const newLayout = generateMedalLayout(medals)
-      setLayout(newLayout)
-    }
-  }, [medalDatabase])
 
   const draw = useCallback(() => {
     if (!canvasRef.current || !layout || !medalDatabase) return
@@ -86,7 +82,7 @@ export default function SkillTreeCanvas() {
       scale,
       selectedMedal
     )
-  }, [layout, medalDatabase, statuses, panX, panY, scale, selectedMedal, render])
+  }, [getVisibleMedalsForCanvas, layout, medalDatabase, statuses, panX, panY, scale, selectedMedal, render])
 
   // Draw with requestAnimationFrame for smoothness
   useEffect(() => {
