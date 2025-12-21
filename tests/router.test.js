@@ -23,6 +23,12 @@ jest.mock('../src/contexts/CalculatorContext', () => ({
   CalculatorProvider: ({ children }) => <>{children}</>,
 }))
 
+// Stub ProfileSelector to avoid needing ProfileContext in this routing test
+jest.mock('../src/components/ProfileSelector.jsx', () => ({
+  __esModule: true,
+  default: () => null,
+}))
+
 import App from '../src/App.jsx'
 
 describe('Routing', () => {
