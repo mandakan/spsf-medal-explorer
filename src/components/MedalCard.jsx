@@ -1,25 +1,25 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import { useMedalCalculator } from '../hooks/useMedalCalculator'
 
 export default function MedalCard({ medal }) {
   const calculator = useMedalCalculator()
-  const status = useMemo(() => {
+  const status = (() => {
     if (!calculator || !medal?.id) return null
     try {
       return calculator.evaluateMedal(medal.id)
     } catch {
       return null
     }
-  }, [calculator, medal?.id])
+  })()
 
-  const unlockedOn = useMemo(() => {
+  const unlockedOn = (() => {
     if (!calculator || status?.status !== 'unlocked') return null
     try {
       return calculator.getUnlockedDate(medal.id)
     } catch {
       return null
     }
-  }, [calculator, status?.status, medal?.id])
+  })()
 
   const statusDecor = {
     unlocked:
