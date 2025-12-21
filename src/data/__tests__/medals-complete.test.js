@@ -16,13 +16,15 @@ describe('Medals base dataset integrity', () => {
 
   test('prerequisite medal references exist', () => {
     const index = new Set(medalsData.medals.map(m => m.id))
+    const missing = []
     for (const m of medalsData.medals) {
       const prereqs = m.prerequisites || []
       for (const p of prereqs) {
-        if (p.type === 'medal') {
-          expect(index.has(p.medalId)).toBe(true)
+        if (p.type === 'medal' && !index.has(p.medalId)) {
+          missing.push({ medal: m.id, prereq: p.medalId })
         }
       }
     }
+    expect(missing).toHaveLength(0)
   })
 })
