@@ -48,6 +48,8 @@ jobs:
       - name: Build application
         run: npm run build
         continue-on-error: false
+        env:
+          VITE_BASE: /${{ github.event.repository.name }}/
 
       - name: Add SPA fallback
         run: cp dist/index.html dist/404.html
