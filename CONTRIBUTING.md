@@ -497,6 +497,24 @@ Total: ~1.5 hours to be productive
 - [ ] PR description is clear
 - [ ] Related docs updated
 
+## 🪝 Git Hooks (Husky + lint-staged)
+
+To enforce code quality locally, pre-commit hooks run lint-staged:
+- JS/JSX: eslint --fix, then eslint to validate
+- JSON: prettier --write
+- Commits are blocked if any step fails
+
+Post-clone setup:
+```bash
+npm install
+npx husky install
+```
+
+Troubleshooting:
+- If hooks don't run: npx husky install
+- Ensure hook is executable: chmod +x .husky/pre-commit
+- Bypass in emergencies only: git commit --no-verify -m "message"
+
 ## 🙏 Thank You!
 
 Your contributions make this project better. We appreciate:
