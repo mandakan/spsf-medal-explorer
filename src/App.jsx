@@ -15,7 +15,7 @@ function App() {
     <MedalProvider>
       <ProfileProvider>
         <CalculatorProvider>
-          <BrowserRouter>
+          <BrowserRouter basename={import.meta.env.BASE_URL}>
             <Routes>
               <Route path="/" element={<RootLayout />}>
                 <Route index element={<Home />} />
