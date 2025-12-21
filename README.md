@@ -1,5 +1,10 @@
 # Medal Skill-Tree Explorer
 
+[![Lint](https://github.com/mandakan/spsf-medal-explorer/actions/workflows/lint.yml/badge.svg)](https://github.com/mandakan/spsf-medal-explorer/actions/workflows/lint.yml)
+[![Test](https://github.com/mandakan/spsf-medal-explorer/actions/workflows/test.yml/badge.svg)](https://github.com/mandakan/spsf-medal-explorer/actions/workflows/test.yml)
+[![Build](https://github.com/mandakan/spsf-medal-explorer/actions/workflows/build.yml/badge.svg)](https://github.com/mandakan/spsf-medal-explorer/actions/workflows/build.yml)
+[![Deploy](https://github.com/mandakan/spsf-medal-explorer/actions/workflows/deploy.yml/badge.svg)](https://github.com/mandakan/spsf-medal-explorer/actions/workflows/deploy.yml)
+
 A mobile-first web app that helps Swedish shooting enthusiasts explore and track their progression through the SHB (Svenska Pistolskytteförbundet) medal system using an interactive skill-tree visualization inspired by games like Civilization.
 
 ## 🎯 What is This?
