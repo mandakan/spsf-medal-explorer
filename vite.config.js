@@ -22,6 +22,7 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
+    // Note: Using 'terser' requires installing it as a dev dependency. Run: npm i -D terser
     minify: 'terser',
     sourcemap: false,
     chunkSizeWarningLimit: 1000,
