@@ -49,26 +49,19 @@ export default function MedalDetailModal({ medalId, onClose }) {
       .filter(Boolean)
   }, [blocking, medalDatabase])
 
-  if (!medal) return null
-
-  const statusLabel = {
-    unlocked: '🏆 Unlocked',
-    achievable: '🎯 Achievable',
-    locked: '🔒 Locked'
-  }[status?.status] || '🔒 Locked'
-
   const overlayRef = useRef(null)
   const panelRef = useRef(null)
   const prevFocusRef = useRef(null)
   const [mounted, setMounted] = useState(false)
   const titleId = `medal-detail-title-${medalId || 'unknown'}`
-  const underReview = typeof medal?.isUnderReview === 'function' ? medal.isUnderReview() : (medal?.reviewed !== true)
+  const underReview = medal ? (typeof medal.isUnderReview === 'function' ? medal.isUnderReview() : (medal.reviewed !== true)) : false
   const descBaseId = medal?.description ? `medal-detail-desc-${medalId || 'unknown'}` : null
-  const underReviewNoteId = underReview ? `under-review-note-${medal.id}` : null
+  const underReviewNoteId = underReview && medal ? `under-review-note-${medal.id}` : null
   const descId = [descBaseId, underReviewNoteId].filter(Boolean).join(' ') || undefined
 
   // Lock body scroll, set focus, restore focus on close
   useEffect(() => {
+    if (!medal) return
     prevFocusRef.current = typeof document !== 'undefined' ? document.activeElement : null
     const body = typeof document !== 'undefined' ? document.body : null
     const prevOverflow = body ? body.style.overflow : ''
@@ -106,7 +99,16 @@ export default function MedalDetailModal({ medalId, onClose }) {
         }
       }
     }
-  }, [onClose, titleId])
+  }, [onClose, titleId, medal])
+
+  if (!medal) return null
+
+  const statusLabel = {
+    unlocked: '🏆 Unlocked',
+    achievable: '🎯 Achievable',
+    locked: '🔒 Locked'
+  }[status?.status] || '🔒 Locked'
+
 
   // Focus trap inside the panel
   const handleKeyDown = (e) => {
@@ -300,7 +302,7 @@ export default function MedalDetailModal({ medalId, onClose }) {
 
             {medal.description && (
               <div className="mb-4">
-                <p id={descId} className="text-muted-foreground break-words">
+                <p id={descBaseId} className="text-muted-foreground break-words">
                   {medal.description}
                 </p>
               </div>
