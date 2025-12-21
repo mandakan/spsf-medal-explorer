@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import { useAchievementHistory } from '../hooks/useAchievementHistory'
 import AchievementDialog from './AchievementDialog'
 import { getAchievementTypeLabel } from '../utils/labels'

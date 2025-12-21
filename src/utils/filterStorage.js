@@ -1,8 +1,16 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 
 export function useFilterStorage() {
   const storageKey = 'medal-app-filter-presets'
-  const [presets, setPresets] = useState([])
+  const [presets, setPresets] = useState(() => {
+    try {
+      const raw = localStorage.getItem(storageKey)
+      return raw ? JSON.parse(raw) : []
+    } catch (err) {
+      console.error('Failed to load presets:', err)
+      return []
+    }
+  })
 
   const safeLoad = useCallback(() => {
     try {
@@ -18,9 +26,6 @@ export function useFilterStorage() {
     setPresets(safeLoad())
   }, [safeLoad])
 
-  useEffect(() => {
-    reload()
-  }, [reload])
 
   const savePreset = useCallback((name, filters) => {
     try {

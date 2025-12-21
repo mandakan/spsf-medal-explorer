@@ -8,6 +8,7 @@ export function exportCanvasToPNG(canvas, filename = 'skill-tree.png') {
     document.body.removeChild(link)
   } catch (e) {
     // Fallback: open in new tab
+    void e
     window.open(canvas.toDataURL('image/png'), '_blank')
   }
 }

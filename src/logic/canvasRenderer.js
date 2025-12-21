@@ -187,6 +187,7 @@ export function drawMedalNode(ctx, x, y, radius, medal, status, scale) {
 
 export function drawConnection(ctx, x1, y1, x2, y2, type = 'prerequisite', scale) {
   const palette = getThemeColors(ctx?.canvas)
+  void type
   ctx.strokeStyle = palette.connection
   ctx.lineWidth = Math.max(1, 2 / Math.max(scale, 0.001))
   ctx.beginPath()

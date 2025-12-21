@@ -200,7 +200,7 @@ export class LocalStorageDataManager extends DataManager {
         if (typeof crypto !== 'undefined' && crypto.randomUUID) {
           return `user-${crypto.randomUUID()}`
         }
-      } catch (_) {
+      } catch {
         // ignore
       }
       return `user-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`

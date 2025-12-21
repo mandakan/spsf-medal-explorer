@@ -17,12 +17,12 @@ function App() {
         <CalculatorProvider>
           <BrowserRouter>
             <Routes>
-              <Route element={<RootLayout />}>
-                <Route path="/" element={<Home />} />
-                <Route path="/skill-tree" element={<SkillTree />} />
-                <Route path="/medals" element={<MedalsList />} />
-                <Route path="/settings" element={<Settings />} />
-                <Route path="/data" element={<DataBackup />} />
+              <Route path="/" element={<RootLayout />}>
+                <Route index element={<Home />} />
+                <Route path="skill-tree" element={<SkillTree />} />
+                <Route path="medals" element={<MedalsList />} />
+                <Route path="settings" element={<Settings />} />
+                <Route path="data" element={<DataBackup />} />
               </Route>
             </Routes>
           </BrowserRouter>

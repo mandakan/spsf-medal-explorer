@@ -1,4 +1,3 @@
-/* eslint-env jest */
 
 const { validatePrerequisites, summarizeDataSet } = require('../medalDatabase')
 const medalsData = require('../../data/medals.json')

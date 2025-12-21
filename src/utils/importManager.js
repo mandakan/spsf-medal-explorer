@@ -55,7 +55,7 @@ export function parseJSON(content) {
   let parsed
   try {
     parsed = typeof content === 'string' ? JSON.parse(content) : content
-  } catch (e) {
+  } catch {
     throw new Error('Invalid JSON')
   }
   return normalizeAchievementsContainer(parsed)

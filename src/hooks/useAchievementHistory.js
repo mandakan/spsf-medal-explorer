@@ -48,7 +48,7 @@ export function useAchievementHistory() {
           try {
             await profileRemoveAchievement(userId, cur.id)
           } catch {
-            try { await profileRemoveAchievement(cur.id) } catch (e) { /* ignore */ }
+            try { await profileRemoveAchievement(cur.id) } catch { void 0 }
           }
         }
       }
@@ -60,8 +60,8 @@ export function useAchievementHistory() {
         if (typeof profileAddAchievement === 'function') {
           try {
             await profileAddAchievement(new Achievement(tgt))
-          } catch (e) {
-            try { await profileAddAchievement(userId, new Achievement(tgt)) } catch (_) {}
+          } catch {
+            try { await profileAddAchievement(userId, new Achievement(tgt)) } catch { void 0 }
           }
         }
       }
@@ -77,7 +77,7 @@ export function useAchievementHistory() {
         try {
           await profileUpdateAchievement(new Achievement(tgt))
         } catch {
-          try { await profileUpdateAchievement(userId, tgt.id, new Achievement(tgt)) } catch (_) {}
+          try { await profileUpdateAchievement(userId, tgt.id, new Achievement(tgt)) } catch { void 0 }
         }
       }
     }
@@ -188,7 +188,7 @@ export function useAchievementHistory() {
         try {
           await profileRemoveAchievement(currentProfile.userId, achievementId)
           ok = true
-        } catch (_) {}
+        } catch { void 0 }
       }
     }
     if (ok) pushCurrent()

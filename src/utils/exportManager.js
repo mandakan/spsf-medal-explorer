@@ -190,9 +190,10 @@ export async function toQRCode(shareData, options = {}) {
     // ignore
   }
   // Fallback: textual data URL (not a real QR) to avoid crashes in environments without qrcode
+  const hasNodeBuffer = typeof globalThis !== 'undefined' && globalThis.Buffer && typeof globalThis.Buffer.from === 'function'
   const base64 =
-    (typeof Buffer !== 'undefined' && Buffer.from
-      ? Buffer.from(payload, 'utf8').toString('base64')
+    (hasNodeBuffer
+      ? globalThis.Buffer.from(payload, 'utf8').toString('base64')
       : (typeof btoa === 'function'
           ? btoa(unescape(encodeURIComponent(payload)))
           : '')) || ''

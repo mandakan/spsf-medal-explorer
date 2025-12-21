@@ -1,6 +1,7 @@
-import React, { createContext, useState, useCallback, useMemo } from 'react'
+import React, { useState, useCallback, useMemo } from 'react'
+import { UndoRedoContext } from './undoRedoContext'
+export { UndoRedoContext } from './undoRedoContext'
 
-export const UndoRedoContext = createContext(null)
 
 const HISTORY_LIMIT = 200
 

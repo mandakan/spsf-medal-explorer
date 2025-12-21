@@ -4,11 +4,19 @@
  */
 export class DataManager {
   // User Profile Operations
-  async getUserProfile(userId) {
+  /**
+   * Get a user's profile.
+   * @param {string} userId
+   */
+  async getUserProfile() {
     throw new Error('Not implemented')
   }
 
-  async saveUserProfile(profile) {
+  /**
+   * Save a user profile.
+   * @param {object} profile
+   */
+  async saveUserProfile() {
     throw new Error('Not implemented')
   }
 
@@ -16,33 +24,65 @@ export class DataManager {
     throw new Error('Not implemented')
   }
 
-  async deleteProfile(userId) {
+  /**
+   * Delete a user profile.
+   * @param {string} userId
+   */
+  async deleteProfile() {
     throw new Error('Not implemented')
   }
 
   // Achievement Operations
-  async getAchievements(userId) {
+  /**
+   * Get all achievements for a user.
+   * @param {string} userId
+   */
+  async getAchievements() {
     throw new Error('Not implemented')
   }
 
-  async addAchievement(userId, achievement) {
+  /**
+   * Add an achievement for a user.
+   * @param {string} userId
+   * @param {object} achievement
+   */
+  async addAchievement() {
     throw new Error('Not implemented')
   }
 
-  async updateAchievement(userId, achievementId, achievement) {
+  /**
+   * Update an existing achievement.
+   * @param {string} userId
+   * @param {string} achievementId
+   * @param {object} achievement
+   */
+  async updateAchievement() {
     throw new Error('Not implemented')
   }
 
-  async removeAchievement(userId, achievementId) {
+  /**
+   * Remove an achievement.
+   * @param {string} userId
+   * @param {string} achievementId
+   */
+  async removeAchievement() {
     throw new Error('Not implemented')
   }
 
   // Import/Export
-  async exportData(userId) {
+  /**
+   * Export data for a user.
+   * @param {string} userId
+   */
+  async exportData() {
     throw new Error('Not implemented')
   }
 
-  async importData(jsonData) {
+  /**
+   * Import data in JSON format.
+   * @param {string|object} jsonData
+   */
+  async importData() {
     throw new Error('Not implemented')
   }
 }

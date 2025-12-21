@@ -49,31 +49,28 @@ export default function MedalDetailModal({ medalId, onClose }) {
       .filter(Boolean)
   }, [blocking, medalDatabase])
 
-  if (!medal) return null
-
-  const statusLabel = {
-    unlocked: '🏆 Unlocked',
-    achievable: '🎯 Achievable',
-    locked: '🔒 Locked'
-  }[status?.status] || '🔒 Locked'
-
   const overlayRef = useRef(null)
   const panelRef = useRef(null)
   const prevFocusRef = useRef(null)
-  const [mounted, setMounted] = useState(false)
   const titleId = `medal-detail-title-${medalId || 'unknown'}`
-  const underReview = typeof medal?.isUnderReview === 'function' ? medal.isUnderReview() : (medal?.reviewed !== true)
+  const underReview = medal ? (typeof medal.isUnderReview === 'function' ? medal.isUnderReview() : (medal.reviewed !== true)) : false
   const descBaseId = medal?.description ? `medal-detail-desc-${medalId || 'unknown'}` : null
-  const underReviewNoteId = underReview ? `under-review-note-${medal.id}` : null
+  const underReviewNoteId = underReview && medal ? `under-review-note-${medal.id}` : null
   const descId = [descBaseId, underReviewNoteId].filter(Boolean).join(' ') || undefined
 
   // Lock body scroll, set focus, restore focus on close
   useEffect(() => {
+    if (!medal) return
     prevFocusRef.current = typeof document !== 'undefined' ? document.activeElement : null
     const body = typeof document !== 'undefined' ? document.body : null
     const prevOverflow = body ? body.style.overflow : ''
     if (body) body.style.overflow = 'hidden'
-    setMounted(true)
+    // Trigger enter animation without React state to avoid cascading renders
+    const panelEl = panelRef.current
+    if (panelEl) {
+      panelEl.classList.remove('translate-y-full', 'sm:translate-x-full')
+      panelEl.classList.add('translate-y-0', 'sm:translate-x-0')
+    }
 
     // Move focus into the dialog
     const t = setTimeout(() => {
@@ -106,7 +103,16 @@ export default function MedalDetailModal({ medalId, onClose }) {
         }
       }
     }
-  }, [onClose, titleId])
+  }, [onClose, titleId, medal])
+
+  if (!medal) return null
+
+  const statusLabel = {
+    unlocked: '🏆 Unlocked',
+    achievable: '🎯 Achievable',
+    locked: '🔒 Locked'
+  }[status?.status] || '🔒 Locked'
+
 
   // Focus trap inside the panel
   const handleKeyDown = (e) => {
@@ -188,7 +194,7 @@ export default function MedalDetailModal({ medalId, onClose }) {
           'rounded-t-2xl sm:rounded-none sm:rounded-l-2xl',
           // Animation
           'transform transition-transform duration-200 ease-out motion-reduce:transition-none',
-          mounted ? 'translate-y-0 sm:translate-x-0' : 'translate-y-full sm:translate-y-0 sm:translate-x-full',
+          'translate-y-full sm:translate-y-0 sm:translate-x-full',
           // Accessibility
           'focus:outline-none'
         ].join(' ')}
@@ -300,7 +306,7 @@ export default function MedalDetailModal({ medalId, onClose }) {
 
             {medal.description && (
               <div className="mb-4">
-                <p id={descId} className="text-muted-foreground break-words">
+                <p id={descBaseId} className="text-muted-foreground break-words">
                   {medal.description}
                 </p>
               </div>
