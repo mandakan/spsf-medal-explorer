@@ -1,6 +1,6 @@
 import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { MedalProvider } from './contexts/MedalContext'
+import { MedalProvider } from './contexts/MedalContext.jsx'
 import { ProfileProvider } from './contexts/ProfileContext'
 import { CalculatorProvider } from './contexts/CalculatorContext'
 import RootLayout from './layouts/RootLayout'
