@@ -10,7 +10,8 @@ const isUserOrOrgSite = repo.endsWith('.github.io')
 // Base path for GitHub Pages:
 // - In CI: '/repo-name/' (or './' for user/org sites like username.github.io)
 // - Locally: '/'
-const base = isCI ? (isUserOrOrgSite ? './' : `/${repo}/`) : '/'
+const baseFromCI = process.env.VITE_BASE
+const base = baseFromCI != null && baseFromCI !== '' ? baseFromCI : (isCI ? (isUserOrOrgSite ? '/' : `/${repo}/`) : '/')
 
 // https://vitejs.dev/config/
 export default defineConfig({
