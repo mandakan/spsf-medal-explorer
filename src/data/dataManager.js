@@ -4,11 +4,11 @@
  */
 export class DataManager {
   // User Profile Operations
-  async getUserProfile(userId) {
+  async getUserProfile(_userId) {
     throw new Error('Not implemented')
   }
 
-  async saveUserProfile(profile) {
+  async saveUserProfile(_profile) {
     throw new Error('Not implemented')
   }
 
@@ -16,33 +16,33 @@ export class DataManager {
     throw new Error('Not implemented')
   }
 
-  async deleteProfile(userId) {
+  async deleteProfile(_userId) {
     throw new Error('Not implemented')
   }
 
   // Achievement Operations
-  async getAchievements(userId) {
+  async getAchievements(_userId) {
     throw new Error('Not implemented')
   }
 
-  async addAchievement(userId, achievement) {
+  async addAchievement(_userId, _achievement) {
     throw new Error('Not implemented')
   }
 
-  async updateAchievement(userId, achievementId, achievement) {
+  async updateAchievement(_userId, _achievementId, _achievement) {
     throw new Error('Not implemented')
   }
 
-  async removeAchievement(userId, achievementId) {
+  async removeAchievement(_userId, _achievementId) {
     throw new Error('Not implemented')
   }
 
   // Import/Export
-  async exportData(userId) {
+  async exportData(_userId) {
     throw new Error('Not implemented')
   }
 
-  async importData(jsonData) {
+  async importData(_jsonData) {
     throw new Error('Not implemented')
   }
 }
