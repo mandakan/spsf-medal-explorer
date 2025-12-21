@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { MedalContext } from '../contexts/MedalContext'
+import { MedalContext } from '../contexts/medalContext'
 
 /**
  * Custom hook to access medal database

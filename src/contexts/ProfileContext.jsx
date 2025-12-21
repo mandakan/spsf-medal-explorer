@@ -1,9 +1,8 @@
-/* eslint-disable react-refresh/only-export-components */
-import React, { createContext, useState, useCallback } from 'react'
+import React, { useState, useCallback } from 'react'
+import { ProfileContext } from './profileContext'
 import { LocalStorageDataManager } from '../data/localStorage'
 import { UserProfile } from '../models/Profile'
 
-export const ProfileContext = createContext(null)
 
 export function ProfileProvider({ children }) {
   const [storage] = useState(() => new LocalStorageDataManager())

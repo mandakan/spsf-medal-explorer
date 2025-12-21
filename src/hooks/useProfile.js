@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { ProfileContext } from '../contexts/ProfileContext'
+import { ProfileContext } from '../contexts/profileContext'
 
 /**
  * Custom hook to access profile operations

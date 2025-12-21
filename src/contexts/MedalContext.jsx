@@ -1,5 +1,5 @@
-/* eslint-disable react-refresh/only-export-components */
-import React, { createContext, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
+import { MedalContext } from './medalContext'
 import { MedalDatabase } from '../models/Medal'
 import { loadBestAvailableData, validatePrerequisites } from '../utils/medalDatabase'
 
@@ -7,7 +7,6 @@ import { loadBestAvailableData, validatePrerequisites } from '../utils/medalData
  * React context for medal database
  * Provides medal data to all components
  */
-export const MedalContext = createContext(null)
 
 export function MedalProvider({ children }) {
   const [medalDatabase, setMedalDatabase] = useState(null)
