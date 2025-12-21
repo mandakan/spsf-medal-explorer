@@ -23,6 +23,12 @@ jest.mock('../src/contexts/CalculatorContext', () => ({
   CalculatorProvider: ({ children }) => <>{children}</>,
 }))
 
+// Stub Home to avoid requiring MedalContext in this routing test
+jest.mock('../src/pages/Home.jsx', () => ({
+  __esModule: true,
+  default: () => null,
+}))
+
 // Stub ProfileSelector to avoid needing ProfileContext in this routing test
 jest.mock('../src/components/ProfileSelector.jsx', () => ({
   __esModule: true,
