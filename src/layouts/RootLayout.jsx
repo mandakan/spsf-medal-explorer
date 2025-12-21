@@ -1,10 +1,9 @@
 import React from 'react'
-import { Outlet, useLocation } from 'react-router-dom'
+import { Outlet } from 'react-router-dom'
 import Header from '../components/Header'
 import ProfileSelector from '../components/ProfileSelector'
 
 export default function RootLayout() {
-  const location = useLocation()
 
   return (
     <div className="min-h-screen bg-bg-primary">
