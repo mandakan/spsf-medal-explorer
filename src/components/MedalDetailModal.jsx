@@ -52,7 +52,6 @@ export default function MedalDetailModal({ medalId, onClose }) {
   const overlayRef = useRef(null)
   const panelRef = useRef(null)
   const prevFocusRef = useRef(null)
-  const [mounted, setMounted] = useState(false)
   const titleId = `medal-detail-title-${medalId || 'unknown'}`
   const underReview = medal ? (typeof medal.isUnderReview === 'function' ? medal.isUnderReview() : (medal.reviewed !== true)) : false
   const descBaseId = medal?.description ? `medal-detail-desc-${medalId || 'unknown'}` : null
@@ -66,7 +65,12 @@ export default function MedalDetailModal({ medalId, onClose }) {
     const body = typeof document !== 'undefined' ? document.body : null
     const prevOverflow = body ? body.style.overflow : ''
     if (body) body.style.overflow = 'hidden'
-    setMounted(true)
+    // Trigger enter animation without React state to avoid cascading renders
+    const panelEl = panelRef.current
+    if (panelEl) {
+      panelEl.classList.remove('translate-y-full', 'sm:translate-x-full')
+      panelEl.classList.add('translate-y-0', 'sm:translate-x-0')
+    }
 
     // Move focus into the dialog
     const t = setTimeout(() => {
@@ -190,7 +194,7 @@ export default function MedalDetailModal({ medalId, onClose }) {
           'rounded-t-2xl sm:rounded-none sm:rounded-l-2xl',
           // Animation
           'transform transition-transform duration-200 ease-out motion-reduce:transition-none',
-          mounted ? 'translate-y-0 sm:translate-x-0' : 'translate-y-full sm:translate-y-0 sm:translate-x-full',
+          'translate-y-full sm:translate-y-0 sm:translate-x-full',
           // Accessibility
           'focus:outline-none'
         ].join(' ')}
