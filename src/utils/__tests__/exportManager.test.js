@@ -31,16 +31,12 @@ describe('exportManager', () => {
 
   test('toPDF returns bytes (Uint8Array or ArrayBuffer)', async () => {
     const pdfBytes = await toPDF(profile)
-    // Accept ArrayBuffer or Uint8Array or string starting with %PDF
-    if (typeof pdfBytes === 'string') {
-      expect(pdfBytes.startsWith('%PDF')).toBe(true)
-    } else if (pdfBytes instanceof ArrayBuffer) {
-      expect(pdfBytes.byteLength).toBeGreaterThan(0)
-    } else {
-      // Uint8Array
-      expect(pdfBytes).toBeInstanceOf(Uint8Array)
-      expect(pdfBytes.length).toBeGreaterThan(0)
-    }
+    // Validate as: string starting with %PDF OR non-empty ArrayBuffer OR non-empty Uint8Array
+    const isValid =
+      (typeof pdfBytes === 'string' && pdfBytes.startsWith('%PDF')) ||
+      (pdfBytes instanceof ArrayBuffer && pdfBytes.byteLength > 0) ||
+      (pdfBytes instanceof Uint8Array && pdfBytes.length > 0)
+    expect(isValid).toBe(true)
   })
 
   test('toQRCode returns data URL', async () => {
