@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useState, useCallback, useMemo } from 'react'
 
 export const UndoRedoContext = createContext(null)

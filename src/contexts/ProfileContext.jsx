@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useState, useCallback } from 'react'
 import { LocalStorageDataManager } from '../data/localStorage'
 import { UserProfile } from '../models/Profile'

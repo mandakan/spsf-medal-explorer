@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { createContext } from 'react'
 import { useMedalCalculator, useAllMedalStatuses } from '../hooks/useMedalCalculator'
 
