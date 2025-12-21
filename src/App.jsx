@@ -11,11 +11,12 @@ import Settings from './pages/Settings'
 import DataBackup from './pages/DataBackup'
 
 function App() {
+  const base = (typeof window !== 'undefined' && window.__BASE_URL__) || '/'
   return (
     <MedalProvider>
       <ProfileProvider>
         <CalculatorProvider>
-          <BrowserRouter basename={import.meta.env.BASE_URL}>
+          <BrowserRouter basename={base}>
             <Routes>
               <Route path="/" element={<RootLayout />}>
                 <Route index element={<Home />} />
