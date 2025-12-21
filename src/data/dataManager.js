@@ -4,11 +4,19 @@
  */
 export class DataManager {
   // User Profile Operations
-  async getUserProfile(_userId) {
+  /**
+   * Get a user's profile.
+   * @param {string} userId
+   */
+  async getUserProfile() {
     throw new Error('Not implemented')
   }
 
-  async saveUserProfile(_profile) {
+  /**
+   * Save a user profile.
+   * @param {object} profile
+   */
+  async saveUserProfile() {
     throw new Error('Not implemented')
   }
 
@@ -16,33 +24,65 @@ export class DataManager {
     throw new Error('Not implemented')
   }
 
-  async deleteProfile(_userId) {
+  /**
+   * Delete a user profile.
+   * @param {string} userId
+   */
+  async deleteProfile() {
     throw new Error('Not implemented')
   }
 
   // Achievement Operations
-  async getAchievements(_userId) {
+  /**
+   * Get all achievements for a user.
+   * @param {string} userId
+   */
+  async getAchievements() {
     throw new Error('Not implemented')
   }
 
-  async addAchievement(_userId, _achievement) {
+  /**
+   * Add an achievement for a user.
+   * @param {string} userId
+   * @param {object} achievement
+   */
+  async addAchievement() {
     throw new Error('Not implemented')
   }
 
-  async updateAchievement(_userId, _achievementId, _achievement) {
+  /**
+   * Update an existing achievement.
+   * @param {string} userId
+   * @param {string} achievementId
+   * @param {object} achievement
+   */
+  async updateAchievement() {
     throw new Error('Not implemented')
   }
 
-  async removeAchievement(_userId, _achievementId) {
+  /**
+   * Remove an achievement.
+   * @param {string} userId
+   * @param {string} achievementId
+   */
+  async removeAchievement() {
     throw new Error('Not implemented')
   }
 
   // Import/Export
-  async exportData(_userId) {
+  /**
+   * Export data for a user.
+   * @param {string} userId
+   */
+  async exportData() {
     throw new Error('Not implemented')
   }
 
-  async importData(_jsonData) {
+  /**
+   * Import data in JSON format.
+   * @param {string|object} jsonData
+   */
+  async importData() {
     throw new Error('Not implemented')
   }
 }
