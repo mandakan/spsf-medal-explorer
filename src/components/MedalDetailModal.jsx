@@ -13,6 +13,7 @@ export default function MedalDetailModal({ medalId, onClose }) {
   const statuses = useAllMedalStatuses()
   const calculator = useMedalCalculator()
   const { currentProfile } = useProfile()
+  const allowManual = !!currentProfile?.features?.allowManualUnlock
   const medal = medalDatabase?.getMedalById(medalId)
   const [unlockOpen, setUnlockOpen] = useState(false)
   const [showOriginal, setShowOriginal] = useState(false)
@@ -442,7 +443,7 @@ export default function MedalDetailModal({ medalId, onClose }) {
               </div>
             )}
 
-            {status?.status === 'achievable' && currentProfile && (
+            {currentProfile && (status?.status === 'achievable' || (allowManual && status?.status !== 'unlocked')) && (
               <button
                 type="button"
                 onClick={() => setUnlockOpen(true)}

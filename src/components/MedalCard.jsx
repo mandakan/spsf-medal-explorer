@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useMedalCalculator } from '../hooks/useMedalCalculator'
 import UnlockMedalDialog from './UnlockMedalDialog'
+import { useProfile } from '../hooks/useProfile'
 
 export default function MedalCard({ medal }) {
   const calculator = useMedalCalculator()
@@ -38,6 +39,8 @@ export default function MedalCard({ medal }) {
 
   const statusClass = status?.status || 'locked'
   const [unlockOpen, setUnlockOpen] = useState(false)
+  const { currentProfile } = useProfile()
+  const allowManual = !!currentProfile?.features?.allowManualUnlock
 
   return (
     <div
@@ -73,7 +76,7 @@ export default function MedalCard({ medal }) {
         </div>
       )}
 
-      {statusClass === 'achievable' && (
+      {currentProfile && (statusClass === 'achievable' || (allowManual && statusClass !== 'unlocked')) && (
         <div className="mt-3">
           <button
             type="button"
