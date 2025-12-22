@@ -24,14 +24,7 @@ export default function UnlockMedalDialog({ medal, open, onClose }) {
   }, [currentProfile])
   const nowYear = new Date().getFullYear()
 
-  const sameTypePrereqs = useMemo(() => {
-    if (!calculator || !medal) return []
-    try {
-      return calculator.getSameTypePrereqMedalIds(medal)
-    } catch {
-      return []
-    }
-  }, [calculator, medal])
+  
 
   const earliestCountingYear = useMemo(() => {
     if (!calculator || !medal) return null
