@@ -12,7 +12,7 @@ export default function Settings() {
   if (!currentProfile) {
     return (
       <div className="card p-4">
-        <p className="text-foreground">Please select or create a profile first</p>
+        <p className="text-foreground">Välj eller skapa en profil först</p>
       </div>
     )
   }
@@ -21,7 +21,7 @@ export default function Settings() {
     <UndoRedoProvider>
       <div className="space-y-8">
         <div>
-          <h1 className="text-3xl font-bold text-text-primary mb-2">Settings</h1>
+          <h1 className="text-3xl font-bold text-text-primary mb-2">Inställningar</h1>
           <p className="text-text-secondary">
             Profile: <span className="font-semibold">{currentProfile.displayName}</span> (Group {currentProfile.weaponGroupPreference})
           </p>
@@ -30,7 +30,7 @@ export default function Settings() {
         <StatisticsDashboard />
 
         <div className="card p-4">
-          <h2 className="section-title mb-2">Features</h2>
+          <h2 className="section-title mb-2">Funktioner</h2>
           <div className="flex items-start gap-3">
             <input
               id="ft-manual-unlock"
@@ -41,10 +41,10 @@ export default function Settings() {
             />
             <div>
               <label htmlFor="ft-manual-unlock" className="field-label mb-1">
-                Allow manual medal unlock (prerequisites only)
+                Tillåt manuell upplåsning av medaljer (förhandskrav gäller fortfarande)
               </label>
               <p className="field-hint">
-                Enables selecting any year ≥ your birth year to unlock a medal without meeting requirements. Prerequisites and year limits still apply.
+                Du kan låsa upp medaljer vilket år som helst utan att möta kraven för dem. Förhandskrav och årskrav gäller fortfarande.
               </p>
             </div>
           </div>
@@ -59,10 +59,10 @@ export default function Settings() {
             />
             <div>
               <label htmlFor="ft-enforce-current-year" className="field-label mb-1">
-                Require the current year for sustained medals
+                Kräv innevarande år för återkommande medaljer
               </label>
               <p className="field-hint">
-                When enabled, medals that track sustained achievements can only be unlocked for this calendar year.
+                Medaljer som kräver återkommande aktiviteter kan bara låsas upp innevarande kalenderår.
               </p>
             </div>
           </div>
@@ -71,7 +71,7 @@ export default function Settings() {
         <div
           className="flex gap-2 border-b border-border"
           role="tablist"
-          aria-label="Settings sections"
+          aria-label="Inställnings-sektion"
         >
           <button
             role="tab"
@@ -83,7 +83,7 @@ export default function Settings() {
                 : 'border-transparent text-text-secondary hover:text-text-primary'
             }`}
           >
-            Add Achievements
+            Lägg till aktiviteter
           </button>
           <button
             role="tab"
@@ -95,7 +95,7 @@ export default function Settings() {
                 : 'border-transparent text-text-secondary hover:text-text-primary'
             }`}
           >
-            History
+            Historik
           </button>
         </div>
 

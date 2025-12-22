@@ -80,13 +80,13 @@ export default function MedalsList() {
   }, [medals, statuses, filters, query, sortBy])
 
   if (!medalDatabase) {
-    return <div className="text-muted-foreground">Loading medals…</div>
+    return <div className="text-muted-foreground">Laddar medaljer...</div>
   }
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-        <h1 className="text-3xl font-bold text-foreground">Medals</h1>
+        <h1 className="text-3xl font-bold text-foreground">Medaljer</h1>
 
         <div className="flex items-center gap-3">
           <select
@@ -106,7 +106,7 @@ export default function MedalsList() {
             className="btn btn-muted text-sm"
             aria-expanded={showAdvanced}
           >
-            {showAdvanced ? 'Hide' : 'Show'} Advanced Filters
+            {showAdvanced ? 'Hide' : 'Show'} Avancerade Filter
           </button>
         </div>
       </div>
@@ -123,7 +123,7 @@ export default function MedalsList() {
           setFilter('search', suggestion)
         }}
         inputRef={searchInputRef}
-        placeholder="Search medals… (press / to focus)"
+        placeholder="Sök medaljer... (klicka / för fokus)"
       />
 
       <div className="sm:hidden flex justify-end">
@@ -131,11 +131,11 @@ export default function MedalsList() {
           type="button"
           onClick={() => setShowFilters(true)}
           className="btn btn-muted mt-2 min-h-[44px]"
-          aria-label="Open filters"
+          aria-label="Öppna filter"
           aria-haspopup="dialog"
           aria-controls="mobile-filters-sheet"
         >
-          Filters
+          Filter
         </button>
       </div>
 
@@ -165,7 +165,7 @@ export default function MedalsList() {
 
         <MobileBottomSheet
           id="mobile-filters-sheet"
-          title="Filters"
+          title="Filter"
           open={showFilters}
           onClose={() => setShowFilters(false)}
           swipeToDismiss
@@ -187,10 +187,10 @@ export default function MedalsList() {
         <div className="lg:col-span-3">
           {finalResults.length === 0 ? (
             <div className="card p-6 text-center">
-              <p className="text-muted-foreground">No medals match your filters</p>
+              <p className="text-muted-foreground">Inga medaljer matchar dina filter</p>
             </div>
           ) : (
-            <div className="border border-gray-200 dark:border-slate-700 rounded-md overflow-hidden" role="region" aria-label="Medal results">
+            <div className="border border-gray-200 dark:border-slate-700 rounded-md overflow-hidden" role="region" aria-label="Medalj-resultat">
               <MedalList medals={finalResults} height={listHeight} itemSize={60} onSelect={(m) => navigate(`/medals/${m.id}`)} statusesById={statusesById} />
             </div>
           )}
