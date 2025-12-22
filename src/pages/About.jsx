@@ -4,6 +4,7 @@ import { APP_INFO, CURRENT_RULEBOOK_VERSION, getRulebookVersionForYear } from '.
 
 export default function About() {
   const upcoming2026 = getRulebookVersionForYear(2026)
+  const base = import.meta.env.BASE_URL
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6">
@@ -92,7 +93,7 @@ export default function About() {
             Denna applikation är licensierad under <strong>{APP_INFO.LICENSE}</strong>.
             Se <a
               className="text-primary underline underline-offset-2 hover:no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
-              href="/LICENSE"
+              href={`${base}LICENSE`}
               target="_blank"
               rel="noreferrer noopener"
             >LICENSE</a> för fullständig text.

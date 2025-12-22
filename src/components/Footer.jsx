@@ -30,20 +30,20 @@ export default function Footer() {
   const license = APP_INFO?.LICENSE || 'MIT'
   const github = LINKS?.GITHUB_REPO
   const coffee = LINKS?.COFFEE
-  const base = (typeof window !== 'undefined' && window.__BASE_URL__) || '/'
+  const base = import.meta.env.BASE_URL
   const licenseHref = `${base}LICENSE`
 
   return (
     <footer role="contentinfo" className="w-full border-t border-gray-200 dark:border-gray-700 bg-bg-primary">
       <div className="max-w-6xl mx-auto px-4 py-6">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-gray-700 dark:text-gray-300 text-center md:text-left">
+          <p className="text-sm text-text-secondary text-center md:text-left">
             © {year} {author} •{' '}
             <a
               href={licenseHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="underline hover:no-underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              className="text-primary underline underline-offset-2 hover:no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
             >
               Licensierad under {license}
             </a>
@@ -54,7 +54,7 @@ export default function Footer() {
                 href={github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm min-h-[44px] text-blue-700 dark:text-blue-400 hover:underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                className="inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm min-h-[44px] text-primary underline underline-offset-2 hover:no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
                 aria-label="Öppna GitHub-repositoriet"
               >
                 <GitHubIcon />
@@ -66,7 +66,7 @@ export default function Footer() {
                 href={coffee}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm min-h-[44px] text-amber-700 dark:text-amber-400 hover:underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
+                className="inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm min-h-[44px] text-primary underline underline-offset-2 hover:no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
                 aria-label="Köp mig en kaffe"
               >
                 <CoffeeIcon />
