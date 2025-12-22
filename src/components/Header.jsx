@@ -5,6 +5,7 @@ const navItems = [
   { path: '/', label: 'Home' },
   { path: '/skill-tree', label: 'Skill Tree' },
   { path: '/medals', label: 'Medals' },
+  { path: '/about', label: 'Om' },
   { path: '/settings', label: 'Settings' },
   { path: '/data', label: 'Data' }
 ]

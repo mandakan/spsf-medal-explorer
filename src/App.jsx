@@ -9,6 +9,7 @@ import SkillTree from './pages/SkillTree'
 import MedalsList from './pages/MedalsList'
 import Settings from './pages/Settings'
 import DataBackup from './pages/DataBackup'
+import About from './pages/About'
 
 function App() {
   const base = (typeof window !== 'undefined' && window.__BASE_URL__) || '/'
@@ -25,6 +26,7 @@ function App() {
                 <Route path="medals/:id" element={<MedalsList />} />
                 <Route path="settings" element={<Settings />} />
                 <Route path="data" element={<DataBackup />} />
+                <Route path="about" element={<About />} />
               </Route>
             </Routes>
           </BrowserRouter>
