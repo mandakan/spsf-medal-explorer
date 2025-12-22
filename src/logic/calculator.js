@@ -442,7 +442,7 @@ export class MedalCalculator {
     }, {})
   }
 
-  checkSustainedAchievementRequirement(req, index, opts = {}, parentMedal) {
+  checkSustainedAchievementRequirement(req, index, _opts = {}, parentMedal) {
     const minYears = req.yearsOfAchievement ?? 3
 
     // References: prefer explicit (on req or medal); else infer from same-type prerequisite chain
