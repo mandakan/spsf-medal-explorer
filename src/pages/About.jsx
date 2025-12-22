@@ -4,7 +4,7 @@ import { APP_INFO, CURRENT_RULEBOOK_VERSION, getRulebookVersionForYear } from '.
 
 export default function About() {
   const upcoming2026 = getRulebookVersionForYear(2026)
-  const base = import.meta.env.BASE_URL
+  const base = (typeof document !== 'undefined' && document.querySelector('base')?.getAttribute('href')) || '/'
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6">
