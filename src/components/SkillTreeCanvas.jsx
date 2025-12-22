@@ -238,14 +238,15 @@ export default function SkillTreeCanvas() {
         </div>
       </div>
 
-      <div className="border border-gray-200 dark:border-slate-700 rounded-lg overflow-hidden bg-white dark:bg-slate-900" role="region" aria-label="Skill tree canvas">
+      <div className="card overflow-hidden" role="region" aria-label="Skill tree canvas" aria-describedby="skilltree-help">
         <canvas
           ref={canvasRef}
           role="img"
           aria-label="Interactive skill tree canvas"
+          aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown"
           tabIndex={0}
           onKeyDown={handleCanvasKeyDown}
-          className="w-full h-[60vh] sm:h-[600px] bg-bg-primary cursor-grab active:cursor-grabbing"
+          className="w-full h-[60vh] sm:h-[600px] bg-background cursor-grab active:cursor-grabbing"
           onWheel={handleWheel}
           onMouseDown={handleCanvasMouseDown}
           onMouseMove={handleCanvasMouseMove}
@@ -259,8 +260,8 @@ export default function SkillTreeCanvas() {
         />
       </div>
 
-      <div className="text-sm text-text-secondary">
-        <p>💡 Drag to pan • Scroll to zoom • Click medals for details • ⌨️ Arrow keys to pan</p>
+      <div className="text-sm text-muted-foreground">
+        <p id="skilltree-help">💡 Drag to pan • Scroll to zoom • Click medals for details • ⌨️ Arrow keys to pan</p>
       </div>
 
       {selectedMedal && (
