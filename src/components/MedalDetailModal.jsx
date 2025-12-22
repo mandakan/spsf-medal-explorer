@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState, lazy, Suspense } from 'react'
 import { useMedalDatabase } from '../hooks/useMedalDatabase'
 import { useAllMedalStatuses } from '../hooks/useMedalCalculator'
 import { useMedalCalculator } from '../hooks/useMedalCalculator'
@@ -6,7 +6,7 @@ import { useProfile } from '../hooks/useProfile'
 import UniversalAchievementLogger from './UniversalAchievementLogger'
 import { UndoRedoProvider } from '../contexts/UndoRedoContext.jsx'
 import { useUnlockGuard } from '../hooks/useUnlockGuard'
-import ReactMarkdown from 'react-markdown'
+const Markdown = lazy(() => import('react-markdown'))
 import { useNavigate } from 'react-router-dom'
 
 export default function MedalDetailModal({ medalId, onClose }) {
@@ -379,7 +379,9 @@ export default function MedalDetailModal({ medalId, onClose }) {
                 {showOriginal && (
                   <div className="px-3 pb-3">
                     <div className="text-sm text-foreground break-words">
-                      <ReactMarkdown>{medal.requirementsOriginal}</ReactMarkdown>
+                      <Suspense fallback={null}>
+                        <Markdown>{medal.requirementsOriginal}</Markdown>
+                      </Suspense>
                     </div>
                   </div>
                 )}
