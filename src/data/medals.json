@@ -552,7 +552,7 @@
       "type": "field_mark",
       "tier": "silver",
       "name": "Fältskyttemärket - Silver",
-      "displayName": "Field Mark - Silver",
+      "displayName": "Fältskyttemärket - Silver",
       "color": "#C0C0C0",
       "icon": "field-silver",
       "prerequisites": [{ "type": "medal", "medalId": "field-mark-bronze" }],
@@ -579,7 +579,7 @@
       "type": "field_mark",
       "tier": "gold",
       "name": "Fältskyttemärket - Guld",
-      "displayName": "Field Mark - Gold",
+      "displayName": "Fältskyttemärket - Guld",
       "color": "#FFD700",
       "icon": "field-gold",
       "prerequisites": [{ "type": "medal", "medalId": "field-mark-silver" }],
@@ -606,7 +606,7 @@
       "type": "field_mark",
       "tier": "star_1",
       "name": "Fältskyttemärket - Guld med en stjärna",
-      "displayName": "Field Mark - Gold ★",
+      "displayName": "Fältskyttemärket - Guld med en stjärna",
       "color": "#FFD700",
       "icon": "field-gold-star-1",
       "prerequisites": [{ "type": "medal", "medalId": "field-mark-gold" }],
@@ -627,7 +627,7 @@
       "type": "field_mark",
       "tier": "star_2",
       "name": "Fältskyttemärket - Guld med två stjärnor",
-      "displayName": "Field Mark - Gold ★★",
+      "displayName": "Fältskyttemärket - Guld med två stjärnor",
       "color": "#FFD700",
       "icon": "field-gold-star-2",
       "prerequisites": [
@@ -650,7 +650,7 @@
       "type": "field_mark",
       "tier": "star_3",
       "name": "Fältskyttemärket - Guld med tre stjärnor",
-      "displayName": "Field Mark - Gold ★★★",
+      "displayName": "Fältskyttemärket - Guld med tre stjärnor",
       "color": "#FFD700",
       "icon": "field-gold-star-3",
       "prerequisites": [
@@ -673,7 +673,7 @@
       "type": "field_mark",
       "tier": "gold_wreath",
       "name": "Fältskyttemärket - Guld med kvistar",
-      "displayName": "Field Mark - Gold with Wreath",
+      "displayName": "Fältskyttemärket - Guld med kvistar",
       "color": "#FFD700",
       "icon": "field-gold-wreath",
       "prerequisites": [
@@ -696,7 +696,7 @@
       "type": "field_mark",
       "tier": "gold_wreath_star_1",
       "name": "Fältskyttemärket - Guld med kvistar och en stjärna",
-      "displayName": "Field Mark - Gold Wreath ★",
+      "displayName": "Fältskyttemärket - Guld med kvistar och en stjärna",
       "color": "#FFD700",
       "icon": "field-gold-wreath-star-1",
       "prerequisites": [
@@ -719,7 +719,7 @@
       "type": "field_mark",
       "tier": "gold_wreath_star_2",
       "name": "Fältskyttemärket - Guld med kvistar och två stjärnor",
-      "displayName": "Field Mark - Gold Wreath ★★",
+      "displayName": "Fältskyttemärket - Guld med kvistar och två stjärnor",
       "color": "#FFD700",
       "icon": "field-gold-wreath-star-2",
       "prerequisites": [
@@ -742,7 +742,7 @@
       "type": "field_mark",
       "tier": "gold_wreath_star_3",
       "name": "Fältskyttemärket - Guld med kvistar och tre stjärnor",
-      "displayName": "Field Mark - Gold Wreath ★★★",
+      "displayName": "Fältskyttemärket - Guld med kvistar och tre stjärnor",
       "color": "#FFD700",
       "icon": "field-gold-wreath-star-3",
       "prerequisites": [
@@ -765,7 +765,7 @@
       "type": "championship_mark",
       "tier": "bronze",
       "name": "Mästarmerket - Brons",
-      "displayName": "Championship Mark - Bronze",
+      "displayName": "Mästarmerket - Brons",
       "color": "#CD7F32",
       "icon": "championship-bronze",
       "prerequisites": [{ "type": "medal", "medalId": "pistol-mark-gold" }],
@@ -799,7 +799,7 @@
       "type": "championship_mark",
       "tier": "silver",
       "name": "Mästarmerket - Silver",
-      "displayName": "Championship Mark - Silver",
+      "displayName": "Mästarmerket - Silver",
       "color": "#C0C0C0",
       "icon": "championship-silver",
       "prerequisites": [
@@ -821,7 +821,7 @@
       "type": "championship_mark",
       "tier": "gold",
       "name": "Mästarmerket - Guld",
-      "displayName": "Championship Mark - Gold",
+      "displayName": "Mästarmerket - Guld",
       "color": "#FFD700",
       "icon": "championship-gold",
       "prerequisites": [
@@ -843,7 +843,7 @@
       "type": "championship_mark",
       "tier": "gold_star_1",
       "name": "Mästarmerket - Guld med en stjärna",
-      "displayName": "Championship Mark - Gold ★",
+      "displayName": "Mästarmerket - Guld med en stjärna",
       "color": "#FFD700",
       "icon": "championship-gold-star-1",
       "prerequisites": [
@@ -866,7 +866,7 @@
       "type": "championship_mark",
       "tier": "gold_star_2",
       "name": "Mästarmerket - Guld med två stjärnor",
-      "displayName": "Championship Mark - Gold ★★",
+      "displayName": "Mästarmerket - Guld med två stjärnor",
       "color": "#FFD700",
       "icon": "championship-gold-star-2",
       "prerequisites": [
@@ -889,7 +889,7 @@
       "type": "championship_mark",
       "tier": "gold_star_3",
       "name": "Mästarmerket - Guld med tre stjärnor",
-      "displayName": "Championship Mark - Gold ★★★",
+      "displayName": "Mästarmerket - Guld med tre stjärnor",
       "color": "#FFD700",
       "icon": "championship-gold-star-3",
       "prerequisites": [
@@ -912,7 +912,7 @@
       "type": "precision_mark",
       "tier": "bronze",
       "name": "Precisionsskyttemärket - Brons",
-      "displayName": "Precision Mark - Bronze",
+      "displayName": "Precisionsskyttemärket - Brons",
       "color": "#CD7F32",
       "icon": "precision-bronze",
       "prerequisites": [
@@ -944,7 +944,7 @@
       "type": "precision_mark",
       "tier": "silver",
       "name": "Precisionsskyttemärket - Silver",
-      "displayName": "Precision Mark - Silver",
+      "displayName": "Precisionsskyttemärket - Silver",
       "color": "#C0C0C0",
       "icon": "precision-silver",
       "prerequisites": [
@@ -971,7 +971,7 @@
       "type": "precision_mark",
       "tier": "gold",
       "name": "Precisionsskyttemärket - Guld",
-      "displayName": "Precision Mark - Gold",
+      "displayName": "Precisionsskyttemärket - Guld",
       "color": "#FFD700",
       "icon": "precision-gold",
       "prerequisites": [
@@ -998,7 +998,7 @@
       "type": "precision_mark",
       "tier": "star_1",
       "name": "Precisionsskyttemärket - Guld med en stjärna",
-      "displayName": "Precision Mark - Gold ★",
+      "displayName": "Precisionsskyttemärket - Guld med en stjärna",
       "color": "#FFD700",
       "icon": "precision-gold-star-1",
       "prerequisites": [{ "type": "medal", "medalId": "precision-mark-gold" }],
@@ -1019,7 +1019,7 @@
       "type": "precision_mark",
       "tier": "star_2",
       "name": "Precisionsskyttemärket - Guld med två stjärnor",
-      "displayName": "Precision Mark - Gold ★★",
+      "displayName": "Precisionsskyttemärket - Guld med två stjärnor",
       "color": "#FFD700",
       "icon": "precision-gold-star-2",
       "prerequisites": [
@@ -1042,7 +1042,7 @@
       "type": "precision_mark",
       "tier": "star_3",
       "name": "Precisionsskyttemärket - Guld med tre stjärnor",
-      "displayName": "Precision Mark - Gold ★★★",
+      "displayName": "Precisionsskyttemärket - Guld med tre stjärnor",
       "color": "#FFD700",
       "icon": "precision-gold-star-3",
       "prerequisites": [
@@ -1065,7 +1065,7 @@
       "type": "skis_mark",
       "tier": "bronze",
       "name": "Skidskyttemärket - Brons",
-      "displayName": "Skis Shooting Mark - Bronze",
+      "displayName": "Skidskyttemärket - Brons",
       "color": "#CD7F32",
       "icon": "skis-bronze",
       "prerequisites": [{ "type": "medal", "medalId": "pistol-mark-bronze" }],
@@ -1090,7 +1090,7 @@
       "type": "skis_mark",
       "tier": "silver",
       "name": "Skidskyttemärket - Silver",
-      "displayName": "Skis Shooting Mark - Silver",
+      "displayName": "Skidskyttemärket - Silver",
       "color": "#C0C0C0",
       "icon": "skis-silver",
       "prerequisites": [{ "type": "medal", "medalId": "skis-mark-bronze" }],
@@ -1115,7 +1115,7 @@
       "type": "skis_mark",
       "tier": "gold",
       "name": "Skidskyttemärket - Guld",
-      "displayName": "Skis Shooting Mark - Gold",
+      "displayName": "Skidskyttemärket - Guld",
       "color": "#FFD700",
       "icon": "skis-gold",
       "prerequisites": [
@@ -1142,7 +1142,7 @@
       "type": "skis_mark",
       "tier": "star_1",
       "name": "Skidskyttemärket - Guld med en stjärna",
-      "displayName": "Skis Shooting Mark - Gold ★",
+      "displayName": "Skidskyttemärket - Guld med en stjärna",
       "color": "#FFD700",
       "icon": "skis-gold-star-1",
       "prerequisites": [{ "type": "medal", "medalId": "skis-mark-gold" }],
@@ -1163,7 +1163,7 @@
       "type": "skis_mark",
       "tier": "star_2",
       "name": "Skidskyttemärket - Guld med två stjärnor",
-      "displayName": "Skis Shooting Mark - Gold ★★",
+      "displayName": "Skidskyttemärket - Guld med två stjärnor",
       "color": "#FFD700",
       "icon": "skis-gold-star-2",
       "prerequisites": [
@@ -1186,7 +1186,7 @@
       "type": "skis_mark",
       "tier": "star_3",
       "name": "Skidskyttemärket - Guld med tre stjärnor",
-      "displayName": "Skis Shooting Mark - Gold ★★★",
+      "displayName": "Skidskyttemärket - Guld med tre stjärnor",
       "color": "#FFD700",
       "icon": "skis-gold-star-3",
       "prerequisites": [
@@ -1209,7 +1209,7 @@
       "type": "skis_mark",
       "tier": "gold_enamel",
       "name": "Skidskyttemärket - Guld med blå emalj",
-      "displayName": "Skis Shooting Mark - Gold with Blue Enamel",
+      "displayName": "Skidskyttemärket - Guld med blå emalj",
       "color": "#FFD700",
       "icon": "skis-gold-enamel",
       "prerequisites": [
@@ -1232,7 +1232,7 @@
       "type": "skis_mark",
       "tier": "gold_enamel_star_1",
       "name": "Skidskyttemärket - Guld med blå emalj och en stjärna",
-      "displayName": "Skis Shooting Mark - Gold Enamel ★",
+      "displayName": "Skidskyttemärket - Guld med blå emalj och en stjärna",
       "color": "#FFD700",
       "icon": "skis-gold-enamel-star-1",
       "prerequisites": [
@@ -1255,7 +1255,7 @@
       "type": "skis_mark",
       "tier": "gold_enamel_star_2",
       "name": "Skidskyttemärket - Guld med blå emalj och två stjärnor",
-      "displayName": "Skis Shooting Mark - Gold Enamel ★★",
+      "displayName": "Skidskyttemärket - Guld med blå emalj och två stjärnor",
       "color": "#FFD700",
       "icon": "skis-gold-enamel-star-2",
       "prerequisites": [
@@ -1278,7 +1278,7 @@
       "type": "skis_mark",
       "tier": "gold_enamel_star_3",
       "name": "Skidskyttemärket - Guld med blå emalj och tre stjärnor",
-      "displayName": "Skis Shooting Mark - Gold Enamel ★★★",
+      "displayName": "Skidskyttemärket - Guld med blå emalj och tre stjärnor",
       "color": "#FFD700",
       "icon": "skis-gold-enamel-star-3",
       "prerequisites": [
@@ -1301,7 +1301,7 @@
       "type": "spring_running_mark",
       "tier": "bronze",
       "name": "Springskyttemärket - Brons",
-      "displayName": "Spring Running Mark - Bronze",
+      "displayName": "Springskyttemärket - Brons",
       "color": "#CD7F32",
       "icon": "spring-bronze",
       "prerequisites": [{ "type": "medal", "medalId": "pistol-mark-bronze" }],
@@ -1326,7 +1326,7 @@
       "type": "spring_running_mark",
       "tier": "silver",
       "name": "Springskyttemärket - Silver",
-      "displayName": "Spring Running Mark - Silver",
+      "displayName": "Springskyttemärket - Silver",
       "color": "#C0C0C0",
       "icon": "spring-silver",
       "prerequisites": [{ "type": "medal", "medalId": "spring-mark-bronze" }],
@@ -1351,7 +1351,7 @@
       "type": "spring_running_mark",
       "tier": "gold",
       "name": "Springskyttemärket - Guld",
-      "displayName": "Spring Running Mark - Gold",
+      "displayName": "Springskyttemärket - Guld",
       "color": "#FFD700",
       "icon": "spring-gold",
       "prerequisites": [
@@ -1378,7 +1378,7 @@
       "type": "spring_running_mark",
       "tier": "star_1",
       "name": "Springskyttemärket - Guld med en stjärna",
-      "displayName": "Spring Running Mark - Gold ★",
+      "displayName": "Springskyttemärket - Guld med en stjärna",
       "color": "#FFD700",
       "icon": "spring-gold-star-1",
       "prerequisites": [{ "type": "medal", "medalId": "spring-mark-gold" }],
@@ -1399,7 +1399,7 @@
       "type": "spring_running_mark",
       "tier": "star_2",
       "name": "Springskyttemärket - Guld med två stjärnor",
-      "displayName": "Spring Running Mark - Gold ★★",
+      "displayName": "Springskyttemärket - Guld med två stjärnor",
       "color": "#FFD700",
       "icon": "spring-gold-star-2",
       "prerequisites": [
@@ -1422,7 +1422,7 @@
       "type": "spring_running_mark",
       "tier": "star_3",
       "name": "Springskyttemärket - Guld med tre stjärnor",
-      "displayName": "Spring Running Mark - Gold ★★★",
+      "displayName": "Springskyttemärket - Guld med tre stjärnor",
       "color": "#FFD700",
       "icon": "spring-gold-star-3",
       "prerequisites": [
@@ -1445,7 +1445,7 @@
       "type": "spring_running_mark",
       "tier": "gold_enamel",
       "name": "Springskyttemärket - Guld med blå emalj",
-      "displayName": "Spring Running Mark - Gold with Blue Enamel",
+      "displayName": "Springskyttemärket - Guld med blå emalj",
       "color": "#FFD700",
       "icon": "spring-gold-enamel",
       "prerequisites": [
@@ -1468,7 +1468,7 @@
       "type": "spring_running_mark",
       "tier": "gold_enamel_star_1",
       "name": "Springskyttemärket - Guld med blå emalj och en stjärna",
-      "displayName": "Spring Running Mark - Gold Enamel ★",
+      "displayName": "Springskyttemärket - Guld med blå emalj och en stjärna",
       "color": "#FFD700",
       "icon": "spring-gold-enamel-star-1",
       "prerequisites": [
@@ -1491,7 +1491,7 @@
       "type": "spring_running_mark",
       "tier": "gold_enamel_star_2",
       "name": "Springskyttemärket - Guld med blå emalj och två stjärnor",
-      "displayName": "Spring Running Mark - Gold Enamel ★★",
+      "displayName": "Springskyttemärket - Guld med blå emalj och två stjärnor",
       "color": "#FFD700",
       "icon": "spring-gold-enamel-star-2",
       "prerequisites": [
@@ -1514,7 +1514,7 @@
       "type": "spring_running_mark",
       "tier": "gold_enamel_star_3",
       "name": "Springskyttemärket - Guld med blå emalj och tre stjärnor",
-      "displayName": "Spring Running Mark - Gold Enamel ★★★",
+      "displayName": "Springskyttemärket - Guld med blå emalj och tre stjärnor",
       "color": "#FFD700",
       "icon": "spring-gold-enamel-star-3",
       "prerequisites": [
@@ -1537,7 +1537,7 @@
       "type": "national_full_match_mark",
       "tier": "bronze",
       "name": "Märke i Nationell Helmatch - Brons",
-      "displayName": "National Full Match Mark - Bronze",
+      "displayName": "Märke i Nationell Helmatch - Brons",
       "color": "#CD7F32",
       "icon": "national-full-bronze",
       "prerequisites": [{ "type": "medal", "medalId": "pistol-mark-bronze" }],
@@ -1563,7 +1563,7 @@
       "type": "national_full_match_mark",
       "tier": "silver",
       "name": "Märke i Nationell Helmatch - Silver",
-      "displayName": "National Full Match Mark - Silver",
+      "displayName": "Märke i Nationell Helmatch - Silver",
       "color": "#C0C0C0",
       "icon": "national-full-silver",
       "prerequisites": [
@@ -1591,7 +1591,7 @@
       "type": "national_full_match_mark",
       "tier": "gold",
       "name": "Märke i Nationell Helmatch - Guld",
-      "displayName": "National Full Match Mark - Gold",
+      "displayName": "Märke i Nationell Helmatch - Guld",
       "color": "#FFD700",
       "icon": "national-full-gold",
       "prerequisites": [
@@ -1619,7 +1619,7 @@
       "type": "national_full_match_mark",
       "tier": "star_1",
       "name": "Märke i Nationell Helmatch - Guld med en stjärna",
-      "displayName": "National Full Match Mark - Gold ★",
+      "displayName": "Märke i Nationell Helmatch - Guld med en stjärna",
       "color": "#FFD700",
       "icon": "national-full-gold-star-1",
       "prerequisites": [
@@ -1642,7 +1642,7 @@
       "type": "national_full_match_mark",
       "tier": "star_2",
       "name": "Märke i Nationell Helmatch - Guld med två stjärnor",
-      "displayName": "National Full Match Mark - Gold ★★",
+      "displayName": "Märke i Nationell Helmatch - Guld med två stjärnor",
       "color": "#FFD700",
       "icon": "national-full-gold-star-2",
       "prerequisites": [
@@ -1665,7 +1665,7 @@
       "type": "national_full_match_mark",
       "tier": "star_3",
       "name": "Märke i Nationell Helmatch - Guld med tre stjärnor",
-      "displayName": "National Full Match Mark - Gold ★★★",
+      "displayName": "Märke i Nationell Helmatch - Guld med tre stjärnor",
       "color": "#FFD700",
       "icon": "national-full-gold-star-3",
       "prerequisites": [
@@ -1688,7 +1688,7 @@
       "type": "military_fast_match_mark",
       "tier": "bronze",
       "name": "Militär Snabbmatchmärket - Brons",
-      "displayName": "Military Fast Match Mark - Bronze",
+      "displayName": "Militär Snabbmatchmärket - Brons",
       "color": "#CD7F32",
       "icon": "military-fast-bronze",
       "prerequisites": [{ "type": "medal", "medalId": "pistol-mark-bronze" }],
@@ -1715,7 +1715,7 @@
       "type": "military_fast_match_mark",
       "tier": "silver",
       "name": "Militär Snabbmatchmärket - Silver",
-      "displayName": "Military Fast Match Mark - Silver",
+      "displayName": "Militär Snabbmatchmärket - Silver",
       "color": "#C0C0C0",
       "icon": "military-fast-silver",
       "prerequisites": [
@@ -1744,7 +1744,7 @@
       "type": "military_fast_match_mark",
       "tier": "gold",
       "name": "Militär Snabbmatchmärket - Guld",
-      "displayName": "Military Fast Match Mark - Gold",
+      "displayName": "Militär Snabbmatchmärket - Guld",
       "color": "#FFD700",
       "icon": "military-fast-gold",
       "prerequisites": [
@@ -1773,7 +1773,7 @@
       "type": "military_fast_match_mark",
       "tier": "star_1",
       "name": "Militär Snabbmatchmärket - Guld med en stjärna",
-      "displayName": "Military Fast Match Mark - Gold ★",
+      "displayName": "Militär Snabbmatchmärket - Guld med en stjärna",
       "color": "#FFD700",
       "icon": "military-fast-gold-star-1",
       "prerequisites": [
@@ -1796,7 +1796,7 @@
       "type": "military_fast_match_mark",
       "tier": "star_2",
       "name": "Militär Snabbmatchmärket - Guld med två stjärnor",
-      "displayName": "Military Fast Match Mark - Gold ★★",
+      "displayName": "Militär Snabbmatchmärket - Guld med två stjärnor",
       "color": "#FFD700",
       "icon": "military-fast-gold-star-2",
       "prerequisites": [
@@ -1819,7 +1819,7 @@
       "type": "military_fast_match_mark",
       "tier": "star_3",
       "name": "Militär Snabbmatchmärket - Guld med tre stjärnor",
-      "displayName": "Military Fast Match Mark - Gold ★★★",
+      "displayName": "Militär Snabbmatchmärket - Guld med tre stjärnor",
       "color": "#FFD700",
       "icon": "military-fast-gold-star-3",
       "prerequisites": [
@@ -2005,7 +2005,7 @@
       "type": "air_pistol_mark",
       "tier": "annual_wreath",
       "name": "Årtalsmärke luftpistol med krans",
-      "displayName": "luftpistol Mark - Annual Wreath",
+      "displayName": "Årtalsmärke luftpistol med krans",
       "color": "#FFD700",
       "icon": "air-pistol-annual-wreath",
       "prerequisites": [
@@ -2028,7 +2028,7 @@
       "type": "air_pistol_mark",
       "tier": "annual_wreath_star_1",
       "name": "Årtalsmärke luftpistol med krans och en stjärna",
-      "displayName": "luftpistol Mark - Annual Wreath ★",
+      "displayName": "Årtalsmärke luftpistol med krans och en stjärna",
       "color": "#FFD700",
       "icon": "air-pistol-annual-wreath-star-1",
       "prerequisites": [
@@ -2051,7 +2051,7 @@
       "type": "air_pistol_mark",
       "tier": "annual_wreath_star_2",
       "name": "Årtalsmärke luftpistol med krans och två stjärnor",
-      "displayName": "luftpistol Mark - Annual Wreath ★★",
+      "displayName": "Årtalsmärke luftpistol med krans och två stjärnor",
       "color": "#FFD700",
       "icon": "air-pistol-annual-wreath-star-2",
       "prerequisites": [
@@ -2074,7 +2074,7 @@
       "type": "air_pistol_mark",
       "tier": "annual_wreath_star_3",
       "name": "Årtalsmärke luftpistol med krans och tre stjärnor",
-      "displayName": "luftpistol Mark - Annual Wreath ★★★",
+      "displayName": "Årtalsmärke luftpistol med krans och tre stjärnor",
       "color": "#FFD700",
       "icon": "air-pistol-annual-wreath-star-3",
       "prerequisites": [
@@ -2125,7 +2125,7 @@
       "type": "pistol_mark",
       "tier": "star_2",
       "name": "Lägre årtalsmärket med två stjärnor",
-      "displayName": "Lower Annual Mark - ★★",
+      "displayName": "Lägre årtalsmärket med två stjärnor",
       "color": "#FFD700",
       "icon": "lower-annual-star-2",
       "prerequisites": [
@@ -2148,7 +2148,7 @@
       "type": "pistol_mark",
       "tier": "star_3",
       "name": "Lägre årtalsmärket med tre stjärnor",
-      "displayName": "Lower Annual Mark - ★★★",
+      "displayName": "Lägre årtalsmärket med tre stjärnor",
       "color": "#FFD700",
       "icon": "lower-annual-star-3",
       "prerequisites": [
@@ -2171,7 +2171,7 @@
       "type": "pistol_mark",
       "tier": "bronze",
       "name": "Högre årtalsmärket - Brons",
-      "displayName": "Higher Annual Mark - Bronze",
+      "displayName": "Högre årtalsmärket - Brons",
       "color": "#CD7F32",
       "icon": "higher-annual-bronze",
       "requirements_original": "3 years of **Gold-level Pistol Mark** achievement.",
@@ -2201,7 +2201,7 @@
       "type": "pistol_mark",
       "tier": "silver",
       "name": "Högre årtalsmärket - Silver",
-      "displayName": "Higher Annual Mark - Silver",
+      "displayName": "Högre årtalsmärket - Silver",
       "color": "#C0C0C0",
       "icon": "higher-annual-silver",
       "prerequisites": [
@@ -2224,7 +2224,7 @@
       "type": "pistol_mark",
       "tier": "gold",
       "name": "Högre årtalsmärket - Guld",
-      "displayName": "Higher Annual Mark - Gold",
+      "displayName": "Högre årtalsmärket - Guld",
       "color": "#FFD700",
       "icon": "higher-annual-gold",
       "prerequisites": [
@@ -2247,7 +2247,7 @@
       "type": "pistol_mark",
       "tier": "gold_star_1",
       "name": "Högre årtalsmärket - Guld med en stjärna",
-      "displayName": "Higher Annual Mark - Gold ★",
+      "displayName": "Högre årtalsmärket - Guld med en stjärna",
       "color": "#FFD700",
       "icon": "higher-annual-gold-star-1",
       "prerequisites": [
@@ -2270,7 +2270,7 @@
       "type": "pistol_mark",
       "tier": "gold_star_2",
       "name": "Högre årtalsmärket - Guld med två stjärnor",
-      "displayName": "Higher Annual Mark - Gold ★★",
+      "displayName": "Högre årtalsmärket - Guld med två stjärnor",
       "color": "#FFD700",
       "icon": "higher-annual-gold-star-2",
       "prerequisites": [
@@ -2293,7 +2293,7 @@
       "type": "pistol_mark",
       "tier": "gold_star_3",
       "name": "Högre årtalsmärket - Guld med tre stjärnor",
-      "displayName": "Higher Annual Mark - Gold ★★★",
+      "displayName": "Högre årtalsmärket - Guld med tre stjärnor",
       "color": "#FFD700",
       "icon": "higher-annual-gold-star-3",
       "prerequisites": [
@@ -2316,7 +2316,7 @@
       "type": "pistol_mark",
       "tier": "gold_wreath",
       "name": "Högre årtalsmärket - Guld med krans",
-      "displayName": "Higher Annual Mark - Gold Wreath",
+      "displayName": "Högre årtalsmärket - Guld med krans",
       "color": "#FFD700",
       "icon": "higher-annual-gold-wreath",
       "prerequisites": [
@@ -2339,7 +2339,7 @@
       "type": "pistol_mark",
       "tier": "gold_wreath_star_1",
       "name": "Högre årtalsmärket - Guld med krans och en stjärna",
-      "displayName": "Higher Annual Mark - Gold Wreath ★",
+      "displayName": "Högre årtalsmärket - Guld med krans och en stjärna",
       "color": "#FFD700",
       "icon": "higher-annual-gold-wreath-star-1",
       "prerequisites": [
@@ -2362,7 +2362,7 @@
       "type": "pistol_mark",
       "tier": "gold_wreath_star_2",
       "name": "Högre årtalsmärket - Guld med krans och två stjärnor",
-      "displayName": "Higher Annual Mark - Gold Wreath ★★",
+      "displayName": "Högre årtalsmärket - Guld med krans och två stjärnor",
       "color": "#FFD700",
       "icon": "higher-annual-gold-wreath-star-2",
       "prerequisites": [
@@ -2385,7 +2385,7 @@
       "type": "pistol_mark",
       "tier": "gold_wreath_star_3",
       "name": "Högre årtalsmärket - Guld med krans och tre stjärnor",
-      "displayName": "Higher Annual Mark - Gold Wreath ★★★",
+      "displayName": "Högre årtalsmärket - Guld med krans och tre stjärnor",
       "color": "#FFD700",
       "icon": "higher-annual-gold-wreath-star-3",
       "prerequisites": [
@@ -2408,7 +2408,7 @@
       "type": "pistol_mark",
       "tier": "gold_enamel_wreath",
       "name": "Högre årtalsmärket - Guld med emaljerad krans",
-      "displayName": "Higher Annual Mark - Gold Enamel Wreath",
+      "displayName": "Högre årtalsmärket - Guld med emaljerad krans",
       "color": "#FFD700",
       "icon": "higher-annual-gold-enamel-wreath",
       "prerequisites": [
@@ -2433,7 +2433,7 @@
       "type": "pistol_mark",
       "tier": "gold_enamel_wreath_star_1",
       "name": "Högre årtalsmärket - Guld med emaljerad krans och en stjärna",
-      "displayName": "Higher Annual Mark - Gold Enamel Wreath ★",
+      "displayName": "Högre årtalsmärket - Guld med emaljerad krans och en stjärna",
       "color": "#FFD700",
       "icon": "higher-annual-gold-enamel-wreath-star-1",
       "prerequisites": [
@@ -2458,7 +2458,7 @@
       "type": "pistol_mark",
       "tier": "gold_enamel_wreath_star_2",
       "name": "Högre årtalsmärket - Guld med emaljerad krans och två stjärnor",
-      "displayName": "Higher Annual Mark - Gold Enamel Wreath ★★",
+      "displayName": "Högre årtalsmärket - Guld med emaljerad krans och två stjärnor",
       "color": "#FFD700",
       "icon": "higher-annual-gold-enamel-wreath-star-2",
       "prerequisites": [
@@ -2486,7 +2486,7 @@
       "type": "pistol_mark",
       "tier": "gold_enamel_wreath_star_3",
       "name": "Högre årtalsmärket - Guld med emaljerad krans och tre stjärnor",
-      "displayName": "Higher Annual Mark - Gold Enamel Wreath ★★★",
+      "displayName": "Högre årtalsmärket - Guld med emaljerad krans och tre stjärnor",
       "color": "#FFD700",
       "icon": "higher-annual-gold-enamel-wreath-star-3",
       "prerequisites": [
