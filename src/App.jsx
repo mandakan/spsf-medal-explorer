@@ -12,7 +12,7 @@ import DataBackup from './pages/DataBackup'
 import About from './pages/About'
 
 function App() {
-  const base = import.meta.env.BASE_URL
+  const base = (typeof document !== 'undefined' && document.querySelector('base')?.getAttribute('href')) || '/'
   return (
     <MedalProvider>
       <ProfileProvider>

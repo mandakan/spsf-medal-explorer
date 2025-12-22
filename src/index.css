@@ -8,8 +8,8 @@
   --color-foreground: #133452;
   --color-muted: #626c71;
 
-  --color-primary: #208491;
-  --color-primary-hover: #1d745f;
+  --color-primary: #1d745f;
+  --color-primary-hover: #16605a;
   --color-accent: #32b8c6;
   --color-primary-foreground: #ffffff;
 
@@ -49,8 +49,8 @@
   --color-foreground: #e5e7eb;      /* gray-200 */
   --color-muted: #9ca3af;           /* gray-400 */
 
-  --color-primary: #208491;
-  --color-primary-hover: #1d745f;
+  --color-primary: #1d745f;
+  --color-primary-hover: #16605a;
   --color-accent: #32b8c6;
 
   --color-medal-gold: #FFD700;

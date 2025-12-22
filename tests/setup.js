@@ -14,6 +14,13 @@ beforeAll(() => {
     if (msg && msg.includes('not wrapped in act')) return
     return originalError(...args)
   })
+
+  // Ensure <base href="/"> exists for components that compute BASE_URL from the DOM
+  if (typeof document !== 'undefined' && !document.querySelector('base')) {
+    const el = document.createElement('base')
+    el.setAttribute('href', '/')
+    document.head.appendChild(el)
+  }
 })
 
 afterAll(() => {

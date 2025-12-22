@@ -99,25 +99,21 @@ export default function SkillTreeCanvas() {
     return () => window.removeEventListener('resize', onResize)
   }, [draw])
 
-  // Keyboard pan shortcuts
-  useEffect(() => {
-    const onKeyDown = (e) => {
-      const step = 50 / Math.max(scale, 0.001)
-      if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
-        e.preventDefault()
-      }
-      if (e.key === 'ArrowLeft') {
-        handleMouseMove({ clientX: 0, clientY: 0, syntheticPan: { dx: -step, dy: 0 } })
-      } else if (e.key === 'ArrowRight') {
-        handleMouseMove({ clientX: 0, clientY: 0, syntheticPan: { dx: step, dy: 0 } })
-      } else if (e.key === 'ArrowUp') {
-        handleMouseMove({ clientX: 0, clientY: 0, syntheticPan: { dx: 0, dy: -step } })
-      } else if (e.key === 'ArrowDown') {
-        handleMouseMove({ clientX: 0, clientY: 0, syntheticPan: { dx: 0, dy: step } })
-      }
+  // Keyboard pan shortcuts (scope to focused canvas for WCAG 2.1/2.2)
+  const handleCanvasKeyDown = useCallback((e) => {
+    const step = 50 / Math.max(scale, 0.001)
+    if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+      e.preventDefault()
     }
-    window.addEventListener('keydown', onKeyDown)
-    return () => window.removeEventListener('keydown', onKeyDown)
+    if (e.key === 'ArrowLeft') {
+      handleMouseMove({ clientX: 0, clientY: 0, syntheticPan: { dx: -step, dy: 0 } })
+    } else if (e.key === 'ArrowRight') {
+      handleMouseMove({ clientX: 0, clientY: 0, syntheticPan: { dx: step, dy: 0 } })
+    } else if (e.key === 'ArrowUp') {
+      handleMouseMove({ clientX: 0, clientY: 0, syntheticPan: { dx: 0, dy: -step } })
+    } else if (e.key === 'ArrowDown') {
+      handleMouseMove({ clientX: 0, clientY: 0, syntheticPan: { dx: 0, dy: step } })
+    }
   }, [handleMouseMove, scale])
 
   // Mouse events
@@ -221,32 +217,36 @@ export default function SkillTreeCanvas() {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-2xl font-bold text-text-primary">Interactive Skill Tree</h2>
-        <div className="space-x-2">
+        <div className="flex flex-wrap gap-2">
           <button
+            type="button"
             onClick={resetView}
-            aria-label="Reset view"
-            className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            className="px-4 py-3 rounded bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-slate-700 dark:text-slate-50 dark:hover:bg-slate-600 border border-gray-300 dark:border-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
           >
             Reset View
           </button>
           <button
+            type="button"
             onClick={handleExportPNG}
-            aria-label="Export skill tree as PNG"
-            className="px-4 py-2 bg-primary text-white rounded hover:bg-primary-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            className="px-4 py-3 rounded bg-primary text-white hover:bg-primary-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
           >
-            📥 Export as PNG
+            <span aria-hidden="true" className="mr-2">📥</span>
+            Export as PNG
           </button>
         </div>
       </div>
 
-      <div className="border border-gray-200 dark:border-slate-700 rounded-lg overflow-hidden bg-white dark:bg-slate-900" role="region" aria-label="Skill tree canvas">
+      <div className="card overflow-hidden" role="region" aria-label="Skill tree canvas" aria-describedby="skilltree-help">
         <canvas
           ref={canvasRef}
           role="img"
           aria-label="Interactive skill tree canvas"
-          className="w-full h-[60vh] sm:h-[600px] bg-bg-primary cursor-grab active:cursor-grabbing"
+          aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown"
+          tabIndex={0}
+          onKeyDown={handleCanvasKeyDown}
+          className="w-full h-[60vh] sm:h-[600px] bg-background cursor-grab active:cursor-grabbing"
           onWheel={handleWheel}
           onMouseDown={handleCanvasMouseDown}
           onMouseMove={handleCanvasMouseMove}
@@ -260,8 +260,8 @@ export default function SkillTreeCanvas() {
         />
       </div>
 
-      <div className="text-sm text-text-secondary">
-        <p>💡 Drag to pan • Scroll to zoom • Click medals for details • ⌨️ Arrow keys to pan</p>
+      <div className="text-sm text-muted-foreground">
+        <p id="skilltree-help">💡 Drag to pan • Scroll to zoom • Click medals for details • ⌨️ Arrow keys to pan</p>
       </div>
 
       {selectedMedal && (
