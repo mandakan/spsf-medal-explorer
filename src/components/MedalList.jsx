@@ -1,6 +1,6 @@
 import React, { useMemo, useCallback, useRef, useEffect, useState } from 'react'
 
-function MedalIcon({ iconUrl, alt }) {
+function MedalIcon({ iconUrl, alt, unlocked }) {
   const [loaded, setLoaded] = useState(false)
   const [errored, setErrored] = useState(false)
   const ref = useRef(null)
@@ -23,9 +23,12 @@ function MedalIcon({ iconUrl, alt }) {
   return (
     <div
       ref={ref}
-      className="w-10 h-10 flex items-center justify-center rounded bg-gray-200 dark:bg-slate-700 overflow-hidden"
+      className="relative w-10 h-10 flex items-center justify-center rounded bg-gray-200 dark:bg-slate-700 overflow-hidden"
       aria-hidden="true"
     >
+      {unlocked && (
+        <span className="absolute -top-1 -right-1 text-[10px]" aria-hidden="true" title="Unlocked">🏆</span>
+      )}
       {showImg ? (
         <img
           src={validSrc}
@@ -42,9 +45,19 @@ function MedalIcon({ iconUrl, alt }) {
 }
 
 function Row({ data, index, style }) {
-  const { medals, onSelect } = data
+  const { medals, onSelect, statusesById } = data
   const medal = medals[index]
   const underReview = typeof medal?.isUnderReview === 'function' ? medal.isUnderReview() : (medal?.reviewed !== true)
+  const status = statusesById?.[medal.id]
+  const isUnlocked = status?.status === 'unlocked'
+  const unlockedYear = (() => {
+    if (!isUnlocked) return null
+    const iso = status?.unlockedDate
+    if (!iso) return null
+    const d = new Date(iso)
+    return Number.isNaN(d.getTime()) ? null : d.getFullYear()
+  })()
+  const ariaLabel = `${medal.displayName || medal.name} ${medal.tier || ''}${underReview ? ' • Under review' : ''}${isUnlocked && unlockedYear ? ' • Unlocked ' + unlockedYear : ''}`
   return (
     <div
       role="button"
@@ -53,9 +66,9 @@ function Row({ data, index, style }) {
       onKeyDown={(e) => { if (e.key === 'Enter') onSelect?.(medal) }}
       className="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
       style={style}
-      aria-label={`${medal.displayName || medal.name} ${medal.tier || ''}${underReview ? ' • Under review' : ''}`}
+      aria-label={ariaLabel}
     >
-      <MedalIcon iconUrl={medal.iconUrl || medal.icon} alt={medal.displayName || medal.name} />
+      <MedalIcon iconUrl={medal.iconUrl || medal.icon} alt={medal.displayName || medal.name} unlocked={isUnlocked} />
       <div className="min-w-0">
         <div className="font-medium text-text-primary truncate flex items-center gap-2">
           <span className="truncate">{medal.displayName || medal.name}</span>
@@ -68,7 +81,10 @@ function Row({ data, index, style }) {
             </span>
           )}
         </div>
-        <div className="text-sm text-text-secondary truncate">{medal.type} • {medal.tier}</div>
+        <div className="text-sm text-text-secondary truncate">
+          {medal.type} • {medal.tier}
+          {isUnlocked && unlockedYear != null ? ` • Unlocked ${unlockedYear}` : ''}
+        </div>
       </div>
     </div>
   )
@@ -115,8 +131,8 @@ function VirtualList({ height, itemCount, itemSize, width = '100%', itemData, ch
   )
 }
 
-export default function MedalList({ medals, onSelect, height = 800, itemSize = 60 }) {
-  const itemData = useMemo(() => ({ medals, onSelect }), [medals, onSelect])
+export default function MedalList({ medals, onSelect, height = 800, itemSize = 60, statusesById }) {
+  const itemData = useMemo(() => ({ medals, onSelect, statusesById }), [medals, onSelect, statusesById])
   const itemCount = medals?.length || 0
 
   const RowMemo = useCallback((props) => <Row {...props} />, [])
