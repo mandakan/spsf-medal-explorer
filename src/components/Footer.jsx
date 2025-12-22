@@ -1,5 +1,6 @@
 import React from 'react'
-import { FOOTER_INFO } from '../config/siteLinks.js'
+import { LINKS } from '../config/links'
+import { APP_INFO } from '../config/appInfo'
 
 function GitHubIcon({ className = 'w-5 h-5', ...props }) {
   return (
@@ -24,18 +25,28 @@ function CoffeeIcon({ className = 'w-5 h-5', ...props }) {
 }
 
 export default function Footer() {
-  const year = FOOTER_INFO?.year ?? new Date().getFullYear()
-  const author = FOOTER_INFO?.author ?? ''
-  const license = FOOTER_INFO?.license ?? 'MIT'
-  const github = FOOTER_INFO?.github
-  const coffee = FOOTER_INFO?.coffee
+  const year = new Date().getFullYear()
+  const author = APP_INFO?.AUTHOR_NAME || ''
+  const license = APP_INFO?.LICENSE || 'MIT'
+  const github = LINKS?.GITHUB_REPO
+  const coffee = LINKS?.COFFEE
+  const base = (typeof window !== 'undefined' && window.__BASE_URL__) || '/'
+  const licenseHref = `${base}LICENSE`
 
   return (
     <footer role="contentinfo" className="w-full border-t border-gray-200 dark:border-gray-700 bg-bg-primary">
       <div className="max-w-6xl mx-auto px-4 py-6">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-gray-700 dark:text-gray-300 text-center md:text-left">
-            © {year} {author} • Licensierad under {license}
+            © {year} {author} •{' '}
+            <a
+              href={licenseHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:no-underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              Licensierad under {license}
+            </a>
           </p>
           <nav className="flex items-center gap-2" aria-label="Sidfotslänkar">
             {github && (
@@ -43,7 +54,7 @@ export default function Footer() {
                 href={github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm text-blue-700 dark:text-blue-400 hover:underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                className="inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm min-h-[44px] text-blue-700 dark:text-blue-400 hover:underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 aria-label="Öppna GitHub-repositoriet"
               >
                 <GitHubIcon />
@@ -55,7 +66,7 @@ export default function Footer() {
                 href={coffee}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm text-amber-700 dark:text-amber-400 hover:underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
+                className="inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm min-h-[44px] text-amber-700 dark:text-amber-400 hover:underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
                 aria-label="Köp mig en kaffe"
               >
                 <CoffeeIcon />
