@@ -11,7 +11,7 @@ export class MedalCalculator {
    * Evaluate a single medal's status
    * @returns {Object} { medalId, status, details }
    */
-  evaluateMedal(medalId) {
+  evaluateMedal(medalId, opts = {}) {
     const medal = this.medals.getMedalById(medalId)
     if (!medal) {
       throw new Error(`Medal not found: ${medalId}`)
@@ -31,7 +31,15 @@ export class MedalCalculator {
     if (Array.isArray(medal.prerequisites)) {
       const missing = medal.prerequisites
         .filter(p => p?.type === 'medal')
-        .filter(p => !this.hasUnlockedMedal(p.medalId))
+        .filter(p => {
+          // Consider time-awareness: prerequisite must be unlocked on or before the evaluation endYear (if provided)
+          if (!this.hasUnlockedMedal(p.medalId)) return true
+          if (typeof opts.endYear === 'number') {
+            const y = this.getUnlockedYear(p.medalId)
+            return !(typeof y === 'number' && y <= opts.endYear)
+          }
+          return false
+        })
       if (missing.length) {
         return {
           medalId,
@@ -43,7 +51,7 @@ export class MedalCalculator {
     }
 
     // Check requirements first to determine calendar unlock year
-    const reqsCheck = this.checkRequirements(medal)
+    const reqsCheck = this.checkRequirements(medal, opts)
     if (!reqsCheck.allMet) {
       return {
         medalId,
@@ -54,7 +62,7 @@ export class MedalCalculator {
     }
 
     // Check prerequisites using the planned unlock year (calendar-year semantics)
-    const prereqsCheck = this.checkPrerequisites(medal, reqsCheck.unlockYear)
+    const prereqsCheck = this.checkPrerequisites(medal, (reqsCheck.unlockYear ?? opts.endYear))
     if (!prereqsCheck.allMet) {
       return {
         medalId,
@@ -91,7 +99,9 @@ export class MedalCalculator {
 
     medal.prerequisites.forEach(prereq => {
       if (prereq.type === 'medal') {
-        const isMet = this.hasUnlockedMedal(prereq.medalId)
+        const unlockedYear = this.getUnlockedYear(prereq.medalId)
+        const isUnlocked = this.hasUnlockedMedal(prereq.medalId)
+        const isMet = isUnlocked && (typeof targetYear === 'number' ? (typeof unlockedYear === 'number' && unlockedYear <= targetYear) : true)
         const item = {
           type: 'medal',
           medalId: prereq.medalId,
@@ -198,7 +208,7 @@ export class MedalCalculator {
       if (req.type === 'precision_series') {
         items.push(this.checkPrecisionSeriesRequirement(req, idx, opts))
       } else if (req.type === 'sustained_achievement') {
-        items.push(this.checkSustainedAchievementRequirement(req, idx, medal))
+        items.push(this.checkSustainedAchievementRequirement(req, idx, medal, opts))
       } else if (req.type === 'championship_competition') {
         items.push(this.checkChampionshipRequirement(req, idx, opts))
       } else if (req.type === 'application_series') {
@@ -442,7 +452,7 @@ export class MedalCalculator {
     }, {})
   }
 
-  checkSustainedAchievementRequirement(req, index, parentMedal) {
+  checkSustainedAchievementRequirement(req, index, parentMedal, opts = {}) {
     const minYears = req.yearsOfAchievement ?? 3
 
     // References: prefer explicit (on req or medal); else infer from same-type prerequisite chain
@@ -455,7 +465,7 @@ export class MedalCalculator {
 
     // Earliest counting year must be after previous same-type medal unlock
     const earliestCountingYear = this.getEarliestCountingYearForMedal(parentMedal)
-    const currentYear = new Date().getFullYear()
+    const currentYear = (opts && typeof opts.endYear === 'number') ? opts.endYear : new Date().getFullYear()
 
     // By default, when using references, the current year must be included
     const requireCurrent =
@@ -592,5 +602,23 @@ export class MedalCalculator {
     })
 
     return results
+  }
+
+  getEligibleYears(medalId) {
+    // If already unlocked at any time, do not offer additional unlock years
+    if (this.hasUnlockedMedal(medalId)) return []
+    const candidates = this.getAllAchievementYears().sort((a, b) => b - a)
+    const eligible = []
+    for (const y of candidates) {
+      try {
+        const res = this.evaluateMedal(medalId, { endYear: y })
+        if (res && res.status === 'achievable') {
+          eligible.push(y)
+        }
+      } catch {
+        // ignore evaluation errors for candidate years
+      }
+    }
+    return eligible
   }
 }

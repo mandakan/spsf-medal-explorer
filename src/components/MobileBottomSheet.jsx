@@ -10,21 +10,54 @@ export default function MobileBottomSheet({
   children,
 }) {
   const sheetRef = useRef(null)
+  const prevFocusRef = useRef(null)
 
   useEffect(() => {
     if (!open) return
+    // Remember previously focused element to restore on close
+    prevFocusRef.current = document.activeElement
+
     const onKey = (e) => {
       if (e.key === 'Escape') {
         e.stopPropagation()
         onClose?.()
       }
     }
+    // Trap focus within the sheet
+    const onTrapKeyDown = (e) => {
+      if (e.key !== 'Tab') return
+      const root = sheetRef.current
+      if (!root) return
+      const focusables = root.querySelectorAll(
+        'a, button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+      const list = Array.from(focusables).filter(n => !n.hasAttribute('disabled') && n.getAttribute('aria-hidden') !== 'true')
+      if (list.length === 0) return
+      const first = list[0]
+      const last = list[list.length - 1]
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault()
+        first.focus()
+      }
+    }
+
     document.addEventListener('keydown', onKey)
+    sheetRef.current?.addEventListener('keydown', onTrapKeyDown)
+
     // Focus the sheet when it opens for accessibility
     const t = setTimeout(() => sheetRef.current?.focus(), 0)
+
     return () => {
       document.removeEventListener('keydown', onKey)
+      sheetRef.current?.removeEventListener('keydown', onTrapKeyDown)
       clearTimeout(t)
+      // Restore focus to the element that opened the dialog
+      if (prevFocusRef.current && typeof prevFocusRef.current.focus === 'function') {
+        prevFocusRef.current.focus()
+      }
     }
   }, [open, onClose])
 
@@ -60,8 +93,8 @@ export default function MobileBottomSheet({
         className="absolute left-0 right-0 bottom-0 bg-bg-secondary text-foreground rounded-t-2xl shadow-2xl border-t border-border focus:outline-none"
         style={{
           transform: 'translateY(0)',
-          transition: 'transform 250ms ease',
-          maxHeight: '85vh',
+          transition: (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) ? 'none' : 'transform 200ms ease',
+          maxHeight: '85dvh',
           WebkitOverflowScrolling: 'touch',
         }}
         {...swipe}
@@ -79,7 +112,7 @@ export default function MobileBottomSheet({
             ✕
           </button>
         </div>
-        <div className="p-4 overflow-auto safe-bottom" style={{ maxHeight: 'calc(85vh - 56px)' }}>
+        <div className="p-4 overflow-auto safe-bottom" style={{ maxHeight: 'calc(85dvh - 56px)', overflowY: 'auto', overscrollBehavior: 'contain' }}>
           {children}
         </div>
       </div>
