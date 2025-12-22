@@ -7,7 +7,7 @@ export class UserProfile {
     this.displayName = data.displayName || ''
     this.createdDate = data.createdDate || new Date().toISOString()
     this.lastModified = data.lastModified || new Date().toISOString()
-    this.weaponGroupPreference = data.weaponGroupPreference || 'A'
+    this.dateOfBirth = data.dateOfBirth || ''
     this.unlockedMedals = data.unlockedMedals || []
     this.prerequisites = data.prerequisites || []
   }

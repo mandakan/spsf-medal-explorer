@@ -12,7 +12,7 @@ describe('Exporter import/export', () => {
   })
 
   test('exports profile to valid JSON string', async () => {
-    const profile = new UserProfile({ displayName: 'Exporter User', weaponGroupPreference: 'B' })
+    const profile = new UserProfile({ displayName: 'Exporter User', dateOfBirth: '1990-05-10' })
     await storage.saveUserProfile(profile)
 
     const json = await exportProfileToJson(storage, profile.userId)
@@ -24,7 +24,7 @@ describe('Exporter import/export', () => {
   })
 
   test('import after export preserves achievements and medals', async () => {
-    const profile = new UserProfile({ displayName: 'Roundtrip User', weaponGroupPreference: 'A' })
+    const profile = new UserProfile({ displayName: 'Roundtrip User', dateOfBirth: '1985-01-20' })
     await storage.saveUserProfile(profile)
 
     const a1 = new Achievement({

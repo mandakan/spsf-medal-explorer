@@ -17,7 +17,7 @@ describe('LocalStorageDataManager', () => {
   test('saves profile to storage', async () => {
     const profile = new UserProfile({
       displayName: 'Test User',
-      weaponGroupPreference: 'A',
+      dateOfBirth: '2000-01-01',
     })
 
     const saved = await storage.saveUserProfile(profile)
@@ -28,6 +28,7 @@ describe('LocalStorageDataManager', () => {
   test('loads saved profile', async () => {
     const profile = new UserProfile({
       displayName: 'Test User',
+      dateOfBirth: '2000-01-01',
     })
 
     await storage.saveUserProfile(profile)
@@ -40,6 +41,7 @@ describe('LocalStorageDataManager', () => {
   test('adds achievement to profile', async () => {
     const profile = new UserProfile({
       displayName: 'Test User',
+      dateOfBirth: '2000-01-01',
     })
     await storage.saveUserProfile(profile)
 
@@ -60,6 +62,7 @@ describe('LocalStorageDataManager', () => {
   test('deletes profile', async () => {
     const profile = new UserProfile({
       displayName: 'Test User',
+      dateOfBirth: '2000-01-01',
     })
     await storage.saveUserProfile(profile)
 
