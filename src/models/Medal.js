@@ -15,6 +15,8 @@ export class Medal {
     this.requirements = data.requirements || []
     this.unlocksFollowingMedals = data.unlocksFollowingMedals || []
     this.description = data.description || ''
+    this.requirementsOriginal = data.requirements_original || ''
+    this.references = Array.isArray(data.references) ? data.references : []
     this.yearIntroduced = data.yearIntroduced
     this.sortOrder = data.sortOrder
   }

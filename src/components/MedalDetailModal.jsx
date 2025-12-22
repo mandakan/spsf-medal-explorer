@@ -6,6 +6,8 @@ import { useProfile } from '../hooks/useProfile'
 import UniversalAchievementLogger from './UniversalAchievementLogger'
 import { UndoRedoProvider } from '../contexts/UndoRedoContext.jsx'
 import { useUnlockGuard } from '../hooks/useUnlockGuard'
+import ReactMarkdown from 'react-markdown'
+import { useNavigate } from 'react-router-dom'
 
 export default function MedalDetailModal({ medalId, onClose }) {
   const { medalDatabase } = useMedalDatabase()
@@ -14,6 +16,8 @@ export default function MedalDetailModal({ medalId, onClose }) {
   const { currentProfile } = useProfile()
   const medal = medalDatabase?.getMedalById(medalId)
   const [showLogger, setShowLogger] = useState(false)
+  const [showOriginal, setShowOriginal] = useState(false)
+  const navigate = useNavigate()
 
   const { canRemove, blocking, tryRemove } = useUnlockGuard(medalId)
   const [showConfirmRemove, setShowConfirmRemove] = useState(false)
@@ -48,6 +52,15 @@ export default function MedalDetailModal({ medalId, onClose }) {
       .map(id => medalDatabase?.getMedalById(id))
       .filter(Boolean)
   }, [blocking, medalDatabase])
+
+  const referencedMedals = useMemo(() => {
+    const refs = Array.isArray(medal?.references) ? medal.references : []
+    return refs.map(r => {
+      const m = medalDatabase?.getMedalById?.(r.medalId)
+      if (!m) return null
+      return { target: m, description: r.description || '' }
+    }).filter(Boolean)
+  }, [medal, medalDatabase])
 
   const overlayRef = useRef(null)
   const panelRef = useRef(null)
@@ -142,6 +155,15 @@ export default function MedalDetailModal({ medalId, onClose }) {
   const handleOverlayClick = (e) => {
     if (e.target === overlayRef.current) {
       onClose?.()
+    }
+  }
+
+  const handleReferenceClick = (targetId) => (e) => {
+    e.preventDefault()
+    try {
+      onClose?.()
+    } finally {
+      navigate(`/medals/${targetId}`)
     }
   }
 
@@ -337,6 +359,48 @@ export default function MedalDetailModal({ medalId, onClose }) {
                         {item.isMet ? '✓' : '○'}
                       </span>{' '}
                       {item.description || item.type}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {medal.requirementsOriginal && (
+              <div className="mb-4 bg-background border border-border rounded">
+                <button
+                  type="button"
+                  onClick={() => setShowOriginal(v => !v)}
+                  aria-expanded={showOriginal}
+                  className="w-full text-left px-3 py-2 flex items-center justify-between hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary rounded-t"
+                >
+                  <span className="text-sm font-semibold text-foreground">View original requirement text</span>
+                  <span aria-hidden="true" className="ml-2">{showOriginal ? '▼' : '▶'}</span>
+                </button>
+                {showOriginal && (
+                  <div className="px-3 pb-3">
+                    <div className="text-sm text-foreground break-words">
+                      <ReactMarkdown>{medal.requirementsOriginal}</ReactMarkdown>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {referencedMedals.length > 0 && (
+              <div className="mb-4 bg-background border border-border rounded p-3">
+                <p className="text-sm font-semibold text-foreground mb-2">
+                  Also fulfills requirements for:
+                </p>
+                <ul className="space-y-1">
+                  {referencedMedals.map(({ target }) => (
+                    <li key={target.id}>
+                      <a
+                        href={`/medals/${target.id}`}
+                        onClick={handleReferenceClick(target.id)}
+                        className="inline-flex items-center underline text-primary hover:text-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary px-2 py-2 rounded min-h-[44px]"
+                      >
+                        {target.displayName || target.name}
+                      </a>
                     </li>
                   ))}
                 </ul>
