@@ -1,5 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useMedalCalculator } from '../hooks/useMedalCalculator'
+import UnlockMedalDialog from './UnlockMedalDialog'
+import { useProfile } from '../hooks/useProfile'
 
 export default function MedalCard({ medal }) {
   const calculator = useMedalCalculator()
@@ -36,6 +38,9 @@ export default function MedalCard({ medal }) {
   }
 
   const statusClass = status?.status || 'locked'
+  const [unlockOpen, setUnlockOpen] = useState(false)
+  const { currentProfile } = useProfile()
+  const allowManual = !!currentProfile?.features?.allowManualUnlock
 
   return (
     <div
@@ -70,6 +75,26 @@ export default function MedalCard({ medal }) {
           )}
         </div>
       )}
+
+      {currentProfile && (statusClass === 'achievable' || (allowManual && statusClass !== 'unlocked')) && (
+        <div className="mt-3">
+          <button
+            type="button"
+            className="btn btn-primary w-full sm:w-auto min-h-[44px]"
+            onClick={() => setUnlockOpen(true)}
+            aria-haspopup="dialog"
+            aria-controls="unlock-medal"
+          >
+            Unlock…
+          </button>
+        </div>
+      )}
+
+      <UnlockMedalDialog
+        medal={medal}
+        open={unlockOpen}
+        onClose={() => setUnlockOpen(false)}
+      />
     </div>
   )
 }

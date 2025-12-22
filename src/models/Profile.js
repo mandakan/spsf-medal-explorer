@@ -10,6 +10,11 @@ export class UserProfile {
     this.dateOfBirth = data.dateOfBirth || ''
     this.unlockedMedals = data.unlockedMedals || []
     this.prerequisites = data.prerequisites || []
+    this.features = {
+      allowManualUnlock: false,
+      enforceCurrentYearForSustained: false,
+      ...(data.features || {}),
+    }
   }
 
   /**

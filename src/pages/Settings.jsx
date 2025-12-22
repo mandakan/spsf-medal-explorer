@@ -6,7 +6,7 @@ import StatisticsDashboard from '../components/StatisticsDashboard'
 import { UndoRedoProvider } from '../contexts/UndoRedoContext'
 
 export default function Settings() {
-  const { currentProfile } = useProfile()
+  const { currentProfile, setProfileFeature } = useProfile()
   const [activeTab, setActiveTab] = useState('add') // 'add' or 'history'
 
   if (!currentProfile) {
@@ -28,6 +28,45 @@ export default function Settings() {
         </div>
 
         <StatisticsDashboard />
+
+        <div className="card p-4">
+          <h2 className="section-title mb-2">Features</h2>
+          <div className="flex items-start gap-3">
+            <input
+              id="ft-manual-unlock"
+              type="checkbox"
+              className="h-5 w-5 mt-0.5"
+              checked={!!currentProfile?.features?.allowManualUnlock}
+              onChange={(e) => setProfileFeature('allowManualUnlock', e.target.checked)}
+            />
+            <div>
+              <label htmlFor="ft-manual-unlock" className="field-label mb-1">
+                Allow manual medal unlock (prerequisites only)
+              </label>
+              <p className="field-hint">
+                Enables selecting any year ≥ your birth year to unlock a medal without meeting requirements. Prerequisites and year limits still apply.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3 mt-3">
+            <input
+              id="ft-enforce-current-year"
+              type="checkbox"
+              className="h-5 w-5 mt-0.5"
+              checked={!!currentProfile?.features?.enforceCurrentYearForSustained}
+              onChange={(e) => setProfileFeature('enforceCurrentYearForSustained', e.target.checked)}
+            />
+            <div>
+              <label htmlFor="ft-enforce-current-year" className="field-label mb-1">
+                Require the current year for sustained medals
+              </label>
+              <p className="field-hint">
+                When enabled, medals that track sustained achievements can only be unlocked for this calendar year.
+              </p>
+            </div>
+          </div>
+        </div>
 
         <div
           className="flex gap-2 border-b border-border"

@@ -61,6 +61,18 @@ export default function MedalsList() {
     return [...new Set(medals.map(m => m.tier))].filter(Boolean)
   }, [medals])
 
+  const statusesById = useMemo(() => {
+    const map = {}
+    if (statuses) {
+      ;['unlocked', 'achievable', 'locked'].forEach((k) => {
+        (statuses[k] || []).forEach((r) => {
+          map[r.medalId] = r
+        })
+      })
+    }
+    return map
+  }, [statuses])
+
   const finalResults = useMemo(() => {
     const withSearch = { ...filters, search: query }
     const filtered = applyFilters(medals, statuses, withSearch)
@@ -179,7 +191,7 @@ export default function MedalsList() {
             </div>
           ) : (
             <div className="border border-gray-200 dark:border-slate-700 rounded-md overflow-hidden" role="region" aria-label="Medal results">
-              <MedalList medals={finalResults} height={listHeight} itemSize={60} onSelect={(m) => navigate(`/medals/${m.id}`)} />
+              <MedalList medals={finalResults} height={listHeight} itemSize={60} onSelect={(m) => navigate(`/medals/${m.id}`)} statusesById={statusesById} />
             </div>
           )}
         </div>

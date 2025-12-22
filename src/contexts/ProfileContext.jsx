@@ -232,6 +232,29 @@ export function ProfileProvider({ children }) {
     [currentProfile, storage]
   )
 
+  const setProfileFeature = useCallback(
+    async (name, value) => {
+      if (!currentProfile) throw new Error('No profile selected')
+      if (!name) throw new Error('Feature name is required')
+      try {
+        setLoading(true)
+        const profile = await storage.getUserProfile(currentProfile.userId)
+        const features = { ...(profile.features || {}), [name]: !!value }
+        const nextProfile = { ...profile, features, lastModified: new Date().toISOString() }
+        const saved = await storage.saveUserProfile(nextProfile)
+        setCurrentProfile(saved)
+        setError(null)
+        return saved
+      } catch (err) {
+        setError(err.message)
+        throw err
+      } finally {
+        setLoading(false)
+      }
+    },
+    [currentProfile, storage]
+  )
+
   const value = {
     currentProfile,
     profiles,
@@ -246,6 +269,7 @@ export function ProfileProvider({ children }) {
     removeAchievement,
     unlockMedal,
     lockMedal,
+    setProfileFeature,
   }
 
   return <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>
