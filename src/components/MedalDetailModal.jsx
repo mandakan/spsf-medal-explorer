@@ -254,11 +254,11 @@ export default function MedalDetailModal({ medalId, onClose }) {
         className={[
           'pointer-events-auto fixed',
           // Mobile bottom sheet
-          'inset-x-0 bottom-0 w-full max-h-[80vh]',
+          'inset-x-0 bottom-0 w-full h-[80svh] max-h-[80vh]',
           // Desktop right drawer
           'sm:inset-y-0 sm:right-0 sm:left-auto sm:w-[32rem] sm:h-full',
           // Surface
-          'bg-bg-secondary shadow-2xl',
+          'bg-bg-secondary shadow-2xl overflow-hidden',
           // Shape
           'rounded-t-2xl sm:rounded-none sm:rounded-l-2xl',
           // Animation
@@ -302,7 +302,7 @@ export default function MedalDetailModal({ medalId, onClose }) {
           </div>
 
           {/* Body */}
-          <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+          <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 sm:p-6">
             <div className="mb-4">
               <span
                 className={[
@@ -497,10 +497,10 @@ export default function MedalDetailModal({ medalId, onClose }) {
           </div>
 
           {/* Footer */}
-          <div className="flex gap-3 p-4 sm:p-6 border-t border-border">
+          <div className="flex gap-3 p-4 sm:p-6 border-t border-border pb-[calc(env(safe-area-inset-bottom)+1rem)]">
             <button
               onClick={onClose}
-              className="flex-1 px-4 py-2 rounded-md bg-background text-foreground hover:bg-bg-secondary ring-1 ring-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
+              className="flex-1 min-h-[44px] px-4 py-2 rounded-md bg-background text-foreground hover:bg-bg-secondary ring-1 ring-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
             >
               Close
             </button>
@@ -512,7 +512,7 @@ export default function MedalDetailModal({ medalId, onClose }) {
                   onClick={handleRemoveClick}
                   aria-haspopup="dialog"
                   aria-expanded={showConfirmRemove || showBlockedInfo}
-                  className="flex-1 px-4 py-2 rounded-md bg-background text-foreground hover:bg-bg-secondary ring-1 ring-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
+                  className="flex-1 min-h-[44px] px-4 py-2 rounded-md bg-background text-foreground hover:bg-bg-secondary ring-1 ring-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
                 >
                   Remove unlocked
                 </button>
@@ -539,7 +539,7 @@ export default function MedalDetailModal({ medalId, onClose }) {
                   disabled={!prereqsOk}
                   aria-disabled={!prereqsOk}
                   aria-describedby={!prereqsOk ? prereqHintId : undefined}
-                  className="flex-1 px-4 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary-hover disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
+                  className="flex-1 min-h-[44px] px-4 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary-hover disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
                 >
                   Unlock Now
                 </button>
