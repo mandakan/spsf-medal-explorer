@@ -217,9 +217,9 @@ export default function SkillTreeCanvas() {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-2xl font-bold text-text-primary">Interactive Skill Tree</h2>
-        <div className="space-x-2">
+        <div className="flex flex-wrap gap-2">
           <button
             type="button"
             onClick={resetView}
