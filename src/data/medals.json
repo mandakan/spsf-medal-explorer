@@ -189,6 +189,8 @@
       "displayName": "Pistol Mark - Gold",
       "color": "#FFD700",
       "icon": "medal-gold",
+      "requirements_original": "- 3 precision series vs Pistol target 25 m with minimum points per class: **A ≥ 43**, **B ≥ 44**, **C ≥ 46**.\n- 3 application series (B100 50 m or 1/6 target C30 25 m) with at least **6 hits** within class time limits (A: ≤40s, B: ≤15s, C: ≤15s, R: ≤40s).",
+      "references": [],
       "prerequisites": [
         {
           "type": "medal",
@@ -2100,6 +2102,13 @@
       "displayName": "Air Pistol Mark - Annual",
       "color": "#FFD700",
       "icon": "air-pistol-annual",
+      "requirements_original": "Yearly achievement of **Air Pistol Gold** requirements.",
+      "references": [
+        {
+          "medalId": "air-pistol-mark-gold",
+          "description": "Fulfill requirements for Air Pistol Mark - Gold during the year."
+        }
+      ],
       "prerequisites": [
         { "type": "medal", "medalId": "air-pistol-mark-gold" }
       ],
@@ -2298,6 +2307,13 @@
       "displayName": "Lower Annual Mark - ★",
       "color": "#FFD700",
       "icon": "lower-annual-star-1",
+      "requirements_original": "3 years of **Gold-level Pistol Mark** achievement.",
+      "references": [
+        {
+          "medalId": "pistol-mark-gold",
+          "description": "Fulfill requirements for Pistol Mark - Gold (accumulated over 3 years)."
+        }
+      ],
       "prerequisites": [
         { "type": "medal", "medalId": "pistol-mark-gold" }
       ],
@@ -2373,6 +2389,13 @@
       "displayName": "Higher Annual Mark - Bronze",
       "color": "#CD7F32",
       "icon": "higher-annual-bronze",
+      "requirements_original": "3 years of **Gold-level Pistol Mark** achievement.",
+      "references": [
+        {
+          "medalId": "pistol-mark-gold",
+          "description": "Fulfill requirements for Pistol Mark - Gold (accumulated over 3 years)."
+        }
+      ],
       "prerequisites": [
         { "type": "medal", "medalId": "lower-annual-mark-star-3" }
       ],
