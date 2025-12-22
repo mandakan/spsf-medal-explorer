@@ -262,67 +262,12 @@
         }
       ],
       "unlocksFollowingMedals": [
-        "pistol-mark-gold-star-1",
         "elite-mark-bronze",
         "championship-mark-bronze",
         "lower-annual-mark-star-1"
       ],
       "yearIntroduced": 2000,
       "sortOrder": 3
-    },
-    {
-      "id": "pistol-mark-gold-star-1",
-      "type": "pistol_mark",
-      "tier": "star_1",
-      "name": "Pistolskyttemärket - Guld med en stjärna",
-      "displayName": "Pistolskyttemärket - Guld med en stjärna",
-      "color": "#FFD700",
-      "icon": "medal-gold-star-1",
-      "prerequisites": [
-        {
-          "type": "medal",
-          "medalId": "pistol-mark-gold"
-        }
-      ],
-      "requirements": [
-        {
-          "type": "sustained_achievement",
-          "description": "3 years of Gold-level achievement",
-          "timeWindowYears": 3,
-          "yearsOfAchievement": 3,
-          "minPointsPerYear": 43
-        }
-      ],
-      "unlocksFollowingMedals": ["pistol-mark-gold-star-2"],
-      "yearIntroduced": 2000,
-      "sortOrder": 4
-    },
-    {
-      "id": "pistol-mark-gold-star-2",
-      "type": "pistol_mark",
-      "tier": "star_2",
-      "name": "Pistolskyttemärket - Guld med två stjärnor",
-      "displayName": "Pistolskyttemärket - Guld med två stjärnor",
-      "color": "#FFD700",
-      "icon": "medal-gold-star-2",
-      "prerequisites": [
-        {
-          "type": "medal",
-          "medalId": "pistol-mark-gold-star-1"
-        }
-      ],
-      "requirements": [
-        {
-          "type": "sustained_achievement",
-          "description": "5 years of Gold-level achievement",
-          "timeWindowYears": 3,
-          "yearsOfAchievement": 3,
-          "minPointsPerYear": 43
-        }
-      ],
-      "unlocksFollowingMedals": [],
-      "yearIntroduced": 2000,
-      "sortOrder": 5
     },
     {
       "id": "elite-mark-bronze",
@@ -2149,10 +2094,10 @@
     },
     {
       "id": "lower-annual-mark-star-1",
-      "type": "lower_annual_mark",
+      "type": "pistol_mark",
       "tier": "star_1",
       "name": "Lägre årtalsmärket med en stjärna",
-      "displayName": "Lower Annual Mark - ★",
+      "displayName": "Lägre årtalsmärket med en stjärna",
       "color": "#FFD700",
       "icon": "lower-annual-star-1",
       "requirements_original": "3 years of **Gold-level Pistol Mark** achievement.",
@@ -2177,7 +2122,7 @@
     },
     {
       "id": "lower-annual-mark-star-2",
-      "type": "lower_annual_mark",
+      "type": "pistol_mark",
       "tier": "star_2",
       "name": "Lägre årtalsmärket med två stjärnor",
       "displayName": "Lower Annual Mark - ★★",
@@ -2200,7 +2145,7 @@
     },
     {
       "id": "lower-annual-mark-star-3",
-      "type": "lower_annual_mark",
+      "type": "pistol_mark",
       "tier": "star_3",
       "name": "Lägre årtalsmärket med tre stjärnor",
       "displayName": "Lower Annual Mark - ★★★",
@@ -2223,7 +2168,7 @@
     },
     {
       "id": "higher-annual-mark-bronze",
-      "type": "higher_annual_mark",
+      "type": "pistol_mark",
       "tier": "bronze",
       "name": "Högre årtalsmärket - Brons",
       "displayName": "Higher Annual Mark - Bronze",
@@ -2253,7 +2198,7 @@
     },
     {
       "id": "higher-annual-mark-silver",
-      "type": "higher_annual_mark",
+      "type": "pistol_mark",
       "tier": "silver",
       "name": "Högre årtalsmärket - Silver",
       "displayName": "Higher Annual Mark - Silver",
@@ -2276,7 +2221,7 @@
     },
     {
       "id": "higher-annual-mark-gold",
-      "type": "higher_annual_mark",
+      "type": "pistol_mark",
       "tier": "gold",
       "name": "Högre årtalsmärket - Guld",
       "displayName": "Higher Annual Mark - Gold",
@@ -2299,7 +2244,7 @@
     },
     {
       "id": "higher-annual-mark-gold-star-1",
-      "type": "higher_annual_mark",
+      "type": "pistol_mark",
       "tier": "gold_star_1",
       "name": "Högre årtalsmärket - Guld med en stjärna",
       "displayName": "Higher Annual Mark - Gold ★",
@@ -2322,7 +2267,7 @@
     },
     {
       "id": "higher-annual-mark-gold-star-2",
-      "type": "higher_annual_mark",
+      "type": "pistol_mark",
       "tier": "gold_star_2",
       "name": "Högre årtalsmärket - Guld med två stjärnor",
       "displayName": "Higher Annual Mark - Gold ★★",
@@ -2345,7 +2290,7 @@
     },
     {
       "id": "higher-annual-mark-gold-star-3",
-      "type": "higher_annual_mark",
+      "type": "pistol_mark",
       "tier": "gold_star_3",
       "name": "Högre årtalsmärket - Guld med tre stjärnor",
       "displayName": "Higher Annual Mark - Gold ★★★",
@@ -2368,7 +2313,7 @@
     },
     {
       "id": "higher-annual-mark-gold-wreath",
-      "type": "higher_annual_mark",
+      "type": "pistol_mark",
       "tier": "gold_wreath",
       "name": "Högre årtalsmärket - Guld med krans",
       "displayName": "Higher Annual Mark - Gold Wreath",
@@ -2391,7 +2336,7 @@
     },
     {
       "id": "higher-annual-mark-gold-wreath-star-1",
-      "type": "higher_annual_mark",
+      "type": "pistol_mark",
       "tier": "gold_wreath_star_1",
       "name": "Högre årtalsmärket - Guld med krans och en stjärna",
       "displayName": "Higher Annual Mark - Gold Wreath ★",
@@ -2414,7 +2359,7 @@
     },
     {
       "id": "higher-annual-mark-gold-wreath-star-2",
-      "type": "higher_annual_mark",
+      "type": "pistol_mark",
       "tier": "gold_wreath_star_2",
       "name": "Högre årtalsmärket - Guld med krans och två stjärnor",
       "displayName": "Higher Annual Mark - Gold Wreath ★★",
@@ -2437,7 +2382,7 @@
     },
     {
       "id": "higher-annual-mark-gold-wreath-star-3",
-      "type": "higher_annual_mark",
+      "type": "pistol_mark",
       "tier": "gold_wreath_star_3",
       "name": "Högre årtalsmärket - Guld med krans och tre stjärnor",
       "displayName": "Higher Annual Mark - Gold Wreath ★★★",
@@ -2460,7 +2405,7 @@
     },
     {
       "id": "higher-annual-mark-gold-enamel-wreath",
-      "type": "higher_annual_mark",
+      "type": "pistol_mark",
       "tier": "gold_enamel_wreath",
       "name": "Högre årtalsmärket - Guld med emaljerad krans",
       "displayName": "Higher Annual Mark - Gold Enamel Wreath",
@@ -2485,7 +2430,7 @@
     },
     {
       "id": "higher-annual-mark-gold-enamel-wreath-star-1",
-      "type": "higher_annual_mark",
+      "type": "pistol_mark",
       "tier": "gold_enamel_wreath_star_1",
       "name": "Högre årtalsmärket - Guld med emaljerad krans och en stjärna",
       "displayName": "Higher Annual Mark - Gold Enamel Wreath ★",
@@ -2510,7 +2455,7 @@
     },
     {
       "id": "higher-annual-mark-gold-enamel-wreath-star-2",
-      "type": "higher_annual_mark",
+      "type": "pistol_mark",
       "tier": "gold_enamel_wreath_star_2",
       "name": "Högre årtalsmärket - Guld med emaljerad krans och två stjärnor",
       "displayName": "Higher Annual Mark - Gold Enamel Wreath ★★",
@@ -2538,7 +2483,7 @@
     },
     {
       "id": "higher-annual-mark-gold-enamel-wreath-star-3",
-      "type": "higher_annual_mark",
+      "type": "pistol_mark",
       "tier": "gold_enamel_wreath_star_3",
       "name": "Högre årtalsmärket - Guld med emaljerad krans och tre stjärnor",
       "displayName": "Higher Annual Mark - Gold Enamel Wreath ★★★",
