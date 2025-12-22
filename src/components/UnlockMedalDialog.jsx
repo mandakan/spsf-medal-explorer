@@ -126,15 +126,15 @@ export default function UnlockMedalDialog({ medal, open, onClose }) {
           <div>
             <label htmlFor="unlock-year" className="field-label mb-2">
               Year
+              {typeof effectiveRuleMinYear === 'number' && (
+                <span className="ml-2 text-xs text-muted-foreground">(Earliest: {effectiveRuleMinYear})</span>
+              )}
             </label>
-            {typeof effectiveRuleMinYear === 'number' && (
-              <p className="field-hint">Earliest allowed: {effectiveRuleMinYear}</p>
-            )}
             <input
               id="unlock-year"
               type="number"
               inputMode="numeric"
-              className="input py-3"
+              className="input py-3 mb-2"
               min={birthYear ?? undefined}
               max={nowYear}
               list="eligible-years"
@@ -157,7 +157,7 @@ export default function UnlockMedalDialog({ medal, open, onClose }) {
                 <option key={y} value={y} />
               ))}
             </datalist>
-            <p id="unlock-year-hint" className="field-hint">
+            <p id="unlock-year-hint" className="field-hint mt-2">
               Choose a year between {birthYear} and {nowYear}. We’ll check prerequisites for that year.
             </p>
             {(() => {
@@ -177,7 +177,7 @@ export default function UnlockMedalDialog({ medal, open, onClose }) {
               }
 
               return msg ? (
-                <p className="field-hint text-red-600 dark:text-red-400" role="status">
+                <p className="field-hint mt-2 text-red-600 dark:text-red-400" role="status">
                   {msg}
                 </p>
               ) : null
