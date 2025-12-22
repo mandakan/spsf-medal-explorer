@@ -85,7 +85,45 @@ export function getThemeColors(canvas) {
   return palette
 }
 
+function getFontFamily(canvas) {
+  try {
+    const styles = typeof getComputedStyle === 'function'
+      ? getComputedStyle(isDomElement(canvas) ? canvas : document.documentElement)
+      : null
+    const ff = styles?.fontFamily
+    return ff && ff.trim().length ? ff : 'system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif'
+  } catch {
+    return 'system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif'
+  }
+}
+
 // Back-compat constant (not used by runtime rendering anymore)
+function wrapText(ctx, text, maxWidth, maxLines = 3, ellipsis = '…') {
+  if (!text) return []
+  const words = String(text).trim().split(/\s+/)
+  const lines = []
+  let line = ''
+  for (let i = 0; i < words.length; i++) {
+    const test = line ? line + ' ' + words[i] : words[i]
+    if (ctx.measureText(test).width <= maxWidth) {
+      line = test
+      continue
+    }
+    if (lines.length === maxLines - 1) {
+      let truncated = line || words[i]
+      while (ctx.measureText(truncated + ellipsis).width > maxWidth && truncated.length > 0) {
+        truncated = truncated.slice(0, -1)
+      }
+      lines.push(truncated + ellipsis)
+      return lines
+    }
+    if (line) lines.push(line)
+    line = words[i]
+  }
+  if (line) lines.push(line)
+  return lines.slice(0, maxLines)
+}
+
 export const COLORS = {
   unlocked: '#FFD700',
   achievable: '#20C997',
@@ -121,7 +159,7 @@ export function drawMedalNode(ctx, x, y, radius, medal, status, scale) {
     if (typeof ctx.setLineDash === 'function') {
       ctx.setLineDash([6 / s, 6 / s])
     }
-    ctx.strokeStyle = getClassColor('text-amber-500') || palette.accent
+    ctx.strokeStyle = palette.accent
     ctx.lineWidth = Math.max(1.5, 2.5 / s)
     ctx.beginPath()
     ctx.arc(x, y, radius + Math.max(2, 3 / s), 0, Math.PI * 2)
@@ -133,16 +171,20 @@ export function drawMedalNode(ctx, x, y, radius, medal, status, scale) {
       const fontPx = Math.max(8, 10 / s)
       const label = 'Under review'
       if (canSave) ctx.save()
-      ctx.font = `${fontPx}px sans-serif`
+      const fontFamily = getFontFamily(ctx.canvas)
+      ctx.font = `${fontPx}px ${fontFamily}`
       const textW = (ctx.measureText(label) && ctx.measureText(label).width) || 0
       const w = textW + pad * 2
       const h = fontPx + pad * 1.5
       const rx = x - w / 2
-      const ry = y + radius + 8 / s
+      const ry = y - radius - h - 8 / s
       const r = 4 / s
-      // Background
-      ctx.fillStyle = 'rgba(251, 191, 36, 0.15)'
-      ctx.strokeStyle = getClassColor('text-amber-500') || palette.accent
+      // Background (accent with alpha from design token)
+      const prevAlpha = ctx.globalAlpha
+      ctx.globalAlpha = 0.15
+      ctx.fillStyle = palette.accent
+      ctx.globalAlpha = prevAlpha
+      ctx.strokeStyle = palette.accent
       ctx.lineWidth = Math.max(1, 1.5 / s)
       ctx.beginPath()
       if (typeof ctx.arcTo === 'function') {
@@ -172,17 +214,46 @@ export function drawMedalNode(ctx, x, y, radius, medal, status, scale) {
     }
   }
 
-  // Label text
-  ctx.fillStyle = palette.text
-  ctx.textAlign = 'center'
-  ctx.textBaseline = 'middle'
+  // Label text: draw full displayName below the node with wrapping for readability
+  const name = medal?.displayName || medal?.name || medal?.tier || 'Medal'
+  // Avoid label clutter when zoomed far out
+  if (scale >= 0.7 && name) {
+    ctx.fillStyle = palette.text
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'top'
 
-  ctx.font = `${Math.max(10, 12 / Math.max(scale, 0.001))}px sans-serif`
-  const displayText = (medal.displayName || '').split(' ')[0] || medal.tier || 'Medal'
-  ctx.fillText(displayText, x, y - 6 / Math.max(scale, 0.001))
-  
-  ctx.font = `${Math.max(8, 10 / Math.max(scale, 0.001))}px sans-serif`
-  ctx.fillText(medal.tier || '', x, y + 8 / Math.max(scale, 0.001))
+    // Accessible, consistent size regardless of zoom
+    const fontPx = 12
+    const lineHeight = Math.round(fontPx * 1.3)
+    const fontFamily = getFontFamily(ctx.canvas)
+    ctx.font = `${fontPx}px ${fontFamily}`
+
+    // Wrap to a max width and line count
+    const maxWidth = 180
+    const lines = wrapText(ctx, name, maxWidth, 3)
+
+    const startY = y + radius + 8
+
+    // Subtle shadow for readability over connections or lines
+    const prevShadowColor = ctx.shadowColor
+    const prevShadowBlur = ctx.shadowBlur
+    const prevShadowOffsetX = ctx.shadowOffsetX
+    const prevShadowOffsetY = ctx.shadowOffsetY
+    ctx.shadowColor = 'rgba(0,0,0,0.2)'
+    ctx.shadowBlur = 2
+    ctx.shadowOffsetX = 0
+    ctx.shadowOffsetY = 1
+
+    for (let i = 0; i < lines.length; i++) {
+      ctx.fillText(lines[i], x, startY + i * lineHeight)
+    }
+
+    // Reset shadow to avoid side effects
+    ctx.shadowColor = prevShadowColor
+    ctx.shadowBlur = prevShadowBlur
+    ctx.shadowOffsetX = prevShadowOffsetX
+    ctx.shadowOffsetY = prevShadowOffsetY
+  }
 }
 
 export function drawConnection(ctx, x1, y1, x2, y2, type = 'prerequisite', scale) {

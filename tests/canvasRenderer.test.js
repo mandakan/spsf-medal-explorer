@@ -12,6 +12,8 @@ function createStubCtx(width = 800, height = 600) {
     font: '',
     textAlign: 'center',
     textBaseline: 'middle',
+    // minimal width approximation for tests
+    measureText: (text) => ({ width: String(text ?? '').length * 6 }),
     // path methods
     beginPath: fn('beginPath'),
     closePath: fn('closePath'),

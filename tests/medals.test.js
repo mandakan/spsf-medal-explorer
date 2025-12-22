@@ -15,7 +15,7 @@ describe('Medal Database', () => {
   test('finds medal by id', () => {
     const medal = medalDb.getMedalById('pistol-mark-bronze')
     expect(medal).toBeDefined()
-    expect(medal.displayName).toBe('Pistol Mark - Bronze')
+    expect(medal.displayName).toBe('Pistolskyttemärket - Brons')
   })
 
   test('bronze pistol mark has no prerequisites', () => {
@@ -37,9 +37,11 @@ describe('Medal Database', () => {
   })
 
   test('medals unlock following medals correctly', () => {
-    const medal = medalDb.getMedalById('pistol-mark-bronze')
-    expect(medal.unlocksFollowingMedals).toContain('pistol-mark-silver')
-    expect(medal.unlocksFollowingMedals).toContain('elite-mark-bronze')
+    const bronze = medalDb.getMedalById('pistol-mark-bronze')
+    expect(bronze.unlocksFollowingMedals).toContain('pistol-mark-silver')
+
+    const gold = medalDb.getMedalById('pistol-mark-gold')
+    expect(gold.unlocksFollowingMedals).toContain('elite-mark-bronze')
   })
 
   test('gets medals by type', () => {
