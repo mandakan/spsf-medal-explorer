@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import MobileBottomSheet from './MobileBottomSheet'
 import { useMedalCalculator } from '../hooks/useMedalCalculator'
 import { useProfile } from '../hooks/useProfile'
@@ -6,21 +6,22 @@ import { useProfile } from '../hooks/useProfile'
 export default function UnlockMedalDialog({ medal, open, onClose }) {
   const calculator = useMedalCalculator()
   const { unlockMedal } = useProfile()
-  const [years, setYears] = useState([])
   const [year, setYear] = useState('')
-
-  useEffect(() => {
-    if (!open || !calculator || !medal?.id) return
-    const ys = calculator.getEligibleYears(medal.id) || []
-    setYears(ys)
-    setYear(ys[0] ?? '')
+  const eligibleYears = useMemo(() => {
+    if (!open || !calculator || !medal?.id) return []
+    try {
+      return calculator.getEligibleYears(medal.id) || []
+    } catch {
+      return []
+    }
   }, [open, calculator, medal])
+  const selectedYear = eligibleYears.length <= 1 ? (eligibleYears[0] ?? '') : (year || (eligibleYears[0] ?? ''))
 
-  const canUnlock = years.length > 0 && year !== ''
+  const canUnlock = eligibleYears.length > 0 && selectedYear !== ''
 
   const doUnlock = async () => {
     if (!canUnlock) return
-    const unlockedDate = `${year}-12-31`
+    const unlockedDate = `${selectedYear}-12-31`
     await unlockMedal(medal.id, unlockedDate)
     onClose?.()
   }
@@ -33,7 +34,7 @@ export default function UnlockMedalDialog({ medal, open, onClose }) {
       onClose={onClose}
       swipeToDismiss
     >
-      {years.length === 0 ? (
+      {eligibleYears.length === 0 ? (
         <div className="space-y-4">
           <p className="text-sm text-text-secondary">No qualifying years found.</p>
           <div className="flex justify-end">
@@ -42,10 +43,10 @@ export default function UnlockMedalDialog({ medal, open, onClose }) {
             </button>
           </div>
         </div>
-      ) : years.length === 1 ? (
+      ) : eligibleYears.length === 1 ? (
         <div className="space-y-4">
           <p className="text-sm">
-            Unlock for year: <strong>{years[0]}</strong>?
+            Unlock for year: <strong>{eligibleYears[0]}</strong>?
           </p>
           <div className="flex gap-2 justify-end">
             <button type="button" className="btn btn-muted min-h-[44px]" onClick={onClose}>
@@ -72,10 +73,10 @@ export default function UnlockMedalDialog({ medal, open, onClose }) {
             <select
               id="unlock-year"
               className="select py-3"
-              value={year}
+              value={selectedYear}
               onChange={(e) => setYear(Number(e.target.value))}
             >
-              {years.map((y) => (
+              {eligibleYears.map((y) => (
                 <option key={y} value={y}>
                   {y}
                 </option>

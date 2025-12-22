@@ -16,6 +16,7 @@ export default function MobileBottomSheet({
     if (!open) return
     // Remember previously focused element to restore on close
     prevFocusRef.current = document.activeElement
+    const node = sheetRef.current
 
     const onKey = (e) => {
       if (e.key === 'Escape') {
@@ -26,7 +27,7 @@ export default function MobileBottomSheet({
     // Trap focus within the sheet
     const onTrapKeyDown = (e) => {
       if (e.key !== 'Tab') return
-      const root = sheetRef.current
+      const root = node
       if (!root) return
       const focusables = root.querySelectorAll(
         'a, button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
@@ -45,14 +46,14 @@ export default function MobileBottomSheet({
     }
 
     document.addEventListener('keydown', onKey)
-    sheetRef.current?.addEventListener('keydown', onTrapKeyDown)
+    node?.addEventListener('keydown', onTrapKeyDown)
 
     // Focus the sheet when it opens for accessibility
-    const t = setTimeout(() => sheetRef.current?.focus(), 0)
+    const t = setTimeout(() => node?.focus(), 0)
 
     return () => {
       document.removeEventListener('keydown', onKey)
-      sheetRef.current?.removeEventListener('keydown', onTrapKeyDown)
+      node?.removeEventListener('keydown', onTrapKeyDown)
       clearTimeout(t)
       // Restore focus to the element that opened the dialog
       if (prevFocusRef.current && typeof prevFocusRef.current.focus === 'function') {
