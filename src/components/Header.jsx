@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 
 const navItems = [
   { path: '/', label: 'Home' },
-  { path: '/skill-tree', label: 'Skill Tree' },
+  { path: '/skill-tree', label: 'Medalj-träd' },
   { path: '/medals', label: 'Medals' },
   { path: '/about', label: 'Om' },
   { path: '/settings', label: 'Settings' },

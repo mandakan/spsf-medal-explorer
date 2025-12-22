@@ -290,7 +290,7 @@ export default function SkillTreeCanvas() {
         </div>
       </div>
 
-      <div className="card overflow-hidden overscroll-contain" role="region" aria-label="Skill tree canvas" aria-describedby="skilltree-help">
+      <div className="card overflow-hidden overscroll-contain" role="region" aria-label="Medaljträd canvas" aria-describedby="skilltree-help">
         {!isFullscreen && (
           <canvas
             ref={setCanvasRef}
@@ -329,7 +329,7 @@ export default function SkillTreeCanvas() {
             className="flex items-center justify-between p-2 sm:p-3 border-b border-gray-300 dark:border-slate-700 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80"
             style={{ paddingTop: 'max(env(safe-area-inset-top), 0px)' }}
           >
-            <h2 className="text-lg font-semibold text-text-primary">Skill Tree</h2>
+            <h2 className="text-lg font-semibold text-text-primary">Medaljträd</h2>
             <div className="flex gap-2">
               <button
                 type="button"

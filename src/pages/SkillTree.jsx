@@ -9,7 +9,7 @@ export default function SkillTree() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-text-primary">Skill Tree</h1>
+        <h1 className="text-3xl font-bold text-text-primary">Trädvy</h1>
         <div
           role="tablist"
           aria-label="Trädvy med medaljer"
