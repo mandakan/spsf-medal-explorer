@@ -85,6 +85,18 @@ export function getThemeColors(canvas) {
   return palette
 }
 
+function getFontFamily(canvas) {
+  try {
+    const styles = typeof getComputedStyle === 'function'
+      ? getComputedStyle(isDomElement(canvas) ? canvas : document.documentElement)
+      : null
+    const ff = styles?.fontFamily
+    return ff && ff.trim().length ? ff : 'system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif'
+  } catch {
+    return 'system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif'
+  }
+}
+
 // Back-compat constant (not used by runtime rendering anymore)
 function wrapText(ctx, text, maxWidth, maxLines = 3, ellipsis = '…') {
   if (!text) return []
@@ -147,7 +159,7 @@ export function drawMedalNode(ctx, x, y, radius, medal, status, scale) {
     if (typeof ctx.setLineDash === 'function') {
       ctx.setLineDash([6 / s, 6 / s])
     }
-    ctx.strokeStyle = getClassColor('text-amber-500') || palette.accent
+    ctx.strokeStyle = palette.accent
     ctx.lineWidth = Math.max(1.5, 2.5 / s)
     ctx.beginPath()
     ctx.arc(x, y, radius + Math.max(2, 3 / s), 0, Math.PI * 2)
@@ -159,16 +171,20 @@ export function drawMedalNode(ctx, x, y, radius, medal, status, scale) {
       const fontPx = Math.max(8, 10 / s)
       const label = 'Under review'
       if (canSave) ctx.save()
-      ctx.font = `${fontPx}px sans-serif`
+      const fontFamily = getFontFamily(ctx.canvas)
+      ctx.font = `${fontPx}px ${fontFamily}`
       const textW = (ctx.measureText(label) && ctx.measureText(label).width) || 0
       const w = textW + pad * 2
       const h = fontPx + pad * 1.5
       const rx = x - w / 2
       const ry = y - radius - h - 8 / s
       const r = 4 / s
-      // Background
-      ctx.fillStyle = 'rgba(251, 191, 36, 0.15)'
-      ctx.strokeStyle = getClassColor('text-amber-500') || palette.accent
+      // Background (accent with alpha from design token)
+      const prevAlpha = ctx.globalAlpha
+      ctx.globalAlpha = 0.15
+      ctx.fillStyle = palette.accent
+      ctx.globalAlpha = prevAlpha
+      ctx.strokeStyle = palette.accent
       ctx.lineWidth = Math.max(1, 1.5 / s)
       ctx.beginPath()
       if (typeof ctx.arcTo === 'function') {
@@ -209,7 +225,8 @@ export function drawMedalNode(ctx, x, y, radius, medal, status, scale) {
     // Accessible, consistent size regardless of zoom
     const fontPx = 12
     const lineHeight = Math.round(fontPx * 1.3)
-    ctx.font = `${fontPx}px sans-serif`
+    const fontFamily = getFontFamily(ctx.canvas)
+    ctx.font = `${fontPx}px ${fontFamily}`
 
     // Wrap to a max width and line count
     const maxWidth = 180
