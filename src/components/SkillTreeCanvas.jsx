@@ -125,7 +125,10 @@ export default function SkillTreeCanvas() {
     return () => {
       window.removeEventListener('keydown', onEsc)
       root.style.overflow = previousOverflow
-      try { prevFocusRef.current?.focus?.() } catch {}
+      const el = prevFocusRef.current
+      if (el && typeof el.focus === 'function') {
+        el.focus()
+      }
     }
   }, [isFullscreen])
 
