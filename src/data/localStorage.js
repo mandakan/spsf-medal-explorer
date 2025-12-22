@@ -65,6 +65,10 @@ export class LocalStorageDataManager extends DataManager {
     if (!this.validateProfile(profile)) {
       throw new Error('Invalid profile structure')
     }
+    // Normalize features
+    const features = {
+      allowManualUnlock: Boolean(profile.features?.allowManualUnlock),
+    }
 
     const data = this.getStorageData()
     const now = new Date().toISOString()
@@ -76,6 +80,7 @@ export class LocalStorageDataManager extends DataManager {
       data.profiles[index] = {
         ...data.profiles[index],
         ...profile,
+        features,
         userId: data.profiles[index].userId, // never change id
       }
     } else {
@@ -89,6 +94,7 @@ export class LocalStorageDataManager extends DataManager {
         unlockedMedals: Array.isArray(profile.unlockedMedals) ? profile.unlockedMedals : [],
         prerequisites: Array.isArray(profile.prerequisites) ? profile.prerequisites : [],
         notifications: Boolean(profile.notifications),
+        features,
       }
       data.profiles.push(newProfile)
       profile = newProfile
@@ -193,6 +199,7 @@ export class LocalStorageDataManager extends DataManager {
         displayName: profile.displayName,
         createdDate: profile.createdDate,
         dateOfBirth: profile.dateOfBirth,
+        features: profile.features || {},
       },
       achievements: profile.prerequisites || [],
       unlockedMedals: profile.unlockedMedals || [],
@@ -241,6 +248,7 @@ export class LocalStorageDataManager extends DataManager {
       dateOfBirth: parsed.userProfile && parsed.userProfile.dateOfBirth,
       prerequisites: achievements,
       unlockedMedals: Array.isArray(parsed.unlockedMedals) ? parsed.unlockedMedals : [],
+      features: (parsed.userProfile && parsed.userProfile.features) || {},
     })
 
     return await this.saveUserProfile(profile)
@@ -256,6 +264,13 @@ export class LocalStorageDataManager extends DataManager {
     if (!Array.isArray(profile.unlockedMedals)) return false
     if (!Array.isArray(profile.prerequisites)) return false
     if (!this._isValidDob(profile.dateOfBirth)) return false
+    // Optional features validation
+    if (profile.features != null) {
+      if (typeof profile.features !== 'object') return false
+      if ('allowManualUnlock' in profile.features && typeof profile.features.allowManualUnlock !== 'boolean') {
+        return false
+      }
+    }
     const age = this._computeAge(profile.dateOfBirth)
     if (age < 8 || age > 100) return false
     return true
@@ -413,6 +428,9 @@ export class LocalStorageDataManager extends DataManager {
       delete copy.weaponGroupPreference
       if (!this._isValidDob(copy.dateOfBirth)) {
         copy.dateOfBirth = this._defaultDob()
+      }
+      if (!copy.features) {
+        copy.features = { allowManualUnlock: false }
       }
       copy.lastModified = new Date().toISOString()
       return copy
