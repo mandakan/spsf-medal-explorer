@@ -198,7 +198,7 @@ export class MedalCalculator {
       if (req.type === 'precision_series') {
         items.push(this.checkPrecisionSeriesRequirement(req, idx, opts))
       } else if (req.type === 'sustained_achievement') {
-        items.push(this.checkSustainedAchievementRequirement(req, idx, opts, medal))
+        items.push(this.checkSustainedAchievementRequirement(req, idx, medal))
       } else if (req.type === 'championship_competition') {
         items.push(this.checkChampionshipRequirement(req, idx, opts))
       } else if (req.type === 'application_series') {
@@ -442,7 +442,7 @@ export class MedalCalculator {
     }, {})
   }
 
-  checkSustainedAchievementRequirement(req, index, _opts = {}, parentMedal) {
+  checkSustainedAchievementRequirement(req, index, parentMedal) {
     const minYears = req.yearsOfAchievement ?? 3
 
     // References: prefer explicit (on req or medal); else infer from same-type prerequisite chain
