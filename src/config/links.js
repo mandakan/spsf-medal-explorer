@@ -10,5 +10,5 @@ export const LINKS = {
   GITHUB_REPO: 'https://github.com/REPLACE_ME/medal-tracker',
 
   // Optional: Buy me a coffee / donation link. Leave empty string to hide section.
-  COFFEE: '',
+  COFFEE: 'https://buymeacoffee.com/thias',
 }
