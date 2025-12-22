@@ -497,10 +497,10 @@ export default function MedalDetailModal({ medalId, onClose }) {
           </div>
 
           {/* Footer */}
-          <div className="flex gap-3 p-4 sm:p-6 border-t border-border pb-[env(safe-area-inset-bottom)]">
+          <div className="flex gap-3 p-4 sm:p-6 border-t border-border pb-[calc(env(safe-area-inset-bottom)+1rem)]">
             <button
               onClick={onClose}
-              className="flex-1 px-4 py-2 rounded-md bg-background text-foreground hover:bg-bg-secondary ring-1 ring-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
+              className="flex-1 min-h-[44px] px-4 py-2 rounded-md bg-background text-foreground hover:bg-bg-secondary ring-1 ring-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
             >
               Close
             </button>
@@ -512,7 +512,7 @@ export default function MedalDetailModal({ medalId, onClose }) {
                   onClick={handleRemoveClick}
                   aria-haspopup="dialog"
                   aria-expanded={showConfirmRemove || showBlockedInfo}
-                  className="flex-1 px-4 py-2 rounded-md bg-background text-foreground hover:bg-bg-secondary ring-1 ring-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
+                  className="flex-1 min-h-[44px] px-4 py-2 rounded-md bg-background text-foreground hover:bg-bg-secondary ring-1 ring-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
                 >
                   Remove unlocked
                 </button>
@@ -539,7 +539,7 @@ export default function MedalDetailModal({ medalId, onClose }) {
                   disabled={!prereqsOk}
                   aria-disabled={!prereqsOk}
                   aria-describedby={!prereqsOk ? prereqHintId : undefined}
-                  className="flex-1 px-4 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary-hover disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
+                  className="flex-1 min-h-[44px] px-4 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary-hover disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
                 >
                   Unlock Now
                 </button>
