@@ -18,6 +18,7 @@ export default function MedalDetailModal({ medalId, onClose }) {
   const [showLogger, setShowLogger] = useState(false)
   const [showOriginal, setShowOriginal] = useState(false)
   const navigate = useNavigate()
+  const originalId = medal ? `medal-req-original-${medal.id}` : undefined
 
   const { canRemove, blocking, tryRemove } = useUnlockGuard(medalId)
   const [showConfirmRemove, setShowConfirmRemove] = useState(false)
@@ -371,13 +372,14 @@ export default function MedalDetailModal({ medalId, onClose }) {
                   type="button"
                   onClick={() => setShowOriginal(v => !v)}
                   aria-expanded={showOriginal}
+                  aria-controls={originalId}
                   className="w-full text-left px-3 py-2 flex items-center justify-between hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary rounded-t"
                 >
                   <span className="text-sm font-semibold text-foreground">View original requirement text</span>
                   <span aria-hidden="true" className="ml-2">{showOriginal ? '▼' : '▶'}</span>
                 </button>
                 {showOriginal && (
-                  <div className="px-3 pb-3">
+                  <div className="px-3 pb-3" id={originalId} aria-hidden={!showOriginal}>
                     <div className="text-sm text-foreground break-words">
                       <Suspense fallback={null}>
                         <Markdown>{medal.requirementsOriginal}</Markdown>

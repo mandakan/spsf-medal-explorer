@@ -10,9 +10,13 @@ import FilterPresets from '../components/FilterPresets'
 import AdvancedFilterBuilder from '../components/AdvancedFilterBuilder'
 import MedalList from '../components/MedalList'
 import MobileBottomSheet from '../components/MobileBottomSheet'
+import MedalDetailModal from '../components/MedalDetailModal'
+import { useParams, useNavigate } from 'react-router-dom'
 
 export default function MedalsList() {
   const { medalDatabase } = useMedalDatabase()
+  const { id: selectedMedalId } = useParams()
+  const navigate = useNavigate()
   const statuses = useAllMedalStatuses()
   const [sortBy, setSortBy] = useState('name')
   const [showAdvanced, setShowAdvanced] = useState(false)
@@ -175,11 +179,18 @@ export default function MedalsList() {
             </div>
           ) : (
             <div className="border border-gray-200 dark:border-slate-700 rounded-md overflow-hidden" role="region" aria-label="Medal results">
-              <MedalList medals={finalResults} height={listHeight} itemSize={60} />
+              <MedalList medals={finalResults} height={listHeight} itemSize={60} onSelect={(m) => navigate(`/medals/${m.id}`)} />
             </div>
           )}
         </div>
       </div>
+
+      {selectedMedalId && (
+        <MedalDetailModal
+          medalId={selectedMedalId}
+          onClose={() => navigate('/medals')}
+        />
+      )}
     </div>
   )
 }
