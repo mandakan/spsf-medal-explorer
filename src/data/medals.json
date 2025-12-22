@@ -21,7 +21,48 @@
             "A": { "min": 32 },
             "B": { "min": 33 },
             "C": { "min": 34 }
-          }
+          },
+          "ageCategories": [
+            {
+              "name": "under_55",
+              "ageMin": 0,
+              "ageMax": 54,
+              "description": "Under 55 years",
+              "pointThresholds": {
+                "A": { "min": 32 },
+                "B": { "min": 33 },
+                "C": { "min": 34 }
+              },
+              "timeSeconds": 17,
+              "hitsRequired": 6
+            },
+            {
+              "name": "age_55_64",
+              "ageMin": 55,
+              "ageMax": 64,
+              "description": "55 to 64 years",
+              "pointThresholds": {
+                "A": { "min": 31 },
+                "B": { "min": 32 },
+                "C": { "min": 33 }
+              },
+              "timeSeconds": 17,
+              "hitsRequired": 6
+            },
+            {
+              "name": "age_65_plus",
+              "ageMin": 65,
+              "ageMax": 999,
+              "description": "65 years and older",
+              "pointThresholds": {
+                "A": { "min": 30 },
+                "B": { "min": 31 },
+                "C": { "min": 32 }
+              },
+              "timeSeconds": 17,
+              "hitsRequired": 6
+            }
+          ]
         },
         {
           "type": "application_series",
@@ -77,7 +118,48 @@
             "A": { "min": 38 },
             "B": { "min": 39 },
             "C": { "min": 40 }
-          }
+          },
+          "ageCategories": [
+            {
+              "name": "under_55",
+              "ageMin": 0,
+              "ageMax": 54,
+              "description": "Under 55 years",
+              "pointThresholds": {
+                "A": { "min": 38 },
+                "B": { "min": 39 },
+                "C": { "min": 40 }
+              },
+              "timeSeconds": 17,
+              "hitsRequired": 6
+            },
+            {
+              "name": "age_55_64",
+              "ageMin": 55,
+              "ageMax": 64,
+              "description": "55 to 64 years",
+              "pointThresholds": {
+                "A": { "min": 37 },
+                "B": { "min": 38 },
+                "C": { "min": 39 }
+              },
+              "timeSeconds": 17,
+              "hitsRequired": 6
+            },
+            {
+              "name": "age_65_plus",
+              "ageMin": 65,
+              "ageMax": 999,
+              "description": "65 years and older",
+              "pointThresholds": {
+                "A": { "min": 36 },
+                "B": { "min": 37 },
+                "C": { "min": 38 }
+              },
+              "timeSeconds": 17,
+              "hitsRequired": 6
+            }
+          ]
         },
         {
           "type": "application_series",
@@ -126,7 +208,48 @@
             "A": { "min": 43 },
             "B": { "min": 44 },
             "C": { "min": 46 }
-          }
+          },
+          "ageCategories": [
+            {
+              "name": "under_55",
+              "ageMin": 0,
+              "ageMax": 54,
+              "description": "Under 55 years",
+              "pointThresholds": {
+                "A": { "min": 43 },
+                "B": { "min": 44 },
+                "C": { "min": 46 }
+              },
+              "timeSeconds": 17,
+              "hitsRequired": 6
+            },
+            {
+              "name": "age_55_64",
+              "ageMin": 55,
+              "ageMax": 64,
+              "description": "55 to 64 years",
+              "pointThresholds": {
+                "A": { "min": 42 },
+                "B": { "min": 43 },
+                "C": { "min": 45 }
+              },
+              "timeSeconds": 17,
+              "hitsRequired": 6
+            },
+            {
+              "name": "age_65_plus",
+              "ageMin": 65,
+              "ageMax": 999,
+              "description": "65 years and older",
+              "pointThresholds": {
+                "A": { "min": 41 },
+                "B": { "min": 42 },
+                "C": { "min": 44 }
+              },
+              "timeSeconds": 17,
+              "hitsRequired": 6
+            }
+          ]
         },
         {
           "type": "application_series",
@@ -231,7 +354,48 @@
             "A": { "min": 45 },
             "B": { "min": 46 },
             "C": { "min": 47 }
-          }
+          },
+          "ageCategories": [
+            {
+              "name": "under_55",
+              "ageMin": 0,
+              "ageMax": 54,
+              "description": "Under 55 years",
+              "pointThresholds": {
+                "A": { "min": 45 },
+                "B": { "min": 46 },
+                "C": { "min": 47 }
+              },
+              "timeSeconds": 17,
+              "hitsRequired": 6
+            },
+            {
+              "name": "age_55_64",
+              "ageMin": 55,
+              "ageMax": 64,
+              "description": "55 to 64 years",
+              "pointThresholds": {
+                "A": { "min": 44 },
+                "B": { "min": 45 },
+                "C": { "min": 46 }
+              },
+              "timeSeconds": 17,
+              "hitsRequired": 6
+            },
+            {
+              "name": "age_65_plus",
+              "ageMin": 65,
+              "ageMax": 999,
+              "description": "65 years and older",
+              "pointThresholds": {
+                "A": { "min": 43 },
+                "B": { "min": 44 },
+                "C": { "min": 45 }
+              },
+              "timeSeconds": 17,
+              "hitsRequired": 6
+            }
+          ]
         },
         {
           "type": "speed_shooting_series",
