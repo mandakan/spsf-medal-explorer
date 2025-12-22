@@ -21,7 +21,26 @@ export class LocalStorageDataManager extends DataManager {
     }
     if (!localStorage.getItem(this.storageKey)) {
       const initialData = {
-        version: '1.0',
+        version: '2.0',
+        profiles: [],
+        lastBackup: new Date().toISOString(),
+      }
+      localStorage.setItem(this.storageKey, JSON.stringify(initialData))
+      return
+    }
+
+    // Migrate existing storage if needed
+    try {
+      const raw = localStorage.getItem(this.storageKey)
+      const data = raw ? JSON.parse(raw) : null
+      if (data && data.version !== '2.0') {
+        const migrated = this._migrateToV2(data)
+        this.saveStorageData(migrated)
+      }
+    } catch {
+      // If parsing fails, reinitialize
+      const initialData = {
+        version: '2.0',
         profiles: [],
         lastBackup: new Date().toISOString(),
       }
@@ -66,7 +85,7 @@ export class LocalStorageDataManager extends DataManager {
         displayName: profile.displayName || '',
         createdDate: now,
         lastModified: now,
-        weaponGroupPreference: profile.weaponGroupPreference || 'A',
+        dateOfBirth: profile.dateOfBirth,
         unlockedMedals: Array.isArray(profile.unlockedMedals) ? profile.unlockedMedals : [],
         prerequisites: Array.isArray(profile.prerequisites) ? profile.prerequisites : [],
         notifications: Boolean(profile.notifications),
@@ -173,7 +192,7 @@ export class LocalStorageDataManager extends DataManager {
       userProfile: {
         displayName: profile.displayName,
         createdDate: profile.createdDate,
-        weaponGroupPreference: profile.weaponGroupPreference,
+        dateOfBirth: profile.dateOfBirth,
       },
       achievements: profile.prerequisites || [],
       unlockedMedals: profile.unlockedMedals || [],
@@ -219,7 +238,7 @@ export class LocalStorageDataManager extends DataManager {
     const profile = new UserProfile({
       userId: newId,
       displayName: (parsed.userProfile && parsed.userProfile.displayName) || '',
-      weaponGroupPreference: (parsed.userProfile && parsed.userProfile.weaponGroupPreference) || 'A',
+      dateOfBirth: parsed.userProfile && parsed.userProfile.dateOfBirth,
       prerequisites: achievements,
       unlockedMedals: Array.isArray(parsed.unlockedMedals) ? parsed.unlockedMedals : [],
     })
@@ -236,10 +255,9 @@ export class LocalStorageDataManager extends DataManager {
     if (typeof profile.displayName !== 'string') return false
     if (!Array.isArray(profile.unlockedMedals)) return false
     if (!Array.isArray(profile.prerequisites)) return false
-    // Optional fields
-    if (profile.weaponGroupPreference && !['A', 'B', 'C', 'R'].includes(profile.weaponGroupPreference)) {
-      return false
-    }
+    if (!this._isValidDob(profile.dateOfBirth)) return false
+    const age = this._computeAge(profile.dateOfBirth)
+    if (age < 8 || age > 100) return false
     return true
   }
 
@@ -352,12 +370,54 @@ export class LocalStorageDataManager extends DataManager {
     if (!data.userProfile || typeof data.userProfile !== 'object') {
       throw new Error('Invalid export file: missing userProfile')
     }
+    if (!data.userProfile.dateOfBirth || typeof data.userProfile.dateOfBirth !== 'string') {
+      throw new Error('Invalid export file: missing dateOfBirth')
+    }
     if (!('achievements' in data) || !Array.isArray(data.achievements)) {
       throw new Error('Invalid export file: missing achievements')
     }
     if (!('unlockedMedals' in data) || !Array.isArray(data.unlockedMedals)) {
       throw new Error('Invalid export file: missing unlockedMedals')
     }
+  }
+
+  _isValidDob(dob) {
+    if (!dob || typeof dob !== 'string') return false
+    // Must be basic ISO yyyy-mm-dd
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(dob)) return false
+    const d = new Date(dob)
+    if (Number.isNaN(d.getTime())) return false
+    return true
+  }
+
+  _computeAge(dob) {
+    if (!this._isValidDob(dob)) return NaN
+    const d = new Date(dob)
+    const today = new Date()
+    let age = today.getFullYear() - d.getFullYear()
+    const m = today.getMonth() - d.getMonth()
+    if (m < 0 || (m === 0 && today.getDate() < d.getDate())) age--
+    return age
+  }
+
+  _defaultDob() {
+    // Reasonable default for migrated profiles; user can edit later
+    return '2000-01-01'
+  }
+
+  _migrateToV2(data) {
+    const next = { ...data }
+    next.version = '2.0'
+    next.profiles = Array.isArray(data.profiles) ? data.profiles.map(p => {
+      const copy = { ...p }
+      delete copy.weaponGroupPreference
+      if (!this._isValidDob(copy.dateOfBirth)) {
+        copy.dateOfBirth = this._defaultDob()
+      }
+      copy.lastModified = new Date().toISOString()
+      return copy
+    }) : []
+    return next
   }
 
   _hasStorage() {

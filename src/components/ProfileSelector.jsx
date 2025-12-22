@@ -2,23 +2,35 @@ import React, { useState } from 'react'
 import { useProfile } from '../hooks/useProfile'
 
 export default function ProfileSelector() {
-  const { profiles, currentProfile, loading, createProfile, selectProfile, deleteProfile } =
+  const { profiles, currentProfile, loading, createProfile, updateProfile, selectProfile, deleteProfile } =
     useProfile()
 
   const [showModal, setShowModal] = useState(false)
+  const [modalMode, setModalMode] = useState('create')
+  const [editingProfile, setEditingProfile] = useState(null)
   const [newProfileName, setNewProfileName] = useState('')
-  const [newWeaponGroup, setNewWeaponGroup] = useState('A')
+  const [newDateOfBirth, setNewDateOfBirth] = useState('')
 
-  const handleCreateProfile = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!newProfileName.trim()) return
+    if (!newProfileName.trim() || !newDateOfBirth) return
 
     try {
-      await createProfile(newProfileName, newWeaponGroup)
+      if (modalMode === 'edit' && editingProfile) {
+        await updateProfile({
+          ...editingProfile,
+          displayName: newProfileName.trim(),
+          dateOfBirth: newDateOfBirth,
+        })
+      } else {
+        await createProfile(newProfileName.trim(), newDateOfBirth)
+      }
       setNewProfileName('')
+      setNewDateOfBirth('')
+      setEditingProfile(null)
       setShowModal(false)
     } catch (err) {
-      console.error('Failed to create profile:', err)
+      console.error('Failed to save profile:', err)
     }
   }
 
@@ -29,6 +41,17 @@ export default function ProfileSelector() {
     } catch (err) {
       console.error('Failed to delete profile:', err)
     }
+  }
+
+  const computeAge = (dob) => {
+    if (!dob) return null
+    const d = new Date(dob)
+    if (Number.isNaN(d.getTime())) return null
+    const today = new Date()
+    let age = today.getFullYear() - d.getFullYear()
+    const m = today.getMonth() - d.getMonth()
+    if (m < 0 || (m === 0 && today.getDate() < d.getDate())) age--
+    return age
   }
 
   return (
@@ -44,7 +67,19 @@ export default function ProfileSelector() {
                     onClick={() => selectProfile(profile.userId)}
                     className="flex-1 text-left px-4 py-2 bg-bg-secondary border border-slate-200 dark:border-slate-700 rounded hover:bg-gray-100 dark:hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
                   >
-                    {profile.displayName} (Group {profile.weaponGroupPreference})
+                    {profile.displayName} (Age {computeAge(profile.dateOfBirth) ?? '—'})
+                  </button>
+                  <button
+                    onClick={() => {
+                      setModalMode('edit')
+                      setEditingProfile(profile)
+                      setNewProfileName(profile.displayName || '')
+                      setNewDateOfBirth(profile.dateOfBirth || '')
+                      setShowModal(true)
+                    }}
+                    className="px-3 py-2 border border-slate-200 dark:border-slate-700 rounded hover:bg-gray-100 dark:hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
+                  >
+                    Edit
                   </button>
                   <button
                     onClick={() => handleDelete(profile.userId)}
@@ -57,7 +92,13 @@ export default function ProfileSelector() {
             </div>
           )}
           <button
-            onClick={() => setShowModal(true)}
+            onClick={() => {
+              setModalMode('create')
+              setEditingProfile(null)
+              setNewProfileName('')
+              setNewDateOfBirth('')
+              setShowModal(true)
+            }}
             className="px-4 py-2 rounded bg-primary text-white hover:bg-primary-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
           >
             Create New Profile
@@ -67,7 +108,7 @@ export default function ProfileSelector() {
         <div className="bg-bg-secondary border border-emerald-300 ring-1 ring-emerald-500/20 dark:border-emerald-700 dark:ring-emerald-400/30 rounded-lg p-4 mb-4">
           <p className="text-text-primary font-semibold">Profile: {currentProfile.displayName}</p>
           <p className="text-text-secondary text-sm">
-            Weapon Group: {currentProfile.weaponGroupPreference}
+            Age: {computeAge(currentProfile.dateOfBirth) ?? '—'}
           </p>
         </div>
       )}
@@ -80,9 +121,9 @@ export default function ProfileSelector() {
             aria-labelledby="create-profile-title"
             className="w-[min(92vw,32rem)] max-h-[85vh] overflow-auto rounded-xl bg-bg-secondary border border-slate-200 dark:border-slate-700 shadow-2xl"
           >
-            <form onSubmit={handleCreateProfile} className="p-6 space-y-5">
+            <form onSubmit={handleSubmit} className="p-6 space-y-5">
               <h2 id="create-profile-title" className="text-2xl font-bold text-text-primary">
-                Create New Profile
+                {modalMode === 'edit' ? 'Edit Profile' : 'Create New Profile'}
               </h2>
 
               <div className="space-y-2">
@@ -99,18 +140,16 @@ export default function ProfileSelector() {
               </div>
 
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-text-secondary">Weapon Group</label>
-                <select
-                  value={newWeaponGroup}
-                  onChange={(e) => setNewWeaponGroup(e.target.value)}
+                <label className="block text-sm font-medium text-text-secondary">Date of Birth</label>
+                <input
+                  type="date"
+                  value={newDateOfBirth}
+                  onChange={(e) => setNewDateOfBirth(e.target.value)}
                   className="w-full px-3 py-2 rounded border border-slate-300 dark:border-slate-600 bg-bg-secondary text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
                   disabled={loading}
-                >
-                  <option value="A">A</option>
-                  <option value="B">B</option>
-                  <option value="C">C</option>
-                  <option value="R">R</option>
-                </select>
+                  required
+                />
+                <p className="text-xs text-text-secondary">Used to determine age-based requirements (e.g., precision series thresholds)</p>
               </div>
 
               <div className="flex items-center justify-end gap-3 pt-2">
@@ -119,7 +158,7 @@ export default function ProfileSelector() {
                   className="px-4 py-2 rounded bg-primary text-white hover:bg-primary-hover disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
                   disabled={loading}
                 >
-                  Create
+                  {modalMode === 'edit' ? 'Save' : 'Create'}
                 </button>
                 <button
                   type="button"

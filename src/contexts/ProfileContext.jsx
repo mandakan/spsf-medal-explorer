@@ -33,12 +33,12 @@ export function ProfileProvider({ children }) {
   }, [])
 
   const createProfile = useCallback(
-    async (displayName, weaponGroup = 'A') => {
+    async (displayName, dateOfBirth) => {
       try {
         setLoading(true)
         const newProfile = new UserProfile({
           displayName,
-          weaponGroupPreference: weaponGroup,
+          dateOfBirth,
         })
         const saved = await storage.saveUserProfile(newProfile)
         setCurrentProfile(saved)
