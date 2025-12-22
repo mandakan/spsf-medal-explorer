@@ -54,6 +54,9 @@ jobs:
       - name: Add SPA fallback
         run: cp dist/index.html dist/404.html
 
+      - name: Include LICENSE in build
+        run: cp LICENSE dist/LICENSE
+
       - name: Upload artifact for deployment
         uses: actions/upload-pages-artifact@v3
         with:
