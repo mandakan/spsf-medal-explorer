@@ -57,12 +57,19 @@ export default function About() {
             </p>
             <p className="mt-2">
               <a
-                className="btn btn-primary inline-flex items-center min-h-[44px]"
+                className="inline-flex items-center rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
                 href={LINKS.COFFEE}
                 target="_blank"
                 rel="noreferrer noopener"
+                aria-label="Köp en kaffe (öppnas i ny flik)"
               >
-                Köp en kaffe
+                <img
+                  src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
+                  alt="Köp en kaffe"
+                  height="48"
+                  style={{ height: 48 }}
+                  loading="lazy"
+                />
               </a>
             </p>
           </section>
