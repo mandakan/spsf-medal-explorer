@@ -59,7 +59,7 @@ export default function FilterPresets({ currentFilters, onApplyPreset }) {
                 type="button"
                 onClick={() => handleDelete(index)}
                 className="btn btn-muted text-sm"
-                aria-label={`Delete preset ${preset.name}`}
+                aria-label={`Ta bort preset ${preset.name}`}
               >
                 Ta bort
               </button>

@@ -14,10 +14,10 @@ export default function AchievementDialog({
   COMP_TYPES = ['national', 'regional/landsdels', 'crewmate/krets', 'championship'],
   MEDAL_TYPES = ['bronze', 'silver', 'gold'],
   APP_TIME_OPTIONS = [
-    { value: 60, label: '60, Bronze' },
+    { value: 60, label: '60, Brons' },
     { value: 40, label: '40, Silver' },
-    { value: 17, label: '17, Gold A/R' },
-    { value: 15, label: '15, Gold B/C' },
+    { value: 17, label: '17, Guld A/R' },
+    { value: 15, label: '15, Guld B/C' },
   ],
 }) {
   // Remount the form content when dialog opens or initialRow changes to avoid setState in effects
@@ -29,7 +29,7 @@ export default function AchievementDialog({
   return (
     <MobileBottomSheet
       id="batch-row-editor"
-      title="Achievement"
+      title="Aktivitet"
       open={open}
       onClose={onClose}
       swipeToDismiss
@@ -73,48 +73,48 @@ function FormContent({
       const errs = []
       const y = Number(row.year)
       if (!Number.isFinite(y) || y < 2000 || y > currentYear) {
-        errs.push(`Year must be between 2000 and ${currentYear}`)
+        errs.push(`Året måste vara mellan 2000 och ${currentYear}`)
       }
       if (!WG.includes(row.weaponGroup)) {
-        errs.push('Invalid group (A, B, C, R)')
+        errs.push('Ogiltig grupp (A, B, C, R)')
       }
 
       switch (row.type) {
         case 'precision_series': {
           const p = Number(row.points)
           if (!Number.isFinite(p) || p < 0 || p > 50) {
-            errs.push('Points must be 0–50')
+            errs.push('Poäng måste vara 0-50')
           }
           break
         }
         case 'application_series': {
           const d = new Date(row.date)
           if (!row.date || Number.isNaN(d.getTime())) {
-            errs.push('Date is invalid')
+            errs.push('Ogiltigt datum')
           } else {
             const today = new Date()
             today.setHours(0, 0, 0, 0)
             d.setHours(0, 0, 0, 0)
             if (d.getTime() > today.getTime()) {
-              errs.push('Date cannot be in the future')
+              errs.push('Datum kan inte vara i framtiden')
             }
           }
           const allowed = APP_TIME_OPTIONS.map(o => o.value)
           const t = Number(row.timeSeconds)
           if (!Number.isFinite(t) || !allowed.includes(t)) {
-            errs.push('Select a valid time')
+            errs.push('Välj giltig tid')
           }
           const h = Number(row.hits)
           if (!Number.isFinite(h) || h < 0) {
-            errs.push('Enter a valid hits number')
+            errs.push('Ange giltigt antal träffar')
           }
           break
         }
         case 'competition_result': {
           const ct = String(row.competitionType || '').toLowerCase()
           const mt = String(row.medalType || '').toLowerCase()
-          if (!COMP_TYPES.includes(ct)) errs.push('Select a valid competition type')
-          if (!MEDAL_TYPES.includes(mt)) errs.push('Select a valid medal type')
+          if (!COMP_TYPES.includes(ct)) errs.push('Välj giltig tävlingstyp')
+          if (!MEDAL_TYPES.includes(mt)) errs.push('Välj giltig medaljtyp')
           break
         }
         default:
@@ -162,7 +162,7 @@ function FormContent({
     <form onSubmit={(e) => { e.preventDefault(); onSubmit(false) }} className="space-y-4" noValidate>
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label htmlFor="br-year" className="field-label mb-2">Year</label>
+          <label htmlFor="br-year" className="field-label mb-2">År</label>
           <input
             id="br-year"
             type="number"
@@ -176,7 +176,7 @@ function FormContent({
         </div>
 
         <div>
-          <label htmlFor="br-group" className="field-label mb-2">Group</label>
+          <label htmlFor="br-group" className="field-label mb-2">Grupp</label>
           <select
             id="br-group"
             className="select py-3"
@@ -197,11 +197,11 @@ function FormContent({
           value={form.type || 'precision_series'}
           onChange={(e) => setField('type', e.target.value)}
         >
-          <option value="precision_series">Precision Series</option>
-          <option value="application_series">Application Series</option>
-          <option value="competition_result">Competition Result</option>
-          <option value="qualification_result">Qualification</option>
-          <option value="team_event">Team Event</option>
+          <option value="precision_series">Precisionsserier</option>
+          <option value="application_series">Tillämpningsserier</option>
+          <option value="competition_result">Tävlingsresultat</option>
+          <option value="qualification_result">Kvalificering</option>
+          <option value="team_event">Lag-eventt</option>
           <option value="event">Event</option>
           <option value="custom">Custom</option>
         </select>
@@ -209,7 +209,7 @@ function FormContent({
 
       {form.type === 'precision_series' && (
         <div>
-          <label htmlFor="br-points" className="field-label mb-2">Points (0–50)</label>
+          <label htmlFor="br-points" className="field-label mb-2">Poäng (0-50)</label>
           <input
             id="br-points"
             type="number"
@@ -226,7 +226,7 @@ function FormContent({
       {form.type === 'application_series' && (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
-            <label htmlFor="br-date" className="field-label mb-2">Date</label>
+            <label htmlFor="br-date" className="field-label mb-2">Datum</label>
             <input
               id="br-date"
               type="date"
@@ -237,7 +237,7 @@ function FormContent({
             />
           </div>
           <div>
-            <label htmlFor="br-time" className="field-label mb-2">Time</label>
+            <label htmlFor="br-time" className="field-label mb-2">Tid</label>
             <select
               id="br-time"
               className="select py-3"
@@ -269,7 +269,7 @@ function FormContent({
       {form.type === 'competition_result' && (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
-            <label htmlFor="br-ctype" className="field-label mb-2">Competition Type</label>
+            <label htmlFor="br-ctype" className="field-label mb-2">Tävlingstyp</label>
             <select
               id="br-ctype"
               className="select py-3"
@@ -281,19 +281,19 @@ function FormContent({
             </select>
           </div>
           <div>
-            <label htmlFor="br-mtype" className="field-label mb-2">Medal</label>
+            <label htmlFor="br-mtype" className="field-label mb-2">Medalj</label>
             <select
               id="br-mtype"
               className="select py-3"
               value={form.medalType ?? ''}
               onChange={(e) => setField('medalType', e.target.value)}
             >
-              <option value="">Select medal…</option>
+              <option value="">Välj medalj...</option>
               {MEDAL_TYPES.map(o => <option key={o} value={o}>{o}</option>)}
             </select>
           </div>
           <div>
-            <label htmlFor="br-cname" className="field-label mb-2">Name (optional)</label>
+            <label htmlFor="br-cname" className="field-label mb-2">Namn (valfritt)</label>
             <input
               id="br-cname"
               type="text"
@@ -308,7 +308,7 @@ function FormContent({
       {form.type === 'qualification_result' && (
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label htmlFor="br-weapon" className="field-label mb-2">Weapon</label>
+            <label htmlFor="br-weapon" className="field-label mb-2">Vapen</label>
             <input
               id="br-weapon"
               type="text"
@@ -318,7 +318,7 @@ function FormContent({
             />
           </div>
           <div>
-            <label htmlFor="br-score" className="field-label mb-2">Score</label>
+            <label htmlFor="br-score" className="field-label mb-2">Poäng</label>
             <input
               id="br-score"
               type="number"
@@ -333,7 +333,7 @@ function FormContent({
       {form.type === 'team_event' && (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
-            <label htmlFor="br-team" className="field-label mb-2">Team</label>
+            <label htmlFor="br-team" className="field-label mb-2">Lag</label>
             <input
               id="br-team"
               type="text"
@@ -343,7 +343,7 @@ function FormContent({
             />
           </div>
           <div>
-            <label htmlFor="br-pos" className="field-label mb-2">Position</label>
+            <label htmlFor="br-pos" className="field-label mb-2">Placering</label>
             <input
               id="br-pos"
               type="number"
@@ -354,7 +354,7 @@ function FormContent({
             />
           </div>
           <div>
-            <label htmlFor="br-part" className="field-label mb-2">Participants</label>
+            <label htmlFor="br-part" className="field-label mb-2">Deltagare</label>
             <input
               id="br-part"
               type="text"
@@ -369,7 +369,7 @@ function FormContent({
 
       {(form.type === 'event' || form.type === 'custom') && (
         <div>
-          <label htmlFor="br-ename" className="field-label mb-2">Title</label>
+          <label htmlFor="br-ename" className="field-label mb-2">Titel</label>
           <input
             id="br-ename"
             type="text"
@@ -381,7 +381,7 @@ function FormContent({
       )}
 
       <div>
-        <label htmlFor="br-notes" className="field-label mb-2">Notes (optional)</label>
+        <label htmlFor="br-notes" className="field-label mb-2">Anteckningar (valfritt)</label>
         <textarea
           id="br-notes"
           className="textarea py-3 resize-none"
@@ -399,14 +399,14 @@ function FormContent({
 
       {mode === 'batch' ? (
         <div className="flex gap-2 justify-end pt-2">
-          <button type="button" className="btn btn-muted" onClick={onClose}>Cancel</button>
-          <button type="button" className="btn btn-muted" onClick={() => onSubmit(true)}>Add &amp; add another</button>
-          <button type="submit" className="btn btn-primary">Add to batch</button>
+          <button type="button" className="btn btn-muted" onClick={onClose}>Avbryt</button>
+          <button type="button" className="btn btn-muted" onClick={() => onSubmit(true)}>Lägg till &amp; lägg till en till</button>
+          <button type="submit" className="btn btn-primary">Lägg till batch</button>
         </div>
       ) : (
         <div className="flex gap-2 justify-end pt-2">
-          <button type="button" className="btn btn-muted" onClick={onClose}>Cancel</button>
-          <button type="submit" className="btn btn-primary">{submitLabel || 'Save'}</button>
+          <button type="button" className="btn btn-muted" onClick={onClose}>Avbryt</button>
+          <button type="submit" className="btn btn-primary">{submitLabel || 'Spara'}</button>
         </div>
       )}
     </form>

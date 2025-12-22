@@ -46,7 +46,7 @@ export default function AchievementForm() {
 
   return (
     <div className="card p-6">
-      <h2 className="text-xl font-bold mb-4">Add Achievement</h2>
+      <h2 className="text-xl font-bold mb-4">Lägg till aktivitet</h2>
 
       {errors.length > 0 && (
         <div id="achievement-errors" className="bg-background border border-border rounded p-4 mb-4" role="alert" aria-live="polite">
@@ -58,7 +58,7 @@ export default function AchievementForm() {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="achievement-type" className="field-label mb-1">Type</label>
+          <label htmlFor="achievement-type" className="field-label mb-1">Typ</label>
           <select
             id="achievement-type"
             aria-describedby={errors.length > 0 ? 'achievement-errors' : undefined}
@@ -67,13 +67,13 @@ export default function AchievementForm() {
             className="select"
             disabled={loading}
           >
-            <option value="precision_series">Precision Series</option>
+            <option value="precision_series">Precisionsserie</option>
           </select>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label htmlFor="achievement-year" className="field-label mb-1">Year</label>
+            <label htmlFor="achievement-year" className="field-label mb-1">År</label>
             <input
               id="achievement-year"
               type="number"
@@ -87,7 +87,7 @@ export default function AchievementForm() {
             />
           </div>
           <div>
-            <label htmlFor="achievement-weaponGroup" className="field-label mb-1">Weapon Group</label>
+            <label htmlFor="achievement-weaponGroup" className="field-label mb-1">Vapengrupp</label>
             <select
               id="achievement-weaponGroup"
               aria-describedby={errors.length > 0 ? 'achievement-errors' : undefined}
@@ -105,7 +105,7 @@ export default function AchievementForm() {
         </div>
 
         <div>
-          <label htmlFor="achievement-points" className="field-label mb-1">Points</label>
+          <label htmlFor="achievement-points" className="field-label mb-1">Poäng</label>
           <input
             id="achievement-points"
             type="number"
@@ -127,7 +127,7 @@ export default function AchievementForm() {
         </div>
 
         <div>
-          <label htmlFor="achievement-date" className="field-label mb-1">Date</label>
+          <label htmlFor="achievement-date" className="field-label mb-1">Datum</label>
           <input
             id="achievement-date"
             type="date"
@@ -144,7 +144,7 @@ export default function AchievementForm() {
           className="btn btn-primary w-full disabled:opacity-50"
           disabled={loading}
         >
-          {loading ? 'Adding...' : 'Add Achievement'}
+          {loading ? 'Lägger till...' : 'Lägg till aktivitet'}
         </button>
       </form>
     </div>

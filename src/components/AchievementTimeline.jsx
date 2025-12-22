@@ -36,14 +36,14 @@ export default function AchievementTimeline() {
   if (!currentProfile) {
     return (
       <div className="card p-4">
-        <p className="text-foreground">Please select a profile to view achievements</p>
+        <p className="text-foreground">Välj en profil för att se aktiviteter</p>
       </div>
     )
   }
 
   const handleExport = () => {
     const csv = achievementsToCSV(sortedAchievements)
-    downloadCSV(csv, 'achievement-history.csv')
+    downloadCSV(csv, 'aktivitet-historik.csv')
   }
 
   return (
@@ -54,9 +54,9 @@ export default function AchievementTimeline() {
           <button
             onClick={handleExport}
             className="btn btn-primary text-sm"
-            aria-label="Export achievement history as CSV"
+            aria-label="Exporta aktiviteter som CSV"
           >
-            Export CSV
+            Exporta CSV
           </button>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -93,7 +93,7 @@ export default function AchievementTimeline() {
               onChange={(e) => setFilterGroup(e.target.value || null)}
               className="select"
             >
-              <option value="">All Groups</option>
+              <option value="">Alla grupper</option>
               <option value="A">A</option>
               <option value="B">B</option>
               <option value="C">C</option>
@@ -105,12 +105,12 @@ export default function AchievementTimeline() {
 
       <div className="space-y-2">
         <h3 className="text-lg font-bold text-text-primary">
-          {sortedAchievements.length} Achievement(s)
+          {sortedAchievements.length} Aktivitet(er)
         </h3>
 
         {sortedAchievements.length === 0 ? (
           <div className="card p-6 text-center">
-            <p className="text-text-secondary">No achievements yet</p>
+            <p className="text-text-secondary">Inga aktiviteter än</p>
           </div>
         ) : (
           <div className="space-y-3">

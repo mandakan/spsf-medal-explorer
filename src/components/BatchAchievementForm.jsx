@@ -8,10 +8,10 @@ const WG = ['A', 'B', 'C', 'R']
 const COMP_TYPES = ['national', 'regional/landsdels', 'crewmate/krets', 'championship']
 const MEDAL_TYPES = ['bronze', 'silver', 'gold']
 const APP_TIME_OPTIONS = [
-  { value: 60, label: '60, Bronze' },
+  { value: 60, label: '60, Brons' },
   { value: 40, label: '40, Silver' },
-  { value: 17, label: '17, Gold A/R' },
-  { value: 15, label: '15, Gold B/C' },
+  { value: 17, label: '17, Guld A/R' },
+  { value: 15, label: '15, Guld B/C' },
 ]
 const currentYear = new Date().getFullYear()
 const newRow = () => ({
@@ -101,7 +101,7 @@ export default function BatchAchievementForm() {
         case 'precision_series': {
           const p = Number(row.points)
           if (!Number.isFinite(p) || p < 0 || p > 50) {
-            errs.push('Points must be 0–50')
+            errs.push('Points must be 0-50')
           }
           break
         }
@@ -236,11 +236,11 @@ export default function BatchAchievementForm() {
             <caption className="sr-only">Batch achievement input</caption>
             <thead>
               <tr className="border-b border-border bg-bg-secondary">
-                <th scope="col" className="text-left px-3 py-2">Year</th>
-                <th scope="col" className="text-left px-3 py-2">Type</th>
-                <th scope="col" className="text-left px-3 py-2">Group</th>
-                <th scope="col" className="text-left px-3 py-2">Details</th>
-                <th scope="col" className="text-left px-3 py-2">Action</th>
+                <th scope="col" className="text-left px-3 py-2">År</th>
+                <th scope="col" className="text-left px-3 py-2">Typ</th>
+                <th scope="col" className="text-left px-3 py-2">Grupp</th>
+                <th scope="col" className="text-left px-3 py-2">Detailer</th>
+                <th scope="col" className="text-left px-3 py-2">Åtgärd</th>
               </tr>
             </thead>
             <tbody>

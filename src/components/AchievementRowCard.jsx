@@ -17,27 +17,27 @@ export default function AchievementRowCard({ row, index, onEdit, onRemove }) {
     <div className="card p-4 flex items-start justify-between gap-3">
       <div>
         <div className="font-medium text-foreground">
-          {row.type.replace(/_/g, ' ')} • {row.year} • Group {row.weaponGroup}
+          {row.type.replace(/_/g, ' ')} • {row.year} • Grupp {row.weaponGroup}
         </div>
         <div className="text-sm text-muted-foreground">{subtitle}</div>
-        {row.notes ? <div className="text-xs text-muted-foreground mt-1">Notes added</div> : null}
+        {row.notes ? <div className="text-xs text-muted-foreground mt-1">Anteckningar</div> : null}
       </div>
       <div className="flex gap-2 shrink-0">
         <button
           type="button"
           onClick={() => onEdit?.(index)}
           className="btn btn-muted h-10 px-3"
-          aria-label={`Edit row ${index + 1}`}
+          aria-label={`Ändra rad ${index + 1}`}
         >
-          Edit
+          Ändra
         </button>
         <button
           type="button"
           onClick={() => onRemove?.(index)}
           className="btn btn-muted h-10 px-3 text-red-600"
-          aria-label={`Remove row ${index + 1}`}
+          aria-label={`Ta bort rad ${index + 1}`}
         >
-          Remove
+          Ta bort
         </button>
       </div>
     </div>
