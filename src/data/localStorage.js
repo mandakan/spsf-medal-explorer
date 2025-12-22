@@ -68,6 +68,7 @@ export class LocalStorageDataManager extends DataManager {
     // Normalize features
     const features = {
       allowManualUnlock: Boolean(profile.features?.allowManualUnlock),
+      enforceCurrentYearForSustained: Boolean(profile.features?.enforceCurrentYearForSustained),
     }
 
     const data = this.getStorageData()
@@ -270,6 +271,9 @@ export class LocalStorageDataManager extends DataManager {
       if ('allowManualUnlock' in profile.features && typeof profile.features.allowManualUnlock !== 'boolean') {
         return false
       }
+      if ('enforceCurrentYearForSustained' in profile.features && typeof profile.features.enforceCurrentYearForSustained !== 'boolean') {
+        return false
+      }
     }
     const age = this._computeAge(profile.dateOfBirth)
     if (age < 8 || age > 100) return false
@@ -430,7 +434,10 @@ export class LocalStorageDataManager extends DataManager {
         copy.dateOfBirth = this._defaultDob()
       }
       if (!copy.features) {
-        copy.features = { allowManualUnlock: false }
+        copy.features = { allowManualUnlock: false, enforceCurrentYearForSustained: false }
+      } else {
+        if (typeof copy.features.allowManualUnlock !== 'boolean') copy.features.allowManualUnlock = false
+        if (typeof copy.features.enforceCurrentYearForSustained !== 'boolean') copy.features.enforceCurrentYearForSustained = false
       }
       copy.lastModified = new Date().toISOString()
       return copy

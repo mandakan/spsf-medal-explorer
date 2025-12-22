@@ -48,6 +48,24 @@ export default function Settings() {
               </p>
             </div>
           </div>
+
+          <div className="flex items-start gap-3 mt-3">
+            <input
+              id="ft-enforce-current-year"
+              type="checkbox"
+              className="h-5 w-5 mt-0.5"
+              checked={!!currentProfile?.features?.enforceCurrentYearForSustained}
+              onChange={(e) => setProfileFeature('enforceCurrentYearForSustained', e.target.checked)}
+            />
+            <div>
+              <label htmlFor="ft-enforce-current-year" className="field-label mb-1">
+                Require the current year for sustained medals
+              </label>
+              <p className="field-hint">
+                When enabled, medals that track sustained achievements can only be unlocked for this calendar year.
+              </p>
+            </div>
+          </div>
         </div>
 
         <div

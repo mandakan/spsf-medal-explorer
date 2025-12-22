@@ -465,13 +465,19 @@ export class MedalCalculator {
 
     // Earliest counting year must be after previous same-type medal unlock
     const earliestCountingYear = this.getEarliestCountingYearForMedal(parentMedal)
-    const currentYear = (opts && typeof opts.endYear === 'number') ? opts.endYear : new Date().getFullYear()
+    const featureEnforce = this.profile?.features?.enforceCurrentYearForSustained === true
+    // If feature is ON, always use the real current year (ignore opts.endYear)
+    const currentYear = featureEnforce
+      ? new Date().getFullYear()
+      : ((opts && typeof opts.endYear === 'number') ? opts.endYear : new Date().getFullYear())
 
     // By default, when using references, the current year must be included
-    const requireCurrent =
+    let requireCurrent =
       req.mustIncludeCurrentYear === true ||
       parentMedal?.mustIncludeCurrentYear === true ||
       effectiveReferences.length > 0
+    // Feature override: force requiring the real current year
+    if (featureEnforce) requireCurrent = true
 
     // Candidate years
     let allYears

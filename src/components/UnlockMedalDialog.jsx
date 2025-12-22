@@ -42,13 +42,8 @@ export default function UnlockMedalDialog({ medal, open, onClose }) {
     }
   }, [calculator, medal])
 
-  const requireCurrentYear = useMemo(() => {
-    if (!medal?.requirements) return false
-    return medal.requirements.some(req =>
-      req?.type === 'sustained_achievement' &&
-      (req.mustIncludeCurrentYear === true || medal.mustIncludeCurrentYear === true || (Array.isArray(req.references) && req.references.length > 0) || sameTypePrereqs.length > 0)
-    )
-  }, [medal, sameTypePrereqs])
+  const enforceSustainedCurrent = !!currentProfile?.features?.enforceCurrentYearForSustained
+  const hasSustainedReq = Array.isArray(medal?.requirements) && medal.requirements.some(r => r?.type === 'sustained_achievement')
 
   const selectedYear = allowManual
     ? (year === '' ? '' : Number(year))
@@ -56,7 +51,8 @@ export default function UnlockMedalDialog({ medal, open, onClose }) {
 
   const yearOutOfBounds = allowManual && (!Number.isFinite(selectedYear) || typeof birthYear !== 'number' || selectedYear < birthYear || selectedYear > nowYear)
   const yearTooEarly = allowManual && (typeof earliestCountingYear === 'number') && Number.isFinite(selectedYear) && (selectedYear < earliestCountingYear)
-  const wrongCurrentReq = allowManual && requireCurrentYear && Number.isFinite(selectedYear) && (selectedYear !== nowYear)
+  // If feature is ON and medal has sustained achievement, selected year must be the real current year
+  const wrongCurrentReq = enforceSustainedCurrent && hasSustainedReq && Number.isFinite(selectedYear) && (selectedYear !== nowYear)
   const yearIsValid = allowManual ? (!yearOutOfBounds && !yearTooEarly && !wrongCurrentReq) : (selectedYear !== '')
 
   const prereqsMet = useMemo(() => {
@@ -136,7 +132,7 @@ export default function UnlockMedalDialog({ medal, open, onClose }) {
                 This medal cannot be unlocked before {earliestCountingYear}.
               </p>
             )}
-            {wrongCurrentReq && (
+            {enforceSustainedCurrent && hasSustainedReq && wrongCurrentReq && (
               <p className="field-hint text-red-600 dark:text-red-400" role="status">
                 This medal requires the current year to be selected.
               </p>
