@@ -36,7 +36,7 @@ export default function Header() {
             href="#main"
             className="absolute -top-10 left-2 focus:top-2 focus:left-2 focus:z-[60] btn btn-primary"
           >
-            Skip to content
+            Hoppa till innehåll
           </a>
 
           {/* Top row: brand + hamburger */}
@@ -45,7 +45,7 @@ export default function Header() {
               to="/"
               className="text-2xl font-bold leading-tight break-words text-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
             >
-              🎖️ Medal Skill-Tree
+              🎖️ Skyttemedaljer
             </Link>
 
             {/* Hamburger (mobile only) */}
@@ -53,7 +53,7 @@ export default function Header() {
               type="button"
               onClick={() => setOpenedAtPath(cur => (cur === location.pathname ? null : location.pathname))}
               className="sm:hidden inline-flex items-center justify-center h-11 w-11 rounded-md btn btn-muted"
-              aria-label="Toggle main menu"
+              aria-label="Växla meny"
               aria-controls="mobile-primary-nav"
               aria-expanded={open ? 'true' : 'false'}
             >

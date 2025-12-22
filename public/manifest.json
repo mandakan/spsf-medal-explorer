@@ -1,7 +1,7 @@
 {
-  "name": "Medal Skill-Tree Explorer",
-  "short_name": "Medal Tracker",
-  "description": "Track your SHB shooting medals and progress",
+  "name": "Skyttemedaljer",
+  "short_name": "Skyttemedaljer",
+  "description": "Utforska och dokumentera dina SPSF-medaljer",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",
