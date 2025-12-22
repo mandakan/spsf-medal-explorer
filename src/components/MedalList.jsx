@@ -27,7 +27,7 @@ function MedalIcon({ iconUrl, alt, unlocked }) {
       aria-hidden="true"
     >
       {unlocked && (
-        <span className="absolute -top-1 -right-1 text-[10px]" aria-hidden="true" title="Unlocked">🏆</span>
+        <span className="absolute -top-1 -right-1 text-[10px]" aria-hidden="true" title="Upplåst">🏆</span>
       )}
       {showImg ? (
         <img
@@ -57,7 +57,7 @@ function Row({ data, index, style }) {
     const d = new Date(iso)
     return Number.isNaN(d.getTime()) ? null : d.getFullYear()
   })()
-  const ariaLabel = `${medal.displayName || medal.name} ${medal.tier || ''}${underReview ? ' • Under review' : ''}${isUnlocked && unlockedYear ? ' • Unlocked ' + unlockedYear : ''}`
+  const ariaLabel = `${medal.displayName || medal.name} ${medal.tier || ''}${underReview ? ' • Under granskning' : ''}${isUnlocked && unlockedYear ? ' • Upplåst ' + unlockedYear : ''}`
   return (
     <div
       role="button"
@@ -77,13 +77,13 @@ function Row({ data, index, style }) {
               className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-900 border border-amber-300 dark:bg-amber-900/40 dark:text-amber-200 dark:border-amber-700"
               aria-label="Medal rules status: under review"
             >
-              Under review
+              Under granskning
             </span>
           )}
         </div>
         <div className="text-sm text-text-secondary truncate">
           {medal.type} • {medal.tier}
-          {isUnlocked && unlockedYear != null ? ` • Unlocked ${unlockedYear}` : ''}
+          {isUnlocked && unlockedYear != null ? ` • Upplåst ${unlockedYear}` : ''}
         </div>
       </div>
     </div>

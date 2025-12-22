@@ -14,7 +14,7 @@ export default function ShareDialog({ open, onClose, shareData }) {
         const dataUrl = await toQRCode(shareData)
         setQrDataUrl(dataUrl)
       } catch (e) {
-        setError(e.message || 'Failed to generate QR code')
+        setError(e.message || 'Misslyckades att skapa QR-kod')
       }
     })()
   }, [open, shareData])
@@ -30,7 +30,7 @@ export default function ShareDialog({ open, onClose, shareData }) {
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     } catch {
-      setError('Failed to copy link')
+      setError('Misslyckades att kopiera länk')
     }
   }
 
@@ -51,7 +51,7 @@ export default function ShareDialog({ open, onClose, shareData }) {
         onClick={(e) => e.stopPropagation()}
       >
         <h2 className="text-xl font-bold text-foreground mb-4">
-          Share Your Progress
+          Dela dina framsteg
         </h2>
 
         {error && (
@@ -78,7 +78,7 @@ export default function ShareDialog({ open, onClose, shareData }) {
               />
             ) : (
               <div className="w-48 h-48 flex items-center justify-center border border-dashed border-border rounded">
-                <span className="text-muted-foreground">Generating...</span>
+                <span className="text-muted-foreground">Skapar...</span>
               </div>
             )}
 
@@ -96,7 +96,7 @@ export default function ShareDialog({ open, onClose, shareData }) {
                   className="btn btn-primary min-w-[96px] min-h-[44px]"
                   aria-label="Copy share link"
                 >
-                  {copied ? 'Copied' : 'Copy'}
+                  {copied ? 'Kopierad' : 'Kopiera'}
                 </button>
               </div>
             </div>
@@ -107,9 +107,9 @@ export default function ShareDialog({ open, onClose, shareData }) {
           <button
             onClick={onClose}
             className="btn btn-muted min-h-[44px]"
-            aria-label="Close share dialog"
+            aria-label="Stäng delningsdialogen"
           >
-            Close
+            Stäng
           </button>
         </div>
       </div>

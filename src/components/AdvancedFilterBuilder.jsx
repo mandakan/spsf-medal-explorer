@@ -13,7 +13,7 @@ export default function AdvancedFilterBuilder({ currentFilters, onApply }) {
 
   return (
     <div className="card p-4 space-y-4">
-      <h3 className="font-bold text-foreground">Advanced Filter Builder</h3>
+      <h3 className="font-bold text-foreground">Advancerad filter-byggare</h3>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
@@ -23,15 +23,15 @@ export default function AdvancedFilterBuilder({ currentFilters, onApply }) {
             onChange={(e) => update('status', e.target.value)}
             className="select"
           >
-            <option value="">Any</option>
-            <option value="unlocked">Unlocked</option>
-            <option value="achievable">Achievable</option>
-            <option value="locked">Locked</option>
+            <option value="">Alla</option>
+            <option value="unlocked">Upplåst</option>
+            <option value="achievable">Uppnåelig</option>
+            <option value="locked">Låst</option>
           </select>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-muted-foreground mb-1">Tier</label>
+          <label className="block text-sm font-medium text-muted-foreground mb-1">Valör</label>
           <input
             type="text"
             value={local.tier}
@@ -42,7 +42,7 @@ export default function AdvancedFilterBuilder({ currentFilters, onApply }) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-muted-foreground mb-1">Type</label>
+          <label className="block text-sm font-medium text-muted-foreground mb-1">Typ</label>
           <input
             type="text"
             value={local.type}
@@ -53,21 +53,22 @@ export default function AdvancedFilterBuilder({ currentFilters, onApply }) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-muted-foreground mb-1">Weapon Group</label>
+          <label className="block text-sm font-medium text-muted-foreground mb-1">Vapengrupp</label>
           <select
             value={local.weaponGroup}
             onChange={(e) => update('weaponGroup', e.target.value)}
             className="select"
           >
-            <option value="">Any</option>
+            <option value="">Alla</option>
             <option value="A">A</option>
             <option value="B">B</option>
             <option value="C">C</option>
+            <option value="R">R</option>
           </select>
         </div>
 
         <div className="md:col-span-2">
-          <label className="block text-sm font-medium text-muted-foreground mb-1">Search</label>
+          <label className="block text-sm font-medium text-muted-foreground mb-1">Sök</label>
           <input
             type="text"
             value={local.search}
@@ -90,7 +91,7 @@ export default function AdvancedFilterBuilder({ currentFilters, onApply }) {
           })}
           className="btn btn-primary"
         >
-          Apply
+          Filtrera
         </button>
       </div>
     </div>

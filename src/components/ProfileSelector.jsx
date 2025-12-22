@@ -30,16 +30,16 @@ export default function ProfileSelector() {
       setEditingProfile(null)
       setShowModal(false)
     } catch (err) {
-      console.error('Failed to save profile:', err)
+      console.error('Misslyckades spara profil:', err)
     }
   }
 
   const handleDelete = async (userId) => {
-    if (!confirm('Are you sure? This cannot be undone.')) return
+    if (!confirm('Är du säker? Det går inte att ångra.')) return
     try {
       await deleteProfile(userId)
     } catch (err) {
-      console.error('Failed to delete profile:', err)
+      console.error('Misslyckades ta bort profil:', err)
     }
   }
 
@@ -79,13 +79,13 @@ export default function ProfileSelector() {
                     }}
                     className="px-3 py-2 border border-slate-200 dark:border-slate-700 rounded hover:bg-gray-100 dark:hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
                   >
-                    Edit
+                    Ändra
                   </button>
                   <button
                     onClick={() => handleDelete(profile.userId)}
                     className="px-3 py-2 bg-red-500/10 border border-red-500/30 text-red-700 dark:text-red-300 rounded hover:bg-red-500/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-600/60"
                   >
-                    Delete
+                    Ta bort
                   </button>
                 </div>
               ))}
@@ -101,14 +101,14 @@ export default function ProfileSelector() {
             }}
             className="px-4 py-2 rounded bg-primary text-white hover:bg-primary-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
           >
-            Create New Profile
+            Skapa ny profil
           </button>
         </div>
       ) : (
         <div className="bg-bg-secondary border border-emerald-300 ring-1 ring-emerald-500/20 dark:border-emerald-700 dark:ring-emerald-400/30 rounded-lg p-4 mb-4">
           <p className="text-text-primary font-semibold">Profile: {currentProfile.displayName}</p>
           <p className="text-text-secondary text-sm">
-            Age: {computeAge(currentProfile.dateOfBirth) ?? '—'}
+            Ålder: {computeAge(currentProfile.dateOfBirth) ?? '—'}
           </p>
         </div>
       )}
@@ -123,7 +123,7 @@ export default function ProfileSelector() {
           >
             <form onSubmit={handleSubmit} className="p-6 space-y-5">
               <h2 id="create-profile-title" className="text-2xl font-bold text-text-primary">
-                {modalMode === 'edit' ? 'Edit Profile' : 'Create New Profile'}
+                {modalMode === 'edit' ? 'Ändra profil' : 'Skapa ny profil'}
               </h2>
 
               <div className="space-y-2">
@@ -133,14 +133,14 @@ export default function ProfileSelector() {
                   value={newProfileName}
                   onChange={(e) => setNewProfileName(e.target.value)}
                   className="w-full px-3 py-2 rounded border border-slate-300 dark:border-slate-600 bg-bg-secondary text-text-primary placeholder:text-text-secondary/70 focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="Your name"
+                  placeholder="Ditt namn"
                   disabled={loading}
                   required
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-text-secondary">Date of Birth</label>
+                <label className="block text-sm font-medium text-text-secondary">Födelsedatum</label>
                 <input
                   type="date"
                   value={newDateOfBirth}
@@ -149,7 +149,7 @@ export default function ProfileSelector() {
                   disabled={loading}
                   required
                 />
-                <p className="text-xs text-text-secondary">Used to determine age-based requirements (e.g., precision series thresholds)</p>
+                <p className="text-xs text-text-secondary">Används för att beräkna åldersberoende krav (tex gränser för precisionsserier)</p>
               </div>
 
               <div className="flex items-center justify-end gap-3 pt-2">
@@ -158,7 +158,7 @@ export default function ProfileSelector() {
                   className="px-4 py-2 rounded bg-primary text-white hover:bg-primary-hover disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
                   disabled={loading}
                 >
-                  {modalMode === 'edit' ? 'Save' : 'Create'}
+                  {modalMode === 'edit' ? 'Spara' : 'Skapa'}
                 </button>
                 <button
                   type="button"
@@ -166,7 +166,7 @@ export default function ProfileSelector() {
                   className="px-4 py-2 rounded border border-slate-300 dark:border-slate-600 text-text-primary hover:bg-gray-100 dark:hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
                   disabled={loading}
                 >
-                  Cancel
+                  Avbryt
                 </button>
               </div>
             </form>

@@ -54,7 +54,7 @@ export default function UniversalAchievementLogger({ medal, onSuccess, unlockMod
 
       onSuccess?.(achievement)
     } catch (err) {
-      setError(err?.message || 'Failed to save achievement')
+      setError(err?.message || 'Misslyckades att spara aktivitet')
     } finally {
       setLoading(false)
     }
@@ -70,7 +70,7 @@ export default function UniversalAchievementLogger({ medal, onSuccess, unlockMod
         id={headingId}
         className="section-title mb-4 break-words"
       >
-        {unlockMode ? 'Unlock Medal' : 'Log Achievement'}: {medal?.displayName || medal?.name || medal?.id}
+        {unlockMode ? 'Lås upp medalj' : 'Logga Aktivitet'}: {medal?.displayName || medal?.name || medal?.id}
       </h2>
 
       {error && (

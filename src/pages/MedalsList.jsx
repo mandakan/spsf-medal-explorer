@@ -94,10 +94,10 @@ export default function MedalsList() {
             onChange={(e) => setSortBy(e.target.value)}
             className="select"
           >
-            <option value="name">Sort by Name</option>
-            <option value="type">Sort by Type</option>
-            <option value="tier">Sort by Tier</option>
-            <option value="status">Sort by Status</option>
+            <option value="name">Sortera på namn</option>
+            <option value="type">Sortera på typ</option>
+            <option value="tier">Sortera på valör</option>
+            <option value="status">Sortera på status</option>
           </select>
 
           <button
@@ -106,7 +106,7 @@ export default function MedalsList() {
             className="btn btn-muted text-sm"
             aria-expanded={showAdvanced}
           >
-            {showAdvanced ? 'Hide' : 'Show'} Avancerade Filter
+            {showAdvanced ? 'Dölj' : 'Visa'} Avancerade Filter
           </button>
         </div>
       </div>
