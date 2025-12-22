@@ -35,6 +35,15 @@ export default function UnlockMedalDialog({ medal, open, onClose }) {
     }
   }, [calculator, medal])
 
+  const minimalSustainedYear = useMemo(() => {
+    if (!calculator || !medal) return null
+    try {
+      return calculator.getMinimalUnlockYearForSustained(medal)
+    } catch {
+      return null
+    }
+  }, [calculator, medal])
+
   const enforceSustainedCurrent = !!currentProfile?.features?.enforceCurrentYearForSustained
   const hasSustainedReq = Array.isArray(medal?.requirements) && medal.requirements.some(r => r?.type === 'sustained_achievement')
 
@@ -44,9 +53,10 @@ export default function UnlockMedalDialog({ medal, open, onClose }) {
 
   const yearOutOfBounds = allowManual && (!Number.isFinite(selectedYear) || typeof birthYear !== 'number' || selectedYear < birthYear || selectedYear > nowYear)
   const yearTooEarly = allowManual && (typeof earliestCountingYear === 'number') && Number.isFinite(selectedYear) && (selectedYear < earliestCountingYear)
+  const yearTooClose = allowManual && (typeof minimalSustainedYear === 'number') && Number.isFinite(selectedYear) && (selectedYear < minimalSustainedYear)
   // If feature is ON and medal has sustained achievement, selected year must be the real current year
   const wrongCurrentReq = enforceSustainedCurrent && hasSustainedReq && Number.isFinite(selectedYear) && (selectedYear !== nowYear)
-  const yearIsValid = allowManual ? (!yearOutOfBounds && !yearTooEarly && !wrongCurrentReq) : (selectedYear !== '')
+  const yearIsValid = allowManual ? (!yearOutOfBounds && !yearTooEarly && !yearTooClose && !wrongCurrentReq) : (selectedYear !== '')
 
   const prereqsMet = useMemo(() => {
     if (!allowManual) return true
@@ -123,6 +133,14 @@ export default function UnlockMedalDialog({ medal, open, onClose }) {
             {yearTooEarly && (
               <p className="field-hint text-red-600 dark:text-red-400" role="status">
                 This medal cannot be unlocked before {earliestCountingYear}.
+              </p>
+            )}
+            {yearTooClose && (
+              <p className="field-hint text-red-600 dark:text-red-400" role="status">
+                This medal requires at least {(() => {
+                  const req = medal?.requirements?.find(r => r?.type === 'sustained_achievement')
+                  return Number.isFinite(req?.yearsOfAchievement) ? req.yearsOfAchievement : 1
+                })()} year(s) after your previous medal of this type. Earliest year: {minimalSustainedYear}.
               </p>
             )}
             {enforceSustainedCurrent && hasSustainedReq && wrongCurrentReq && (

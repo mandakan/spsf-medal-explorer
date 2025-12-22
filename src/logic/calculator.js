@@ -178,6 +178,24 @@ export class MedalCalculator {
     return Math.max(...years) + 1
   }
 
+  /**
+   * For sustained achievements: compute the minimal calendar year allowed
+   * based on the sustained requirement's yearsOfAchievement (N) and the most
+   * recent unlock year among same-type prerequisite medals.
+   * Example: last same-type prereq = 2021, yearsOfAchievement=3 => earliest = 2024
+   */
+  getMinimalUnlockYearForSustained(parentMedal) {
+    if (!parentMedal) return null
+    const req = (parentMedal.requirements || []).find(r => r?.type === 'sustained_achievement')
+    if (!req) return null
+    const minYears = Number.isFinite(req?.yearsOfAchievement) ? req.yearsOfAchievement : 1
+    const sameTypeIds = this.getSameTypePrereqMedalIds(parentMedal)
+    const years = sameTypeIds.map(id => this.getUnlockedYear(id)).filter(y => typeof y === 'number')
+    if (!years.length) return null
+    const lastYear = Math.max(...years)
+    return lastYear + minYears
+  }
+
   getAllAchievementYears() {
     const a = this.profile.prerequisites || []
     const years = new Set()
