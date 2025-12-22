@@ -11,7 +11,7 @@ export default function SkillTreeCanvas() {
   const canvasRef = useRef(null)
   const { medalDatabase } = useMedalDatabase()
   const statuses = useAllMedalStatuses()
-  const { panX, panY, scale, handleWheel, handleMouseDown, handleMouseMove, handleMouseUp, handleTouchStart, handleTouchMove, handleTouchEnd, resetView } = usePanZoom()
+  const { panX, panY, scale, handleWheel, handlePointerDown, handlePointerMove, handlePointerUp, resetView } = usePanZoom()
   const { render } = useCanvasRenderer()
   
   const [selectedMedal, setSelectedMedal] = useState(null)
@@ -21,6 +21,9 @@ export default function SkillTreeCanvas() {
     return generateMedalLayout(medals)
   }, [medalDatabase])
   const [isDragging, setIsDragging] = useState(false)
+  const [isFullscreen, setIsFullscreen] = useState(false)
+  const closeBtnRef = useRef(null)
+  const prevFocusRef = useRef(null)
 
   // Determine which medals are visible in the current viewport for culling
   const getVisibleMedalsForCanvas = useCallback((canvas, margin = 120) => {
@@ -99,6 +102,25 @@ export default function SkillTreeCanvas() {
     return () => window.removeEventListener('resize', onResize)
   }, [draw])
 
+  // Fullscreen: lock page scroll, focus close, restore on exit, allow Esc to close
+  useEffect(() => {
+    if (!isFullscreen) return
+    prevFocusRef.current = document.activeElement
+    const root = document.documentElement
+    const previousOverflow = root.style.overflow
+    root.style.overflow = 'hidden'
+
+    closeBtnRef.current?.focus?.()
+
+    const onEsc = (e) => { if (e.key === 'Escape') setIsFullscreen(false) }
+    window.addEventListener('keydown', onEsc)
+    return () => {
+      window.removeEventListener('keydown', onEsc)
+      root.style.overflow = previousOverflow
+      try { prevFocusRef.current?.focus?.() } catch {}
+    }
+  }, [isFullscreen])
+
   // Keyboard pan shortcuts (scope to focused canvas for WCAG 2.1/2.2)
   const handleCanvasKeyDown = useCallback((e) => {
     const step = 50 / Math.max(scale, 0.001)
@@ -106,25 +128,25 @@ export default function SkillTreeCanvas() {
       e.preventDefault()
     }
     if (e.key === 'ArrowLeft') {
-      handleMouseMove({ clientX: 0, clientY: 0, syntheticPan: { dx: -step, dy: 0 } })
+      handlePointerMove({ syntheticPan: { dx: -step, dy: 0 } })
     } else if (e.key === 'ArrowRight') {
-      handleMouseMove({ clientX: 0, clientY: 0, syntheticPan: { dx: step, dy: 0 } })
+      handlePointerMove({ syntheticPan: { dx: step, dy: 0 } })
     } else if (e.key === 'ArrowUp') {
-      handleMouseMove({ clientX: 0, clientY: 0, syntheticPan: { dx: 0, dy: -step } })
+      handlePointerMove({ syntheticPan: { dx: 0, dy: -step } })
     } else if (e.key === 'ArrowDown') {
-      handleMouseMove({ clientX: 0, clientY: 0, syntheticPan: { dx: 0, dy: step } })
+      handlePointerMove({ syntheticPan: { dx: 0, dy: step } })
     }
-  }, [handleMouseMove, scale])
+  }, [handlePointerMove, scale])
 
-  // Mouse events
-  const handleCanvasMouseDown = (e) => {
+  // Pointer events
+  const handleCanvasPointerDown = (e) => {
     setIsDragging(true)
-    handleMouseDown(e)
+    handlePointerDown(e)
   }
 
-  const handleCanvasMouseMove = (e) => {
+  const handleCanvasPointerMove = (e) => {
     if (isDragging) {
-      handleMouseMove(e)
+      handlePointerMove(e)
       if (canvasRef.current) canvasRef.current.style.cursor = 'grabbing'
       return
     }
@@ -141,9 +163,10 @@ export default function SkillTreeCanvas() {
       const nodeX = (medal.x + panX) * scale + canvasRef.current.width / 2
       const nodeY = (medal.y + panY) * scale + canvasRef.current.height / 2
       const radius = (medal.radius || 20) * scale
+      const effectiveRadius = Math.max(radius, 24)
       const dx = mouseX - nodeX
       const dy = mouseY - nodeY
-      if (dx * dx + dy * dy < radius * radius) {
+      if (dx * dx + dy * dy < effectiveRadius * effectiveRadius) {
         canvasRef.current.style.cursor = 'pointer'
         return
       }
@@ -151,9 +174,9 @@ export default function SkillTreeCanvas() {
     canvasRef.current.style.cursor = 'grab'
   }
 
-  const handleCanvasMouseUp = (e) => {
+  const handleCanvasPointerUp = (e) => {
     setIsDragging(false)
-    handleMouseUp(e)
+    handlePointerUp(e)
   }
 
   const handleCanvasClick = (e) => {
@@ -169,9 +192,10 @@ export default function SkillTreeCanvas() {
       const nodeX = (medal.x + panX) * scale + canvasRef.current.width / 2
       const nodeY = (medal.y + panY) * scale + canvasRef.current.height / 2
       const radius = (medal.radius || 20) * scale
+      const effectiveRadius = Math.max(radius, 24)
       const dx = mouseX - nodeX
       const dy = mouseY - nodeY
-      if (dx * dx + dy * dy < radius * radius) {
+      if (dx * dx + dy * dy < effectiveRadius * effectiveRadius) {
         setSelectedMedal(medal.medalId)
         return
       }
@@ -191,9 +215,10 @@ export default function SkillTreeCanvas() {
       const nodeX = (medal.x + panX) * scale + canvasRef.current.width / 2
       const nodeY = (medal.y + panY) * scale + canvasRef.current.height / 2
       const radius = (medal.radius || 20) * scale
+      const effectiveRadius = Math.max(radius, 24)
       const dx = mouseX - nodeX
       const dy = mouseY - nodeY
-      if (dx * dx + dy * dy < radius * radius) {
+      if (dx * dx + dy * dy < effectiveRadius * effectiveRadius) {
         // Dispatch a custom event that can be handled by an achievement form
         window.dispatchEvent(new CustomEvent('openAchievementForm', { detail: { medalId: medal.medalId } }))
         setSelectedMedal(medal.medalId)
@@ -235,36 +260,121 @@ export default function SkillTreeCanvas() {
             <span aria-hidden="true" className="mr-2">📥</span>
             Export as PNG
           </button>
+          <button
+            type="button"
+            onClick={() => setIsFullscreen(true)}
+            className="px-4 py-3 rounded bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-slate-700 dark:text-slate-50 dark:hover:bg-slate-600 border border-gray-300 dark:border-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
+            aria-haspopup="dialog"
+            aria-controls="skilltree-fullscreen"
+          >
+            Fullscreen
+          </button>
         </div>
       </div>
 
-      <div className="card overflow-hidden" role="region" aria-label="Skill tree canvas" aria-describedby="skilltree-help">
-        <canvas
-          ref={canvasRef}
-          role="img"
-          aria-label="Interactive skill tree canvas"
-          aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown"
-          tabIndex={0}
-          onKeyDown={handleCanvasKeyDown}
-          className="w-full h-[60vh] sm:h-[600px] bg-background cursor-grab active:cursor-grabbing"
-          onWheel={handleWheel}
-          onMouseDown={handleCanvasMouseDown}
-          onMouseMove={handleCanvasMouseMove}
-          onMouseUp={handleCanvasMouseUp}
-          onMouseLeave={handleCanvasMouseUp}
-          onClick={handleCanvasClick}
-          onDoubleClick={handleCanvasDoubleClick}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-        />
+      <div className="card overflow-hidden overscroll-contain" role="region" aria-label="Skill tree canvas" aria-describedby="skilltree-help">
+        {!isFullscreen && (
+          <canvas
+            ref={canvasRef}
+            role="img"
+            aria-label="Interactive skill tree canvas"
+            aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown"
+            tabIndex={0}
+            onKeyDown={handleCanvasKeyDown}
+            className="w-full h-[60vh] sm:h-[600px] bg-background cursor-grab active:cursor-grabbing touch-none select-none"
+            onContextMenu={(e) => e.preventDefault()}
+            onWheel={handleWheel}
+            onPointerDown={handleCanvasPointerDown}
+            onPointerMove={handleCanvasPointerMove}
+            onPointerUp={handleCanvasPointerUp}
+            onPointerLeave={handleCanvasPointerUp}
+            onPointerCancel={handleCanvasPointerUp}
+            onClick={handleCanvasClick}
+            onDoubleClick={handleCanvasDoubleClick}
+          />
+        )}
       </div>
 
       <div className="text-sm text-muted-foreground">
-        <p id="skilltree-help">💡 Drag to pan • Scroll to zoom • Click medals for details • ⌨️ Arrow keys to pan</p>
+        <p id="skilltree-help">💡 Tap/drag to pan • Pinch or scroll to zoom • Tap/click medals for details • ⌨️ Arrow keys to pan</p>
       </div>
 
-      {selectedMedal && (
+      {isFullscreen && (
+        <div
+          id="skilltree-fullscreen"
+          className="fixed inset-0 z-50 bg-background overscroll-contain flex flex-col"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Fullscreen skill tree"
+        >
+          <div
+            className="flex items-center justify-between p-2 sm:p-3 border-b border-gray-300 dark:border-slate-700 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80"
+            style={{ paddingTop: 'max(env(safe-area-inset-top), 0px)' }}
+          >
+            <h2 className="text-lg font-semibold text-text-primary">Skill Tree</h2>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={resetView}
+                className="px-3 py-2 rounded bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-slate-700 dark:text-slate-50 dark:hover:bg-slate-600 border border-gray-300 dark:border-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
+              >
+                Reset
+              </button>
+              <button
+                type="button"
+                onClick={handleExportPNG}
+                className="px-3 py-2 rounded bg-primary text-white hover:bg-primary-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
+              >
+                Export
+              </button>
+              <button
+                type="button"
+                ref={closeBtnRef}
+                onClick={() => setIsFullscreen(false)}
+                className="px-3 py-2 rounded bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-slate-700 dark:text-slate-50 dark:hover:bg-slate-600 border border-gray-300 dark:border-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
+                aria-label="Close fullscreen"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+
+          <div className="flex-1">
+            <canvas
+              ref={canvasRef}
+              role="img"
+              aria-label="Interactive skill tree canvas"
+              aria-describedby="skilltree-help-fs"
+              aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown"
+              tabIndex={0}
+              onKeyDown={handleCanvasKeyDown}
+              className="w-full h-full bg-background cursor-grab active:cursor-grabbing touch-none select-none"
+              onContextMenu={(e) => e.preventDefault()}
+              onWheel={handleWheel}
+              onPointerDown={handleCanvasPointerDown}
+              onPointerMove={handleCanvasPointerMove}
+              onPointerUp={handleCanvasPointerUp}
+              onPointerLeave={handleCanvasPointerUp}
+              onPointerCancel={handleCanvasPointerUp}
+              onClick={handleCanvasClick}
+              onDoubleClick={handleCanvasDoubleClick}
+            />
+          </div>
+
+          <p id="skilltree-help-fs" className="sr-only">
+            Drag to pan. Pinch to zoom. Tap medals for details. Use Arrow keys to pan.
+          </p>
+
+          {selectedMedal && (
+            <MedalDetailModal
+              medalId={selectedMedal}
+              onClose={() => setSelectedMedal(null)}
+            />
+          )}
+        </div>
+      )}
+
+      {selectedMedal && !isFullscreen && (
         <MedalDetailModal
           medalId={selectedMedal}
           onClose={() => setSelectedMedal(null)}

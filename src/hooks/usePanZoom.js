@@ -4,7 +4,10 @@ export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3) {
   const [panX, setPanX] = useState(0)
   const [panY, setPanY] = useState(0)
   const [scale, setScale] = useState(initialScale)
+
   const dragStartRef = useRef(null)
+  const pointersRef = useRef(new Map()) // pointerId -> { x, y }
+  const pinchRef = useRef({ initialDistance: 0, initialScale: initialScale, lastCenter: null })
 
   const handleWheel = useCallback((e) => {
     e.preventDefault()
@@ -13,11 +16,24 @@ export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3) {
     setScale(next)
   }, [scale, minScale, maxScale])
 
-  const handleMouseDown = useCallback((e) => {
-    dragStartRef.current = { x: e.clientX, y: e.clientY, panX, panY }
-  }, [panX, panY])
+  const handlePointerDown = useCallback((e) => {
+    e.preventDefault()
+    e.currentTarget?.setPointerCapture?.(e.pointerId)
+    pointersRef.current.set(e.pointerId, { x: e.clientX, y: e.clientY })
 
-  const handleMouseMove = useCallback((e) => {
+    if (pointersRef.current.size === 1) {
+      dragStartRef.current = { x: e.clientX, y: e.clientY, panX, panY }
+    } else if (pointersRef.current.size === 2) {
+      const pts = Array.from(pointersRef.current.values())
+      const dx = pts[1].x - pts[0].x
+      const dy = pts[1].y - pts[0].y
+      pinchRef.current.initialDistance = Math.hypot(dx, dy)
+      pinchRef.current.initialScale = scale
+      pinchRef.current.lastCenter = { x: (pts[0].x + pts[1].x) / 2, y: (pts[0].y + pts[1].y) / 2 }
+    }
+  }, [panX, panY, scale])
+
+  const handlePointerMove = useCallback((e) => {
     // Allow synthetic pan via keyboard
     if (e.syntheticPan) {
       const { dx, dy } = e.syntheticPan
@@ -25,59 +41,35 @@ export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3) {
       setPanY((prev) => prev + dy)
       return
     }
-    if (!dragStartRef.current) return
-    const deltaX = (e.clientX - dragStartRef.current.x) / scale
-    const deltaY = (e.clientY - dragStartRef.current.y) / scale
-    setPanX(dragStartRef.current.panX + deltaX)
-    setPanY(dragStartRef.current.panY + deltaY)
-  }, [scale])
 
-  const handleMouseUp = useCallback(() => {
-    dragStartRef.current = null
-  }, [])
-
-  // Touch support: single finger pan, two-finger pinch zoom
-  const pinchRef = useRef({ initialDistance: 0, initialScale: initialScale, lastCenter: null })
-
-  const getTouchInfo = (touches) => {
-    const [t1, t2] = touches
-    if (touches.length === 1) {
-      return { type: 'pan', x: t1.clientX, y: t1.clientY }
-    }
-    const dx = t2.clientX - t1.clientX
-    const dy = t2.clientY - t1.clientY
-    const distance = Math.hypot(dx, dy)
-    const center = { x: (t1.clientX + t2.clientX) / 2, y: (t1.clientY + t2.clientY) / 2 }
-    return { type: 'pinch', distance, center }
-  }
-
-  const handleTouchStart = useCallback((e) => {
-    if (e.touches.length === 1) {
-      dragStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY, panX, panY }
-    } else if (e.touches.length === 2) {
-      const info = getTouchInfo(e.touches)
-      pinchRef.current = { initialDistance: info.distance, initialScale: scale, lastCenter: info.center }
-    }
-  }, [panX, panY, scale])
-
-  const handleTouchMove = useCallback((e) => {
+    if (!pointersRef.current.has(e.pointerId)) return
     e.preventDefault()
-    if (e.touches.length === 1 && dragStartRef.current) {
-      const t = e.touches[0]
-      const deltaX = (t.clientX - dragStartRef.current.x) / scale
-      const deltaY = (t.clientY - dragStartRef.current.y) / scale
-      setPanX(dragStartRef.current.panX + deltaX)
-      setPanY(dragStartRef.current.panY + deltaY)
-    } else if (e.touches.length === 2) {
-      const info = getTouchInfo(e.touches)
-      const ratio = info.distance / (pinchRef.current.initialDistance || info.distance)
+    pointersRef.current.set(e.pointerId, { x: e.clientX, y: e.clientY })
+
+    if (pointersRef.current.size === 2) {
+      const pts = Array.from(pointersRef.current.values())
+      const dx = pts[1].x - pts[0].x
+      const dy = pts[1].y - pts[0].y
+      const distance = Math.hypot(dx, dy)
+      const ratio = distance / (pinchRef.current.initialDistance || distance)
       const next = Math.max(minScale, Math.min(maxScale, pinchRef.current.initialScale * ratio))
       setScale(next)
+    } else if (pointersRef.current.size === 1 && dragStartRef.current) {
+      const deltaX = (e.clientX - dragStartRef.current.x) / Math.max(scale, 0.001)
+      const deltaY = (e.clientY - dragStartRef.current.y) / Math.max(scale, 0.001)
+      setPanX(dragStartRef.current.panX + deltaX)
+      setPanY(dragStartRef.current.panY + deltaY)
     }
   }, [scale, minScale, maxScale])
 
-  const handleTouchEnd = useCallback(() => {
-    dragStartRef.current = null
+  const handlePointerUp = useCallback((e) => {
+    pointersRef.current.delete(e.pointerId)
+    if (pointersRef.current.size < 1) {
+      dragStartRef.current = null
+    }
+    if (pointersRef.current.size < 2) {
+      pinchRef.current.initialDistance = 0
+    }
   }, [])
 
   const resetView = useCallback(() => {
@@ -91,12 +83,9 @@ export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3) {
     panY,
     scale,
     handleWheel,
-    handleMouseDown,
-    handleMouseMove,
-    handleMouseUp,
-    handleTouchStart,
-    handleTouchMove,
-    handleTouchEnd,
+    handlePointerDown,
+    handlePointerMove,
+    handlePointerUp,
     resetView
   }
 }
