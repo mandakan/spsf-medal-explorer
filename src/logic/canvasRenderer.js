@@ -164,7 +164,7 @@ export function drawMedalNode(ctx, x, y, radius, medal, status, scale) {
       const w = textW + pad * 2
       const h = fontPx + pad * 1.5
       const rx = x - w / 2
-      const ry = y + radius + 8 / s
+      const ry = y - radius - h - 8 / s
       const r = 4 / s
       // Background
       ctx.fillStyle = 'rgba(251, 191, 36, 0.15)'
