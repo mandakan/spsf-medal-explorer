@@ -35,6 +35,18 @@ export default function MedalDetailModal({ medalId, onClose }) {
     )
   }, [statuses, medalId])
 
+  // Unlocked date/year for display
+  const unlockedIso = useMemo(() => {
+    if (status?.status !== 'unlocked') return null
+    return status?.unlockedDate || calculator?.getUnlockedDate?.(medalId) || null
+  }, [status, calculator, medalId])
+
+  const unlockedYear = useMemo(() => {
+    if (!unlockedIso) return null
+    const d = new Date(unlockedIso)
+    return Number.isNaN(d.getTime()) ? null : d.getFullYear()
+  }, [unlockedIso])
+
   const requirementItems = useMemo(() => {
     if (!medal) return []
     const hasReqFromStatus =
@@ -265,6 +277,17 @@ export default function MedalDetailModal({ medalId, onClose }) {
                 {statusLabel}
               </span>
             </div>
+
+            {unlockedYear != null && (
+              <div className="mb-4 bg-background border border-border rounded p-3" role="status" aria-live="polite">
+                <p className="text-sm text-foreground">
+                  <span className="font-semibold">Unlocked year</span>:{' '}
+                  <time dateTime={(function() { try { return new Date(unlockedIso).toISOString().slice(0,10) } catch (e) { return String(unlockedIso) } })()}>
+                    {unlockedYear}
+                  </time>
+                </p>
+              </div>
+            )}
 
             {showConfirmRemove && status?.status === 'unlocked' && canRemove && (
               <div className="mb-4 bg-background border border-border rounded p-3" role="dialog" aria-modal="false" aria-labelledby="confirm-remove-title">
