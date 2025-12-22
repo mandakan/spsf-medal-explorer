@@ -3,8 +3,7 @@ import { useMedalDatabase } from '../hooks/useMedalDatabase'
 import { useAllMedalStatuses } from '../hooks/useMedalCalculator'
 import { useMedalCalculator } from '../hooks/useMedalCalculator'
 import { useProfile } from '../hooks/useProfile'
-import UniversalAchievementLogger from './UniversalAchievementLogger'
-import { UndoRedoProvider } from '../contexts/UndoRedoContext.jsx'
+import UnlockMedalDialog from './UnlockMedalDialog'
 import { useUnlockGuard } from '../hooks/useUnlockGuard'
 const Markdown = lazy(() => import('react-markdown'))
 import { useNavigate } from 'react-router-dom'
@@ -15,7 +14,7 @@ export default function MedalDetailModal({ medalId, onClose }) {
   const calculator = useMedalCalculator()
   const { currentProfile } = useProfile()
   const medal = medalDatabase?.getMedalById(medalId)
-  const [showLogger, setShowLogger] = useState(false)
+  const [unlockOpen, setUnlockOpen] = useState(false)
   const [showOriginal, setShowOriginal] = useState(false)
   const navigate = useNavigate()
   const originalId = medal ? `medal-req-original-${medal.id}` : undefined
@@ -168,9 +167,6 @@ export default function MedalDetailModal({ medalId, onClose }) {
     }
   }
 
-  const handleAddAchievement = () => {
-    setShowLogger(true)
-  }
 
   const handleRemoveClick = () => {
     if (canRemove) {
@@ -411,30 +407,6 @@ export default function MedalDetailModal({ medalId, onClose }) {
               </div>
             )}
 
-            {showLogger && (
-              <div className="mt-4">
-                <div className="card p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-lg font-semibold text-text-primary">Log achievement</h3>
-                    <button
-                      type="button"
-                      className="btn btn-muted text-sm"
-                      onClick={() => setShowLogger(false)}
-                      aria-label="Close log achievement form"
-                    >
-                      Close
-                    </button>
-                  </div>
-                  <UndoRedoProvider>
-                    <UniversalAchievementLogger
-                      medal={medal}
-                      unlockMode={status?.status === 'achievable'}
-                      onSuccess={() => setShowLogger(false)}
-                    />
-                  </UndoRedoProvider>
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Footer */}
@@ -473,8 +445,9 @@ export default function MedalDetailModal({ medalId, onClose }) {
             {status?.status === 'achievable' && currentProfile && (
               <button
                 type="button"
-                onClick={handleAddAchievement}
-                aria-expanded={showLogger}
+                onClick={() => setUnlockOpen(true)}
+                aria-haspopup="dialog"
+                aria-controls="unlock-medal"
                 className="flex-1 px-4 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
               >
                 Unlock Now
@@ -483,6 +456,12 @@ export default function MedalDetailModal({ medalId, onClose }) {
           </div>
         </div>
       </div>
+
+      <UnlockMedalDialog
+        medal={medal}
+        open={unlockOpen}
+        onClose={() => setUnlockOpen(false)}
+      />
     </div>
   )
 }
