@@ -282,7 +282,7 @@ export default function MedalDetailModal({ medalId, onClose }) {
               <div className="mb-4 bg-background border border-border rounded p-3" role="status" aria-live="polite">
                 <p className="text-sm text-foreground">
                   <span className="font-semibold">Unlocked year</span>:{' '}
-                  <time dateTime={(function() { try { return new Date(unlockedIso).toISOString().slice(0,10) } catch (e) { return String(unlockedIso) } })()}>
+                  <time dateTime={(function() { try { return new Date(unlockedIso).toISOString().slice(0,10) } catch { return String(unlockedIso) } })()}>
                     {unlockedYear}
                   </time>
                 </p>
