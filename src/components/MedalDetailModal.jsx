@@ -171,9 +171,9 @@ export default function MedalDetailModal({ medalId, onClose }) {
   if (!medal) return null
 
   const statusLabel = {
-    unlocked: '🏆 Unlocked',
-    achievable: '🎯 Achievable',
-    locked: '🔒 Locked'
+    unlocked: '🏆 Upplåst',
+    achievable: '🎯 Uppnåelig',
+    locked: '🔒 Låst'
   }[status?.status] || '🔒 Locked'
 
 
@@ -281,9 +281,9 @@ export default function MedalDetailModal({ medalId, onClose }) {
                 {underReview && (
                   <span
                     className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-900 border border-amber-300 dark:bg-amber-900/40 dark:text-amber-200 dark:border-amber-700"
-                    aria-label="Medal rules status: under review"
+                    aria-label="Status för medaljregler: under granskning"
                   >
-                    Under review
+                    Under granskning
                   </span>
                 )}
               </h2>
@@ -294,8 +294,8 @@ export default function MedalDetailModal({ medalId, onClose }) {
             <button
               onClick={onClose}
               className="shrink-0 inline-flex h-10 w-10 items-center justify-center rounded-md text-foreground hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
-              aria-label="Close medal details"
-              title="Close"
+              aria-label="Stäng medal-detaljer"
+              title="Stäng"
             >
               <span aria-hidden="true">✕</span>
             </button>
@@ -318,7 +318,7 @@ export default function MedalDetailModal({ medalId, onClose }) {
             {unlockedYear != null && (
               <div className="mb-4 bg-background border border-border rounded p-3" role="status" aria-live="polite">
                 <p className="text-sm text-foreground">
-                  <span className="font-semibold">Unlocked year</span>:{' '}
+                  <span className="font-semibold">Upplåst</span>:{' '}
                   <time dateTime={(function() { try { return new Date(unlockedIso).toISOString().slice(0,10) } catch { return String(unlockedIso) } })()}>
                     {unlockedYear}
                   </time>
@@ -330,7 +330,7 @@ export default function MedalDetailModal({ medalId, onClose }) {
             {prereqItemsResolved.length > 0 && (
               <div className="mb-4 bg-background border border-border rounded p-3" role="region" aria-labelledby={`prereq-title-${medal.id}`}>
                 <p id={`prereq-title-${medal.id}`} className="text-sm font-semibold text-foreground mb-2">
-                  Prerequisites
+                  Förhandskrav
                 </p>
                 <ul className="text-sm text-muted-foreground space-y-1">
                   {prereqItemsResolved.map((item, i) => (
@@ -343,7 +343,7 @@ export default function MedalDetailModal({ medalId, onClose }) {
                       </span>
                       {item.type === 'medal' && typeof item.yearOffset === 'number' ? (
                         <span className={item.gapFailed ? 'text-red-600 dark:text-red-400' : 'text-muted-foreground'}>
-                          Requires {item.yearOffset}-year gap
+                          Kräver {item.yearOffset} års gap
                         </span>
                       ) : null}
                     </li>
@@ -355,10 +355,10 @@ export default function MedalDetailModal({ medalId, onClose }) {
             {showConfirmRemove && status?.status === 'unlocked' && canRemove && (
               <div className="mb-4 bg-background border border-border rounded p-3" role="dialog" aria-modal="false" aria-labelledby="confirm-remove-title">
                 <p id="confirm-remove-title" className="text-sm font-semibold text-foreground mb-2">
-                  Remove unlocked?
+                  Ta bort upplåsning?
                 </p>
                 <p className="text-sm text-muted-foreground mb-3">
-                  This won’t affect other medals.
+                  Det här påverkar inte andra medaljer.
                 </p>
                 <div className="flex gap-2">
                   <button
@@ -366,14 +366,14 @@ export default function MedalDetailModal({ medalId, onClose }) {
                     onClick={() => setShowConfirmRemove(false)}
                     className="px-3 py-2 rounded-md bg-background text-foreground hover:bg-bg-secondary ring-1 ring-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
                   >
-                    Cancel
+                    Avbryt
                   </button>
                   <button
                     type="button"
                     onClick={handleConfirmRemove}
                     className="px-3 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
                   >
-                    Remove
+                    Ta bort
                   </button>
                 </div>
               </div>
@@ -382,10 +382,10 @@ export default function MedalDetailModal({ medalId, onClose }) {
             {showBlockedInfo && status?.status === 'unlocked' && !canRemove && (
               <div className="mb-4 bg-background border border-border rounded p-3" role="region" aria-labelledby="blocked-remove-title">
                 <p id="blocked-remove-title" className="text-sm font-semibold text-foreground mb-2">
-                  Can’t remove yet
+                  Kan inte ta bort än
                 </p>
                 <p className="text-sm text-muted-foreground mb-2">
-                  These unlocked medals depend on this one:
+                  De här upplåsta medaljerna beror på denna:
                 </p>
                 <ul className="text-sm text-muted-foreground list-disc ml-5 space-y-1">
                   {blockingMedals.map(m => (
@@ -406,7 +406,7 @@ export default function MedalDetailModal({ medalId, onClose }) {
 
             {underReview && (
               <div id={`under-review-note-${medal.id}`} className="mb-4 bg-amber-50 text-amber-900 border border-amber-300 rounded p-3 dark:bg-amber-900/20 dark:text-amber-100 dark:border-amber-700">
-                The rules for this medal are under review and may change.
+                Reglerna för den här medaljen är under granskning och kan komma att ändras.
               </div>
             )}
 
@@ -421,7 +421,7 @@ export default function MedalDetailModal({ medalId, onClose }) {
             {status?.details?.missingItems?.length > 0 && (
               <div className="mb-4 bg-background border border-border rounded p-3">
                 <p className="text-sm font-semibold text-foreground mb-2">
-                  Missing Prerequisites:
+                  Saknade förhandskrav:
                 </p>
                 <ul className="text-sm text-muted-foreground space-y-1">
                   {status.details.missingItems.map((item, i) => (
@@ -434,7 +434,7 @@ export default function MedalDetailModal({ medalId, onClose }) {
             {requirementItems.length > 0 && (
               <div className="mb-4 bg-background border border-border rounded p-3">
                 <p className="text-sm font-semibold text-foreground mb-2">
-                  Requirements:
+                  Krav:
                 </p>
                 <ul className="text-sm text-muted-foreground space-y-1">
                   {requirementItems.map((item, i) => (
@@ -458,7 +458,7 @@ export default function MedalDetailModal({ medalId, onClose }) {
                   aria-controls={originalId}
                   className="w-full text-left px-3 py-2 flex items-center justify-between hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary rounded-t"
                 >
-                  <span className="text-sm font-semibold text-foreground">View original requirement text</span>
+                  <span className="text-sm font-semibold text-foreground">Visa ursprunglig kravtext</span>
                   <span aria-hidden="true" className="ml-2">{showOriginal ? '▼' : '▶'}</span>
                 </button>
                 {showOriginal && (
@@ -476,7 +476,7 @@ export default function MedalDetailModal({ medalId, onClose }) {
             {referencedMedals.length > 0 && (
               <div className="mb-4 bg-background border border-border rounded p-3">
                 <p className="text-sm font-semibold text-foreground mb-2">
-                  Also fulfills requirements for:
+                  Uppfyller också kraven för:
                 </p>
                 <ul className="space-y-1">
                   {referencedMedals.map(({ target }) => (
@@ -502,7 +502,7 @@ export default function MedalDetailModal({ medalId, onClose }) {
               onClick={onClose}
               className="flex-1 min-h-[44px] px-4 py-2 rounded-md bg-background text-foreground hover:bg-bg-secondary ring-1 ring-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
             >
-              Close
+              Stäng
             </button>
 
             {status?.status === 'unlocked' && currentProfile && (
@@ -514,7 +514,7 @@ export default function MedalDetailModal({ medalId, onClose }) {
                   aria-expanded={showConfirmRemove || showBlockedInfo}
                   className="flex-1 min-h-[44px] px-4 py-2 rounded-md bg-background text-foreground hover:bg-bg-secondary ring-1 ring-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
                 >
-                  Remove unlocked
+                  Ta bort upplåst
                 </button>
                 {!canRemove && (
                   <button
@@ -523,7 +523,7 @@ export default function MedalDetailModal({ medalId, onClose }) {
                     className="text-sm text-muted-foreground underline"
                     aria-label="Why can’t I remove this medal?"
                   >
-                    Why can’t I?
+                    Varför kan jag inte?
                   </button>
                 )}
               </div>
@@ -541,11 +541,11 @@ export default function MedalDetailModal({ medalId, onClose }) {
                   aria-describedby={!prereqsOk ? prereqHintId : undefined}
                   className="flex-1 min-h-[44px] px-4 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary-hover disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
                 >
-                  Unlock Now
+                  Lås upp nu
                 </button>
                 {!prereqsOk && (
                   <p id={prereqHintId} className="text-xs text-muted-foreground">
-                    Prerequisites must be met before you can unlock this medal.
+                    Förhandskraven måste uppnåst innan medaljen kan låsas upp.
                   </p>
                 )}
               </div>

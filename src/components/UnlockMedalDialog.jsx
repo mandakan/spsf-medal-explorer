@@ -125,9 +125,9 @@ export default function UnlockMedalDialog({ medal, open, onClose }) {
         >
           <div>
             <label htmlFor="unlock-year" className="field-label mb-2">
-              Year
+              År
               {typeof effectiveRuleMinYear === 'number' && (
-                <span className="ml-2 text-xs text-muted-foreground">(Earliest: {effectiveRuleMinYear})</span>
+                <span className="ml-2 text-xs text-muted-foreground">(Tidigast: {effectiveRuleMinYear})</span>
               )}
             </label>
             <input
@@ -226,7 +226,7 @@ export default function UnlockMedalDialog({ medal, open, onClose }) {
         >
           <div>
             <label htmlFor="unlock-year" className="field-label mb-2">
-              Year
+              År
             </label>
             <select
               id="unlock-year"
