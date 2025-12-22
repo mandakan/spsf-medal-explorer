@@ -130,7 +130,7 @@ export default function AchievementCard({ achievement }) {
       }
       setEditorOpen(false)
     } catch (err) {
-      console.error('Failed to save:', err)
+      console.error('Misslyckades att spara:', err)
     }
   }
 
@@ -144,7 +144,7 @@ export default function AchievementCard({ achievement }) {
           <div className="flex gap-2 items-center mb-1">
             <span className="font-semibold text-text-primary">{typeLabel}</span>
             <span className="text-xs px-2 py-1 rounded bg-bg-secondary text-text-secondary">
-              Group {achievement.weaponGroup}
+              Grupp {achievement.weaponGroup}
             </span>
           </div>
           <p className="text-sm text-text-secondary">
@@ -155,23 +155,23 @@ export default function AchievementCard({ achievement }) {
           <button
             onClick={openEditDialog}
             className="btn btn-muted text-sm"
-            aria-label={`Edit achievement ${achievement.id}`}
+            aria-label={`Ändra aktivitet ${achievement.id}`}
           >
-            Edit
+            Ändra
           </button>
           <button
             onClick={openAddDialog}
             className="btn btn-primary text-sm"
-            aria-label={`Log new achievement for medal ${achievement.medalId}`}
+            aria-label={`Logga ny aktivitet för medalj ${achievement.medalId}`}
           >
-            Log
+            Logga
           </button>
           <button
             onClick={handleDelete}
             className="btn btn-muted text-red-600 text-sm"
-            aria-label={`Delete achievement ${achievement.id}`}
+            aria-label={`Ta bort aktivitet ${achievement.id}`}
           >
-            Delete
+            Ta bort
           </button>
         </div>
       </div>
@@ -182,7 +182,7 @@ export default function AchievementCard({ achievement }) {
         initialRow={editorInitial}
         onSave={handleEditorSave}
         mode="immediate"
-        submitLabel={editorMode === 'edit' ? 'Save' : 'Add'}
+        submitLabel={editorMode === 'edit' ? 'Spara' : 'Lägg till'}
       />
     </>
   )

@@ -19,24 +19,24 @@ export default function StatisticsDashboard() {
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
       <div className="card p-4">
-        <p className="text-sm text-muted-foreground font-semibold">Total Achievements</p>
+        <p className="text-sm text-muted-foreground font-semibold">Totala Aktiviteter</p>
         <p className="text-3xl font-bold text-foreground">{stats.totalAchievements}</p>
       </div>
 
       <div className="card p-4">
-        <p className="text-sm text-muted-foreground font-semibold">Avg Points/Year</p>
+        <p className="text-sm text-muted-foreground font-semibold">Genomsnitt Poäng/År</p>
         <p className="text-3xl font-bold text-foreground">
           {Number.isFinite(stats.avgPointsPerYear) ? stats.avgPointsPerYear.toFixed(1) : '0.0'}
         </p>
       </div>
 
       <div className="card p-4">
-        <p className="text-sm text-muted-foreground font-semibold">Best Year</p>
+        <p className="text-sm text-muted-foreground font-semibold">Bästa År</p>
         <p className="text-3xl font-bold text-foreground">{stats.bestYear || '-'}</p>
       </div>
 
       <div className="card p-4">
-        <p className="text-sm text-muted-foreground font-semibold">Years Active</p>
+        <p className="text-sm text-muted-foreground font-semibold">Aktiva År</p>
         <p className="text-3xl font-bold text-foreground">{stats.yearsActive}</p>
       </div>
     </div>

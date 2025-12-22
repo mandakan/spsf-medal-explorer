@@ -19,33 +19,33 @@ export default function ExportPanel({ profile }) {
       switch (exportFormat) {
         case 'json': {
           data = await exportManager.toJSON(profile)
-          filename = `medal-profile-${dateStr}.json`
+          filename = `profil-${dateStr}.json`
           mime = 'application/json'
           break
         }
         case 'csv': {
           const achievements = profile?.achievements ?? profile?.prerequisites ?? []
           data = await exportManager.toCSV(achievements)
-          filename = `achievements-${dateStr}.csv`
+          filename = `aktiviteter-${dateStr}.csv`
           mime = 'text/csv'
           break
         }
         case 'pdf': {
           data = await exportManager.toPDF(profile)
-          filename = `medal-report-${dateStr}.pdf`
+          filename = `medalj-rapport-${dateStr}.pdf`
           mime = 'application/pdf'
           break
         }
         default:
-          throw new Error('Unsupported export format')
+          throw new Error('Felaktigt export-format')
       }
 
       downloadFile(data, filename, mime)
       setSuccess(true)
       setTimeout(() => setSuccess(false), 3000)
     } catch (err) {
-      console.error('Export error:', err)
-      setError(err.message || 'Export failed')
+      console.error('Export-fel:', err)
+      setError(err.message || 'Export misslyckades')
     } finally {
       setLoading(false)
     }
@@ -54,13 +54,13 @@ export default function ExportPanel({ profile }) {
   return (
     <div className="card p-6">
       <h2 className="text-xl font-bold text-foreground mb-6">
-        Export Profile
+        Exporta profil
       </h2>
 
       {/* Format Selection */}
       <fieldset className="mb-6 space-y-3">
         <legend className="text-sm font-medium text-foreground mb-3">
-          Export Format
+          Export-format
         </legend>
 
         {['json', 'csv', 'pdf'].map((fmt) => (
@@ -97,7 +97,7 @@ export default function ExportPanel({ profile }) {
         className="btn btn-primary w-full min-h-[44px]"
         aria-label={`Export as ${format.toUpperCase()}`}
       >
-        {loading ? 'Exporting...' : `Export as ${format.toUpperCase()}`}
+        {loading ? 'Exporterar...' : `Exporta som ${format.toUpperCase()}`}
       </button>
 
       {success && (
@@ -111,7 +111,7 @@ export default function ExportPanel({ profile }) {
           aria-live="polite"
         >
           <span aria-hidden="true">✓</span>
-          <span>Exported successfully!</span>
+          <span>Exporten lyckades!</span>
         </div>
       )}
 
@@ -136,11 +136,11 @@ export default function ExportPanel({ profile }) {
 function getFormatDescription(format) {
   switch (format) {
     case 'json':
-      return '(Complete profile backup)'
+      return '(Komplett profil-backup)'
     case 'csv':
-      return '(Spreadsheet compatible)'
+      return '(Spreadsheet-kompatibel)'
     case 'pdf':
-      return '(Printable report)'
+      return '(Utskriftsvänlig rapport)'
     default:
       return ''
   }

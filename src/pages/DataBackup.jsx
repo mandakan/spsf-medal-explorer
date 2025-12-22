@@ -18,7 +18,7 @@ export default function DataBackup() {
 
   const handleImport = async (incomingList) => {
     if (!currentProfile) {
-      setLocalError('No profile selected')
+      setLocalError('Ingen profil vald')
       return
     }
     try {
@@ -51,7 +51,7 @@ export default function DataBackup() {
       }
       await updateProfile(nextProfile)
     } catch (e) {
-      setLocalError(e.message || 'Import failed')
+      setLocalError(e.message || 'Import misslyckades')
     } finally {
       setImporting(false)
     }
@@ -64,7 +64,7 @@ export default function DataBackup() {
       setShareData(json)
       setShareOpen(true)
     } catch (e) {
-      setLocalError(e.message || 'Failed to prepare share data')
+      setLocalError(e.message || 'Misslyckades med förberedelser för att dela data')
     }
   }
 
@@ -89,10 +89,10 @@ export default function DataBackup() {
       {!canUse ? (
         <div className="card p-6">
           <p className="text-muted-foreground">
-            Select or create a profile to import/export achievements.
+            Välj eller skapa en profil för att importera/exportera aktiviteter.
           </p>
           <div className="mt-4">
-            <Link to="/settings" className="btn btn-primary min-h-[44px]">Go to Settings</Link>
+            <Link to="/settings" className="btn btn-primary min-h-[44px]">Till Inställningar</Link>
           </div>
         </div>
       ) : (
@@ -113,7 +113,7 @@ export default function DataBackup() {
                 role="status"
                 aria-live="polite"
               >
-                Importing…
+                Importerar...
               </div>
             )}
           </div>
@@ -121,10 +121,10 @@ export default function DataBackup() {
           <div className="card p-4 md:col-span-2">
             <h2 className="text-lg font-semibold text-foreground mb-3">Share</h2>
             <p className="text-sm text-muted-foreground mb-4">
-              Generate a QR code containing your profile export for quick sharing or backup.
+              Skapa en QR-kod som innehåller profilen för att dela eller göra backup.
             </p>
             <button onClick={openShare} className="btn btn-primary min-h-[44px]" aria-label="Open share dialog">
-              Share via QR code
+              Dela via QR-kod
             </button>
           </div>
         </div>

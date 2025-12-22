@@ -32,9 +32,9 @@ export default function MedalCard({ medal }) {
   }
 
   const statusBadge = {
-    unlocked: '🏆 Unlocked',
-    achievable: '🎯 Achievable',
-    locked: '🔒 Locked'
+    unlocked: '🏆 Upplåst',
+    achievable: '🎯 Uppnåelig',
+    locked: '🔒 Låst'
   }
 
   const statusClass = status?.status || 'locked'
@@ -64,14 +64,14 @@ export default function MedalCard({ medal }) {
 
       {unlockedOn && (
         <p className="text-xs text-text-secondary mb-2" aria-live="polite">
-          Unlocked on {unlockedOn}
+          Upplåst {unlockedOn}
         </p>
       )}
 
       {status && status.details && (
         <div className="text-xs text-text-secondary">
           {status.details.items?.length > 0 && (
-            <p>Requirements: {status.details.items.length}</p>
+            <p>Krav: {status.details.items.length}</p>
           )}
         </div>
       )}
@@ -85,7 +85,7 @@ export default function MedalCard({ medal }) {
             aria-haspopup="dialog"
             aria-controls="unlock-medal"
           >
-            Unlock…
+            Lås upp...
           </button>
         </div>
       )}

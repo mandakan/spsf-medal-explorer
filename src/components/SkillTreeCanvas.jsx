@@ -253,7 +253,7 @@ export default function SkillTreeCanvas() {
   if (!medalDatabase) {
     return (
       <div className="flex items-center justify-center h-96" role="status" aria-live="polite" aria-busy="true">
-        <p className="text-text-secondary">Loading skill tree...</p>
+        <p className="text-text-secondary">Laddar medalj-träd...</p>
       </div>
     )
   }
@@ -261,14 +261,14 @@ export default function SkillTreeCanvas() {
   return (
     <div className="space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="text-2xl font-bold text-text-primary">Interactive Skill Tree</h2>
+        <h2 className="text-2xl font-bold text-text-primary">Interaktiv träd-vy</h2>
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
             onClick={resetView}
             className="px-4 py-3 rounded bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-slate-700 dark:text-slate-50 dark:hover:bg-slate-600 border border-gray-300 dark:border-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
           >
-            Reset View
+            Återställ
           </button>
           <button
             type="button"
@@ -276,7 +276,7 @@ export default function SkillTreeCanvas() {
             className="px-4 py-3 rounded bg-primary text-white hover:bg-primary-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
           >
             <span aria-hidden="true" className="mr-2">📥</span>
-            Export as PNG
+            Exportera som PNG
           </button>
           <button
             type="button"
@@ -285,17 +285,17 @@ export default function SkillTreeCanvas() {
             aria-haspopup="dialog"
             aria-controls="skilltree-fullscreen"
           >
-            Fullscreen
+            Helskärm
           </button>
         </div>
       </div>
 
-      <div className="card overflow-hidden overscroll-contain" role="region" aria-label="Skill tree canvas" aria-describedby="skilltree-help">
+      <div className="card overflow-hidden overscroll-contain" role="region" aria-label="Medaljträd canvas" aria-describedby="skilltree-help">
         {!isFullscreen && (
           <canvas
             ref={setCanvasRef}
             role="img"
-            aria-label="Interactive skill tree canvas"
+            aria-label="Interaktiv träd-vy-canvas"
             aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown"
             tabIndex={0}
             onKeyDown={handleCanvasKeyDown}
@@ -314,7 +314,7 @@ export default function SkillTreeCanvas() {
       </div>
 
       <div className="text-sm text-muted-foreground">
-        <p id="skilltree-help">💡 Tap/drag to pan • Pinch or scroll to zoom • Tap/click medals for details • ⌨️ Arrow keys to pan</p>
+        <p id="skilltree-help">💡 Dra för att panorera • Nyp för att zooma • Klicka på medaljer för detaljer • ⌨️ Piltangenter för att panorera</p>
       </div>
 
       {isFullscreen && (
@@ -323,27 +323,27 @@ export default function SkillTreeCanvas() {
           className="fixed inset-0 z-50 bg-background overscroll-contain flex flex-col"
           role="dialog"
           aria-modal="true"
-          aria-label="Fullscreen skill tree"
+          aria-label="Helskärms träd-vy"
         >
           <div
             className="flex items-center justify-between p-2 sm:p-3 border-b border-gray-300 dark:border-slate-700 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80"
             style={{ paddingTop: 'max(env(safe-area-inset-top), 0px)' }}
           >
-            <h2 className="text-lg font-semibold text-text-primary">Skill Tree</h2>
+            <h2 className="text-lg font-semibold text-text-primary">Medaljträd</h2>
             <div className="flex gap-2">
               <button
                 type="button"
                 onClick={resetView}
                 className="px-3 py-2 rounded bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-slate-700 dark:text-slate-50 dark:hover:bg-slate-600 border border-gray-300 dark:border-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
               >
-                Reset
+                Återställ
               </button>
               <button
                 type="button"
                 onClick={handleExportPNG}
                 className="px-3 py-2 rounded bg-primary text-white hover:bg-primary-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
               >
-                Export
+                Exportera
               </button>
               <button
                 type="button"
@@ -352,7 +352,7 @@ export default function SkillTreeCanvas() {
                 className="px-3 py-2 rounded bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-slate-700 dark:text-slate-50 dark:hover:bg-slate-600 border border-gray-300 dark:border-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
                 aria-label="Close fullscreen"
               >
-                Close
+                Stäng
               </button>
             </div>
           </div>
@@ -361,7 +361,7 @@ export default function SkillTreeCanvas() {
             <canvas
               ref={setCanvasRef}
               role="img"
-              aria-label="Interactive skill tree canvas"
+              aria-label="Interaktiv träd-vy-canvas"
               aria-describedby="skilltree-help-fs"
               aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown"
               tabIndex={0}
@@ -380,7 +380,7 @@ export default function SkillTreeCanvas() {
           </div>
 
           <p id="skilltree-help-fs" className="sr-only">
-            Drag to pan. Pinch to zoom. Tap medals for details. Use Arrow keys to pan.
+            💡 Dra för att panorera • Nyp för att zooma • Klicka på medaljer för detaljer • ⌨️ Piltangenter för att panorera
           </p>
 
           {selectedMedal && (

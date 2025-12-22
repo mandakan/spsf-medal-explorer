@@ -108,7 +108,7 @@ export default function UnlockMedalDialog({ medal, open, onClose }) {
   return (
     <MobileBottomSheet
       id="unlock-medal"
-      title={`Unlock ${medal?.displayName || 'medal'}`}
+      title={`Lås upp ${medal?.displayName || 'medalj'}`}
       open={open}
       onClose={onClose}
       swipeToDismiss
@@ -125,9 +125,9 @@ export default function UnlockMedalDialog({ medal, open, onClose }) {
         >
           <div>
             <label htmlFor="unlock-year" className="field-label mb-2">
-              Year
+              År
               {typeof effectiveRuleMinYear === 'number' && (
-                <span className="ml-2 text-xs text-muted-foreground">(Earliest: {effectiveRuleMinYear})</span>
+                <span className="ml-2 text-xs text-muted-foreground">(Tidigast: {effectiveRuleMinYear})</span>
               )}
             </label>
             <input
@@ -158,7 +158,7 @@ export default function UnlockMedalDialog({ medal, open, onClose }) {
               ))}
             </datalist>
             <p id="unlock-year-hint" className="field-hint mt-2">
-              Choose a year between {birthYear} and {nowYear}. We’ll check prerequisites for that year.
+              Välj ett år mellan {birthYear} och {nowYear}. Vi stämmer av med förhandskraven för året.
             </p>
             {(() => {
               if (!allowManual) return null
@@ -167,13 +167,13 @@ export default function UnlockMedalDialog({ medal, open, onClose }) {
 
               let msg = null
               if (yearOutOfBounds) {
-                msg = `Year must be between ${birthYear} and ${nowYear}.`
+                msg = `Året måste vara mellan ${birthYear} och ${nowYear}.`
               } else if (wrongCurrentReq) {
-                msg = 'This medal requires the current year to be selected.'
+                msg = 'Den här medaljen kräver att innevarande år väljs.'
               } else if (yearTooEarlyByRules) {
-                msg = `Earliest year you can unlock is ${effectiveRuleMinYear}.`
+                msg = `Tidigaste året du kan låsa upp medaljen är ${effectiveRuleMinYear}.`
               } else if (!prereqsMet) {
-                msg = `Prerequisites are not met for ${selectedYear}.`
+                msg = `Förhandskraven är inte mötta för ${selectedYear}.`
               }
 
               return msg ? (
@@ -185,33 +185,33 @@ export default function UnlockMedalDialog({ medal, open, onClose }) {
           </div>
           <div className="flex gap-2 justify-end">
             <button type="button" className="btn btn-muted min-h-[44px]" onClick={onClose}>
-              Cancel
+              Avbryt
             </button>
             <button type="submit" className="btn btn-primary min-h-[44px]" disabled={!canUnlock}>
-              Unlock
+              Lås upp
             </button>
           </div>
         </form>
       ) : eligibleYears.length === 0 ? (
         <div className="space-y-4">
-          <p className="text-sm text-text-secondary">No qualifying years found.</p>
+          <p className="text-sm text-text-secondary">Inga giltiga år funna.</p>
           <div className="flex justify-end">
             <button type="button" className="btn btn-primary min-h-[44px]" onClick={onClose}>
-              Close
+              Stäng
             </button>
           </div>
         </div>
       ) : eligibleYears.length === 1 ? (
         <div className="space-y-4">
           <p className="text-sm">
-            Unlock for year: <strong>{eligibleYears[0]}</strong>?
+            Lås upp för: <strong>{eligibleYears[0]}</strong>?
           </p>
           <div className="flex gap-2 justify-end">
             <button type="button" className="btn btn-muted min-h-[44px]" onClick={onClose}>
-              Cancel
+              Avbryt
             </button>
             <button type="button" className="btn btn-primary min-h-[44px]" onClick={doUnlock}>
-              Unlock
+              Lås upp
             </button>
           </div>
         </div>
@@ -226,7 +226,7 @@ export default function UnlockMedalDialog({ medal, open, onClose }) {
         >
           <div>
             <label htmlFor="unlock-year" className="field-label mb-2">
-              Year
+              År
             </label>
             <select
               id="unlock-year"
@@ -243,10 +243,10 @@ export default function UnlockMedalDialog({ medal, open, onClose }) {
           </div>
           <div className="flex gap-2 justify-end">
             <button type="button" className="btn btn-muted min-h-[44px]" onClick={onClose}>
-              Cancel
+              Avbryt
             </button>
             <button type="submit" className="btn btn-primary min-h-[44px]" disabled={selectedYear === ''}>
-              Unlock
+              Lås upp
             </button>
           </div>
         </form>

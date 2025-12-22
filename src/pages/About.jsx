@@ -18,14 +18,14 @@ export default function About() {
         </header>
 
         <section aria-labelledby="about-author" className="mt-8">
-          <h2 id="about-author" className="text-2xl font-semibold">Skapare / Creator</h2>
+          <h2 id="about-author" className="text-2xl font-semibold">Skapare</h2>
           <p className="mt-2">
             {APP_INFO.AUTHOR_NAME}
           </p>
         </section>
 
         <section aria-labelledby="about-links" className="mt-8">
-          <h2 id="about-links" className="text-2xl font-semibold">Användbara länkar / Useful Links</h2>
+          <h2 id="about-links" className="text-2xl font-semibold">Användbara länkar</h2>
           <ul className="mt-2 list-disc list-inside space-y-1">
             <li>
               <a
@@ -34,7 +34,7 @@ export default function About() {
                 target="_blank"
                 rel="noreferrer noopener"
               >
-                Svenska Skyttesportförbundet (SPSF)
+                Svenska Pistolskytteförbundet (SPSF)
               </a>
             </li>
             <li>
@@ -52,9 +52,9 @@ export default function About() {
 
         {LINKS.COFFEE ? (
           <section aria-labelledby="about-support" className="mt-8">
-            <h2 id="about-support" className="text-2xl font-semibold">Stöd projektet / Support the Project</h2>
+            <h2 id="about-support" className="text-2xl font-semibold">Stötta projektet</h2>
             <p className="mt-2">
-              Gillar du arbetet? Bjud utvecklaren på en kaffe.
+              Gillar du appen? Bjud utvecklaren på en kaffe.
             </p>
             <p className="mt-2">
               <a
@@ -77,7 +77,7 @@ export default function About() {
         ) : null}
 
         <section aria-labelledby="about-version" className="mt-8">
-          <h2 id="about-version" className="text-2xl font-semibold">Om versionen / Version Information</h2>
+          <h2 id="about-version" className="text-2xl font-semibold">Om versionen</h2>
           <p className="mt-2">
             Skytteboken upplaga / Rulebook version: <strong>{CURRENT_RULEBOOK_VERSION}</strong> (gäller nu)
           </p>
@@ -88,7 +88,7 @@ export default function About() {
         </section>
 
         <section aria-labelledby="about-license" className="mt-8">
-          <h2 id="about-license" className="text-2xl font-semibold">Licens / License</h2>
+          <h2 id="about-license" className="text-2xl font-semibold">Licens</h2>
           <p className="mt-2">
             Denna applikation är licensierad under <strong>{APP_INFO.LICENSE}</strong>.
             Se <a

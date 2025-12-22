@@ -58,7 +58,7 @@ export default function Footer() {
                 aria-label="Öppna GitHub-repositoriet"
               >
                 <GitHubIcon />
-                <span>Se källkod</span>
+                <span>Källkod</span>
               </a>
             )}
             {coffee && (
@@ -70,7 +70,7 @@ export default function Footer() {
                 aria-label="Köp mig en kaffe"
               >
                 <CoffeeIcon />
-                <span>Köp mig en kaffe</span>
+                <span>Köp en kaffe till mig</span>
               </a>
             )}
           </nav>

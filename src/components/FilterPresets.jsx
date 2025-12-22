@@ -19,7 +19,7 @@ export default function FilterPresets({ currentFilters, onApplyPreset }) {
 
   return (
     <div className="card p-4">
-      <h3 className="font-bold text-foreground mb-3">Filter Presets</h3>
+      <h3 className="font-bold text-foreground mb-3">Filter presets</h3>
 
       <div className="mb-4">
         <div className="flex gap-2">
@@ -27,7 +27,7 @@ export default function FilterPresets({ currentFilters, onApplyPreset }) {
             type="text"
             value={presetName}
             onChange={(e) => setPresetName(e.target.value)}
-            placeholder="Preset name (e.g., 'My Favorites')"
+            placeholder="Preset-namn (tex, 'Mina Favoriter')"
             className="input"
           />
           <button
@@ -36,7 +36,7 @@ export default function FilterPresets({ currentFilters, onApplyPreset }) {
             disabled={!presetName.trim()}
             className="btn btn-primary text-sm disabled:opacity-50"
           >
-            Save
+            Spara
           </button>
         </div>
       </div>
@@ -59,9 +59,9 @@ export default function FilterPresets({ currentFilters, onApplyPreset }) {
                 type="button"
                 onClick={() => handleDelete(index)}
                 className="btn btn-muted text-sm"
-                aria-label={`Delete preset ${preset.name}`}
+                aria-label={`Ta bort preset ${preset.name}`}
               >
-                Delete
+                Ta bort
               </button>
             </div>
           ))}

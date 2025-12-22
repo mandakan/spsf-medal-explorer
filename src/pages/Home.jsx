@@ -9,10 +9,10 @@ export default function Home() {
     <div className="space-y-8">
       <section className="text-center mb-12">
         <h1 className="text-4xl font-bold text-text-primary mb-4">
-          Medal Skill-Tree Explorer
+          Skyttemedaljer
         </h1>
         <p className="text-lg text-text-secondary">
-          Track your SHB medal achievements and plan your progression
+          Dokumentera dina SPSF-medaljer med aktiviteter, utforska framtida medaljer och planera progression
         </p>
       </section>
 
@@ -21,9 +21,9 @@ export default function Home() {
           to="/skill-tree"
           className="bg-bg-secondary border border-slate-200 dark:border-slate-700 rounded-lg p-6 shadow hover:shadow-lg transition-shadow cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
         >
-          <h3 className="text-xl font-bold mb-2 text-text-primary">🎯 Skill Tree</h3>
+          <h3 className="text-xl font-bold mb-2 text-text-primary">🎯 Träd-vy</h3>
           <p className="text-text-secondary">
-            Explore medals in an interactive tree view
+            Utforska medaljer i en interaktivt träd-vy
           </p>
         </Link>
 
@@ -31,9 +31,9 @@ export default function Home() {
           to="/medals"
           className="bg-bg-secondary border border-slate-200 dark:border-slate-700 rounded-lg p-6 shadow hover:shadow-lg transition-shadow cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
         >
-          <h3 className="text-xl font-bold mb-2 text-text-primary">📊 Medal List</h3>
+          <h3 className="text-xl font-bold mb-2 text-text-primary">📊 Medaljlista</h3>
           <p className="text-text-secondary">
-            Browse all medals with filters and search
+            Översikt över alla medaljer med filter och sökning
           </p>
         </Link>
 
@@ -41,9 +41,9 @@ export default function Home() {
           to="/settings"
           className="bg-bg-secondary border border-slate-200 dark:border-slate-700 rounded-lg p-6 shadow hover:shadow-lg transition-shadow cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
         >
-          <h3 className="text-xl font-bold mb-2 text-text-primary">📝 Settings</h3>
+          <h3 className="text-xl font-bold mb-2 text-text-primary">📝 Inställningar</h3>
           <p className="text-text-secondary">
-            Log achievements and manage your profile
+            Logga aktiviteter och hantera din profil
           </p>
         </Link>
       </section>
@@ -52,7 +52,7 @@ export default function Home() {
         <section className="bg-bg-secondary border border-slate-200 dark:border-slate-700 rounded-lg p-6 shadow">
           <h2 className="text-xl font-bold mb-4">Status</h2>
           <p className="text-text-secondary">
-            ✓ {medalDatabase.getAllMedals().length} medals loaded
+            ✓ {medalDatabase.getAllMedals().length} medljer laddade
           </p>
         </section>
       )}

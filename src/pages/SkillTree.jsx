@@ -9,10 +9,10 @@ export default function SkillTree() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-text-primary">Skill Tree</h1>
+        <h1 className="text-3xl font-bold text-text-primary">Trädvy</h1>
         <div
           role="tablist"
-          aria-label="Skill tree view"
+          aria-label="Trädvy med medaljer"
           className="inline-flex gap-2"
           onKeyDown={(e) => {
             if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
@@ -39,7 +39,7 @@ export default function SkillTree() {
             className={`btn ${viewMode === 'stats' ? 'btn-primary' : 'btn-muted'}`}
             onClick={() => setViewMode('stats')}
           >
-            <span aria-hidden="true">📊</span> Stats
+            <span aria-hidden="true">📊</span> Statistik
           </button>
         </div>
       </div>
@@ -56,32 +56,32 @@ export default function SkillTree() {
           className="grid grid-cols-1 sm:grid-cols-3 gap-4"
         >
           <div className="card p-6">
-            <h3 className="section-title mb-2">Unlocked</h3>
+            <h3 className="section-title mb-2">Upplåsta</h3>
             <p className="text-3xl font-bold text-foreground">
               {statuses.unlocked.length}
             </p>
             <p className="text-sm text-muted-foreground mt-2">
-              Medals you've already earned
+              Medaljer du redan låst upp
             </p>
           </div>
 
           <div className="card p-6">
-            <h3 className="section-title mb-2">Achievable</h3>
+            <h3 className="section-title mb-2">Uppnåeliga</h3>
             <p className="text-3xl font-bold text-foreground">
               {statuses.achievable.length}
             </p>
             <p className="text-sm text-muted-foreground mt-2">
-              Next medals you can unlock
+              Medaljer du kan låsa upp
             </p>
           </div>
 
           <div className="card p-6">
-            <h3 className="section-title mb-2">Locked</h3>
+            <h3 className="section-title mb-2">Låsta</h3>
             <p className="text-3xl font-bold text-foreground">
               {statuses.locked.length}
             </p>
             <p className="text-sm text-muted-foreground mt-2">
-              Future goals to work toward
+              Framtida mål att arbeta mot
             </p>
           </div>
         </div>
