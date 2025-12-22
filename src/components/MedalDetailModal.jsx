@@ -60,6 +60,43 @@ export default function MedalDetailModal({ medalId, onClose }) {
     }
   }, [calculator, medal, status])
 
+  // Prerequisites (presence + optional year-offset gap) for display and gating "Unlock"
+  const prereqCheck = useMemo(() => {
+    if (!calculator || !medal) return { allMet: true, items: [], missingItems: [] }
+    try {
+      return calculator.checkPrerequisites(medal)
+    } catch {
+      return { allMet: true, items: [], missingItems: [] }
+    }
+  }, [calculator, medal])
+
+  const prereqGapFailedIds = useMemo(() => {
+    const set = new Set()
+    for (const m of (prereqCheck.missingItems || [])) {
+      if (m && m.type === 'medal' && m.offsetChecked) set.add(m.medalId)
+    }
+    return set
+  }, [prereqCheck])
+
+  const prereqItemsResolved = useMemo(() => {
+    return (prereqCheck.items || []).map((it) => {
+      if (it.type === 'medal') {
+        const ref = medalDatabase?.getMedalById?.(it.medalId)
+        const gapFailed = prereqGapFailedIds.has(it.medalId)
+        return {
+          ...it,
+          displayName: ref?.displayName || ref?.name || it.medalId,
+          displayMet: it.isMet && !gapFailed,
+          gapFailed,
+        }
+      }
+      return it
+    })
+  }, [prereqCheck, prereqGapFailedIds, medalDatabase])
+
+  const prereqsOk = prereqCheck?.allMet === true
+  const prereqHintId = medal ? `unlock-prereq-hint-${medal.id}` : undefined
+
   const blockingMedals = useMemo(() => {
     return (blocking || [])
       .map(id => medalDatabase?.getMedalById(id))
@@ -289,6 +326,32 @@ export default function MedalDetailModal({ medalId, onClose }) {
               </div>
             )}
 
+            {/* Prerequisites */}
+            {prereqItemsResolved.length > 0 && (
+              <div className="mb-4 bg-background border border-border rounded p-3" role="region" aria-labelledby={`prereq-title-${medal.id}`}>
+                <p id={`prereq-title-${medal.id}`} className="text-sm font-semibold text-foreground mb-2">
+                  Prerequisites
+                </p>
+                <ul className="text-sm text-muted-foreground space-y-1">
+                  {prereqItemsResolved.map((item, i) => (
+                    <li key={i} className="flex flex-wrap items-baseline gap-2 break-words">
+                      <span className={item.displayMet ? 'text-foreground' : 'text-muted-foreground'}>
+                        {item.displayMet ? '✅' : '❌'}
+                      </span>
+                      <span className="text-foreground">
+                        {item.type === 'medal' ? (item.displayName || item.medalId) : (item.description || item.type)}
+                      </span>
+                      {item.type === 'medal' && typeof item.yearOffset === 'number' ? (
+                        <span className={item.gapFailed ? 'text-red-600 dark:text-red-400' : 'text-muted-foreground'}>
+                          Requires {item.yearOffset}-year gap
+                        </span>
+                      ) : null}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
             {showConfirmRemove && status?.status === 'unlocked' && canRemove && (
               <div className="mb-4 bg-background border border-border rounded p-3" role="dialog" aria-modal="false" aria-labelledby="confirm-remove-title">
                 <p id="confirm-remove-title" className="text-sm font-semibold text-foreground mb-2">
@@ -467,15 +530,25 @@ export default function MedalDetailModal({ medalId, onClose }) {
             )}
 
             {currentProfile && (status?.status === 'achievable' || (allowManual && status?.status !== 'unlocked')) && (
-              <button
-                type="button"
-                onClick={() => setUnlockOpen(true)}
-                aria-haspopup="dialog"
-                aria-controls="unlock-medal"
-                className="flex-1 px-4 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
-              >
-                Unlock Now
-              </button>
+              <div className="flex-1 flex flex-col gap-2">
+                <button
+                  type="button"
+                  onClick={() => setUnlockOpen(true)}
+                  aria-haspopup="dialog"
+                  aria-controls="unlock-medal"
+                  disabled={!prereqsOk}
+                  aria-disabled={!prereqsOk}
+                  aria-describedby={!prereqsOk ? prereqHintId : undefined}
+                  className="flex-1 px-4 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary-hover disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
+                >
+                  Unlock Now
+                </button>
+                {!prereqsOk && (
+                  <p id={prereqHintId} className="text-xs text-muted-foreground">
+                    Prerequisites must be met before you can unlock this medal.
+                  </p>
+                )}
+              </div>
             )}
           </div>
         </div>
