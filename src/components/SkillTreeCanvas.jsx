@@ -87,6 +87,14 @@ export default function SkillTreeCanvas() {
     )
   }, [getVisibleMedalsForCanvas, layout, medalDatabase, statuses, panX, panY, scale, selectedMedal, render])
 
+  // Ensure first frame renders whenever a canvas node is attached
+  const setCanvasRef = useCallback((node) => {
+    canvasRef.current = node
+    if (node) {
+      requestAnimationFrame(draw)
+    }
+  }, [draw])
+
   // Draw with requestAnimationFrame for smoothness
   useEffect(() => {
     let raf = requestAnimationFrame(draw)
@@ -120,6 +128,13 @@ export default function SkillTreeCanvas() {
       try { prevFocusRef.current?.focus?.() } catch {}
     }
   }, [isFullscreen])
+
+  // Redraw on fullscreen toggle to ensure immediate render after mount
+  useEffect(() => {
+    if (canvasRef.current) {
+      requestAnimationFrame(draw)
+    }
+  }, [isFullscreen, draw])
 
   // Keyboard pan shortcuts (scope to focused canvas for WCAG 2.1/2.2)
   const handleCanvasKeyDown = useCallback((e) => {
@@ -275,7 +290,7 @@ export default function SkillTreeCanvas() {
       <div className="card overflow-hidden overscroll-contain" role="region" aria-label="Skill tree canvas" aria-describedby="skilltree-help">
         {!isFullscreen && (
           <canvas
-            ref={canvasRef}
+            ref={setCanvasRef}
             role="img"
             aria-label="Interactive skill tree canvas"
             aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown"
@@ -341,7 +356,7 @@ export default function SkillTreeCanvas() {
 
           <div className="flex-1">
             <canvas
-              ref={canvasRef}
+              ref={setCanvasRef}
               role="img"
               aria-label="Interactive skill tree canvas"
               aria-describedby="skilltree-help-fs"
