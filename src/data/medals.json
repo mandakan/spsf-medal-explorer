@@ -13,7 +13,7 @@
       "requirements": [
         {
           "type": "precision_series",
-          "description": "3 precision series vs Pistol target 25m",
+          "description": "3 precisionsserier mot Pistoltavla 25m",
           "minAchievements": 3,
           "timeWindowYears": 1,
           "seriesType": "precision",
@@ -66,7 +66,7 @@
         },
         {
           "type": "application_series",
-          "description": "3 application series (either B100 50m or 1/6 target C30 25m)",
+          "description": "3 tillämpningsserier (antingen B100 50m eller 1/6 mål C30 25m)",
           "minAchievements": 3,
           "timeWindowYears": 1,
           "thresholds": {
@@ -84,8 +84,7 @@
         "spring-mark-bronze",
         "precision-mark-bronze",
         "national-match-mark-bronze",
-        "military-match-mark-bronze",
-        "air-pistol-mark-bronze"
+        "military-match-mark-bronze"
       ],
       "yearIntroduced": 2000,
       "sortOrder": 1
@@ -109,7 +108,7 @@
       "requirements": [
         {
           "type": "precision_series",
-          "description": "3 precision series vs Pistol target 25m",
+          "description": "3 precisionsserier mot Pistoltavla 25m",
           "seriesType": "precision",
           "minAchievements": 3,
           "timeWindowYears": 1,
@@ -162,7 +161,7 @@
         },
         {
           "type": "application_series",
-          "description": "3 application series (either B100 50m or 1/6 target C30 25m)",
+          "description": "3 tillämpningsserier (antingen B100 50m eller 1/6 mål C30 25m)",
           "minAchievements": 3,
           "timeWindowYears": 1,
           "thresholds": {
@@ -185,7 +184,7 @@
       "displayName": "Pistolskyttemärket - Guld",
       "color": "#FFD700",
       "icon": "medal-gold",
-      "requirements_original": "- 3 precision series vs Pistol target 25 m with minimum points per class: **A ≥ 43**, **B ≥ 44**, **C ≥ 46**.\n- 3 application series (B100 50 m or 1/6 target C30 25 m) with at least **6 hits** within class time limits (A: ≤40s, B: ≤15s, C: ≤15s, R: ≤40s).",
+      "requirements_original": "- 3 precisionsserier mot Pistoltavla 25 m with minimum points per class: **A ≥ 43**, **B ≥ 44**, **C ≥ 46**.\n- 3 tillämpningsserier (B100 50 m or 1/6 target C30 25 m) with at least **6 hits** within class time limits (A: ≤40s, B: ≤15s, C: ≤15s, R: ≤40s).",
       "references": [],
       "prerequisites": [
         {
@@ -198,7 +197,7 @@
       "requirements": [
         {
           "type": "precision_series",
-          "description": "3 precision series vs Pistol target 25m",
+          "description": "3 precisionsserier mot Pistoltavla 25m",
           "seriesType": "precision",
           "minAchievements": 3,
           "timeWindowYears": 1,
@@ -251,7 +250,7 @@
         },
         {
           "type": "application_series",
-          "description": "3 application series (either B100 50m or 1/6 target C30 25m)",
+          "description": "3 tillämpningsserier (antingen B100 50m eller 1/6 mål C30 25m)",
           "minAchievements": 3,
           "timeWindowYears": 1,
           "thresholds": {
@@ -343,7 +342,7 @@
       "requirements": [
         {
           "type": "precision_series",
-          "description": "5 precision series",
+          "description": "5 precisionsserier",
           "minAchievements": 5,
           "timeWindowYears": 1,
           "pointThresholds": {
@@ -1898,20 +1897,20 @@
       "type": "air_pistol_mark",
       "tier": "bronze",
       "name": "Luftpistolmärket - Brons",
-      "displayName": "Air Pistol Mark - Bronze",
+      "displayName": "Luftpistolmärket - Brons",
       "color": "#CD7F32",
       "icon": "air-pistol-bronze",
       "prerequisites": [],
       "requirements": [
         {
           "type": "air_pistol_precision",
-          "description": "5 precision series with air pistol against 10-ring international target",
+          "description": "5 precisionsserier with luftpistol against 10-ringad internatio nell luftpistoltavla",
           "minSeries": 5,
           "timeWindowYears": 1,
           "minPointsPerSeries": 66
         }
       ],
-      "unlocksFollowingMedals": ["air-pistol-mark-silver"],
+      "unlocksFollowingMedals": [],
       "yearIntroduced": 2000,
       "sortOrder": 90
     },
@@ -1920,22 +1919,20 @@
       "type": "air_pistol_mark",
       "tier": "silver",
       "name": "Luftpistolmärket - Silver",
-      "displayName": "Air Pistol Mark - Silver",
+      "displayName": "Luftpistolmärket - Silver",
       "color": "#C0C0C0",
       "icon": "air-pistol-silver",
-      "prerequisites": [
-        { "type": "medal", "medalId": "air-pistol-mark-bronze" }
-      ],
+      "prerequisites": [],
       "requirements": [
         {
           "type": "air_pistol_precision",
-          "description": "5 precision series with air pistol against 10-ring international target",
+          "description": "5 precisionsserier with luftpistol against 10-ringad internatio nell luftpistoltavla",
           "minSeries": 5,
           "timeWindowYears": 1,
           "minPointsPerSeries": 76
         }
       ],
-      "unlocksFollowingMedals": ["air-pistol-mark-gold"],
+      "unlocksFollowingMedals": [],
       "yearIntroduced": 2000,
       "sortOrder": 91
     },
@@ -1944,16 +1941,14 @@
       "type": "air_pistol_mark",
       "tier": "gold",
       "name": "Luftpistolmärket - Guld",
-      "displayName": "Air Pistol Mark - Gold",
+      "displayName": "Luftpistolmärket - Guld",
       "color": "#FFD700",
       "icon": "air-pistol-gold",
-      "prerequisites": [
-        { "type": "medal", "medalId": "air-pistol-mark-silver" }
-      ],
+      "prerequisites": [],
       "requirements": [
         {
           "type": "air_pistol_precision",
-          "description": "5 precision series with air pistol against 10-ring international target",
+          "description": "5 precisionsserier med luftpistol mot 10-ringad internatio nell luftpistoltavla",
           "minSeries": 5,
           "timeWindowYears": 1,
           "minPointsPerSeries": 88
@@ -1968,21 +1963,21 @@
       "type": "air_pistol_mark",
       "tier": "annual",
       "name": "Årtalsmärke luftpistol",
-      "displayName": "Air Pistol Mark - Annual",
+      "displayName": "Årtalsmärke luftpistol",
       "color": "#FFD700",
       "icon": "air-pistol-annual",
-      "requirements_original": "Yearly achievement of **Air Pistol Gold** requirements.",
+      "requirements_original": "Yearly achievement of **luftpistol Gold** requirements.",
       "references": [
         {
           "medalId": "air-pistol-mark-gold",
-          "description": "Fulfill requirements for Air Pistol Mark - Gold during the year."
+          "description": "Fulfill requirements for luftpistol Mark - Gold during the year."
         }
       ],
       "prerequisites": [{ "type": "medal", "medalId": "air-pistol-mark-gold" }],
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Yearly achievement of Air Pistol Gold requirements",
+          "description": "Yearly achievement of luftpistol Gold requirements",
           "minAchievements": 1,
           "timeWindowYears": 1
         }
@@ -1996,7 +1991,7 @@
       "type": "air_pistol_mark",
       "tier": "annual_star_1",
       "name": "Årtalsmärke luftpistol med en stjärna",
-      "displayName": "Air Pistol Mark - Annual ★",
+      "displayName": "Årtalsmärke luftpistol med en stjärna",
       "color": "#FFD700",
       "icon": "air-pistol-annual-star-1",
       "prerequisites": [
@@ -2005,7 +2000,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Yearly achievement of Air Pistol Gold requirements",
+          "description": "Yearly achievement of luftpistol Gold requirements",
           "minAchievements": 1,
           "timeWindowYears": 1
         }
@@ -2019,7 +2014,7 @@
       "type": "air_pistol_mark",
       "tier": "annual_star_2",
       "name": "Årtalsmärke luftpistol med två stjärnor",
-      "displayName": "Air Pistol Mark - Annual ★★",
+      "displayName": "Årtalsmärke luftpistol med två stjärnor",
       "color": "#FFD700",
       "icon": "air-pistol-annual-star-2",
       "prerequisites": [
@@ -2028,7 +2023,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Yearly achievement of Air Pistol Gold requirements",
+          "description": "Yearly achievement of luftpistol Gold requirements",
           "minAchievements": 1,
           "timeWindowYears": 1
         }
@@ -2042,7 +2037,7 @@
       "type": "air_pistol_mark",
       "tier": "annual_star_3",
       "name": "Årtalsmärke luftpistol med tre stjärnor",
-      "displayName": "Air Pistol Mark - Annual ★★★",
+      "displayName": "Årtalsmärke luftpistol med tre stjärnor",
       "color": "#FFD700",
       "icon": "air-pistol-annual-star-3",
       "prerequisites": [
@@ -2051,7 +2046,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Yearly achievement of Air Pistol Gold requirements",
+          "description": "Yearly achievement of luftpistol Gold requirements",
           "minAchievements": 1,
           "timeWindowYears": 1
         }
@@ -2065,7 +2060,7 @@
       "type": "air_pistol_mark",
       "tier": "annual_wreath",
       "name": "Årtalsmärke luftpistol med krans",
-      "displayName": "Air Pistol Mark - Annual Wreath",
+      "displayName": "luftpistol Mark - Annual Wreath",
       "color": "#FFD700",
       "icon": "air-pistol-annual-wreath",
       "prerequisites": [
@@ -2074,7 +2069,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Yearly achievement of Air Pistol Gold requirements",
+          "description": "Yearly achievement of luftpistol Gold requirements",
           "minAchievements": 1,
           "timeWindowYears": 1
         }
@@ -2088,7 +2083,7 @@
       "type": "air_pistol_mark",
       "tier": "annual_wreath_star_1",
       "name": "Årtalsmärke luftpistol med krans och en stjärna",
-      "displayName": "Air Pistol Mark - Annual Wreath ★",
+      "displayName": "luftpistol Mark - Annual Wreath ★",
       "color": "#FFD700",
       "icon": "air-pistol-annual-wreath-star-1",
       "prerequisites": [
@@ -2097,7 +2092,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Yearly achievement of Air Pistol Gold requirements",
+          "description": "Yearly achievement of luftpistol Gold requirements",
           "minAchievements": 1,
           "timeWindowYears": 1
         }
@@ -2111,7 +2106,7 @@
       "type": "air_pistol_mark",
       "tier": "annual_wreath_star_2",
       "name": "Årtalsmärke luftpistol med krans och två stjärnor",
-      "displayName": "Air Pistol Mark - Annual Wreath ★★",
+      "displayName": "luftpistol Mark - Annual Wreath ★★",
       "color": "#FFD700",
       "icon": "air-pistol-annual-wreath-star-2",
       "prerequisites": [
@@ -2120,7 +2115,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Yearly achievement of Air Pistol Gold requirements",
+          "description": "Yearly achievement of luftpistol Gold requirements",
           "minAchievements": 1,
           "timeWindowYears": 1
         }
@@ -2134,7 +2129,7 @@
       "type": "air_pistol_mark",
       "tier": "annual_wreath_star_3",
       "name": "Årtalsmärke luftpistol med krans och tre stjärnor",
-      "displayName": "Air Pistol Mark - Annual Wreath ★★★",
+      "displayName": "luftpistol Mark - Annual Wreath ★★★",
       "color": "#FFD700",
       "icon": "air-pistol-annual-wreath-star-3",
       "prerequisites": [
@@ -2143,7 +2138,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Yearly achievement of Air Pistol Gold requirements",
+          "description": "Yearly achievement of luftpistol Gold requirements",
           "minAchievements": 1,
           "timeWindowYears": 1
         }
