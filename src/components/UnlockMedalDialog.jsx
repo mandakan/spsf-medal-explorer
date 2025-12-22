@@ -51,12 +51,38 @@ export default function UnlockMedalDialog({ medal, open, onClose }) {
     ? (year === '' ? '' : Number(year))
     : (eligibleYears.length <= 1 ? (eligibleYears[0] ?? '') : (year || (eligibleYears[0] ?? '')))
 
-  const yearOutOfBounds = allowManual && (!Number.isFinite(selectedYear) || typeof birthYear !== 'number' || selectedYear < birthYear || selectedYear > nowYear)
-  const yearTooEarly = allowManual && (typeof earliestCountingYear === 'number') && Number.isFinite(selectedYear) && (selectedYear < earliestCountingYear)
-  const yearTooClose = allowManual && (typeof minimalSustainedYear === 'number') && Number.isFinite(selectedYear) && (selectedYear < minimalSustainedYear)
+  const yearOutOfBounds =
+    allowManual &&
+    (!Number.isFinite(selectedYear) ||
+      typeof birthYear !== 'number' ||
+      selectedYear < birthYear ||
+      selectedYear > nowYear)
+
   // If feature is ON and medal has sustained achievement, selected year must be the real current year
-  const wrongCurrentReq = enforceSustainedCurrent && hasSustainedReq && Number.isFinite(selectedYear) && (selectedYear !== nowYear)
-  const yearIsValid = allowManual ? (!yearOutOfBounds && !yearTooEarly && !yearTooClose && !wrongCurrentReq) : (selectedYear !== '')
+  const wrongCurrentReq =
+    enforceSustainedCurrent &&
+    hasSustainedReq &&
+    Number.isFinite(selectedYear) &&
+    (selectedYear !== nowYear)
+
+  // Consolidate rule-based minimum year: max of earliestCountingYear and sustained minimal year
+  const effectiveRuleMinYear = (() => {
+    const vals = []
+    if (typeof earliestCountingYear === 'number') vals.push(earliestCountingYear)
+    if (typeof minimalSustainedYear === 'number') vals.push(minimalSustainedYear)
+    if (vals.length === 0) return null
+    return Math.max(...vals)
+  })()
+
+  const yearTooEarlyByRules =
+    allowManual &&
+    Number.isFinite(selectedYear) &&
+    (typeof effectiveRuleMinYear === 'number') &&
+    (selectedYear < effectiveRuleMinYear)
+
+  const yearIsValid = allowManual
+    ? (!yearOutOfBounds && !wrongCurrentReq && !yearTooEarlyByRules)
+    : (selectedYear !== '')
 
   const prereqsMet = useMemo(() => {
     if (!allowManual) return true
@@ -101,6 +127,9 @@ export default function UnlockMedalDialog({ medal, open, onClose }) {
             <label htmlFor="unlock-year" className="field-label mb-2">
               Year
             </label>
+            {typeof effectiveRuleMinYear === 'number' && (
+              <p className="field-hint">Earliest allowed: {effectiveRuleMinYear}</p>
+            )}
             <input
               id="unlock-year"
               type="number"
@@ -114,7 +143,13 @@ export default function UnlockMedalDialog({ medal, open, onClose }) {
                 const v = e.target.value
                 setYear(v === '' ? '' : Number(v))
               }}
-              aria-invalid={(!canUnlock) || undefined}
+              aria-invalid={(() => {
+                if (!allowManual) return undefined
+                // Only mark invalid when an error message is actually shown
+                if (year === '' || !Number.isFinite(selectedYear)) return undefined
+                if (yearOutOfBounds || wrongCurrentReq || yearTooEarlyByRules || (yearIsValid && !prereqsMet)) return true
+                return undefined
+              })()}
               aria-describedby="unlock-year-hint"
             />
             <datalist id="eligible-years">
@@ -123,36 +158,30 @@ export default function UnlockMedalDialog({ medal, open, onClose }) {
               ))}
             </datalist>
             <p id="unlock-year-hint" className="field-hint">
-              Enter a year between {birthYear} and {nowYear}. Prerequisites must be met for that year.
+              Choose a year between {birthYear} and {nowYear}. We’ll check prerequisites for that year.
             </p>
-            {yearOutOfBounds && (
-              <p className="field-hint text-red-600 dark:text-red-400" role="status">
-                Invalid year. Please choose between {birthYear} and {nowYear}.
-              </p>
-            )}
-            {yearTooEarly && (
-              <p className="field-hint text-red-600 dark:text-red-400" role="status">
-                This medal cannot be unlocked before {earliestCountingYear}.
-              </p>
-            )}
-            {yearTooClose && (
-              <p className="field-hint text-red-600 dark:text-red-400" role="status">
-                This medal requires at least {(() => {
-                  const req = medal?.requirements?.find(r => r?.type === 'sustained_achievement')
-                  return Number.isFinite(req?.yearsOfAchievement) ? req.yearsOfAchievement : 1
-                })()} year(s) after your previous medal of this type. Earliest year: {minimalSustainedYear}.
-              </p>
-            )}
-            {enforceSustainedCurrent && hasSustainedReq && wrongCurrentReq && (
-              <p className="field-hint text-red-600 dark:text-red-400" role="status">
-                This medal requires the current year to be selected.
-              </p>
-            )}
-            {yearIsValid && !prereqsMet && (
-              <p className="field-hint text-red-600 dark:text-red-400" role="status">
-                Prerequisites are not met for the selected year.
-              </p>
-            )}
+            {(() => {
+              if (!allowManual) return null
+              // Don’t show an error while the field is empty or NaN
+              if (year === '' || !Number.isFinite(selectedYear)) return null
+
+              let msg = null
+              if (yearOutOfBounds) {
+                msg = `Year must be between ${birthYear} and ${nowYear}.`
+              } else if (wrongCurrentReq) {
+                msg = 'This medal requires the current year to be selected.'
+              } else if (yearTooEarlyByRules) {
+                msg = `Earliest year you can unlock is ${effectiveRuleMinYear}.`
+              } else if (!prereqsMet) {
+                msg = `Prerequisites are not met for ${selectedYear}.`
+              }
+
+              return msg ? (
+                <p className="field-hint text-red-600 dark:text-red-400" role="status">
+                  {msg}
+                </p>
+              ) : null
+            })()}
           </div>
           <div className="flex gap-2 justify-end">
             <button type="button" className="btn btn-muted min-h-[44px]" onClick={onClose}>
