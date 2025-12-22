@@ -285,7 +285,7 @@ export default function SkillTreeCanvas() {
             aria-haspopup="dialog"
             aria-controls="skilltree-fullscreen"
           >
-            Fullskärm
+            Helskärm
           </button>
         </div>
       </div>
@@ -323,7 +323,7 @@ export default function SkillTreeCanvas() {
           className="fixed inset-0 z-50 bg-background overscroll-contain flex flex-col"
           role="dialog"
           aria-modal="true"
-          aria-label="Fullskärm träd-vy"
+          aria-label="Helskärms träd-vy"
         >
           <div
             className="flex items-center justify-between p-2 sm:p-3 border-b border-gray-300 dark:border-slate-700 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80"
