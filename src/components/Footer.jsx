@@ -30,7 +30,7 @@ export default function Footer() {
   const license = APP_INFO?.LICENSE || 'MIT'
   const github = LINKS?.GITHUB_REPO
   const coffee = LINKS?.COFFEE
-  const base = import.meta.env.BASE_URL
+  const base = (typeof document !== 'undefined' && document.querySelector('base')?.getAttribute('href')) || '/'
   const licenseHref = `${base}LICENSE`
 
   return (
