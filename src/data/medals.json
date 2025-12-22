@@ -6,7 +6,7 @@
       "type": "pistol_mark",
       "tier": "bronze",
       "name": "Pistolskyttemärket - Brons",
-      "displayName": "Pistol Mark - Bronze",
+      "displayName": "Pistolskyttemärket - Brons",
       "color": "#CD7F32",
       "icon": "medal-bronze",
       "prerequisites": [],
@@ -79,7 +79,6 @@
       ],
       "unlocksFollowingMedals": [
         "pistol-mark-silver",
-        "elite-mark-bronze",
         "field-mark-bronze",
         "skis-mark-bronze",
         "spring-mark-bronze",
@@ -96,7 +95,7 @@
       "type": "pistol_mark",
       "tier": "silver",
       "name": "Pistolskyttemärket - Silver",
-      "displayName": "Pistol Mark - Silver",
+      "displayName": "Pistolskyttemärket - Silver",
       "color": "#C0C0C0",
       "icon": "medal-silver",
       "prerequisites": [
@@ -174,10 +173,7 @@
           }
         }
       ],
-      "unlocksFollowingMedals": [
-        "pistol-mark-gold",
-        "elite-mark-silver"
-      ],
+      "unlocksFollowingMedals": ["pistol-mark-gold"],
       "yearIntroduced": 2000,
       "sortOrder": 2
     },
@@ -186,7 +182,7 @@
       "type": "pistol_mark",
       "tier": "gold",
       "name": "Pistolskyttemärket - Guld",
-      "displayName": "Pistol Mark - Gold",
+      "displayName": "Pistolskyttemärket - Guld",
       "color": "#FFD700",
       "icon": "medal-gold",
       "requirements_original": "- 3 precision series vs Pistol target 25 m with minimum points per class: **A ≥ 43**, **B ≥ 44**, **C ≥ 46**.\n- 3 application series (B100 50 m or 1/6 target C30 25 m) with at least **6 hits** within class time limits (A: ≤40s, B: ≤15s, C: ≤15s, R: ≤40s).",
@@ -260,7 +256,7 @@
           "timeWindowYears": 1,
           "thresholds": {
             "A": { "minHits": 6, "maxTimeSeconds": 40 },
-            "B": { "minHits": 6, "maxTimeSeconds": 15 },
+            "B": { "minHits": 6, "maxTimeSeconds": 17 },
             "C": { "minHits": 6, "maxTimeSeconds": 15 },
             "R": { "minHits": 6, "maxTimeSeconds": 40 }
           }
@@ -280,7 +276,7 @@
       "type": "pistol_mark",
       "tier": "star_1",
       "name": "Pistolskyttemärket - Guld med en stjärna",
-      "displayName": "Pistol Mark - Gold ★",
+      "displayName": "Pistolskyttemärket - Guld med en stjärna",
       "color": "#FFD700",
       "icon": "medal-gold-star-1",
       "prerequisites": [
@@ -298,9 +294,7 @@
           "minPointsPerYear": 43
         }
       ],
-      "unlocksFollowingMedals": [
-        "pistol-mark-gold-star-2"
-      ],
+      "unlocksFollowingMedals": ["pistol-mark-gold-star-2"],
       "yearIntroduced": 2000,
       "sortOrder": 4
     },
@@ -309,7 +303,7 @@
       "type": "pistol_mark",
       "tier": "star_2",
       "name": "Pistolskyttemärket - Guld med två stjärnor",
-      "displayName": "Pistol Mark - Gold ★★",
+      "displayName": "Pistolskyttemärket - Guld med två stjärnor",
       "color": "#FFD700",
       "icon": "medal-gold-star-2",
       "prerequisites": [
@@ -322,8 +316,8 @@
         {
           "type": "sustained_achievement",
           "description": "5 years of Gold-level achievement",
-          "timeWindowYears": 5,
-          "yearsOfAchievement": 5,
+          "timeWindowYears": 3,
+          "yearsOfAchievement": 3,
           "minPointsPerYear": 43
         }
       ],
@@ -336,7 +330,7 @@
       "type": "elite_mark",
       "tier": "bronze",
       "name": "Elitmärket - Brons",
-      "displayName": "Elite Mark - Bronze",
+      "displayName": "Elitmärket - Brons",
       "color": "#CD7F32",
       "icon": "elite-bronze",
       "prerequisites": [
@@ -354,8 +348,9 @@
           "timeWindowYears": 1,
           "pointThresholds": {
             "A": { "min": 45 },
-            "B": { "min": 46 },
-            "C": { "min": 47 }
+            "B": { "min": 45 },
+            "C": { "min": 45 },
+            "R": { "min": 45 }
           },
           "ageCategories": [
             {
@@ -411,9 +406,7 @@
           }
         }
       ],
-      "unlocksFollowingMedals": [
-        "elite-mark-silver"
-      ],
+      "unlocksFollowingMedals": ["elite-mark-silver"],
       "yearIntroduced": 2000,
       "sortOrder": 10
     },
@@ -422,7 +415,7 @@
       "type": "elite_mark",
       "tier": "silver",
       "name": "Elitmärket - Silver",
-      "displayName": "Elite Mark - Silver",
+      "displayName": "Elitmärket - Silver",
       "color": "#C0C0C0",
       "icon": "elite-silver",
       "prerequisites": [
@@ -439,9 +432,7 @@
           "timeWindowYears": 1
         }
       ],
-      "unlocksFollowingMedals": [
-        "elite-mark-gold"
-      ],
+      "unlocksFollowingMedals": ["elite-mark-gold"],
       "yearIntroduced": 2000,
       "sortOrder": 11
     },
@@ -450,7 +441,7 @@
       "type": "elite_mark",
       "tier": "gold",
       "name": "Elitmärket - Guld",
-      "displayName": "Elite Mark - Gold",
+      "displayName": "Elitmärket - Guld",
       "color": "#FFD700",
       "icon": "elite-gold",
       "prerequisites": [
@@ -466,9 +457,7 @@
           "timeWindowYears": 1
         }
       ],
-      "unlocksFollowingMedals": [
-        "elite-mark-gold-wreath"
-      ],
+      "unlocksFollowingMedals": ["elite-mark-gold-wreath"],
       "yearIntroduced": 2000,
       "sortOrder": 12
     },
@@ -477,7 +466,7 @@
       "type": "elite_mark",
       "tier": "gold_wreath",
       "name": "Elitmärket - Guld med kvistar",
-      "displayName": "Elite Mark - Gold with Wreath",
+      "displayName": "Elitmärket - Guld med kvistar",
       "color": "#FFD700",
       "icon": "elite-gold-wreath",
       "prerequisites": [
@@ -494,9 +483,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "elite-mark-gold-wreath-star-1"
-      ],
+      "unlocksFollowingMedals": ["elite-mark-gold-wreath-star-1"],
       "yearIntroduced": 2000,
       "sortOrder": 13
     },
@@ -505,7 +492,7 @@
       "type": "elite_mark",
       "tier": "gold_wreath_star_1",
       "name": "Elitmärket - Guld med kvistar och en stjärna",
-      "displayName": "Elite Mark - Gold Wreath ★",
+      "displayName": "Elitmärket - Guld med kvistar och en stjärna",
       "color": "#FFD700",
       "icon": "elite-gold-wreath-star-1",
       "prerequisites": [
@@ -522,9 +509,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "elite-mark-gold-wreath-star-2"
-      ],
+      "unlocksFollowingMedals": ["elite-mark-gold-wreath-star-2"],
       "yearIntroduced": 2000,
       "sortOrder": 14
     },
@@ -533,7 +518,7 @@
       "type": "elite_mark",
       "tier": "gold_wreath_star_2",
       "name": "Elitmärket - Guld med kvistar och två stjärnor",
-      "displayName": "Elite Mark - Gold Wreath ★★",
+      "displayName": "Elitmärket - Guld med kvistar och två stjärnor",
       "color": "#FFD700",
       "icon": "elite-gold-wreath-star-2",
       "prerequisites": [
@@ -550,9 +535,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "elite-mark-gold-wreath-star-3"
-      ],
+      "unlocksFollowingMedals": ["elite-mark-gold-wreath-star-3"],
       "yearIntroduced": 2000,
       "sortOrder": 15
     },
@@ -561,7 +544,7 @@
       "type": "elite_mark",
       "tier": "gold_wreath_star_3",
       "name": "Elitmärket - Guld med kvistar och tre stjärnor",
-      "displayName": "Elite Mark - Gold Wreath ★★★",
+      "displayName": "Elitmärket - Guld med kvistar och tre stjärnor",
       "color": "#FFD700",
       "icon": "elite-gold-wreath-star-3",
       "prerequisites": [
@@ -587,12 +570,20 @@
       "type": "field_mark",
       "tier": "bronze",
       "name": "Fältskyttemärket - Brons",
-      "displayName": "Field Mark - Bronze",
+      "displayName": "Fältskyttemärket - Brons",
       "color": "#CD7F32",
       "icon": "field-bronze",
       "prerequisites": [
-        { "type": "medal", "medalId": "pistol-mark-bronze", "description": "Bronze Pistol Mark required" },
-        { "type": "age_requirement", "minAge": 15, "description": "Must be at least 15 years old" }
+        {
+          "type": "medal",
+          "medalId": "pistol-mark-bronze",
+          "description": "Bronze Pistol Mark required"
+        },
+        {
+          "type": "age_requirement",
+          "minAge": 15,
+          "description": "Must be at least 15 years old"
+        }
       ],
       "requirements": [
         {
@@ -608,9 +599,7 @@
           }
         }
       ],
-      "unlocksFollowingMedals": [
-        "field-mark-silver"
-      ],
+      "unlocksFollowingMedals": ["field-mark-silver"],
       "yearIntroduced": 2000,
       "sortOrder": 20
     },
@@ -622,9 +611,7 @@
       "displayName": "Field Mark - Silver",
       "color": "#C0C0C0",
       "icon": "field-silver",
-      "prerequisites": [
-        { "type": "medal", "medalId": "field-mark-bronze" }
-      ],
+      "prerequisites": [{ "type": "medal", "medalId": "field-mark-bronze" }],
       "requirements": [
         {
           "type": "competition_performance",
@@ -639,9 +626,7 @@
           }
         }
       ],
-      "unlocksFollowingMedals": [
-        "field-mark-gold"
-      ],
+      "unlocksFollowingMedals": ["field-mark-gold"],
       "yearIntroduced": 2000,
       "sortOrder": 21
     },
@@ -653,9 +638,7 @@
       "displayName": "Field Mark - Gold",
       "color": "#FFD700",
       "icon": "field-gold",
-      "prerequisites": [
-        { "type": "medal", "medalId": "field-mark-silver" }
-      ],
+      "prerequisites": [{ "type": "medal", "medalId": "field-mark-silver" }],
       "requirements": [
         {
           "type": "competition_performance",
@@ -670,9 +653,7 @@
           }
         }
       ],
-      "unlocksFollowingMedals": [
-        "field-mark-gold-star-1"
-      ],
+      "unlocksFollowingMedals": ["field-mark-gold-star-1"],
       "yearIntroduced": 2000,
       "sortOrder": 22
     },
@@ -684,9 +665,7 @@
       "displayName": "Field Mark - Gold ★",
       "color": "#FFD700",
       "icon": "field-gold-star-1",
-      "prerequisites": [
-        { "type": "medal", "medalId": "field-mark-gold" }
-      ],
+      "prerequisites": [{ "type": "medal", "medalId": "field-mark-gold" }],
       "requirements": [
         {
           "type": "sustained_achievement",
@@ -695,9 +674,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "field-mark-gold-star-2"
-      ],
+      "unlocksFollowingMedals": ["field-mark-gold-star-2"],
       "yearIntroduced": 2000,
       "sortOrder": 23
     },
@@ -720,9 +697,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "field-mark-gold-star-3"
-      ],
+      "unlocksFollowingMedals": ["field-mark-gold-star-3"],
       "yearIntroduced": 2000,
       "sortOrder": 24
     },
@@ -745,9 +720,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "field-mark-gold-wreath"
-      ],
+      "unlocksFollowingMedals": ["field-mark-gold-wreath"],
       "yearIntroduced": 2000,
       "sortOrder": 25
     },
@@ -770,9 +743,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "field-mark-gold-wreath-star-1"
-      ],
+      "unlocksFollowingMedals": ["field-mark-gold-wreath-star-1"],
       "yearIntroduced": 2000,
       "sortOrder": 26
     },
@@ -795,9 +766,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "field-mark-gold-wreath-star-2"
-      ],
+      "unlocksFollowingMedals": ["field-mark-gold-wreath-star-2"],
       "yearIntroduced": 2000,
       "sortOrder": 27
     },
@@ -820,9 +789,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "field-mark-gold-wreath-star-3"
-      ],
+      "unlocksFollowingMedals": ["field-mark-gold-wreath-star-3"],
       "yearIntroduced": 2000,
       "sortOrder": 28
     },
@@ -857,9 +824,7 @@
       "displayName": "Championship Mark - Bronze",
       "color": "#CD7F32",
       "icon": "championship-bronze",
-      "prerequisites": [
-        { "type": "medal", "medalId": "pistol-mark-gold" }
-      ],
+      "prerequisites": [{ "type": "medal", "medalId": "pistol-mark-gold" }],
       "requirements": [
         {
           "type": "championship_achievement",
@@ -881,9 +846,7 @@
           ]
         }
       ],
-      "unlocksFollowingMedals": [
-        "championship-mark-silver"
-      ],
+      "unlocksFollowingMedals": ["championship-mark-silver"],
       "yearIntroduced": 2000,
       "sortOrder": 30
     },
@@ -905,9 +868,7 @@
           "yearsOfAchievement": 6
         }
       ],
-      "unlocksFollowingMedals": [
-        "championship-mark-gold"
-      ],
+      "unlocksFollowingMedals": ["championship-mark-gold"],
       "yearIntroduced": 2000,
       "sortOrder": 31
     },
@@ -929,9 +890,7 @@
           "yearsOfAchievement": 9
         }
       ],
-      "unlocksFollowingMedals": [
-        "championship-mark-gold-star-1"
-      ],
+      "unlocksFollowingMedals": ["championship-mark-gold-star-1"],
       "yearIntroduced": 2000,
       "sortOrder": 32
     },
@@ -954,9 +913,7 @@
           "yearsOfAchievement": 5
         }
       ],
-      "unlocksFollowingMedals": [
-        "championship-mark-gold-star-2"
-      ],
+      "unlocksFollowingMedals": ["championship-mark-gold-star-2"],
       "yearIntroduced": 2000,
       "sortOrder": 33
     },
@@ -979,9 +936,7 @@
           "yearsOfAchievement": 5
         }
       ],
-      "unlocksFollowingMedals": [
-        "championship-mark-gold-star-3"
-      ],
+      "unlocksFollowingMedals": ["championship-mark-gold-star-3"],
       "yearIntroduced": 2000,
       "sortOrder": 34
     },
@@ -1017,7 +972,11 @@
       "color": "#CD7F32",
       "icon": "precision-bronze",
       "prerequisites": [
-        { "type": "medal", "medalId": "pistol-mark-bronze", "description": "Must achieve in previous calendar year" }
+        {
+          "type": "medal",
+          "medalId": "pistol-mark-bronze",
+          "description": "Must achieve in previous calendar year"
+        }
       ],
       "requirements": [
         {
@@ -1032,9 +991,7 @@
           }
         }
       ],
-      "unlocksFollowingMedals": [
-        "precision-mark-silver"
-      ],
+      "unlocksFollowingMedals": ["precision-mark-silver"],
       "yearIntroduced": 2000,
       "sortOrder": 40
     },
@@ -1061,9 +1018,7 @@
           }
         }
       ],
-      "unlocksFollowingMedals": [
-        "precision-mark-gold"
-      ],
+      "unlocksFollowingMedals": ["precision-mark-gold"],
       "yearIntroduced": 2000,
       "sortOrder": 41
     },
@@ -1090,9 +1045,7 @@
           }
         }
       ],
-      "unlocksFollowingMedals": [
-        "precision-mark-gold-star-1"
-      ],
+      "unlocksFollowingMedals": ["precision-mark-gold-star-1"],
       "yearIntroduced": 2000,
       "sortOrder": 42
     },
@@ -1104,9 +1057,7 @@
       "displayName": "Precision Mark - Gold ★",
       "color": "#FFD700",
       "icon": "precision-gold-star-1",
-      "prerequisites": [
-        { "type": "medal", "medalId": "precision-mark-gold" }
-      ],
+      "prerequisites": [{ "type": "medal", "medalId": "precision-mark-gold" }],
       "requirements": [
         {
           "type": "sustained_achievement",
@@ -1115,9 +1066,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "precision-mark-gold-star-2"
-      ],
+      "unlocksFollowingMedals": ["precision-mark-gold-star-2"],
       "yearIntroduced": 2000,
       "sortOrder": 43
     },
@@ -1140,9 +1089,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "precision-mark-gold-star-3"
-      ],
+      "unlocksFollowingMedals": ["precision-mark-gold-star-3"],
       "yearIntroduced": 2000,
       "sortOrder": 44
     },
@@ -1177,9 +1124,7 @@
       "displayName": "Skis Shooting Mark - Bronze",
       "color": "#CD7F32",
       "icon": "skis-bronze",
-      "prerequisites": [
-        { "type": "medal", "medalId": "pistol-mark-bronze" }
-      ],
+      "prerequisites": [{ "type": "medal", "medalId": "pistol-mark-bronze" }],
       "requirements": [
         {
           "type": "skis_shooting_course",
@@ -1192,9 +1137,7 @@
           }
         }
       ],
-      "unlocksFollowingMedals": [
-        "skis-mark-silver"
-      ],
+      "unlocksFollowingMedals": ["skis-mark-silver"],
       "yearIntroduced": 2000,
       "sortOrder": 50
     },
@@ -1206,9 +1149,7 @@
       "displayName": "Skis Shooting Mark - Silver",
       "color": "#C0C0C0",
       "icon": "skis-silver",
-      "prerequisites": [
-        { "type": "medal", "medalId": "skis-mark-bronze" }
-      ],
+      "prerequisites": [{ "type": "medal", "medalId": "skis-mark-bronze" }],
       "requirements": [
         {
           "type": "skis_shooting_course",
@@ -1221,9 +1162,7 @@
           }
         }
       ],
-      "unlocksFollowingMedals": [
-        "skis-mark-gold"
-      ],
+      "unlocksFollowingMedals": ["skis-mark-gold"],
       "yearIntroduced": 2000,
       "sortOrder": 51
     },
@@ -1250,9 +1189,7 @@
           }
         }
       ],
-      "unlocksFollowingMedals": [
-        "skis-mark-gold-star-1"
-      ],
+      "unlocksFollowingMedals": ["skis-mark-gold-star-1"],
       "yearIntroduced": 2000,
       "sortOrder": 52
     },
@@ -1264,9 +1201,7 @@
       "displayName": "Skis Shooting Mark - Gold ★",
       "color": "#FFD700",
       "icon": "skis-gold-star-1",
-      "prerequisites": [
-        { "type": "medal", "medalId": "skis-mark-gold" }
-      ],
+      "prerequisites": [{ "type": "medal", "medalId": "skis-mark-gold" }],
       "requirements": [
         {
           "type": "sustained_achievement",
@@ -1275,9 +1210,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "skis-mark-gold-star-2"
-      ],
+      "unlocksFollowingMedals": ["skis-mark-gold-star-2"],
       "yearIntroduced": 2000,
       "sortOrder": 53
     },
@@ -1300,9 +1233,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "skis-mark-gold-star-3"
-      ],
+      "unlocksFollowingMedals": ["skis-mark-gold-star-3"],
       "yearIntroduced": 2000,
       "sortOrder": 54
     },
@@ -1325,9 +1256,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "skis-mark-gold-enamel"
-      ],
+      "unlocksFollowingMedals": ["skis-mark-gold-enamel"],
       "yearIntroduced": 2000,
       "sortOrder": 55
     },
@@ -1350,9 +1279,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "skis-mark-gold-enamel-star-1"
-      ],
+      "unlocksFollowingMedals": ["skis-mark-gold-enamel-star-1"],
       "yearIntroduced": 2000,
       "sortOrder": 56
     },
@@ -1375,9 +1302,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "skis-mark-gold-enamel-star-2"
-      ],
+      "unlocksFollowingMedals": ["skis-mark-gold-enamel-star-2"],
       "yearIntroduced": 2000,
       "sortOrder": 57
     },
@@ -1400,9 +1325,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "skis-mark-gold-enamel-star-3"
-      ],
+      "unlocksFollowingMedals": ["skis-mark-gold-enamel-star-3"],
       "yearIntroduced": 2000,
       "sortOrder": 58
     },
@@ -1437,9 +1360,7 @@
       "displayName": "Spring Running Mark - Bronze",
       "color": "#CD7F32",
       "icon": "spring-bronze",
-      "prerequisites": [
-        { "type": "medal", "medalId": "pistol-mark-bronze" }
-      ],
+      "prerequisites": [{ "type": "medal", "medalId": "pistol-mark-bronze" }],
       "requirements": [
         {
           "type": "running_shooting_course",
@@ -1452,9 +1373,7 @@
           }
         }
       ],
-      "unlocksFollowingMedals": [
-        "spring-mark-silver"
-      ],
+      "unlocksFollowingMedals": ["spring-mark-silver"],
       "yearIntroduced": 2000,
       "sortOrder": 60
     },
@@ -1466,9 +1385,7 @@
       "displayName": "Spring Running Mark - Silver",
       "color": "#C0C0C0",
       "icon": "spring-silver",
-      "prerequisites": [
-        { "type": "medal", "medalId": "spring-mark-bronze" }
-      ],
+      "prerequisites": [{ "type": "medal", "medalId": "spring-mark-bronze" }],
       "requirements": [
         {
           "type": "running_shooting_course",
@@ -1481,9 +1398,7 @@
           }
         }
       ],
-      "unlocksFollowingMedals": [
-        "spring-mark-gold"
-      ],
+      "unlocksFollowingMedals": ["spring-mark-gold"],
       "yearIntroduced": 2000,
       "sortOrder": 61
     },
@@ -1510,9 +1425,7 @@
           }
         }
       ],
-      "unlocksFollowingMedals": [
-        "spring-mark-gold-star-1"
-      ],
+      "unlocksFollowingMedals": ["spring-mark-gold-star-1"],
       "yearIntroduced": 2000,
       "sortOrder": 62
     },
@@ -1524,9 +1437,7 @@
       "displayName": "Spring Running Mark - Gold ★",
       "color": "#FFD700",
       "icon": "spring-gold-star-1",
-      "prerequisites": [
-        { "type": "medal", "medalId": "spring-mark-gold" }
-      ],
+      "prerequisites": [{ "type": "medal", "medalId": "spring-mark-gold" }],
       "requirements": [
         {
           "type": "sustained_achievement",
@@ -1535,9 +1446,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "spring-mark-gold-star-2"
-      ],
+      "unlocksFollowingMedals": ["spring-mark-gold-star-2"],
       "yearIntroduced": 2000,
       "sortOrder": 63
     },
@@ -1560,9 +1469,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "spring-mark-gold-star-3"
-      ],
+      "unlocksFollowingMedals": ["spring-mark-gold-star-3"],
       "yearIntroduced": 2000,
       "sortOrder": 64
     },
@@ -1585,9 +1492,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "spring-mark-gold-enamel"
-      ],
+      "unlocksFollowingMedals": ["spring-mark-gold-enamel"],
       "yearIntroduced": 2000,
       "sortOrder": 65
     },
@@ -1610,9 +1515,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "spring-mark-gold-enamel-star-1"
-      ],
+      "unlocksFollowingMedals": ["spring-mark-gold-enamel-star-1"],
       "yearIntroduced": 2000,
       "sortOrder": 66
     },
@@ -1635,9 +1538,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "spring-mark-gold-enamel-star-2"
-      ],
+      "unlocksFollowingMedals": ["spring-mark-gold-enamel-star-2"],
       "yearIntroduced": 2000,
       "sortOrder": 67
     },
@@ -1660,9 +1561,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "spring-mark-gold-enamel-star-3"
-      ],
+      "unlocksFollowingMedals": ["spring-mark-gold-enamel-star-3"],
       "yearIntroduced": 2000,
       "sortOrder": 68
     },
@@ -1697,9 +1596,7 @@
       "displayName": "National Full Match Mark - Bronze",
       "color": "#CD7F32",
       "icon": "national-full-bronze",
-      "prerequisites": [
-        { "type": "medal", "medalId": "pistol-mark-bronze" }
-      ],
+      "prerequisites": [{ "type": "medal", "medalId": "pistol-mark-bronze" }],
       "requirements": [
         {
           "type": "full_match_competition",
@@ -1713,9 +1610,7 @@
           }
         }
       ],
-      "unlocksFollowingMedals": [
-        "national-match-mark-silver"
-      ],
+      "unlocksFollowingMedals": ["national-match-mark-silver"],
       "yearIntroduced": 2000,
       "sortOrder": 70
     },
@@ -1743,9 +1638,7 @@
           }
         }
       ],
-      "unlocksFollowingMedals": [
-        "national-match-mark-gold"
-      ],
+      "unlocksFollowingMedals": ["national-match-mark-gold"],
       "yearIntroduced": 2000,
       "sortOrder": 71
     },
@@ -1773,9 +1666,7 @@
           }
         }
       ],
-      "unlocksFollowingMedals": [
-        "national-match-mark-gold-star-1"
-      ],
+      "unlocksFollowingMedals": ["national-match-mark-gold-star-1"],
       "yearIntroduced": 2000,
       "sortOrder": 72
     },
@@ -1798,9 +1689,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "national-match-mark-gold-star-2"
-      ],
+      "unlocksFollowingMedals": ["national-match-mark-gold-star-2"],
       "yearIntroduced": 2000,
       "sortOrder": 73
     },
@@ -1823,9 +1712,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "national-match-mark-gold-star-3"
-      ],
+      "unlocksFollowingMedals": ["national-match-mark-gold-star-3"],
       "yearIntroduced": 2000,
       "sortOrder": 74
     },
@@ -1860,9 +1747,7 @@
       "displayName": "Military Fast Match Mark - Bronze",
       "color": "#CD7F32",
       "icon": "military-fast-bronze",
-      "prerequisites": [
-        { "type": "medal", "medalId": "pistol-mark-bronze" }
-      ],
+      "prerequisites": [{ "type": "medal", "medalId": "pistol-mark-bronze" }],
       "requirements": [
         {
           "type": "military_fast_match",
@@ -1877,9 +1762,7 @@
           }
         }
       ],
-      "unlocksFollowingMedals": [
-        "military-match-mark-silver"
-      ],
+      "unlocksFollowingMedals": ["military-match-mark-silver"],
       "yearIntroduced": 2010,
       "sortOrder": 80
     },
@@ -1908,9 +1791,7 @@
           }
         }
       ],
-      "unlocksFollowingMedals": [
-        "military-match-mark-gold"
-      ],
+      "unlocksFollowingMedals": ["military-match-mark-gold"],
       "yearIntroduced": 2010,
       "sortOrder": 81
     },
@@ -1939,9 +1820,7 @@
           }
         }
       ],
-      "unlocksFollowingMedals": [
-        "military-match-mark-gold-star-1"
-      ],
+      "unlocksFollowingMedals": ["military-match-mark-gold-star-1"],
       "yearIntroduced": 2010,
       "sortOrder": 82
     },
@@ -1964,9 +1843,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "military-match-mark-gold-star-2"
-      ],
+      "unlocksFollowingMedals": ["military-match-mark-gold-star-2"],
       "yearIntroduced": 2010,
       "sortOrder": 83
     },
@@ -1989,9 +1866,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "military-match-mark-gold-star-3"
-      ],
+      "unlocksFollowingMedals": ["military-match-mark-gold-star-3"],
       "yearIntroduced": 2010,
       "sortOrder": 84
     },
@@ -2036,9 +1911,7 @@
           "minPointsPerSeries": 66
         }
       ],
-      "unlocksFollowingMedals": [
-        "air-pistol-mark-silver"
-      ],
+      "unlocksFollowingMedals": ["air-pistol-mark-silver"],
       "yearIntroduced": 2000,
       "sortOrder": 90
     },
@@ -2062,9 +1935,7 @@
           "minPointsPerSeries": 76
         }
       ],
-      "unlocksFollowingMedals": [
-        "air-pistol-mark-gold"
-      ],
+      "unlocksFollowingMedals": ["air-pistol-mark-gold"],
       "yearIntroduced": 2000,
       "sortOrder": 91
     },
@@ -2088,9 +1959,7 @@
           "minPointsPerSeries": 88
         }
       ],
-      "unlocksFollowingMedals": [
-        "air-pistol-mark-annual"
-      ],
+      "unlocksFollowingMedals": ["air-pistol-mark-annual"],
       "yearIntroduced": 2000,
       "sortOrder": 92
     },
@@ -2109,9 +1978,7 @@
           "description": "Fulfill requirements for Air Pistol Mark - Gold during the year."
         }
       ],
-      "prerequisites": [
-        { "type": "medal", "medalId": "air-pistol-mark-gold" }
-      ],
+      "prerequisites": [{ "type": "medal", "medalId": "air-pistol-mark-gold" }],
       "requirements": [
         {
           "type": "sustained_achievement",
@@ -2120,9 +1987,7 @@
           "timeWindowYears": 1
         }
       ],
-      "unlocksFollowingMedals": [
-        "air-pistol-mark-annual-star-1"
-      ],
+      "unlocksFollowingMedals": ["air-pistol-mark-annual-star-1"],
       "yearIntroduced": 2000,
       "sortOrder": 93
     },
@@ -2145,9 +2010,7 @@
           "timeWindowYears": 1
         }
       ],
-      "unlocksFollowingMedals": [
-        "air-pistol-mark-annual-star-2"
-      ],
+      "unlocksFollowingMedals": ["air-pistol-mark-annual-star-2"],
       "yearIntroduced": 2000,
       "sortOrder": 94
     },
@@ -2170,9 +2033,7 @@
           "timeWindowYears": 1
         }
       ],
-      "unlocksFollowingMedals": [
-        "air-pistol-mark-annual-star-3"
-      ],
+      "unlocksFollowingMedals": ["air-pistol-mark-annual-star-3"],
       "yearIntroduced": 2000,
       "sortOrder": 95
     },
@@ -2195,9 +2056,7 @@
           "timeWindowYears": 1
         }
       ],
-      "unlocksFollowingMedals": [
-        "air-pistol-mark-annual-wreath"
-      ],
+      "unlocksFollowingMedals": ["air-pistol-mark-annual-wreath"],
       "yearIntroduced": 2000,
       "sortOrder": 96
     },
@@ -2220,9 +2079,7 @@
           "timeWindowYears": 1
         }
       ],
-      "unlocksFollowingMedals": [
-        "air-pistol-mark-annual-wreath-star-1"
-      ],
+      "unlocksFollowingMedals": ["air-pistol-mark-annual-wreath-star-1"],
       "yearIntroduced": 2000,
       "sortOrder": 97
     },
@@ -2245,9 +2102,7 @@
           "timeWindowYears": 1
         }
       ],
-      "unlocksFollowingMedals": [
-        "air-pistol-mark-annual-wreath-star-2"
-      ],
+      "unlocksFollowingMedals": ["air-pistol-mark-annual-wreath-star-2"],
       "yearIntroduced": 2000,
       "sortOrder": 98
     },
@@ -2270,9 +2125,7 @@
           "timeWindowYears": 1
         }
       ],
-      "unlocksFollowingMedals": [
-        "air-pistol-mark-annual-wreath-star-3"
-      ],
+      "unlocksFollowingMedals": ["air-pistol-mark-annual-wreath-star-3"],
       "yearIntroduced": 2000,
       "sortOrder": 99
     },
@@ -2314,9 +2167,7 @@
           "description": "Fulfill requirements for Pistol Mark - Gold (accumulated over 3 years)."
         }
       ],
-      "prerequisites": [
-        { "type": "medal", "medalId": "pistol-mark-gold" }
-      ],
+      "prerequisites": [{ "type": "medal", "medalId": "pistol-mark-gold" }],
       "requirements": [
         {
           "type": "sustained_achievement",
@@ -2325,9 +2176,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "lower-annual-mark-star-2"
-      ],
+      "unlocksFollowingMedals": ["lower-annual-mark-star-2"],
       "yearIntroduced": 2000,
       "sortOrder": 110
     },
@@ -2350,9 +2199,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "lower-annual-mark-star-3"
-      ],
+      "unlocksFollowingMedals": ["lower-annual-mark-star-3"],
       "yearIntroduced": 2000,
       "sortOrder": 111
     },
@@ -2375,9 +2222,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "higher-annual-mark-bronze"
-      ],
+      "unlocksFollowingMedals": ["higher-annual-mark-bronze"],
       "yearIntroduced": 2000,
       "sortOrder": 112
     },
@@ -2407,9 +2252,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "higher-annual-mark-silver"
-      ],
+      "unlocksFollowingMedals": ["higher-annual-mark-silver"],
       "yearIntroduced": 2000,
       "sortOrder": 113
     },
@@ -2432,9 +2275,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "higher-annual-mark-gold"
-      ],
+      "unlocksFollowingMedals": ["higher-annual-mark-gold"],
       "yearIntroduced": 2000,
       "sortOrder": 114
     },
@@ -2457,9 +2298,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "higher-annual-mark-gold-star-1"
-      ],
+      "unlocksFollowingMedals": ["higher-annual-mark-gold-star-1"],
       "yearIntroduced": 2000,
       "sortOrder": 115
     },
@@ -2482,9 +2321,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "higher-annual-mark-gold-star-2"
-      ],
+      "unlocksFollowingMedals": ["higher-annual-mark-gold-star-2"],
       "yearIntroduced": 2000,
       "sortOrder": 116
     },
@@ -2507,9 +2344,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "higher-annual-mark-gold-star-3"
-      ],
+      "unlocksFollowingMedals": ["higher-annual-mark-gold-star-3"],
       "yearIntroduced": 2000,
       "sortOrder": 117
     },
@@ -2532,9 +2367,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "higher-annual-mark-gold-wreath"
-      ],
+      "unlocksFollowingMedals": ["higher-annual-mark-gold-wreath"],
       "yearIntroduced": 2000,
       "sortOrder": 118
     },
@@ -2557,9 +2390,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "higher-annual-mark-gold-wreath-star-1"
-      ],
+      "unlocksFollowingMedals": ["higher-annual-mark-gold-wreath-star-1"],
       "yearIntroduced": 2000,
       "sortOrder": 119
     },
@@ -2582,9 +2413,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "higher-annual-mark-gold-wreath-star-2"
-      ],
+      "unlocksFollowingMedals": ["higher-annual-mark-gold-wreath-star-2"],
       "yearIntroduced": 2000,
       "sortOrder": 120
     },
@@ -2607,9 +2436,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "higher-annual-mark-gold-wreath-star-3"
-      ],
+      "unlocksFollowingMedals": ["higher-annual-mark-gold-wreath-star-3"],
       "yearIntroduced": 2000,
       "sortOrder": 121
     },
@@ -2632,9 +2459,7 @@
           "yearsOfAchievement": 3
         }
       ],
-      "unlocksFollowingMedals": [
-        "higher-annual-mark-gold-enamel-wreath"
-      ],
+      "unlocksFollowingMedals": ["higher-annual-mark-gold-enamel-wreath"],
       "yearIntroduced": 2000,
       "sortOrder": 122
     },
@@ -2697,7 +2522,10 @@
       "color": "#FFD700",
       "icon": "higher-annual-gold-enamel-wreath-star-2",
       "prerequisites": [
-        { "type": "medal", "medalId": "higher-annual-mark-gold-enamel-wreath-star-1" }
+        {
+          "type": "medal",
+          "medalId": "higher-annual-mark-gold-enamel-wreath-star-1"
+        }
       ],
       "requirements": [
         {
@@ -2722,7 +2550,10 @@
       "color": "#FFD700",
       "icon": "higher-annual-gold-enamel-wreath-star-3",
       "prerequisites": [
-        { "type": "medal", "medalId": "higher-annual-mark-gold-enamel-wreath-star-2" }
+        {
+          "type": "medal",
+          "medalId": "higher-annual-mark-gold-enamel-wreath-star-2"
+        }
       ],
       "requirements": [
         {
