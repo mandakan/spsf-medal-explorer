@@ -4,6 +4,7 @@
  */
 export function generateMedalLayout(medals) {
   // Group medals by type
+  const medalById = new Map(medals.map(m => [m.id, m]))
   const medalsByType = {}
   medals.forEach(medal => {
     if (!medalsByType[medal.type]) {
@@ -38,10 +39,26 @@ export function generateMedalLayout(medals) {
       if (Array.isArray(medal.prerequisites)) {
         medal.prerequisites.forEach(prereq => {
           if (prereq && prereq.type === 'medal' && prereq.medalId) {
+            const fromMedal = medalById.get(prereq.medalId)
+            let label = null
+            const sameType = fromMedal && fromMedal.type === medal.type
+            if (sameType && Array.isArray(medal.requirements)) {
+              const sustain = medal.requirements.find(r =>
+                r && r.type === 'sustained_achievement' &&
+                (typeof r.minYears === 'number' || typeof r.minPassingYears === 'number')
+              )
+              const minYears = sustain
+                ? (typeof sustain.minYears === 'number' ? sustain.minYears : sustain.minPassingYears)
+                : null
+              if (typeof minYears === 'number' && minYears > 1) {
+                label = `${minYears} år`
+              }
+            }
             layout.connections.push({
               from: prereq.medalId,
               to: medal.id,
-              type: 'prerequisite'
+              type: 'prerequisite',
+              label
             })
           }
         })

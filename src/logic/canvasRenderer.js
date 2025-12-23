@@ -262,7 +262,7 @@ export function drawMedalNode(ctx, x, y, radius, medal, status, scale) {
   }
 }
 
-export function drawConnection(ctx, x1, y1, x2, y2, type = 'prerequisite', scale) {
+export function drawConnection(ctx, x1, y1, x2, y2, type = 'prerequisite', scale, label) {
   const palette = getThemeColors(ctx?.canvas)
   void type
   ctx.strokeStyle = palette.connection
@@ -283,4 +283,73 @@ export function drawConnection(ctx, x1, y1, x2, y2, type = 'prerequisite', scale
   ctx.closePath()
   ctx.fillStyle = palette.connection
   ctx.fill()
+
+  // Label (minimum years) – shown only when zoomed in to reduce clutter
+  if (label && scale >= 0.8) {
+    const palette = getThemeColors(ctx?.canvas)
+    const dx = x2 - x1
+    const dy = y2 - y1
+    const dist = Math.hypot(dx, dy) || 1
+    const midX = (x1 + x2) / 2
+    const midY = (y1 + y2) / 2
+
+    // Offset slightly perpendicular to the line for readability
+    const nx = -dy / dist
+    const ny = dx / dist
+    const offset = 12
+    const cx = midX + nx * offset
+    const cy = midY + ny * offset
+
+    const fontPx = 12
+    const padX = 6
+    const padY = 4
+    const fontFamily = getFontFamily(ctx.canvas)
+    ctx.font = `${fontPx}px ${fontFamily}`
+    const textW = (ctx.measureText(label)?.width) || 0
+    const w = textW + padX * 2
+    const h = fontPx + padY * 2
+    const rx = cx - w / 2
+    const ry = cy - h / 2
+    const r = 6
+
+    // Background and outline for contrast
+    const prevAlpha = ctx.globalAlpha
+    ctx.globalAlpha = 0.12
+    ctx.fillStyle = palette.accent
+    ctx.beginPath()
+    if (typeof ctx.arcTo === 'function') {
+      ctx.moveTo(rx + r, ry)
+      ctx.arcTo(rx + w, ry, rx + w, ry + h, r)
+      ctx.arcTo(rx + w, ry + h, rx, ry + h, r)
+      ctx.arcTo(rx, ry + h, rx, ry, r)
+      ctx.arcTo(rx, ry, rx + w, ry, r)
+    } else {
+      ctx.rect(rx, ry, w, h)
+    }
+    ctx.closePath()
+    ctx.fill()
+    ctx.globalAlpha = prevAlpha
+
+    ctx.strokeStyle = palette.accent
+    ctx.lineWidth = Math.max(1, 1.5 / Math.max(scale, 0.001))
+    ctx.beginPath()
+    if (typeof ctx.arcTo === 'function') {
+      ctx.moveTo(rx + r, ry)
+      ctx.arcTo(rx + w, ry, rx + w, ry + h, r)
+      ctx.arcTo(rx + w, ry + h, rx, ry + h, r)
+      ctx.arcTo(rx, ry + h, rx, ry, r)
+      ctx.arcTo(rx, ry, rx + w, ry, r)
+    } else {
+      ctx.rect(rx, ry, w, h)
+    }
+    ctx.closePath()
+    ctx.stroke()
+
+    ctx.fillStyle = palette.text
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+    if (typeof ctx.fillText === 'function') {
+      ctx.fillText(label, cx, cy)
+    }
+  }
 }

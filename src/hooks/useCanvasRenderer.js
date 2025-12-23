@@ -30,7 +30,7 @@ export function useCanvasRenderer() {
       const x2 = (toMedal.x + panX) * scale + ctx.canvas.width / 2
       const y2 = (toMedal.y + panY) * scale + ctx.canvas.height / 2
 
-      drawConnection(ctx, x1, y1, x2, y2, conn.type, scale)
+      drawConnection(ctx, x1, y1, x2, y2, conn.type, scale, conn.label)
     })
 
     // Draw nodes
