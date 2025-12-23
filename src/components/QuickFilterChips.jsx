@@ -1,14 +1,7 @@
 import React from 'react'
 
-export default function QuickFilterChips({
-  filters,
-  onToggle,
-  onOpenFilters,
-  activeCount = 0,
-  controlsId,
-  className = '',
-}) {
-  const Chip = ({ active, onClick, children, ariaLabel }) => (
+function ChipButton({ active, onClick, children, ariaLabel }) {
+  return (
     <button
       type="button"
       onClick={onClick}
@@ -25,6 +18,16 @@ export default function QuickFilterChips({
       {children}
     </button>
   )
+}
+
+export default function QuickFilterChips({
+  filters,
+  onToggle,
+  onOpenFilters,
+  activeCount = 0,
+  controlsId,
+  className = '',
+}) {
 
   const status = filters.status || null
   const weaponGroup = filters.weaponGroup || null
@@ -36,40 +39,40 @@ export default function QuickFilterChips({
       aria-label="Snabbfilter"
     >
       {/* Status chips */}
-      <Chip
+      <ChipButton
         active={status === 'unlocked'}
         onClick={() => onToggle('status', 'unlocked')}
         ariaLabel="Filtrera på Upplåsta"
       >
         Upplåsta
-      </Chip>
-      <Chip
+      </ChipButton>
+      <ChipButton
         active={status === 'achievable'}
         onClick={() => onToggle('status', 'achievable')}
         ariaLabel="Filtrera på Uppnåeliga"
       >
         Uppnåeliga
-      </Chip>
-      <Chip
+      </ChipButton>
+      <ChipButton
         active={status === 'locked'}
         onClick={() => onToggle('status', 'locked')}
         ariaLabel="Filtrera på Låsta"
       >
         Låsta
-      </Chip>
+      </ChipButton>
 
       <span className="mx-2 h-5 w-px bg-border shrink-0" aria-hidden="true" />
 
       {/* Weapon group chips */}
       {['A', 'B', 'C', 'R'].map((wg) => (
-        <Chip
+        <ChipButton
           key={wg}
           active={weaponGroup === wg}
           onClick={() => onToggle('weaponGroup', wg)}
           ariaLabel={`Filtrera på vapengrupp ${wg}`}
         >
           {wg}
-        </Chip>
+        </ChipButton>
       ))}
 
       {/* Trailing "Filter" chip on mobile – scrolls with the row */}
