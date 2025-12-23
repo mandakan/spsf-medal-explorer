@@ -8,12 +8,12 @@ export default function SkillTree() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-text-primary">Trädvy</h1>
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="text-3xl font-bold text-text-primary mb-1 sm:mb-0">Trädvy</h1>
         <div
           role="tablist"
           aria-label="Trädvy med medaljer"
-          className="inline-flex gap-2"
+          className="inline-flex gap-2 flex-wrap sm:flex-nowrap"
           onKeyDown={(e) => {
             if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
               setViewMode(viewMode === 'canvas' ? 'stats' : 'canvas')
@@ -26,7 +26,7 @@ export default function SkillTree() {
             id="tab-canvas"
             aria-controls="panel-canvas"
             aria-selected={viewMode === 'canvas'}
-            className={`btn ${viewMode === 'canvas' ? 'btn-primary' : 'btn-muted'}`}
+            className={`btn ${viewMode === 'canvas' ? 'btn-primary' : 'btn-muted'} min-h-[44px]`}
             onClick={() => setViewMode('canvas')}
           >
             <span aria-hidden="true">🎨</span> Canvas
@@ -36,7 +36,7 @@ export default function SkillTree() {
             id="tab-stats"
             aria-controls="panel-stats"
             aria-selected={viewMode === 'stats'}
-            className={`btn ${viewMode === 'stats' ? 'btn-primary' : 'btn-muted'}`}
+            className={`btn ${viewMode === 'stats' ? 'btn-primary' : 'btn-muted'} min-h-[44px]`}
             onClick={() => setViewMode('stats')}
           >
             <span aria-hidden="true">📊</span> Statistik

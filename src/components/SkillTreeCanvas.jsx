@@ -273,20 +273,20 @@ export default function SkillTreeCanvas() {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="text-2xl font-bold text-text-primary">Interaktiv träd-vy</h2>
-        <div className="flex flex-wrap gap-2">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <h2 className="text-2xl font-bold text-text-primary mb-1 sm:mb-0">Interaktiv träd-vy</h2>
+        <div role="toolbar" aria-label="Träd-vy åtgärder" className="flex flex-wrap gap-2 sm:flex-nowrap">
           <button
             type="button"
             onClick={resetView}
-            className="px-4 py-3 rounded bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-slate-700 dark:text-slate-50 dark:hover:bg-slate-600 border border-gray-300 dark:border-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
+            className="px-3 py-2 sm:px-4 sm:py-2 min-h-[44px] rounded bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-slate-700 dark:text-slate-50 dark:hover:bg-slate-600 border border-gray-300 dark:border-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
           >
             Återställ
           </button>
           <button
             type="button"
             onClick={handleExportPNG}
-            className="px-4 py-3 rounded bg-primary text-white hover:bg-primary-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
+            className="px-3 py-2 sm:px-4 sm:py-2 min-h-[44px] rounded bg-primary text-white hover:bg-primary-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
           >
             <span aria-hidden="true" className="mr-2">📥</span>
             Exportera som PNG
@@ -294,7 +294,7 @@ export default function SkillTreeCanvas() {
           <button
             type="button"
             onClick={() => navigate('/skill-tree/fullscreen')}
-            className="px-4 py-3 rounded bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-slate-700 dark:text-slate-50 dark:hover:bg-slate-600 border border-gray-300 dark:border-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
+            className="px-3 py-2 sm:px-4 sm:py-2 min-h-[44px] rounded bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-slate-700 dark:text-slate-50 dark:hover:bg-slate-600 border border-gray-300 dark:border-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
             aria-haspopup="dialog"
             aria-controls="skilltree-fullscreen"
           >
@@ -303,7 +303,7 @@ export default function SkillTreeCanvas() {
         </div>
       </div>
 
-      <div className="card overflow-hidden overscroll-contain" role="region" aria-label="Medaljträd canvas" aria-describedby="skilltree-help">
+      <div className="card overflow-hidden overscroll-contain mt-2" role="region" aria-label="Medaljträd canvas" aria-describedby="skilltree-help">
         {!isFullscreen && (
           <canvas
             ref={setCanvasRef}
