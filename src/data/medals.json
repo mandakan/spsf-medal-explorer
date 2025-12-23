@@ -27,7 +27,7 @@
               "name": "under_55",
               "ageMin": 0,
               "ageMax": 54,
-              "description": "Under 55 years",
+              "description": "Under 55 år",
               "pointThresholds": {
                 "A": { "min": 32 },
                 "B": { "min": 33 },
@@ -40,7 +40,7 @@
               "name": "age_55_64",
               "ageMin": 55,
               "ageMax": 64,
-              "description": "55 to 64 years",
+              "description": "55 till 64 år",
               "pointThresholds": {
                 "A": { "min": 31 },
                 "B": { "min": 32 },
@@ -53,7 +53,7 @@
               "name": "age_65_plus",
               "ageMin": 65,
               "ageMax": 999,
-              "description": "65 years and older",
+              "description": "65 år och äldre",
               "pointThresholds": {
                 "A": { "min": 30 },
                 "B": { "min": 31 },
@@ -102,7 +102,7 @@
           "type": "medal",
           "medalId": "pistol-mark-bronze",
           "yearOffset": 1,
-          "description": "Bronze Pistol Mark (previous year or earlier)"
+          "description": "Pistolskyttemärket i brons (föregående år eller tidigare)"
         }
       ],
       "requirements": [
@@ -122,7 +122,7 @@
               "name": "under_55",
               "ageMin": 0,
               "ageMax": 54,
-              "description": "Under 55 years",
+              "description": "Under 55 år",
               "pointThresholds": {
                 "A": { "min": 38 },
                 "B": { "min": 39 },
@@ -135,7 +135,7 @@
               "name": "age_55_64",
               "ageMin": 55,
               "ageMax": 64,
-              "description": "55 to 64 years",
+              "description": "55 till 64 år",
               "pointThresholds": {
                 "A": { "min": 37 },
                 "B": { "min": 38 },
@@ -148,7 +148,7 @@
               "name": "age_65_plus",
               "ageMin": 65,
               "ageMax": 999,
-              "description": "65 years and older",
+              "description": "65 år och äldre",
               "pointThresholds": {
                 "A": { "min": 36 },
                 "B": { "min": 37 },
@@ -184,14 +184,14 @@
       "displayName": "Pistolskyttemärket - Guld",
       "color": "#FFD700",
       "icon": "medal-gold",
-      "requirements_original": "- 3 precisionsserier mot Pistoltavla 25 m with minimum points per class: **A ≥ 43**, **B ≥ 44**, **C ≥ 46**.\n- 3 tillämpningsserier (B100 50 m or 1/6 target C30 25 m) with at least **6 hits** within class time limits (A: ≤40s, B: ≤15s, C: ≤15s, R: ≤40s).",
+      "requirements_original": "- 3 precisionsserier mot Pistoltavla 25 m med minsta antal poäng per grupp: **A ≥ 43**, **B ≥ 44**, **C ≥ 46**.\n- 3 tillämpningsserier (B100 50 m or 1/6 mål C30 25 m) med minst **6 träff** inom tidsgränsen för gruppen (A: ≤40s, B: ≤15s, C: ≤15s, R: ≤40s).",
       "references": [],
       "prerequisites": [
         {
           "type": "medal",
           "medalId": "pistol-mark-silver",
           "yearOffset": 1,
-          "description": "Silver Pistol Mark (previous year or earlier)"
+          "description": "Pistolskyttemärket i silver (föregående år eller tidigare)"
         }
       ],
       "requirements": [
@@ -211,7 +211,7 @@
               "name": "under_55",
               "ageMin": 0,
               "ageMax": 54,
-              "description": "Under 55 years",
+              "description": "Under 55 år",
               "pointThresholds": {
                 "A": { "min": 43 },
                 "B": { "min": 44 },
@@ -224,7 +224,7 @@
               "name": "age_55_64",
               "ageMin": 55,
               "ageMax": 64,
-              "description": "55 to 64 years",
+              "description": "55 till 64 år",
               "pointThresholds": {
                 "A": { "min": 42 },
                 "B": { "min": 43 },
@@ -237,7 +237,7 @@
               "name": "age_65_plus",
               "ageMin": 65,
               "ageMax": 999,
-              "description": "65 years and older",
+              "description": "65 år och äldre",
               "pointThresholds": {
                 "A": { "min": 41 },
                 "B": { "min": 42 },
@@ -281,7 +281,7 @@
         {
           "type": "medal",
           "medalId": "pistol-mark-gold",
-          "description": "Must achieve Gold Pistol Mark first"
+          "description": "Måste uppnått pistolskyttemärket i guld"
         }
       ],
       "requirements": [
@@ -295,58 +295,18 @@
             "B": { "min": 45 },
             "C": { "min": 45 },
             "R": { "min": 45 }
-          },
-          "ageCategories": [
-            {
-              "name": "under_55",
-              "ageMin": 0,
-              "ageMax": 54,
-              "description": "Under 55 years",
-              "pointThresholds": {
-                "A": { "min": 45 },
-                "B": { "min": 46 },
-                "C": { "min": 47 }
-              },
-              "timeSeconds": 17,
-              "hitsRequired": 6
-            },
-            {
-              "name": "age_55_64",
-              "ageMin": 55,
-              "ageMax": 64,
-              "description": "55 to 64 years",
-              "pointThresholds": {
-                "A": { "min": 44 },
-                "B": { "min": 45 },
-                "C": { "min": 46 }
-              },
-              "timeSeconds": 17,
-              "hitsRequired": 6
-            },
-            {
-              "name": "age_65_plus",
-              "ageMin": 65,
-              "ageMax": 999,
-              "description": "65 years and older",
-              "pointThresholds": {
-                "A": { "min": 43 },
-                "B": { "min": 44 },
-                "C": { "min": 45 }
-              },
-              "timeSeconds": 17,
-              "hitsRequired": 6
-            }
-          ]
+          }
         },
         {
           "type": "speed_shooting_series",
-          "description": "5 speed-shooting series",
+          "description": "5 snabbserier",
           "minAchievements": 5,
           "timeWindowYears": 1,
           "pointThresholds": {
             "A": { "min": 45 },
-            "B": { "min": 46 },
-            "C": { "min": 47 }
+            "B": { "min": 45 },
+            "C": { "min": 45 },
+            "R": { "min": 45 }
           }
         }
       ],
@@ -365,15 +325,35 @@
       "prerequisites": [
         {
           "type": "medal",
-          "medalId": "elite-mark-bronze"
+          "medalId": "elite-mark-bronze",
+          "yearOffset": 1,
+          "description": "Elitmärket i brons (föregående år eller tidigare)"
         }
       ],
       "requirements": [
         {
-          "type": "sustained_performance",
-          "description": "Yearly achievement of Elite Silver requirements",
-          "minAchievements": 1,
-          "timeWindowYears": 1
+          "type": "precision_series",
+          "description": "5 precisionsserier",
+          "minAchievements": 5,
+          "timeWindowYears": 1,
+          "pointThresholds": {
+            "A": { "min": 48 },
+            "B": { "min": 48 },
+            "C": { "min": 48 },
+            "R": { "min": 48 }
+          }
+        },
+        {
+          "type": "speed_shooting_series",
+          "description": "5 snabbserier",
+          "minAchievements": 5,
+          "timeWindowYears": 1,
+          "pointThresholds": {
+            "A": { "min": 48 },
+            "B": { "min": 48 },
+            "C": { "min": 48 },
+            "R": { "min": 48 }
+          }
         }
       ],
       "unlocksFollowingMedals": ["elite-mark-gold"],
@@ -391,14 +371,35 @@
       "prerequisites": [
         {
           "type": "medal",
-          "medalId": "elite-mark-silver"
+          "medalId": "elite-mark-silver",
+          "yearOffset": 1,
+          "description": "Elitmärket i silver (föregående år eller tidigare)"
         }
       ],
       "requirements": [
         {
-          "type": "sustained_performance",
-          "minAchievements": 1,
-          "timeWindowYears": 1
+          "type": "precision_series",
+          "description": "5 precisionsserier",
+          "minAchievements": 5,
+          "timeWindowYears": 1,
+          "pointThresholds": {
+            "A": { "min": 49 },
+            "B": { "min": 49 },
+            "C": { "min": 49 },
+            "R": { "min": 49 }
+          }
+        },
+        {
+          "type": "speed_shooting_series",
+          "description": "5 snabbserier",
+          "minAchievements": 5,
+          "timeWindowYears": 1,
+          "pointThresholds": {
+            "A": { "min": 49 },
+            "B": { "min": 49 },
+            "C": { "min": 49 },
+            "R": { "min": 49 }
+          }
         }
       ],
       "unlocksFollowingMedals": ["elite-mark-gold-wreath"],
@@ -422,8 +423,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level achievement",
-
+          "description": "Under 3 år uppnått kraven för Elitmärket i guld",
           "yearsOfAchievement": 3
         }
       ],
@@ -448,8 +448,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level achievement",
-
+          "description": "Under 3 år uppnått kraven för Elitmärket i guld",
           "yearsOfAchievement": 3
         }
       ],
@@ -474,8 +473,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level achievement",
-
+          "description": "Under 3 år uppnått kraven för Elitmärket i guld",
           "yearsOfAchievement": 3
         }
       ],
@@ -500,8 +498,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level achievement",
-
+          "description": "Under 3 år uppnått kraven för Elitmärket i guld",
           "yearsOfAchievement": 3
         }
       ],
@@ -521,12 +518,12 @@
         {
           "type": "medal",
           "medalId": "pistol-mark-bronze",
-          "description": "Bronze Pistol Mark required"
+          "description": "Pistolskyttemärket i brons"
         },
         {
           "type": "age_requirement",
           "minAge": 15,
-          "description": "Must be at least 15 years old"
+          "description": "Måste fyllt 15 år"
         }
       ],
       "requirements": [
