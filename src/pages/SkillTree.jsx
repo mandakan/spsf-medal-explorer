@@ -2,10 +2,17 @@ import React, { useState } from 'react'
 import SkillTreeCanvas from '../components/SkillTreeCanvas'
 import { useAllMedalStatuses } from '../hooks/useMedalCalculator'
 import ProfilePromptBanner from '../components/ProfilePromptBanner'
+import { useMedalDatabase } from '../hooks/useMedalDatabase'
+import ReviewLegend from '../components/ReviewLegend'
 
 export default function SkillTree() {
   const [viewMode, setViewMode] = useState('canvas') // 'canvas' or 'stats'
   const statuses = useAllMedalStatuses()
+  const { medalDatabase } = useMedalDatabase()
+  const hasUnderReview = React.useMemo(() => {
+    const all = medalDatabase?.getAllMedals?.() || []
+    return all.some(m => m && m.reviewed !== true)
+  }, [medalDatabase])
 
   return (
     <div className="space-y-6">
@@ -48,7 +55,12 @@ export default function SkillTree() {
 
       {viewMode === 'canvas' ? (
         <div role="tabpanel" id="panel-canvas" aria-labelledby="tab-canvas">
-          <SkillTreeCanvas />
+          <SkillTreeCanvas legendDescribedById={hasUnderReview ? 'tree-review-legend' : undefined} />
+          {hasUnderReview && (
+            <div className="mt-2 text-xs text-muted-foreground">
+              <ReviewLegend id="tree-review-legend" />
+            </div>
+          )}
         </div>
       ) : (
         <div

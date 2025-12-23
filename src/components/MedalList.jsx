@@ -73,8 +73,8 @@ function Row({ data, index, style }) {
         <div className="font-medium text-text-primary truncate flex items-center gap-2">
           <span className="truncate">{medal.displayName || medal.name}</span>
           {underReview && (
-            <span className="inline-flex items-center gap-1 text-xs text-amber-500" title="Under granskning" aria-label="Under granskning">
-              <span className="inline-block w-2 h-2 rounded-full bg-amber-500" aria-hidden="true"></span>
+            <span className="inline-flex items-center gap-1 text-xs text-review" title="Under granskning" aria-label="Under granskning">
+              <span className="inline-block w-2 h-2 rounded-full bg-review" aria-hidden="true"></span>
               <span className="sr-only">Under granskning</span>
             </span>
           )}
