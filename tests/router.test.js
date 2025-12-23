@@ -29,10 +29,16 @@ jest.mock('../src/pages/Home.jsx', () => ({
   default: () => null,
 }))
 
-// Stub ProfileSelector to avoid needing ProfileContext in this routing test
+ // Stub ProfileSelector to avoid needing ProfileContext in this routing test
 jest.mock('../src/components/ProfileSelector.jsx', () => ({
   __esModule: true,
   default: () => null,
+}))
+
+// Mock useProfile hook to bypass provider requirement in routing tests
+jest.mock('../src/hooks/useProfile', () => ({
+  __esModule: true,
+  useProfile: () => ({}),
 }))
 
 import App from '../src/App.jsx'
