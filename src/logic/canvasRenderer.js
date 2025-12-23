@@ -137,7 +137,9 @@ export const COLORS = {
 
 export function drawMedalNode(ctx, x, y, radius, medal, status, scale) {
   if (!(medal instanceof Medal)) {
-    throw new Error('drawMedalNode requires a normalized Medal instance (Medal)')
+    if (!medal || typeof medal !== 'object') {
+      throw new Error('drawMedalNode requires a Medal instance or a plain medal-like object')
+    }
   }
   const palette = getThemeColors(ctx?.canvas)
   const statusKey = status?.status || 'locked'
