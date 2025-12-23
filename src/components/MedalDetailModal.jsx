@@ -226,14 +226,11 @@ export default function MedalDetailModal({ medalId, onClose }) {
 
   const handleReferenceClick = (targetId) => (e) => {
     e.preventDefault()
-    try {
-      onClose?.()
-    } finally {
-      navigate(`/medals/${targetId}`, {
-        replace: true,
-        state: { backgroundLocation: location.state?.backgroundLocation ?? location }
-      })
-    }
+    const background = location.state?.backgroundLocation
+    navigate(`/medals/${targetId}`, {
+      replace: true,
+      state: background ? { backgroundLocation: background } : undefined
+    })
   }
 
 
