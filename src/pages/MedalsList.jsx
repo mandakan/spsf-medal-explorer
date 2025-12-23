@@ -12,6 +12,7 @@ import MedalList from '../components/MedalList'
 import MobileBottomSheet from '../components/MobileBottomSheet'
 import MedalDetailModal from '../components/MedalDetailModal'
 import { useParams, useNavigate } from 'react-router-dom'
+import ProfilePromptBanner from '../components/ProfilePromptBanner'
 
 export default function MedalsList() {
   const { medalDatabase } = useMedalDatabase()
@@ -85,6 +86,7 @@ export default function MedalsList() {
 
   return (
     <div className="space-y-6">
+      <ProfilePromptBanner id="profile-picker-medals-list" />
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
         <h1 className="text-3xl font-bold text-foreground">Märken</h1>
 

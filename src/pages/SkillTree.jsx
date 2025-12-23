@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import SkillTreeCanvas from '../components/SkillTreeCanvas'
 import { useAllMedalStatuses } from '../hooks/useMedalCalculator'
+import ProfilePromptBanner from '../components/ProfilePromptBanner'
 
 export default function SkillTree() {
   const [viewMode, setViewMode] = useState('canvas') // 'canvas' or 'stats'
@@ -8,6 +9,7 @@ export default function SkillTree() {
 
   return (
     <div className="space-y-6">
+      <ProfilePromptBanner id="profile-picker-skill-tree" />
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-3xl font-bold text-text-primary mb-1 sm:mb-0">Trädvy</h1>
         <div

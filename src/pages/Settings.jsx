@@ -4,17 +4,14 @@ import BatchAchievementForm from '../components/BatchAchievementForm'
 import AchievementTimeline from '../components/AchievementTimeline'
 import StatisticsDashboard from '../components/StatisticsDashboard'
 import { UndoRedoProvider } from '../contexts/UndoRedoContext'
+import ProfilePromptBanner from '../components/ProfilePromptBanner'
 
 export default function Settings() {
   const { currentProfile, setProfileFeature } = useProfile()
   const [activeTab, setActiveTab] = useState('add') // 'add' or 'history'
 
   if (!currentProfile) {
-    return (
-      <div className="card p-4">
-        <p className="text-foreground">Välj eller skapa en profil först</p>
-      </div>
-    )
+    return <ProfilePromptBanner id="profile-picker-settings" />
   }
 
   return (
