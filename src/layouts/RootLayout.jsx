@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import Header from '../components/Header'
 import ProfileSelector from '../components/ProfileSelector'
@@ -7,14 +7,10 @@ import { useProfile } from '../hooks/useProfile'
 
 export default function RootLayout() {
   const { currentProfile } = useProfile()
-  const [profileOpen, setProfileOpen] = useState(false)
-
-  // Default open on >= sm breakpoint (≥640px); collapsed on smaller screens.
-  useEffect(() => {
-    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return
-    const mq = window.matchMedia('(min-width: 640px)')
-    setProfileOpen(mq.matches)
-  }, [])
+  const [profileOpen, setProfileOpen] = useState(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false
+    return window.matchMedia('(min-width: 640px)').matches
+  })
 
   return (
     <div className="min-h-screen bg-bg-primary">
