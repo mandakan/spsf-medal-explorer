@@ -184,6 +184,19 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
     }
   }, [onClose, titleId, medal])
 
+  useEffect(() => {
+    if (!medal) return
+    if (typeof document === 'undefined') return
+    const prev = document.title
+    const name = medal.displayName || medal.name || String(medalId)
+    try {
+      document.title = `${name} – Medaljdetaljer`
+    } catch {}
+    return () => {
+      try { document.title = prev } catch {}
+    }
+  }, [medal, medalId])
+
   if (!medal) return null
 
   const statusLabel = {
