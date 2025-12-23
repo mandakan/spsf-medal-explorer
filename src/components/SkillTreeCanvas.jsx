@@ -286,7 +286,7 @@ export default function SkillTreeCanvas() {
           <button
             type="button"
             onClick={handleExportPNG}
-            className="px-3 py-2 sm:px-4 sm:py-2 min-h-[44px] rounded bg-primary text-white hover:bg-primary-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
+            className="hidden sm:inline-flex px-3 py-2 sm:px-4 sm:py-2 min-h-[44px] rounded bg-primary text-white hover:bg-primary-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
           >
             <span aria-hidden="true" className="mr-2">📥</span>
             Exportera som PNG
@@ -328,6 +328,16 @@ export default function SkillTreeCanvas() {
 
       <div className="text-sm text-muted-foreground">
         <p id="skilltree-help">💡 Dra för att panorera • Nyp för att zooma • Klicka på medaljer för detaljer • ⌨️ Piltangenter för att panorera</p>
+      </div>
+      <div className="sm:hidden">
+        <button
+          type="button"
+          onClick={handleExportPNG}
+          className="mt-2 w-full px-3 py-2 min-h-[44px] rounded bg-primary text-white hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
+        >
+          <span aria-hidden="true" className="mr-2">📥</span>
+          Exportera som PNG
+        </button>
       </div>
 
       {isFullscreen && (
