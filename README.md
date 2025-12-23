@@ -7,6 +7,8 @@
 
 A mobile-first web app to explore and track progression through the Swedish Pistol Shooting Federation (SHB) medal system. Visualize prerequisites as an interactive skill tree, log achievements, and see what you can unlock next.
 
+👉 Live demo: https://mandakan.github.io/spsf-medal-explorer/
+
 ## Overview
 
 - Visual skill-tree for medals with pan/zoom and collision-aware layout
