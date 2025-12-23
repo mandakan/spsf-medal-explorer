@@ -46,6 +46,7 @@
 @layer utilities {
   .text-review { color: var(--color-review); }
   .bg-review { background-color: var(--color-review); }
+  .border-review { border-color: var(--color-review); }
 }
 
 /* Optional dark mode: toggle by adding 'dark' class to <html> */

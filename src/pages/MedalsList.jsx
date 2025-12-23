@@ -13,6 +13,7 @@ import MobileBottomSheet from '../components/MobileBottomSheet'
 import MedalDetailModal from '../components/MedalDetailModal'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import ProfilePromptBanner from '../components/ProfilePromptBanner'
+import ReviewLegend from '../components/ReviewLegend'
 
 export default function MedalsList() {
   const { medalDatabase } = useMedalDatabase()
@@ -131,6 +132,8 @@ export default function MedalsList() {
     return sortMedals(filtered, sortBy, statuses)
   }, [medals, statuses, filters, query, sortBy])
 
+  const hasUnderReview = useMemo(() => finalResults.some(m => m.reviewed !== true), [finalResults])
+
   if (!medalDatabase) {
     return <div className="text-muted-foreground">Laddar märken...</div>
   }
@@ -150,6 +153,12 @@ export default function MedalsList() {
                 <button type="button" className="underline hover:no-underline" onClick={clearAllFilters}>
                   Rensa filter
                 </button>
+              </>
+            )}
+            {hasUnderReview && (
+              <>
+                {' · '}
+                <ReviewLegend />
               </>
             )}
           </div>
