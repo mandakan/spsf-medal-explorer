@@ -57,7 +57,7 @@ export function useCanvasRenderer() {
         ctx.stroke()
       }
 
-      drawMedalNode(ctx, x, y, radius, medalNode, status, scale)
+      drawMedalNode(ctx, x, y, radius, medal, status, scale)
     })
   }, [])
 
