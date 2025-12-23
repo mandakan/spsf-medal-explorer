@@ -92,6 +92,7 @@
     },
     {
       "id": "pistol-mark-silver",
+      "reviewed": true,
       "type": "pistol_mark",
       "tier": "silver",
       "name": "Pistolskyttemärket - Silver",
