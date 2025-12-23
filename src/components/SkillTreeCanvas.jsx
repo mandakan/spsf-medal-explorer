@@ -28,6 +28,11 @@ export default function SkillTreeCanvas() {
   const closeBtnRef = useRef(null)
   const prevFocusRef = useRef(null)
 
+  // Fullscreen floating menu state and refs
+  const [menuOpen, setMenuOpen] = useState(false)
+  const menuButtonRef = useRef(null)
+  const menuRef = useRef(null)
+
   // Determine which medals are visible in the current viewport for culling
   const getVisibleMedalsForCanvas = useCallback((canvas, margin = 120) => {
     if (!layout || !canvas) return []
@@ -121,10 +126,12 @@ export default function SkillTreeCanvas() {
     const previousOverflow = root.style.overflow
     root.style.overflow = 'hidden'
 
-    closeBtnRef.current?.focus?.()
+    menuButtonRef.current?.focus?.()
 
     const onEsc = (e) => {
       if (e.key !== 'Escape') return
+      // If the floating menu is open, it should handle Escape itself.
+      if (menuOpen) return
       const active = document.activeElement
       // Only exit fullscreen when focus is inside the fullscreen overlay.
       // If a modal has focus, it will handle Escape itself.
@@ -141,7 +148,21 @@ export default function SkillTreeCanvas() {
         el.focus()
       }
     }
-  }, [isFullscreen, navigate])
+  }, [isFullscreen, navigate, menuOpen])
+
+  // Close floating menu on outside click
+  useEffect(() => {
+    if (!menuOpen) return
+    const onDown = (e) => {
+      const m = menuRef.current
+      const b = menuButtonRef.current
+      if (!m || !b) return
+      if (m.contains(e.target) || b.contains(e.target)) return
+      setMenuOpen(false)
+    }
+    window.addEventListener('pointerdown', onDown, { capture: true })
+    return () => window.removeEventListener('pointerdown', onDown, { capture: true })
+  }, [menuOpen])
 
   // Redraw on fullscreen toggle to ensure immediate render after mount
   useEffect(() => {
@@ -349,36 +370,78 @@ export default function SkillTreeCanvas() {
           aria-modal="true"
           aria-label="Helskärms träd-vy"
         >
+          {/* SR-only title for context */}
+          <h2 className="sr-only">Medaljträd</h2>
+          {/* Floating actions menu (bottom-right) */}
           <div
-            className="flex items-center justify-between p-2 sm:p-3 border-b border-gray-300 dark:border-slate-700 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80"
-            style={{ paddingTop: 'max(env(safe-area-inset-top), 0px)' }}
+            className="absolute right-3 bottom-3 sm:right-4 sm:bottom-4 z-[60]"
+            style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
           >
-            <h2 className="text-lg font-semibold text-text-primary">Medaljträd</h2>
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={resetView}
-                className="px-3 py-2 rounded bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-slate-700 dark:text-slate-50 dark:hover:bg-slate-600 border border-gray-300 dark:border-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
+            <button
+              type="button"
+              ref={menuButtonRef}
+              aria-haspopup="menu"
+              aria-controls="fullscreen-actions-menu"
+              aria-expanded={menuOpen}
+              onClick={() => setMenuOpen((v) => !v)}
+              className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-bg-secondary border border-border text-foreground shadow-lg hover:bg-bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              title="Visa åtgärder"
+              aria-label="Visa åtgärder"
+            >
+              <span aria-hidden="true">⋮</span>
+            </button>
+
+            {menuOpen && (
+              <div
+                id="fullscreen-actions-menu"
+                ref={menuRef}
+                role="menu"
+                aria-label="Åtgärder"
+                className="mt-2 w-56 rounded-md border border-border bg-background shadow-xl overflow-hidden"
+                onKeyDown={(e) => {
+                  if (e.key === 'Escape') {
+                    e.preventDefault()
+                    setMenuOpen(false)
+                    menuButtonRef.current?.focus()
+                  } else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                    const items = Array.from(e.currentTarget.querySelectorAll('[role="menuitem"]'))
+                    if (items.length === 0) return
+                    const i = items.indexOf(document.activeElement)
+                    let next = 0
+                    if (e.key === 'ArrowDown') next = i >= 0 ? (i + 1) % items.length : 0
+                    if (e.key === 'ArrowUp') next = i >= 0 ? (i - 1 + items.length) % items.length : items.length - 1
+                    e.preventDefault()
+                    items[next]?.focus()
+                  }
+                }}
               >
-                Återställ
-              </button>
-              <button
-                type="button"
-                onClick={handleExportPNG}
-                className="px-3 py-2 rounded bg-primary text-white hover:bg-primary-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
-              >
-                Exportera
-              </button>
-              <button
-                type="button"
-                ref={closeBtnRef}
-                onClick={() => navigate(-1)}
-                className="px-3 py-2 rounded bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-slate-700 dark:text-slate-50 dark:hover:bg-slate-600 border border-gray-300 dark:border-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
-                aria-label="Close fullscreen"
-              >
-                Stäng
-              </button>
-            </div>
+                <button
+                  role="menuitem"
+                  type="button"
+                  onClick={() => { setMenuOpen(false); resetView() }}
+                  className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                >
+                  Återställ vy
+                </button>
+                <button
+                  role="menuitem"
+                  type="button"
+                  onClick={() => { setMenuOpen(false); handleExportPNG() }}
+                  className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                >
+                  Exportera som PNG
+                </button>
+                <button
+                  role="menuitem"
+                  type="button"
+                  ref={closeBtnRef}
+                  onClick={() => { setMenuOpen(false); navigate(-1) }}
+                  className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                >
+                  Stäng helskärm
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="flex-1">
