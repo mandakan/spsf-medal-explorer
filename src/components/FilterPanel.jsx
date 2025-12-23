@@ -8,6 +8,8 @@ export default function FilterPanel({
   hasActiveFilters,
   resultCount,
   onClearAll,
+  sortBy,
+  onSortChange,
 }) {
   return (
     <div className="card flex flex-col overflow-hidden h-[80svh] max-h-[80vh] sm:h-auto sm:max-h-none">
@@ -26,6 +28,24 @@ export default function FilterPanel({
 
       <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 pt-0">
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          {/* Sortering */}
+          <div className="col-span-2 md:col-span-3">
+            <label htmlFor="sortSelect" className="block text-sm font-medium text-muted-foreground mb-1">
+              Sortering
+            </label>
+            <select
+              id="sortSelect"
+              value={sortBy || 'name'}
+              onChange={(e) => onSortChange?.(e.target.value)}
+              className="select"
+            >
+              <option value="name">Namn</option>
+              <option value="type">Typ</option>
+              <option value="tier">Valör</option>
+              <option value="status">Status</option>
+            </select>
+          </div>
+
           {/* Status Filter */}
           <div>
             <label htmlFor="statusSelect" className="block text-sm font-medium text-muted-foreground mb-1">

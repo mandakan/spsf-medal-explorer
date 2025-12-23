@@ -60,7 +60,7 @@ function Row({ data, index, style }) {
   const ariaLabel = `${medal.displayName || medal.name} ${medal.tier || ''}${underReview ? ' • Under granskning' : ''}${isUnlocked && unlockedYear ? ' • Upplåst ' + unlockedYear : ''}`
   return (
     <div
-      role="button"
+      role="listitem"
       tabIndex={0}
       onClick={() => onSelect?.(medal)}
       onKeyDown={(e) => { if (e.key === 'Enter') onSelect?.(medal) }}
@@ -73,11 +73,9 @@ function Row({ data, index, style }) {
         <div className="font-medium text-text-primary truncate flex items-center gap-2">
           <span className="truncate">{medal.displayName || medal.name}</span>
           {underReview && (
-            <span
-              className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-900 border border-amber-300 dark:bg-amber-900/40 dark:text-amber-200 dark:border-amber-700"
-              aria-label="Medal rules status: under review"
-            >
-              Under granskning
+            <span className="inline-flex items-center gap-1 text-xs text-amber-500" title="Under granskning" aria-label="Under granskning">
+              <span className="inline-block w-2 h-2 rounded-full bg-amber-500" aria-hidden="true"></span>
+              <span className="sr-only">Under granskning</span>
             </span>
           )}
         </div>
@@ -121,7 +119,7 @@ function VirtualList({ height, itemCount, itemSize, width = '100%', itemData, ch
       ref={containerRef}
       style={{ height, width, overflowY: 'auto', position: 'relative', WebkitOverflowScrolling: 'touch' }}
       onScroll={onScroll}
-      role="listbox"
+      role="list"
       aria-label="Medal list"
     >
       <div style={{ height: totalHeight, position: 'relative' }}>
