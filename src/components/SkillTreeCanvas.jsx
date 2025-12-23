@@ -4,7 +4,6 @@ import { useAllMedalStatuses } from '../hooks/useMedalCalculator'
 import { usePanZoom } from '../hooks/usePanZoom'
 import { useCanvasRenderer } from '../hooks/useCanvasRenderer'
 import { generateMedalLayout } from '../logic/canvasLayout'
-import MedalDetailModal from './MedalDetailModal'
 import { exportCanvasToPNG } from '../utils/canvasExport'
 import { useNavigate, useLocation } from 'react-router-dom'
 
@@ -18,15 +17,21 @@ export default function SkillTreeCanvas() {
   const [selectedMedal, setSelectedMedal] = useState(null)
   const navigate = useNavigate()
   const location = useLocation()
+  const isFullscreen = location.pathname.endsWith('/skill-tree/fullscreen')
+  const fullscreenRef = useRef(null)
   const layout = useMemo(() => {
     if (!medalDatabase) return null
     const medals = medalDatabase.getAllMedals()
     return generateMedalLayout(medals)
   }, [medalDatabase])
   const [isDragging, setIsDragging] = useState(false)
-  const [isFullscreen, setIsFullscreen] = useState(false)
   const closeBtnRef = useRef(null)
   const prevFocusRef = useRef(null)
+
+  // Fullscreen floating menu state and refs
+  const [menuOpen, setMenuOpen] = useState(false)
+  const menuButtonRef = useRef(null)
+  const menuRef = useRef(null)
 
   // Determine which medals are visible in the current viewport for culling
   const getVisibleMedalsForCanvas = useCallback((canvas, margin = 120) => {
@@ -121,9 +126,19 @@ export default function SkillTreeCanvas() {
     const previousOverflow = root.style.overflow
     root.style.overflow = 'hidden'
 
-    closeBtnRef.current?.focus?.()
+    menuButtonRef.current?.focus?.()
 
-    const onEsc = (e) => { if (e.key === 'Escape') setIsFullscreen(false) }
+    const onEsc = (e) => {
+      if (e.key !== 'Escape') return
+      // If the floating menu is open, it should handle Escape itself.
+      if (menuOpen) return
+      const active = document.activeElement
+      // Only exit fullscreen when focus is inside the fullscreen overlay.
+      // If a modal has focus, it will handle Escape itself.
+      if (fullscreenRef.current && fullscreenRef.current.contains(active)) {
+        navigate(-1)
+      }
+    }
     window.addEventListener('keydown', onEsc)
     return () => {
       window.removeEventListener('keydown', onEsc)
@@ -133,7 +148,21 @@ export default function SkillTreeCanvas() {
         el.focus()
       }
     }
-  }, [isFullscreen])
+  }, [isFullscreen, navigate, menuOpen])
+
+  // Close floating menu on outside click
+  useEffect(() => {
+    if (!menuOpen) return
+    const onDown = (e) => {
+      const m = menuRef.current
+      const b = menuButtonRef.current
+      if (!m || !b) return
+      if (m.contains(e.target) || b.contains(e.target)) return
+      setMenuOpen(false)
+    }
+    window.addEventListener('pointerdown', onDown, { capture: true })
+    return () => window.removeEventListener('pointerdown', onDown, { capture: true })
+  }, [menuOpen])
 
   // Redraw on fullscreen toggle to ensure immediate render after mount
   useEffect(() => {
@@ -217,11 +246,8 @@ export default function SkillTreeCanvas() {
       const dx = mouseX - nodeX
       const dy = mouseY - nodeY
       if (dx * dx + dy * dy < effectiveRadius * effectiveRadius) {
-        if (isFullscreen) {
-          setSelectedMedal(medal.medalId)
-        } else {
-          navigate(`/medals/${medal.medalId}`, { state: { backgroundLocation: location } })
-        }
+        setSelectedMedal(medal.medalId)
+        navigate(`/medals/${medal.medalId}`, { state: { backgroundLocation: location } })
         return
       }
     }
@@ -247,6 +273,7 @@ export default function SkillTreeCanvas() {
         // Dispatch a custom event that can be handled by an achievement form
         window.dispatchEvent(new CustomEvent('openAchievementForm', { detail: { medalId: medal.medalId } }))
         setSelectedMedal(medal.medalId)
+        navigate(`/medals/${medal.medalId}`, { state: { backgroundLocation: location } })
         return
       }
     }
@@ -267,28 +294,28 @@ export default function SkillTreeCanvas() {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="text-2xl font-bold text-text-primary">Interaktiv träd-vy</h2>
-        <div className="flex flex-wrap gap-2">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <h2 className="text-2xl font-bold text-text-primary mb-1 sm:mb-0">Interaktiv träd-vy</h2>
+        <div role="toolbar" aria-label="Träd-vy åtgärder" className="flex flex-wrap gap-2 sm:flex-nowrap">
           <button
             type="button"
             onClick={resetView}
-            className="px-4 py-3 rounded bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-slate-700 dark:text-slate-50 dark:hover:bg-slate-600 border border-gray-300 dark:border-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
+            className="px-3 py-2 sm:px-4 sm:py-2 min-h-[44px] rounded bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-slate-700 dark:text-slate-50 dark:hover:bg-slate-600 border border-gray-300 dark:border-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
           >
             Återställ
           </button>
           <button
             type="button"
             onClick={handleExportPNG}
-            className="px-4 py-3 rounded bg-primary text-white hover:bg-primary-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
+            className="hidden sm:inline-flex px-3 py-2 sm:px-4 sm:py-2 min-h-[44px] rounded bg-primary text-white hover:bg-primary-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
           >
             <span aria-hidden="true" className="mr-2">📥</span>
             Exportera som PNG
           </button>
           <button
             type="button"
-            onClick={() => setIsFullscreen(true)}
-            className="px-4 py-3 rounded bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-slate-700 dark:text-slate-50 dark:hover:bg-slate-600 border border-gray-300 dark:border-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
+            onClick={() => navigate('/skill-tree/fullscreen')}
+            className="px-3 py-2 sm:px-4 sm:py-2 min-h-[44px] rounded bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-slate-700 dark:text-slate-50 dark:hover:bg-slate-600 border border-gray-300 dark:border-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
             aria-haspopup="dialog"
             aria-controls="skilltree-fullscreen"
           >
@@ -297,7 +324,7 @@ export default function SkillTreeCanvas() {
         </div>
       </div>
 
-      <div className="card overflow-hidden overscroll-contain" role="region" aria-label="Medaljträd canvas" aria-describedby="skilltree-help">
+      <div className="card overflow-hidden overscroll-contain mt-2" role="region" aria-label="Medaljträd canvas" aria-describedby="skilltree-help">
         {!isFullscreen && (
           <canvas
             ref={setCanvasRef}
@@ -323,44 +350,99 @@ export default function SkillTreeCanvas() {
       <div className="text-sm text-muted-foreground">
         <p id="skilltree-help">💡 Dra för att panorera • Nyp för att zooma • Klicka på medaljer för detaljer • ⌨️ Piltangenter för att panorera</p>
       </div>
+      <div className="sm:hidden">
+        <button
+          type="button"
+          onClick={handleExportPNG}
+          className="mt-2 w-full px-3 py-2 min-h-[44px] rounded bg-primary text-white hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
+        >
+          <span aria-hidden="true" className="mr-2">📥</span>
+          Exportera som PNG
+        </button>
+      </div>
 
       {isFullscreen && (
         <div
           id="skilltree-fullscreen"
+          ref={fullscreenRef}
           className="fixed inset-0 z-50 bg-background overscroll-contain flex flex-col"
           role="dialog"
           aria-modal="true"
           aria-label="Helskärms träd-vy"
         >
+          {/* SR-only title for context */}
+          <h2 className="sr-only">Medaljträd</h2>
+          {/* Floating actions menu (bottom-right) */}
           <div
-            className="flex items-center justify-between p-2 sm:p-3 border-b border-gray-300 dark:border-slate-700 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80"
-            style={{ paddingTop: 'max(env(safe-area-inset-top), 0px)' }}
+            className="absolute right-3 bottom-3 sm:right-4 sm:bottom-4 z-[60]"
+            style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
           >
-            <h2 className="text-lg font-semibold text-text-primary">Medaljträd</h2>
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={resetView}
-                className="px-3 py-2 rounded bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-slate-700 dark:text-slate-50 dark:hover:bg-slate-600 border border-gray-300 dark:border-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
+            <div className="relative">
+            <button
+              type="button"
+              ref={menuButtonRef}
+              aria-haspopup="menu"
+              aria-controls="fullscreen-actions-menu"
+              aria-expanded={menuOpen}
+              onClick={() => setMenuOpen((v) => !v)}
+              className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-bg-secondary border border-border text-foreground shadow-lg hover:bg-bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              title="Visa åtgärder"
+              aria-label="Visa åtgärder"
+            >
+              <span aria-hidden="true">⋮</span>
+            </button>
+
+            {menuOpen && (
+              <div
+                id="fullscreen-actions-menu"
+                ref={menuRef}
+                role="menu"
+                aria-label="Åtgärder"
+                className="absolute right-0 bottom-14 sm:bottom-16 w-56 rounded-md border border-border bg-background shadow-xl overflow-hidden"
+                onKeyDown={(e) => {
+                  if (e.key === 'Escape') {
+                    e.preventDefault()
+                    setMenuOpen(false)
+                    menuButtonRef.current?.focus()
+                  } else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                    const items = Array.from(e.currentTarget.querySelectorAll('[role="menuitem"]'))
+                    if (items.length === 0) return
+                    const i = items.indexOf(document.activeElement)
+                    let next = 0
+                    if (e.key === 'ArrowDown') next = i >= 0 ? (i + 1) % items.length : 0
+                    if (e.key === 'ArrowUp') next = i >= 0 ? (i - 1 + items.length) % items.length : items.length - 1
+                    e.preventDefault()
+                    items[next]?.focus()
+                  }
+                }}
               >
-                Återställ
-              </button>
-              <button
-                type="button"
-                onClick={handleExportPNG}
-                className="px-3 py-2 rounded bg-primary text-white hover:bg-primary-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
-              >
-                Exportera
-              </button>
-              <button
-                type="button"
-                ref={closeBtnRef}
-                onClick={() => setIsFullscreen(false)}
-                className="px-3 py-2 rounded bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-slate-700 dark:text-slate-50 dark:hover:bg-slate-600 border border-gray-300 dark:border-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
-                aria-label="Close fullscreen"
-              >
-                Stäng
-              </button>
+                <button
+                  role="menuitem"
+                  type="button"
+                  onClick={() => { setMenuOpen(false); resetView() }}
+                  className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                >
+                  Återställ vy
+                </button>
+                <button
+                  role="menuitem"
+                  type="button"
+                  onClick={() => { setMenuOpen(false); handleExportPNG() }}
+                  className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                >
+                  Exportera som PNG
+                </button>
+                <button
+                  role="menuitem"
+                  type="button"
+                  ref={closeBtnRef}
+                  onClick={() => { setMenuOpen(false); navigate(-1) }}
+                  className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                >
+                  Stäng helskärm
+                </button>
+              </div>
+            )}
             </div>
           </div>
 
@@ -390,13 +472,7 @@ export default function SkillTreeCanvas() {
             💡 Dra för att panorera • Nyp för att zooma • Klicka på medaljer för detaljer • ⌨️ Piltangenter för att panorera
           </p>
 
-          {selectedMedal && (
-            <MedalDetailModal
-              medalId={selectedMedal}
-              onClose={() => setSelectedMedal(null)}
-              onNavigateMedal={setSelectedMedal}
-            />
-          )}
+          {/* Modal is route-driven while in fullscreen */}
         </div>
       )}
 
