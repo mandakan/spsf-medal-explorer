@@ -4,6 +4,7 @@ import { useAllMedalStatuses } from '../hooks/useMedalCalculator'
 import { useMedalCalculator } from '../hooks/useMedalCalculator'
 import { useProfile } from '../hooks/useProfile'
 import UnlockMedalDialog from './UnlockMedalDialog'
+import RemoveMedalDialog from './RemoveMedalDialog'
 import { useUnlockGuard } from '../hooks/useUnlockGuard'
 const Markdown = lazy(() => import('react-markdown'))
 import { useNavigate } from 'react-router-dom'
@@ -242,12 +243,6 @@ export default function MedalDetailModal({ medalId, onClose }) {
     }
   }
 
-  const handleConfirmRemove = async () => {
-    const res = await tryRemove()
-    if (res?.ok) {
-      setShowConfirmRemove(false)
-    }
-  }
 
   const statusClass = 'bg-bg-secondary text-foreground ring-1 ring-border'
 
@@ -366,57 +361,7 @@ export default function MedalDetailModal({ medalId, onClose }) {
               </div>
             )}
 
-            {showConfirmRemove && status?.status === 'unlocked' && canRemove && (
-              <div className="mb-4 bg-background border border-border rounded p-3" role="dialog" aria-modal="false" aria-labelledby="confirm-remove-title">
-                <p id="confirm-remove-title" className="text-sm font-semibold text-foreground mb-2">
-                  Ta bort upplåsning?
-                </p>
-                <p className="text-sm text-muted-foreground mb-3">
-                  Det här påverkar inte andra medaljer.
-                </p>
-                <div className="flex gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmRemove(false)}
-                    className="px-3 py-2 rounded-md bg-background text-foreground hover:bg-bg-secondary ring-1 ring-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
-                  >
-                    Avbryt
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleConfirmRemove}
-                    className="px-3 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
-                  >
-                    Ta bort
-                  </button>
-                </div>
-              </div>
-            )}
 
-            {showBlockedInfo && status?.status === 'unlocked' && !canRemove && (
-              <div className="mb-4 bg-background border border-border rounded p-3" role="region" aria-labelledby="blocked-remove-title">
-                <p id="blocked-remove-title" className="text-sm font-semibold text-foreground mb-2">
-                  Kan inte ta bort än
-                </p>
-                <p className="text-sm text-muted-foreground mb-2">
-                  De här upplåsta medaljerna beror på denna:
-                </p>
-                <ul className="text-sm text-muted-foreground list-disc ml-5 space-y-1">
-                  {blockingMedals.map(m => (
-                    <li key={m.id} className="break-words">{m.displayName || m.name}</li>
-                  ))}
-                </ul>
-                <div className="mt-3">
-                  <button
-                    type="button"
-                    onClick={() => setShowBlockedInfo(false)}
-                    className="px-3 py-2 rounded-md bg-background text-foreground hover:bg-bg-secondary ring-1 ring-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
-                  >
-                    OK
-                  </button>
-                </div>
-              </div>
-            )}
 
             {underReview && (
               <div id={`under-review-note-${medal.id}`} className="mb-4 bg-amber-50 text-amber-900 border border-amber-300 rounded p-3 dark:bg-amber-900/20 dark:text-amber-100 dark:border-amber-700">
@@ -607,6 +552,21 @@ export default function MedalDetailModal({ medalId, onClose }) {
         medal={medal}
         open={unlockOpen}
         onClose={() => setUnlockOpen(false)}
+      />
+
+      <RemoveMedalDialog
+        medal={medal}
+        open={showConfirmRemove}
+        onClose={() => setShowConfirmRemove(false)}
+        variant="confirm"
+        onConfirmRemove={tryRemove}
+      />
+      <RemoveMedalDialog
+        medal={medal}
+        open={showBlockedInfo}
+        onClose={() => setShowBlockedInfo(false)}
+        variant="blocked"
+        blockingMedals={blockingMedals}
       />
     </div>
   )
