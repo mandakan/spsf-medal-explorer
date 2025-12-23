@@ -12,7 +12,7 @@ export default function SkillTree() {
         <h1 className="text-3xl font-bold text-text-primary mb-1 sm:mb-0">Trädvy</h1>
         <div
           role="tablist"
-          aria-label="Trädvy med medaljer"
+          aria-label="Trädvy med märken"
           className="inline-flex gap-2 flex-wrap sm:flex-nowrap"
           onKeyDown={(e) => {
             if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
@@ -61,7 +61,7 @@ export default function SkillTree() {
               {statuses.unlocked.length}
             </p>
             <p className="text-sm text-muted-foreground mt-2">
-              Medaljer du redan låst upp
+              Märken du redan låst upp
             </p>
           </div>
 
@@ -71,7 +71,7 @@ export default function SkillTree() {
               {statuses.achievable.length}
             </p>
             <p className="text-sm text-muted-foreground mt-2">
-              Medaljer du kan låsa upp
+              Märken du kan låsa upp
             </p>
           </div>
 

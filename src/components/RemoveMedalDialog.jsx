@@ -22,7 +22,7 @@ export default function RemoveMedalDialog({
       {variant === 'confirm' ? (
         <div className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            Det här påverkar inte andra medaljer.
+            Det här påverkar inte andra märken.
           </p>
           <div className="flex gap-2">
             <button
@@ -47,7 +47,7 @@ export default function RemoveMedalDialog({
       ) : (
         <div className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            De här upplåsta medaljerna beror på denna:
+            De här upplåsta märkena beror på detta:
           </p>
           <ul className="text-sm text-muted-foreground list-disc ml-5 space-y-1">
             {blockingMedals.map(m => (

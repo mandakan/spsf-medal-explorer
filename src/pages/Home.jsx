@@ -9,10 +9,10 @@ export default function Home() {
     <div className="space-y-8">
       <section className="text-center mb-12">
         <h1 className="text-4xl font-bold text-text-primary mb-4">
-          Skyttemedaljer
+          Skyttemärken
         </h1>
         <p className="text-lg text-text-secondary">
-          Dokumentera dina SPSF-medaljer med aktiviteter, utforska framtida medaljer och planera progression
+          Dokumentera dina skyttemärken och medaljer med aktiviteter, utforska framtida märken och planera progression
         </p>
       </section>
 
@@ -21,9 +21,9 @@ export default function Home() {
           to="/skill-tree"
           className="bg-bg-secondary border border-slate-200 dark:border-slate-700 rounded-lg p-6 shadow hover:shadow-lg transition-shadow cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
         >
-          <h3 className="text-xl font-bold mb-2 text-text-primary">🎯 Träd-vy</h3>
+          <h3 className="text-xl font-bold mb-2 text-text-primary">🎯 Märken</h3>
           <p className="text-text-secondary">
-            Utforska medaljer i en interaktivt träd-vy
+            Utforska märken i ett interaktivt träd
           </p>
         </Link>
 
@@ -31,9 +31,9 @@ export default function Home() {
           to="/medals"
           className="bg-bg-secondary border border-slate-200 dark:border-slate-700 rounded-lg p-6 shadow hover:shadow-lg transition-shadow cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
         >
-          <h3 className="text-xl font-bold mb-2 text-text-primary">📊 Medaljlista</h3>
+          <h3 className="text-xl font-bold mb-2 text-text-primary">📊 Märkeslista</h3>
           <p className="text-text-secondary">
-            Översikt över alla medaljer med filter och sökning
+            Översikt över alla märken med filter och sökning
           </p>
         </Link>
 

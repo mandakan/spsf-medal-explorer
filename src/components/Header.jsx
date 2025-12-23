@@ -45,7 +45,7 @@ export default function Header() {
               to="/"
               className="text-2xl font-bold leading-tight break-words text-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
             >
-              🎖️ Skyttemedaljer
+              🎖️ Skyttemärken
             </Link>
 
             {/* Hamburger (mobile only) */}

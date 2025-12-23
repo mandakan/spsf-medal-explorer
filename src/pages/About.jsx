@@ -12,8 +12,8 @@ export default function About() {
         <header>
           <h1 className="text-3xl font-bold">{APP_INFO.APP_NAME}</h1>
           <p className="mt-2 text-text-secondary">
-            Spåra dina skyttemedaljer och märken för precision- och fältskjutning enligt
-            Svenska Skyttesportförbundets regler.
+            Spåra dina skyttemärken och medaljer enligt
+            Svenska Pistolskytteförbundets regler.
           </p>
         </header>
 

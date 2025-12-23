@@ -32,7 +32,7 @@ export default function ExportPanel({ profile }) {
         }
         case 'pdf': {
           data = await exportManager.toPDF(profile)
-          filename = `medalj-rapport-${dateStr}.pdf`
+          filename = `märkes-rapport-${dateStr}.pdf`
           mime = 'application/pdf'
           break
         }

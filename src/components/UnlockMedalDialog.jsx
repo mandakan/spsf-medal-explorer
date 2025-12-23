@@ -169,9 +169,9 @@ export default function UnlockMedalDialog({ medal, open, onClose }) {
               if (yearOutOfBounds) {
                 msg = `Året måste vara mellan ${birthYear} och ${nowYear}.`
               } else if (wrongCurrentReq) {
-                msg = 'Den här medaljen kräver att innevarande år väljs.'
+                msg = 'Det här märket kräver att innevarande år väljs.'
               } else if (yearTooEarlyByRules) {
-                msg = `Tidigaste året du kan låsa upp medaljen är ${effectiveRuleMinYear}.`
+                msg = `Tidigaste året du kan låsa upp märket är ${effectiveRuleMinYear}.`
               } else if (!prereqsMet) {
                 msg = `Förhandskraven är inte mötta för ${selectedYear}.`
               }

@@ -132,7 +132,7 @@ export default function BatchAchievementForm() {
           const ct = String(row.competitionType || '').toLowerCase()
           const mt = String(row.medalType || '').toLowerCase()
           if (!COMP_TYPES.includes(ct)) errs.push('Välj giltig tävlingstyp')
-          if (!MEDAL_TYPES.includes(mt)) errs.push('Välj giltig medaljtyp')
+          if (!MEDAL_TYPES.includes(mt)) errs.push('Välj giltig märkestyp')
           break
         }
         case 'qualification_result':
@@ -183,7 +183,7 @@ export default function BatchAchievementForm() {
       <h2 className="text-xl font-bold mb-2 text-text-primary">Lägg till aktiviteter i batch</h2>
       <p id="batch-type-help" className="text-sm text-text-secondary mb-4">
         Batcher stödjer precisionsserier och tillämpningsserier. För att lägga till övriga, logga
-        dem på ett medaljkort.
+        dem på ett märkeskort.
       </p>
 
       {successCount > 0 && (
@@ -383,7 +383,7 @@ export default function BatchAchievementForm() {
                           onChange={(e) => handleRowChange(index, 'medalType', e.target.value)}
                           className="select w-32"
                           disabled={submitting}
-                          aria-label={`Medaljtyp för rad ${index + 1}`}
+                          aria-label={`Märkestyp för rad ${index + 1}`}
                         >
                           <option value="">Select medal…</option>
                           {MEDAL_TYPES.map(opt => (
