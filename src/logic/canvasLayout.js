@@ -42,16 +42,17 @@ export function generateMedalLayout(medals) {
             const fromMedal = medalById.get(prereq.medalId)
             let label = null
             const sameType = fromMedal && fromMedal.type === medal.type
-            if (sameType && Array.isArray(medal.requirements)) {
+            // 1) Edge-specific offset takes precedence
+            if (Number.isFinite(prereq.yearOffset) && prereq.yearOffset > 0) {
+              label = `${prereq.yearOffset} år`
+            // 2) Otherwise, show sustained requirement years on same-type edges
+            } else if (sameType && Array.isArray(medal.requirements)) {
               const sustain = medal.requirements.find(r =>
-                r && r.type === 'sustained_achievement' &&
-                (typeof r.minYears === 'number' || typeof r.minPassingYears === 'number')
+                r && r.type === 'sustained_achievement' && Number.isFinite(r.yearsOfAchievement)
               )
-              const minYears = sustain
-                ? (typeof sustain.minYears === 'number' ? sustain.minYears : sustain.minPassingYears)
-                : null
-              if (typeof minYears === 'number' && minYears > 1) {
-                label = `${minYears} år`
+              const years = sustain?.yearsOfAchievement
+              if (typeof years === 'number' && years > 1) {
+                label = `${years} år`
               }
             }
             layout.connections.push({
