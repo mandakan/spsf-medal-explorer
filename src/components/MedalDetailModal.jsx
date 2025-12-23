@@ -228,7 +228,6 @@ export default function MedalDetailModal({ medalId, onClose }) {
     e.preventDefault()
     const background = location.state?.backgroundLocation
     navigate(`/medals/${targetId}`, {
-      replace: true,
       state: background ? { backgroundLocation: background } : undefined
     })
   }
