@@ -191,7 +191,7 @@ This app covers all medal types from the SHB Bilaga 1 (Swedish Shooting Associat
 - **Pistolskyttemärket** (Pistol Mark) - Base progression
 - **Elitmärket** (Elite Mark) - For competitive shooters
 - **Fältskyttemärket** (Field Mark) - Field target shooting
-- **Mästarmerket** (Championship Mark) - Championship level
+- **Mästarmärket** (Championship Mark) - Championship level
 - **Precisionsskyttemärket** (Precision Mark) - Score-based
 - **Skidskyttemärket** (Skis Mark) - Skiing + shooting
 - **Springskyttemärket** (Spring Running Mark) - Running + shooting
