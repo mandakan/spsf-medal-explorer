@@ -11,6 +11,8 @@ A mobile-first web app to explore and track progression through the Swedish Pist
 
 Note on data and privacy: All data is stored locally in your browser's localStorage. Nothing is uploaded or synced. Clearing site data or switching devices will erase your data — use Export to back up and Import to restore.
 
+<a href="https://buymeacoffee.com/thias" target="_blank" rel="noopener"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="40"></a>
+
 ## Overview
 
 - Visual skill-tree for medals with pan/zoom and collision-aware layout
