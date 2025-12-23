@@ -113,7 +113,7 @@ export default function MobileBottomSheet({
             ✕
           </button>
         </div>
-        <div className="p-4 overflow-auto safe-bottom" style={{ maxHeight: 'calc(85dvh - 56px)', overflowY: 'auto', overscrollBehavior: 'contain' }}>
+        <div className="p-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] overflow-auto" style={{ maxHeight: 'calc(85dvh - 56px)', overflowY: 'auto', overscrollBehavior: 'contain' }}>
           {children}
         </div>
       </div>
