@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState, useCallback } from 'react'
 import { useMedalDatabase } from '../hooks/useMedalDatabase'
 import { useAllMedalStatuses } from '../hooks/useMedalCalculator'
 import { useFilter } from '../hooks/useFilter'
@@ -7,11 +7,11 @@ import { applyFilters, sortMedals } from '../logic/filterEngine'
 import SearchBar from '../components/SearchBar'
 import FilterPanel from '../components/FilterPanel'
 import FilterPresets from '../components/FilterPresets'
-import AdvancedFilterBuilder from '../components/AdvancedFilterBuilder'
+import QuickFilterChips from '../components/QuickFilterChips'
 import MedalList from '../components/MedalList'
 import MobileBottomSheet from '../components/MobileBottomSheet'
 import MedalDetailModal from '../components/MedalDetailModal'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import ProfilePromptBanner from '../components/ProfilePromptBanner'
 
 export default function MedalsList() {
@@ -20,9 +20,9 @@ export default function MedalsList() {
   const navigate = useNavigate()
   const statuses = useAllMedalStatuses()
   const [sortBy, setSortBy] = useState('name')
-  const [showAdvanced, setShowAdvanced] = useState(false)
   const [showFilters, setShowFilters] = useState(false)
   const searchInputRef = useRef(null)
+  const [searchParams, setSearchParams] = useSearchParams()
 
   // Responsive, mobile-first list height (~70vh with a sensible minimum)
   const [listHeight, setListHeight] = useState(600)
@@ -54,6 +54,49 @@ export default function MedalsList() {
     return () => window.removeEventListener('keydown', handler)
   }, [])
 
+  // Initialize filters from URL once
+  useEffect(() => {
+    const get = (key) => {
+      const v = searchParams.get(key)
+      return v && v.length ? v : null
+    }
+    const initial = {
+      status: get('status'),
+      type: get('type'),
+      tier: get('tier'),
+      weaponGroup: get('weaponGroup'),
+      reviewState: get('reviewState'),
+    }
+    const initialSearch = get('search') || ''
+    const initialSort = get('sort') || 'name'
+
+    const cleaned = Object.fromEntries(Object.entries(initial).filter(([, v]) => v != null))
+    if (Object.keys(cleaned).length) {
+      setFilters(cleaned)
+    }
+    if (initialSearch) {
+      setQuery(initialSearch)
+      setFilter('search', initialSearch)
+    }
+    if (initialSort) {
+      setSortBy(initialSort)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Sync filters/search/sort to URL
+  useEffect(() => {
+    const params = new URLSearchParams()
+    if (filters.status) params.set('status', filters.status)
+    if (filters.type) params.set('type', filters.type)
+    if (filters.tier) params.set('tier', filters.tier)
+    if (filters.weaponGroup) params.set('weaponGroup', filters.weaponGroup)
+    if (filters.reviewState) params.set('reviewState', filters.reviewState)
+    if (query) params.set('search', query)
+    if (sortBy && sortBy !== 'name') params.set('sort', sortBy)
+    setSearchParams(params)
+  }, [filters, query, sortBy, setSearchParams])
+
   const medalTypes = useMemo(() => {
     return [...new Set(medals.map(m => m.type))].filter(Boolean)
   }, [medals])
@@ -61,6 +104,14 @@ export default function MedalsList() {
   const tiers = useMemo(() => {
     return [...new Set(medals.map(m => m.tier))].filter(Boolean)
   }, [medals])
+
+  const activeFilterCount = useMemo(() => {
+    return Object.entries(filters).reduce((acc, [k, v]) => (k === 'search' || !v ? acc : acc + 1), 0)
+  }, [filters])
+
+  const onToggleQuickFilter = useCallback((key, value) => {
+    setFilter(key, filters[key] === value ? null : value)
+  }, [filters, setFilter])
 
   const statusesById = useMemo(() => {
     const map = {}
@@ -87,29 +138,32 @@ export default function MedalsList() {
   return (
     <div className="space-y-6">
       <ProfilePromptBanner id="profile-picker-medals-list" />
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+      <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-3">
         <h1 className="text-3xl font-bold text-foreground">Märken</h1>
 
         <div className="flex items-center gap-3">
+          <div className="text-sm text-muted-foreground" aria-live="polite">
+            {finalResults.length} märken
+            {hasActiveFilters && (
+              <>
+                {' · '}
+                <button type="button" className="underline hover:no-underline" onClick={clearAllFilters}>
+                  Rensa filter
+                </button>
+              </>
+            )}
+          </div>
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="select"
+            className="select hidden lg:block"
+            aria-label="Sortera"
           >
             <option value="name">Sortera på namn</option>
             <option value="type">Sortera på typ</option>
             <option value="tier">Sortera på valör</option>
             <option value="status">Sortera på status</option>
           </select>
-
-          <button
-            type="button"
-            onClick={() => setShowAdvanced(v => !v)}
-            className="btn btn-muted text-sm"
-            aria-expanded={showAdvanced}
-          >
-            {showAdvanced ? 'Dölj' : 'Visa'} Avancerade Filter
-          </button>
         </div>
       </div>
 
@@ -128,25 +182,27 @@ export default function MedalsList() {
         placeholder="Sök märken... (klicka / för fokus)"
       />
 
-      <div className="sm:hidden flex justify-end">
-        <button
-          type="button"
-          onClick={() => setShowFilters(true)}
-          className="btn btn-muted mt-2 min-h-[44px]"
-          aria-label="Öppna filter"
-          aria-haspopup="dialog"
-          aria-controls="mobile-filters-sheet"
-        >
-          Filter
-        </button>
+      <div className="flex items-center justify-between gap-2">
+        <QuickFilterChips
+          filters={filters}
+          onToggle={(key, value) => {
+            onToggleQuickFilter(key, value)
+          }}
+        />
+        <div className="lg:hidden">
+          <button
+            type="button"
+            onClick={() => setShowFilters(true)}
+            className="btn btn-muted mt-2 min-h-[44px]"
+            aria-label="Öppna filter"
+            aria-haspopup="dialog"
+            aria-controls="mobile-filters-sheet"
+          >
+            {activeFilterCount > 0 ? `Filter (${activeFilterCount})` : 'Filter'}
+          </button>
+        </div>
       </div>
 
-      {showAdvanced && (
-        <AdvancedFilterBuilder
-          currentFilters={filters}
-          onApply={(built) => setFilters(built)}
-        />
-      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <div className="hidden lg:block lg:col-span-1 space-y-4">
@@ -158,6 +214,8 @@ export default function MedalsList() {
             hasActiveFilters={hasActiveFilters}
             resultCount={finalResults.length}
             onClearAll={clearAllFilters}
+            sortBy={sortBy}
+            onSortChange={setSortBy}
           />
           <FilterPresets
             currentFilters={filters}
@@ -183,6 +241,8 @@ export default function MedalsList() {
               clearAllFilters()
               setShowFilters(false)
             }}
+            sortBy={sortBy}
+            onSortChange={setSortBy}
           />
         </MobileBottomSheet>
 
