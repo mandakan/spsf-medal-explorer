@@ -18,6 +18,9 @@ export default function Header() {
   const open = openedAtPath === location.pathname
   const { currentProfile } = useProfile()
   const [profilePickerOpen, setProfilePickerOpen] = useState(false)
+  const profileInitials = currentProfile?.displayName
+    ? currentProfile.displayName.trim().split(/\s+/).map(s => s[0]).slice(0, 2).join('').toUpperCase()
+    : null
 
   // Derive "open" from the current route to avoid setState in effect
 
@@ -56,12 +59,13 @@ export default function Header() {
               <button
                 type="button"
                 onClick={() => setProfilePickerOpen(true)}
-                className="inline-flex items-center min-h-[44px] px-3 rounded-md btn btn-muted"
+                className="inline-flex items-center justify-center h-10 w-10 sm:h-11 sm:w-11 rounded-full btn btn-muted"
                 aria-haspopup="dialog"
                 aria-controls="profile-picker"
                 aria-label={currentProfile?.displayName ? `Aktiv profil: ${currentProfile.displayName}` : 'Välj profil'}
+                title={currentProfile?.displayName || 'Välj profil'}
               >
-                {currentProfile?.displayName || 'Välj profil'}
+                {profileInitials || '?'}
               </button>
 
               {/* Desktop nav (≥sm) */}
