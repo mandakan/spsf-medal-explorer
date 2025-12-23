@@ -287,7 +287,7 @@ export default function SkillTreeCanvas() {
   if (!medalDatabase) {
     return (
       <div className="flex items-center justify-center h-96" role="status" aria-live="polite" aria-busy="true">
-        <p className="text-text-secondary">Laddar medalj-träd...</p>
+        <p className="text-text-secondary">Laddar märken...</p>
       </div>
     )
   }
@@ -324,7 +324,7 @@ export default function SkillTreeCanvas() {
         </div>
       </div>
 
-      <div className="card overflow-hidden overscroll-contain mt-2" role="region" aria-label="Medaljträd canvas" aria-describedby="skilltree-help">
+      <div className="card overflow-hidden overscroll-contain mt-2" role="region" aria-label="Trädvy canvas" aria-describedby="skilltree-help">
         {!isFullscreen && (
           <canvas
             ref={setCanvasRef}
@@ -348,7 +348,7 @@ export default function SkillTreeCanvas() {
       </div>
 
       <div className="text-sm text-muted-foreground">
-        <p id="skilltree-help">💡 Dra för att panorera • Nyp för att zooma • Klicka på medaljer för detaljer • ⌨️ Piltangenter för att panorera</p>
+        <p id="skilltree-help">💡 Dra för att panorera • Nyp för att zooma • Klicka på märken för detaljer • ⌨️ Piltangenter för att panorera</p>
       </div>
       <div className="sm:hidden">
         <button
@@ -371,7 +371,7 @@ export default function SkillTreeCanvas() {
           aria-label="Helskärms träd-vy"
         >
           {/* SR-only title for context */}
-          <h2 className="sr-only">Medaljträd</h2>
+          <h2 className="sr-only">Märken</h2>
           {/* Floating actions menu (bottom-right) */}
           <div
             className="absolute right-3 bottom-3 sm:right-4 sm:bottom-4 z-[60]"
@@ -469,7 +469,7 @@ export default function SkillTreeCanvas() {
           </div>
 
           <p id="skilltree-help-fs" className="sr-only">
-            💡 Dra för att panorera • Nyp för att zooma • Klicka på medaljer för detaljer • ⌨️ Piltangenter för att panorera
+            💡 Dra för att panorera • Nyp för att zooma • Klicka på märken för detaljer • ⌨️ Piltangenter för att panorera
           </p>
 
           {/* Modal is route-driven while in fullscreen */}

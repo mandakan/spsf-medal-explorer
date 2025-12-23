@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import SkillTreeCanvas from '../components/SkillTreeCanvas'
 import { useAllMedalStatuses } from '../hooks/useMedalCalculator'
+import ProfilePromptBanner from '../components/ProfilePromptBanner'
 
 export default function SkillTree() {
   const [viewMode, setViewMode] = useState('canvas') // 'canvas' or 'stats'
@@ -8,11 +9,12 @@ export default function SkillTree() {
 
   return (
     <div className="space-y-6">
+      <ProfilePromptBanner id="profile-picker-skill-tree" />
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-3xl font-bold text-text-primary mb-1 sm:mb-0">Trädvy</h1>
         <div
           role="tablist"
-          aria-label="Trädvy med medaljer"
+          aria-label="Trädvy med märken"
           className="inline-flex gap-2 flex-wrap sm:flex-nowrap"
           onKeyDown={(e) => {
             if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
@@ -61,7 +63,7 @@ export default function SkillTree() {
               {statuses.unlocked.length}
             </p>
             <p className="text-sm text-muted-foreground mt-2">
-              Medaljer du redan låst upp
+              Märken du redan låst upp
             </p>
           </div>
 
@@ -71,7 +73,7 @@ export default function SkillTree() {
               {statuses.achievable.length}
             </p>
             <p className="text-sm text-muted-foreground mt-2">
-              Medaljer du kan låsa upp
+              Märken du kan låsa upp
             </p>
           </div>
 

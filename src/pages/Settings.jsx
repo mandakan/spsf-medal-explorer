@@ -4,17 +4,14 @@ import BatchAchievementForm from '../components/BatchAchievementForm'
 import AchievementTimeline from '../components/AchievementTimeline'
 import StatisticsDashboard from '../components/StatisticsDashboard'
 import { UndoRedoProvider } from '../contexts/UndoRedoContext'
+import ProfilePromptBanner from '../components/ProfilePromptBanner'
 
 export default function Settings() {
   const { currentProfile, setProfileFeature } = useProfile()
   const [activeTab, setActiveTab] = useState('add') // 'add' or 'history'
 
   if (!currentProfile) {
-    return (
-      <div className="card p-4">
-        <p className="text-foreground">Välj eller skapa en profil först</p>
-      </div>
-    )
+    return <ProfilePromptBanner id="profile-picker-settings" />
   }
 
   return (
@@ -41,10 +38,10 @@ export default function Settings() {
             />
             <div>
               <label htmlFor="ft-manual-unlock" className="field-label mb-1">
-                Tillåt manuell upplåsning av medaljer (förhandskrav gäller fortfarande)
+                Tillåt manuell upplåsning av märken (förhandskrav gäller fortfarande)
               </label>
               <p className="field-hint">
-                Du kan låsa upp medaljer vilket år som helst utan att möta kraven för dem. Förhandskrav och årskrav gäller fortfarande.
+                Du kan låsa upp märken vilket år som helst utan att möta kraven för dem. Förhandskrav och årskrav gäller fortfarande.
               </p>
             </div>
           </div>
@@ -59,10 +56,10 @@ export default function Settings() {
             />
             <div>
               <label htmlFor="ft-enforce-current-year" className="field-label mb-1">
-                Kräv innevarande år för återkommande medaljer
+                Kräv innevarande år för återkommande märken
               </label>
               <p className="field-hint">
-                Medaljer som kräver återkommande aktiviteter kan bara låsas upp innevarande kalenderår.
+                Märken som kräver återkommande aktiviteter kan bara låsas upp innevarande kalenderår.
               </p>
             </div>
           </div>

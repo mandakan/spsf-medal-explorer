@@ -190,7 +190,7 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
     const prev = document.title
     const name = medal.displayName || medal.name || String(medalId)
     try {
-      document.title = `${name} – Medaljdetaljer`
+      document.title = `${name} - Detaljer`
     } catch {
       // Ignore non-critical document title update errors
     }
@@ -315,7 +315,7 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
                 {underReview && (
                   <span
                     className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-900 border border-amber-300 dark:bg-amber-900/40 dark:text-amber-200 dark:border-amber-700"
-                    aria-label="Status för medaljregler: under granskning"
+                    aria-label="Status för regler: under granskning"
                   >
                     Under granskning
                   </span>
@@ -390,7 +390,7 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
 
             {underReview && (
               <div id={`under-review-note-${medal.id}`} className="mb-4 bg-amber-50 text-amber-900 border border-amber-300 rounded p-3 dark:bg-amber-900/20 dark:text-amber-100 dark:border-amber-700">
-                Reglerna för den här medaljen är under granskning och kan komma att ändras.
+                Reglerna för det här märket är under granskning och kan komma att ändras.
               </div>
             )}
 
@@ -488,7 +488,7 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
                   className="w-full text-left px-3 py-2 flex items-center justify-between hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary rounded-t"
                 >
                   <span className="text-sm font-semibold text-foreground">
-                    Denna medalj krävs för
+                    Detta märke krävs för
                     <span className="ml-1 text-muted-foreground">({unlockTargets.length})</span>
                   </span>
                   <span aria-hidden="true" className="ml-2">{showUnlockTargets ? '▼' : '▶'}</span>
@@ -564,7 +564,7 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
                 </button>
                 {!prereqsOk && (
                   <p id={prereqHintId} className="text-xs text-muted-foreground">
-                    Förhandskraven måste uppnåst innan medaljen kan låsas upp.
+                    Förhandskraven måste uppnåst innan märket kan låsas upp.
                   </p>
                 )}
               </div>

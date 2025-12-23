@@ -1,7 +1,7 @@
 {
-  "name": "Skyttemedaljer",
-  "short_name": "Skyttemedaljer",
-  "description": "Utforska och dokumentera dina SPSF-medaljer",
+  "name": "Skyttemärken",
+  "short_name": "Skyttemärken",
+  "description": "Utforska och dokumentera dina SPSF-märken och medaljer",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",

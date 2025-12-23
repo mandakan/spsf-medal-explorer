@@ -123,7 +123,7 @@ export default function FilterPanel({
       </div>
 
       <div className="p-4 border-t border-border pb-[calc(env(safe-area-inset-bottom)+1rem)] text-sm text-muted-foreground" aria-live="polite">
-        {resultCount} medalj(er) matchar filtren
+        {resultCount} märke(n) matchar filtren
       </div>
     </div>
   )

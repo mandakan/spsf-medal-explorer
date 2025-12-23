@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { useProfile } from '../hooks/useProfile'
+import MobileBottomSheet from './MobileBottomSheet'
 
-export default function ProfileSelector() {
+export default function ProfileSelector({ mode = 'picker', open = false, onClose, id = 'profile-picker' }) {
   const { profiles, currentProfile, loading, createProfile, updateProfile, selectProfile, deleteProfile } =
     useProfile()
 
@@ -10,6 +11,7 @@ export default function ProfileSelector() {
   const [editingProfile, setEditingProfile] = useState(null)
   const [newProfileName, setNewProfileName] = useState('')
   const [newDateOfBirth, setNewDateOfBirth] = useState('')
+  const isPicker = mode === 'picker'
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -55,19 +57,21 @@ export default function ProfileSelector() {
   }
 
   return (
-    <div>
-      {!currentProfile ? (
-        <div className="bg-bg-secondary border border-slate-200 dark:border-slate-700 rounded-lg p-4 mb-4">
-          <p className="text-text-primary mb-3">No profile selected</p>
-          {profiles.length > 0 && (
-            <div className="space-y-2 mb-3">
+    <>
+      {isPicker ? (
+        <MobileBottomSheet id={id} title="Välj profil" open={open} onClose={onClose}>
+          {profiles.length > 0 ? (
+            <div className="space-y-2">
               {profiles.map((profile) => (
                 <div key={profile.userId} className="flex gap-2">
                   <button
-                    onClick={() => selectProfile(profile.userId)}
+                    onClick={() => {
+                      selectProfile(profile.userId)
+                      onClose?.()
+                    }}
                     className="flex-1 text-left px-4 py-2 bg-bg-secondary border border-slate-200 dark:border-slate-700 rounded hover:bg-gray-100 dark:hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
                   >
-                    {profile.displayName} (Age {computeAge(profile.dateOfBirth) ?? '—'})
+                    {profile.displayName} (Ålder {computeAge(profile.dateOfBirth) ?? '—'})
                   </button>
                   <button
                     onClick={() => {
@@ -90,6 +94,8 @@ export default function ProfileSelector() {
                 </div>
               ))}
             </div>
+          ) : (
+            <p className="text-text-secondary">Inga profiler ännu.</p>
           )}
           <button
             onClick={() => {
@@ -99,17 +105,69 @@ export default function ProfileSelector() {
               setNewDateOfBirth('')
               setShowModal(true)
             }}
-            className="px-4 py-2 rounded bg-primary text-white hover:bg-primary-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
+            className="mt-3 px-4 py-2 rounded bg-primary text-white hover:bg-primary-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
           >
             Skapa ny profil
           </button>
-        </div>
+        </MobileBottomSheet>
       ) : (
-        <div className="bg-bg-secondary border border-emerald-300 ring-1 ring-emerald-500/20 dark:border-emerald-700 dark:ring-emerald-400/30 rounded-lg p-4 mb-4">
-          <p className="text-text-primary font-semibold">Profile: {currentProfile.displayName}</p>
-          <p className="text-text-secondary text-sm">
-            Ålder: {computeAge(currentProfile.dateOfBirth) ?? '—'}
-          </p>
+        <div>
+          {!currentProfile ? (
+            <div className="bg-bg-secondary border border-slate-200 dark:border-slate-700 rounded-lg p-4 mb-4">
+              <p className="text-text-primary mb-3">No profile selected</p>
+              {profiles.length > 0 && (
+                <div className="space-y-2 mb-3">
+                  {profiles.map((profile) => (
+                    <div key={profile.userId} className="flex gap-2">
+                      <button
+                        onClick={() => selectProfile(profile.userId)}
+                        className="flex-1 text-left px-4 py-2 bg-bg-secondary border border-slate-200 dark:border-slate-700 rounded hover:bg-gray-100 dark:hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
+                      >
+                        {profile.displayName} (Age {computeAge(profile.dateOfBirth) ?? '—'})
+                      </button>
+                      <button
+                        onClick={() => {
+                          setModalMode('edit')
+                          setEditingProfile(profile)
+                          setNewProfileName(profile.displayName || '')
+                          setNewDateOfBirth(profile.dateOfBirth || '')
+                          setShowModal(true)
+                        }}
+                        className="px-3 py-2 border border-slate-200 dark:border-slate-700 rounded hover:bg-gray-100 dark:hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
+                      >
+                        Ändra
+                      </button>
+                      <button
+                        onClick={() => handleDelete(profile.userId)}
+                        className="px-3 py-2 bg-red-500/10 border border-red-500/30 text-red-700 dark:text-red-300 rounded hover:bg-red-500/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-600/60"
+                      >
+                        Ta bort
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <button
+                onClick={() => {
+                  setModalMode('create')
+                  setEditingProfile(null)
+                  setNewProfileName('')
+                  setNewDateOfBirth('')
+                  setShowModal(true)
+                }}
+                className="px-4 py-2 rounded bg-primary text-white hover:bg-primary-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
+              >
+                Skapa ny profil
+              </button>
+            </div>
+          ) : (
+            <div className="bg-bg-secondary border border-emerald-300 ring-1 ring-emerald-500/20 dark:border-emerald-700 dark:ring-emerald-400/30 rounded-lg p-4 mb-4">
+              <p className="text-text-primary font-semibold">Profile: {currentProfile.displayName}</p>
+              <p className="text-text-secondary text-sm">
+                Ålder: {computeAge(currentProfile.dateOfBirth) ?? '—'}
+              </p>
+            </div>
+          )}
         </div>
       )}
 
@@ -173,6 +231,6 @@ export default function ProfileSelector() {
           </div>
         </div>
       )}
-    </div>
+    </>
   )
 }

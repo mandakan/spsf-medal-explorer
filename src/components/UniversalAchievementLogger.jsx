@@ -70,7 +70,7 @@ export default function UniversalAchievementLogger({ medal, onSuccess, unlockMod
         id={headingId}
         className="section-title mb-4 break-words"
       >
-        {unlockMode ? 'Lås upp medalj' : 'Logga Aktivitet'}: {medal?.displayName || medal?.name || medal?.id}
+        {unlockMode ? 'Lås upp märke' : 'Logga Aktivitet'}: {medal?.displayName || medal?.name || medal?.id}
       </h2>
 
       {error && (

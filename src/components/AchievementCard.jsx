@@ -162,7 +162,7 @@ export default function AchievementCard({ achievement }) {
           <button
             onClick={openAddDialog}
             className="btn btn-primary text-sm"
-            aria-label={`Logga ny aktivitet för medalj ${achievement.medalId}`}
+            aria-label={`Logga ny aktivitet för märke ${achievement.medalId}`}
           >
             Logga
           </button>

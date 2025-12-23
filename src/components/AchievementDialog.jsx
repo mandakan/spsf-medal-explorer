@@ -114,7 +114,7 @@ function FormContent({
           const ct = String(row.competitionType || '').toLowerCase()
           const mt = String(row.medalType || '').toLowerCase()
           if (!COMP_TYPES.includes(ct)) errs.push('Välj giltig tävlingstyp')
-          if (!MEDAL_TYPES.includes(mt)) errs.push('Välj giltig medaljtyp')
+          if (!MEDAL_TYPES.includes(mt)) errs.push('Välj giltig märkestyp')
           break
         }
         default:
@@ -281,14 +281,14 @@ function FormContent({
             </select>
           </div>
           <div>
-            <label htmlFor="br-mtype" className="field-label mb-2">Medalj</label>
+            <label htmlFor="br-mtype" className="field-label mb-2">Märke</label>
             <select
               id="br-mtype"
               className="select py-3"
               value={form.medalType ?? ''}
               onChange={(e) => setField('medalType', e.target.value)}
             >
-              <option value="">Välj medalj...</option>
+              <option value="">Välj märke...</option>
               {MEDAL_TYPES.map(o => <option key={o} value={o}>{o}</option>)}
             </select>
           </div>
