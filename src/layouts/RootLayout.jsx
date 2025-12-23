@@ -11,7 +11,7 @@ export default function RootLayout() {
 
   // Default open on >= sm breakpoint (≥640px); collapsed on smaller screens.
   useEffect(() => {
-    if (typeof window === 'undefined') return
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return
     const mq = window.matchMedia('(min-width: 640px)')
     setProfileOpen(mq.matches)
   }, [])
