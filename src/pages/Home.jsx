@@ -52,7 +52,7 @@ export default function Home() {
         <section className="bg-bg-secondary border border-slate-200 dark:border-slate-700 rounded-lg p-6 shadow">
           <h2 className="text-xl font-bold mb-4">Status</h2>
           <p className="text-text-secondary">
-            ✓ {medalDatabase.getAllMedals().length} medljer laddade
+            ✓ {medalDatabase.getAllMedals().length} märken laddade
           </p>
         </section>
       )}
