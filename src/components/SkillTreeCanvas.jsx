@@ -387,6 +387,7 @@ export default function SkillTreeCanvas() {
             <MedalDetailModal
               medalId={selectedMedal}
               onClose={() => setSelectedMedal(null)}
+              onNavigateMedal={setSelectedMedal}
             />
           )}
         </div>
@@ -396,6 +397,7 @@ export default function SkillTreeCanvas() {
         <MedalDetailModal
           medalId={selectedMedal}
           onClose={() => setSelectedMedal(null)}
+          onNavigateMedal={setSelectedMedal}
         />
       )}
     </div>

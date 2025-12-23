@@ -9,7 +9,7 @@ import { useUnlockGuard } from '../hooks/useUnlockGuard'
 const Markdown = lazy(() => import('react-markdown'))
 import { useNavigate, useLocation } from 'react-router-dom'
 
-export default function MedalDetailModal({ medalId, onClose }) {
+export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) {
   const { medalDatabase } = useMedalDatabase()
   const statuses = useAllMedalStatuses()
   const calculator = useMedalCalculator()
@@ -225,7 +225,13 @@ export default function MedalDetailModal({ medalId, onClose }) {
   }
 
   const handleReferenceClick = (targetId) => (e) => {
+    const isPlainLeftClick = e.button === 0 && !e.metaKey && !e.ctrlKey && !e.altKey && !e.shiftKey
+    if (!isPlainLeftClick) return
     e.preventDefault()
+    if (typeof onNavigateMedal === 'function') {
+      onNavigateMedal(targetId)
+      return
+    }
     const background = location.state?.backgroundLocation
     navigate(`/medals/${targetId}`, {
       state: background ? { backgroundLocation: background } : undefined
