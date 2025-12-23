@@ -9,6 +9,8 @@ A mobile-first web app to explore and track progression through the Swedish Pist
 
 👉 Live demo: https://mandakan.github.io/spsf-medal-explorer/
 
+Note on data and privacy: All data is stored locally in your browser's localStorage. Nothing is uploaded or synced. Clearing site data or switching devices will erase your data — use Export to back up and Import to restore.
+
 ## Overview
 
 - Visual skill-tree for medals with pan/zoom and collision-aware layout
