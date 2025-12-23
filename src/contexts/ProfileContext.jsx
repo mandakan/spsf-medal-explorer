@@ -67,32 +67,6 @@ export function ProfileProvider({ children }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Auto-select most recently used profile (or URL override) once profiles are loaded
-  React.useEffect(() => {
-    if (loading) return
-    if (currentProfile) return
-    if (!profiles || profiles.length === 0) return
-
-    // URL override takes precedence: ?profile=<userId>
-    const overrideId = getProfileOverrideFromURL()
-    if (overrideId && profiles.some(p => p.userId === overrideId)) {
-      selectProfile(overrideId)
-      setLastProfileId(overrideId)
-      return
-    }
-
-    // Restore last used profile from localStorage
-    const lastId = getLastProfileId()
-    if (lastId && profiles.some(p => p.userId === lastId)) {
-      selectProfile(lastId)
-      return
-    }
-    if (lastId) setLastProfileId(null)
-
-    // Fallback: pick most recently modified profile
-    const picked = [...profiles].sort((a, b) => new Date(b.lastModified) - new Date(a.lastModified))[0]
-    if (picked) selectProfile(picked.userId)
-  }, [profiles, currentProfile, loading, selectProfile])
 
   const createProfile = useCallback(
     async (displayName, dateOfBirth) => {
@@ -134,6 +108,33 @@ export function ProfileProvider({ children }) {
     },
     [storage]
   )
+
+  // Auto-select most recently used profile (or URL override) once profiles are loaded
+  React.useEffect(() => {
+    if (loading) return
+    if (currentProfile) return
+    if (!profiles || profiles.length === 0) return
+
+    // URL override takes precedence: ?profile=<userId>
+    const overrideId = getProfileOverrideFromURL()
+    if (overrideId && profiles.some(p => p.userId === overrideId)) {
+      selectProfile(overrideId)
+      setLastProfileId(overrideId)
+      return
+    }
+
+    // Restore last used profile from localStorage
+    const lastId = getLastProfileId()
+    if (lastId && profiles.some(p => p.userId === lastId)) {
+      selectProfile(lastId)
+      return
+    }
+    if (lastId) setLastProfileId(null)
+
+    // Fallback: pick most recently modified profile
+    const picked = [...profiles].sort((a, b) => new Date(b.lastModified) - new Date(a.lastModified))[0]
+    if (picked) selectProfile(picked.userId)
+  }, [profiles, currentProfile, loading, selectProfile])
 
   const updateProfile = useCallback(
     async (profile) => {
