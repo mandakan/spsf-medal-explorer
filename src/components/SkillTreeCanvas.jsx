@@ -4,7 +4,6 @@ import { useAllMedalStatuses } from '../hooks/useMedalCalculator'
 import { usePanZoom } from '../hooks/usePanZoom'
 import { useCanvasRenderer } from '../hooks/useCanvasRenderer'
 import { generateMedalLayout } from '../logic/canvasLayout'
-import MedalDetailModal from './MedalDetailModal'
 import { exportCanvasToPNG } from '../utils/canvasExport'
 import { useNavigate, useLocation } from 'react-router-dom'
 
@@ -18,13 +17,14 @@ export default function SkillTreeCanvas() {
   const [selectedMedal, setSelectedMedal] = useState(null)
   const navigate = useNavigate()
   const location = useLocation()
+  const isFullscreen = location.pathname.endsWith('/skill-tree/fullscreen')
+  const fullscreenRef = useRef(null)
   const layout = useMemo(() => {
     if (!medalDatabase) return null
     const medals = medalDatabase.getAllMedals()
     return generateMedalLayout(medals)
   }, [medalDatabase])
   const [isDragging, setIsDragging] = useState(false)
-  const [isFullscreen, setIsFullscreen] = useState(false)
   const closeBtnRef = useRef(null)
   const prevFocusRef = useRef(null)
 
@@ -123,7 +123,15 @@ export default function SkillTreeCanvas() {
 
     closeBtnRef.current?.focus?.()
 
-    const onEsc = (e) => { if (e.key === 'Escape') setIsFullscreen(false) }
+    const onEsc = (e) => {
+      if (e.key !== 'Escape') return
+      const active = document.activeElement
+      // Only exit fullscreen when focus is inside the fullscreen overlay.
+      // If a modal has focus, it will handle Escape itself.
+      if (fullscreenRef.current && fullscreenRef.current.contains(active)) {
+        navigate(-1)
+      }
+    }
     window.addEventListener('keydown', onEsc)
     return () => {
       window.removeEventListener('keydown', onEsc)
@@ -133,7 +141,7 @@ export default function SkillTreeCanvas() {
         el.focus()
       }
     }
-  }, [isFullscreen])
+  }, [isFullscreen, navigate])
 
   // Redraw on fullscreen toggle to ensure immediate render after mount
   useEffect(() => {
@@ -217,11 +225,8 @@ export default function SkillTreeCanvas() {
       const dx = mouseX - nodeX
       const dy = mouseY - nodeY
       if (dx * dx + dy * dy < effectiveRadius * effectiveRadius) {
-        if (isFullscreen) {
-          setSelectedMedal(medal.medalId)
-        } else {
-          navigate(`/medals/${medal.medalId}`, { state: { backgroundLocation: location } })
-        }
+        setSelectedMedal(medal.medalId)
+        navigate(`/medals/${medal.medalId}`, { state: { backgroundLocation: location } })
         return
       }
     }
@@ -247,6 +252,7 @@ export default function SkillTreeCanvas() {
         // Dispatch a custom event that can be handled by an achievement form
         window.dispatchEvent(new CustomEvent('openAchievementForm', { detail: { medalId: medal.medalId } }))
         setSelectedMedal(medal.medalId)
+        navigate(`/medals/${medal.medalId}`, { state: { backgroundLocation: location } })
         return
       }
     }
@@ -287,7 +293,7 @@ export default function SkillTreeCanvas() {
           </button>
           <button
             type="button"
-            onClick={() => setIsFullscreen(true)}
+            onClick={() => navigate('/skill-tree/fullscreen')}
             className="px-4 py-3 rounded bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-slate-700 dark:text-slate-50 dark:hover:bg-slate-600 border border-gray-300 dark:border-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
             aria-haspopup="dialog"
             aria-controls="skilltree-fullscreen"
@@ -327,6 +333,7 @@ export default function SkillTreeCanvas() {
       {isFullscreen && (
         <div
           id="skilltree-fullscreen"
+          ref={fullscreenRef}
           className="fixed inset-0 z-50 bg-background overscroll-contain flex flex-col"
           role="dialog"
           aria-modal="true"
@@ -355,7 +362,7 @@ export default function SkillTreeCanvas() {
               <button
                 type="button"
                 ref={closeBtnRef}
-                onClick={() => setIsFullscreen(false)}
+                onClick={() => navigate(-1)}
                 className="px-3 py-2 rounded bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-slate-700 dark:text-slate-50 dark:hover:bg-slate-600 border border-gray-300 dark:border-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
                 aria-label="Close fullscreen"
               >
@@ -390,13 +397,7 @@ export default function SkillTreeCanvas() {
             💡 Dra för att panorera • Nyp för att zooma • Klicka på medaljer för detaljer • ⌨️ Piltangenter för att panorera
           </p>
 
-          {selectedMedal && (
-            <MedalDetailModal
-              medalId={selectedMedal}
-              onClose={() => setSelectedMedal(null)}
-              onNavigateMedal={setSelectedMedal}
-            />
-          )}
+          {/* Modal is route-driven while in fullscreen */}
         </div>
       )}
 

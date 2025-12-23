@@ -37,6 +37,7 @@ function AppRoutes() {
         <Route path="/" element={<RootLayout />}>
           <Route index element={<Home />} />
           <Route path="skill-tree" element={<SkillTree />} />
+          <Route path="skill-tree/fullscreen" element={<SkillTree />} />
           <Route path="medals" element={<MedalsList />} />
           <Route path="medals/:id" element={<MedalsList />} />
           <Route path="settings" element={<Settings />} />
