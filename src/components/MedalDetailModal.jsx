@@ -7,7 +7,7 @@ import UnlockMedalDialog from './UnlockMedalDialog'
 import RemoveMedalDialog from './RemoveMedalDialog'
 import { useUnlockGuard } from '../hooks/useUnlockGuard'
 const Markdown = lazy(() => import('react-markdown'))
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 
 export default function MedalDetailModal({ medalId, onClose }) {
   const { medalDatabase } = useMedalDatabase()
@@ -19,6 +19,7 @@ export default function MedalDetailModal({ medalId, onClose }) {
   const [unlockOpen, setUnlockOpen] = useState(false)
   const [showOriginal, setShowOriginal] = useState(false)
   const navigate = useNavigate()
+  const location = useLocation()
   const originalId = medal ? `medal-req-original-${medal.id}` : undefined
   const [showUnlockTargets, setShowUnlockTargets] = useState(false)
   const unlockTargetsId = medal ? `medal-unlock-targets-${medal.id}` : undefined
@@ -228,7 +229,10 @@ export default function MedalDetailModal({ medalId, onClose }) {
     try {
       onClose?.()
     } finally {
-      navigate(`/medals/${targetId}`)
+      navigate(`/medals/${targetId}`, {
+        replace: true,
+        state: { backgroundLocation: location.state?.backgroundLocation ?? location }
+      })
     }
   }
 
