@@ -169,7 +169,7 @@ export function drawMedalNode(ctx, x, y, radius, medal, status, scale) {
     if (scale >= 1.2 && typeof ctx.measureText === 'function') {
       const pad = 4 / s
       const fontPx = Math.max(8, 10 / s)
-      const label = 'Under review'
+      const label = 'Under granskning'
       if (canSave) ctx.save()
       const fontFamily = getFontFamily(ctx.canvas)
       ctx.font = `${fontPx}px ${fontFamily}`
