@@ -268,7 +268,7 @@ export default function MedalDetailModal({ medalId, onClose }) {
         className={[
           'pointer-events-auto fixed',
           // Mobile bottom sheet
-          'inset-x-0 bottom-0 w-full h-[80svh] max-h-[80vh]',
+          'inset-x-0 bottom-0 w-full h-[90svh] max-h-[90vh]',
           // Desktop right drawer
           'sm:inset-y-0 sm:right-0 sm:left-auto sm:w-[32rem] sm:h-full',
           // Surface
