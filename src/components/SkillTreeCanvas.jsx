@@ -377,6 +377,7 @@ export default function SkillTreeCanvas() {
             className="absolute right-3 bottom-3 sm:right-4 sm:bottom-4 z-[60]"
             style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
           >
+            <div className="relative">
             <button
               type="button"
               ref={menuButtonRef}
@@ -397,7 +398,7 @@ export default function SkillTreeCanvas() {
                 ref={menuRef}
                 role="menu"
                 aria-label="Åtgärder"
-                className="mt-2 w-56 rounded-md border border-border bg-background shadow-xl overflow-hidden"
+                className="absolute right-0 bottom-14 sm:bottom-16 w-56 rounded-md border border-border bg-background shadow-xl overflow-hidden"
                 onKeyDown={(e) => {
                   if (e.key === 'Escape') {
                     e.preventDefault()
@@ -442,6 +443,7 @@ export default function SkillTreeCanvas() {
                 </button>
               </div>
             )}
+            </div>
           </div>
 
           <div className="flex-1">
