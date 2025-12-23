@@ -23,6 +23,7 @@
   --color-achievable: #20C997;
   --color-locked: #6C757D;
   --color-connection: #94A3B8;
+  --color-review: #F59E0B;
   --color-border: #5e5240;
   --color-muted-foreground: var(--color-text-secondary);
 
@@ -40,6 +41,11 @@
   --color-bg-secondary: var(--color-surface);
   --color-text-primary: var(--color-foreground);
   --color-text-secondary: var(--color-muted);
+}
+
+@layer utilities {
+  .text-review { color: var(--color-review); }
+  .bg-review { background-color: var(--color-review); }
 }
 
 /* Optional dark mode: toggle by adding 'dark' class to <html> */
@@ -62,6 +68,7 @@
   --color-achievable: #34D399;         /* emerald */
   --color-locked: #94A3B8;             /* slate-400 */
   --color-connection: #94A3B8;         /* slate-400 */
+  --color-review: #F59E0B;
   --color-border: rgba(255,255,255,0.25);
   --color-muted-foreground: var(--color-text-secondary);
 

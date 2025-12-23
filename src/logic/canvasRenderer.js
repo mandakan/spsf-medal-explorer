@@ -82,6 +82,10 @@ export function getThemeColors(canvas) {
       getClassColor('text-primary') ||
       getClassColor('text-blue-500') ||
       '#3B82F6',
+    review:
+      (styles && readVar(styles, ['--color-review'])) ||
+      getClassColor('text-amber-500') ||
+      '#F59E0B',
   }
   return palette
 }
@@ -165,59 +169,13 @@ export function drawMedalNode(ctx, x, y, radius, medal, status, scale) {
     if (typeof ctx.setLineDash === 'function') {
       ctx.setLineDash([6 / s, 6 / s])
     }
-    ctx.strokeStyle = palette.accent
+    ctx.strokeStyle = palette.review
     ctx.lineWidth = Math.max(1.5, 2.5 / s)
     ctx.beginPath()
     ctx.arc(x, y, radius + Math.max(2, 3 / s), 0, Math.PI * 2)
     ctx.stroke()
     if (canSave && typeof ctx.restore === 'function') ctx.restore()
-
-    if (scale >= 1.2 && typeof ctx.measureText === 'function') {
-      const pad = 4 / s
-      const fontPx = Math.max(8, 10 / s)
-      const label = 'Under granskning'
-      if (canSave) ctx.save()
-      const fontFamily = getFontFamily(ctx.canvas)
-      ctx.font = `${fontPx}px ${fontFamily}`
-      const textW = (ctx.measureText(label) && ctx.measureText(label).width) || 0
-      const w = textW + pad * 2
-      const h = fontPx + pad * 1.5
-      const rx = x - w / 2
-      const ry = y - radius - h - 8 / s
-      const r = 4 / s
-      // Background (accent with alpha from design token)
-      const prevAlpha = ctx.globalAlpha
-      ctx.globalAlpha = 0.15
-      ctx.fillStyle = palette.accent
-      ctx.globalAlpha = prevAlpha
-      ctx.strokeStyle = palette.accent
-      ctx.lineWidth = Math.max(1, 1.5 / s)
-      ctx.beginPath()
-      if (typeof ctx.arcTo === 'function') {
-        ctx.moveTo(rx + r, ry)
-        ctx.arcTo(rx + w, ry, rx + w, ry + h, r)
-        ctx.arcTo(rx + w, ry + h, rx, ry + h, r)
-        ctx.arcTo(rx, ry + h, rx, ry, r)
-        ctx.arcTo(rx, ry, rx + w, ry, r)
-      } else {
-        // Fallback to simple rectangle if arcTo is not supported by the context
-        ctx.moveTo(rx, ry)
-        ctx.lineTo(rx + w, ry)
-        ctx.lineTo(rx + w, ry + h)
-        ctx.lineTo(rx, ry + h)
-      }
-      ctx.closePath()
-      ctx.fill()
-      ctx.stroke()
-      // Text
-      ctx.fillStyle = palette.text
-      ctx.textAlign = 'center'
-      ctx.textBaseline = 'middle'
-      if (typeof ctx.fillText === 'function') {
-        ctx.fillText(label, x, ry + h / 2)
-      }
-      if (canSave && typeof ctx.restore === 'function') ctx.restore()
-    }
+    // No text label for under-review in canvas; using dashed review ring only for consistency with list
   }
 
   // Label text: draw full displayName below the node with wrapping for readability
