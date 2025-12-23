@@ -112,4 +112,10 @@ body {
   .input[disabled], .select[disabled], .textarea[disabled] {
     @apply opacity-100 text-muted-foreground bg-bg-secondary/70;
   }
+
+  /* Ensures bottom-sheet content never collides with device safe area and provides
+     adequate tappable spacing per WCAG touch target guidance. */
+  .safe-bottom {
+    padding-bottom: calc(env(safe-area-inset-bottom) + 1rem);
+  }
 }
