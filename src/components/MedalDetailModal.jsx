@@ -19,6 +19,8 @@ export default function MedalDetailModal({ medalId, onClose }) {
   const [showOriginal, setShowOriginal] = useState(false)
   const navigate = useNavigate()
   const originalId = medal ? `medal-req-original-${medal.id}` : undefined
+  const [showUnlockTargets, setShowUnlockTargets] = useState(false)
+  const unlockTargetsId = medal ? `medal-unlock-targets-${medal.id}` : undefined
 
   const { canRemove, blocking, tryRemove } = useUnlockGuard(medalId)
   const [showConfirmRemove, setShowConfirmRemove] = useState(false)
@@ -110,6 +112,18 @@ export default function MedalDetailModal({ medalId, onClose }) {
       if (!m) return null
       return { target: m, description: r.description || '' }
     }).filter(Boolean)
+  }, [medal, medalDatabase])
+
+  const unlockTargets = useMemo(() => {
+    if (!medal || !medalDatabase?.getAllMedals) return []
+    const all = medalDatabase.getAllMedals()
+    return all
+      .filter(m =>
+        m?.id !== medal.id &&
+        Array.isArray(m?.prerequisites) &&
+        m.prerequisites.some(p => p?.type === 'medal' && p.medalId === medal.id)
+      )
+      .map(m => ({ target: m }))
   }, [medal, medalDatabase])
 
   const overlayRef = useRef(null)
@@ -491,6 +505,41 @@ export default function MedalDetailModal({ medalId, onClose }) {
                     </li>
                   ))}
                 </ul>
+              </div>
+            )}
+
+            {unlockTargets.length > 0 && (
+              <div className="mb-4 bg-background border border-border rounded">
+                <button
+                  type="button"
+                  onClick={() => setShowUnlockTargets(v => !v)}
+                  aria-expanded={showUnlockTargets}
+                  aria-controls={unlockTargetsId}
+                  className="w-full text-left px-3 py-2 flex items-center justify-between hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary rounded-t"
+                >
+                  <span className="text-sm font-semibold text-foreground">
+                    Denna medalj krävs för
+                    <span className="ml-1 text-muted-foreground">({unlockTargets.length})</span>
+                  </span>
+                  <span aria-hidden="true" className="ml-2">{showUnlockTargets ? '▼' : '▶'}</span>
+                </button>
+                {showUnlockTargets && (
+                  <div className="px-3 pb-3" id={unlockTargetsId} aria-hidden={!showUnlockTargets}>
+                    <ul className="space-y-1">
+                      {unlockTargets.map(({ target }) => (
+                        <li key={target.id}>
+                          <a
+                            href={`/medals/${target.id}`}
+                            onClick={handleReferenceClick(target.id)}
+                            className="inline-flex items-center underline text-primary hover:text-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary px-2 py-2 rounded min-h-[44px]"
+                          >
+                            {target.displayName || target.name}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
             )}
 
