@@ -124,13 +124,32 @@ export class MedalCalculator {
           if (!gapOk) missingItems.push(offsetItem)
         }
       } else if (prereq.type === 'age_requirement') {
-        // Age requirements would be checked against profile data if available
-        // Placeholder: mark unmet if we don't have age info
-        const isMet = false
+        const dobStr = this.profile?.dateOfBirth
+        let age = null
+        let isMet = false
+
+        if (dobStr) {
+          const dob = new Date(dobStr)
+          if (!Number.isNaN(dob.getTime())) {
+            const refDate = typeof targetYear === 'number' ? new Date(targetYear, 11, 31) : new Date()
+            let a = refDate.getFullYear() - dob.getFullYear()
+            const monthDiff = refDate.getMonth() - dob.getMonth()
+            const beforeBirthday = monthDiff < 0 || (monthDiff === 0 && refDate.getDate() < dob.getDate())
+            if (beforeBirthday) a -= 1
+            age = a
+
+            const minOk = typeof prereq.minAge === 'number' ? age >= prereq.minAge : true
+            const maxOk = typeof prereq.maxAge === 'number' ? age <= prereq.maxAge : true
+            isMet = minOk && maxOk
+          }
+        }
+
         const item = {
           type: 'age_requirement',
           isMet,
           minAge: prereq.minAge,
+          ...(prereq.maxAge != null ? { maxAge: prereq.maxAge } : {}),
+          ...(age != null ? { age } : {}),
           description: prereq.description
         }
         items.push(item)
