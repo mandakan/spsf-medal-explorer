@@ -4,6 +4,7 @@
  */
 export function generateMedalLayout(medals) {
   // Group medals by type
+  const medalById = new Map(medals.map(m => [m.id, m]))
   const medalsByType = {}
   medals.forEach(medal => {
     if (!medalsByType[medal.type]) {
@@ -13,8 +14,8 @@ export function generateMedalLayout(medals) {
   })
 
   const types = Object.keys(medalsByType)
-  const columnWidth = 180
-  const rowHeight = 100
+  const columnWidth = 200
+  const rowHeight = 120
 
   const layout = {
     medals: [],
@@ -38,10 +39,27 @@ export function generateMedalLayout(medals) {
       if (Array.isArray(medal.prerequisites)) {
         medal.prerequisites.forEach(prereq => {
           if (prereq && prereq.type === 'medal' && prereq.medalId) {
+            const fromMedal = medalById.get(prereq.medalId)
+            let label = null
+            const sameType = fromMedal && fromMedal.type === medal.type
+            // 1) Edge-specific offset takes precedence
+            if (Number.isFinite(prereq.yearOffset) && prereq.yearOffset > 0) {
+              label = `${prereq.yearOffset} år`
+            // 2) Otherwise, show sustained requirement years on same-type edges
+            } else if (sameType && Array.isArray(medal.requirements)) {
+              const sustain = medal.requirements.find(r =>
+                r && r.type === 'sustained_achievement' && Number.isFinite(r.yearsOfAchievement)
+              )
+              const years = sustain?.yearsOfAchievement
+              if (typeof years === 'number' && years > 1) {
+                label = `${years} år`
+              }
+            }
             layout.connections.push({
               from: prereq.medalId,
               to: medal.id,
-              type: 'prerequisite'
+              type: 'prerequisite',
+              label
             })
           }
         })

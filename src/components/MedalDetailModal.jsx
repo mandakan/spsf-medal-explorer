@@ -4,11 +4,12 @@ import { useAllMedalStatuses } from '../hooks/useMedalCalculator'
 import { useMedalCalculator } from '../hooks/useMedalCalculator'
 import { useProfile } from '../hooks/useProfile'
 import UnlockMedalDialog from './UnlockMedalDialog'
+import RemoveMedalDialog from './RemoveMedalDialog'
 import { useUnlockGuard } from '../hooks/useUnlockGuard'
 const Markdown = lazy(() => import('react-markdown'))
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 
-export default function MedalDetailModal({ medalId, onClose }) {
+export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) {
   const { medalDatabase } = useMedalDatabase()
   const statuses = useAllMedalStatuses()
   const calculator = useMedalCalculator()
@@ -18,7 +19,10 @@ export default function MedalDetailModal({ medalId, onClose }) {
   const [unlockOpen, setUnlockOpen] = useState(false)
   const [showOriginal, setShowOriginal] = useState(false)
   const navigate = useNavigate()
+  const location = useLocation()
   const originalId = medal ? `medal-req-original-${medal.id}` : undefined
+  const [showUnlockTargets, setShowUnlockTargets] = useState(false)
+  const unlockTargetsId = medal ? `medal-unlock-targets-${medal.id}` : undefined
 
   const { canRemove, blocking, tryRemove } = useUnlockGuard(medalId)
   const [showConfirmRemove, setShowConfirmRemove] = useState(false)
@@ -112,6 +116,18 @@ export default function MedalDetailModal({ medalId, onClose }) {
     }).filter(Boolean)
   }, [medal, medalDatabase])
 
+  const unlockTargets = useMemo(() => {
+    if (!medal || !medalDatabase?.getAllMedals) return []
+    const all = medalDatabase.getAllMedals()
+    return all
+      .filter(m =>
+        m?.id !== medal.id &&
+        Array.isArray(m?.prerequisites) &&
+        m.prerequisites.some(p => p?.type === 'medal' && p.medalId === medal.id)
+      )
+      .map(m => ({ target: m }))
+  }, [medal, medalDatabase])
+
   const overlayRef = useRef(null)
   const panelRef = useRef(null)
   const prevFocusRef = useRef(null)
@@ -168,6 +184,25 @@ export default function MedalDetailModal({ medalId, onClose }) {
     }
   }, [onClose, titleId, medal])
 
+  useEffect(() => {
+    if (!medal) return
+    if (typeof document === 'undefined') return
+    const prev = document.title
+    const name = medal.displayName || medal.name || String(medalId)
+    try {
+      document.title = `${name} – Medaljdetaljer`
+    } catch {
+      // Ignore non-critical document title update errors
+    }
+    return () => {
+      try {
+        document.title = prev
+      } catch {
+        // Ignore non-critical document title update errors
+      }
+    }
+  }, [medal, medalId])
+
   if (!medal) return null
 
   const statusLabel = {
@@ -209,12 +244,17 @@ export default function MedalDetailModal({ medalId, onClose }) {
   }
 
   const handleReferenceClick = (targetId) => (e) => {
+    const isPlainLeftClick = e.button === 0 && !e.metaKey && !e.ctrlKey && !e.altKey && !e.shiftKey
+    if (!isPlainLeftClick) return
     e.preventDefault()
-    try {
-      onClose?.()
-    } finally {
-      navigate(`/medals/${targetId}`)
+    if (typeof onNavigateMedal === 'function') {
+      onNavigateMedal(targetId)
+      return
     }
+    const background = location.state?.backgroundLocation
+    navigate(`/medals/${targetId}`, {
+      state: background ? { backgroundLocation: background } : undefined
+    })
   }
 
 
@@ -228,12 +268,6 @@ export default function MedalDetailModal({ medalId, onClose }) {
     }
   }
 
-  const handleConfirmRemove = async () => {
-    const res = await tryRemove()
-    if (res?.ok) {
-      setShowConfirmRemove(false)
-    }
-  }
 
   const statusClass = 'bg-bg-secondary text-foreground ring-1 ring-border'
 
@@ -254,7 +288,7 @@ export default function MedalDetailModal({ medalId, onClose }) {
         className={[
           'pointer-events-auto fixed',
           // Mobile bottom sheet
-          'inset-x-0 bottom-0 w-full h-[80svh] max-h-[80vh]',
+          'inset-x-0 bottom-0 w-full h-[90svh] max-h-[90vh]',
           // Desktop right drawer
           'sm:inset-y-0 sm:right-0 sm:left-auto sm:w-[32rem] sm:h-full',
           // Surface
@@ -352,57 +386,7 @@ export default function MedalDetailModal({ medalId, onClose }) {
               </div>
             )}
 
-            {showConfirmRemove && status?.status === 'unlocked' && canRemove && (
-              <div className="mb-4 bg-background border border-border rounded p-3" role="dialog" aria-modal="false" aria-labelledby="confirm-remove-title">
-                <p id="confirm-remove-title" className="text-sm font-semibold text-foreground mb-2">
-                  Ta bort upplåsning?
-                </p>
-                <p className="text-sm text-muted-foreground mb-3">
-                  Det här påverkar inte andra medaljer.
-                </p>
-                <div className="flex gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmRemove(false)}
-                    className="px-3 py-2 rounded-md bg-background text-foreground hover:bg-bg-secondary ring-1 ring-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
-                  >
-                    Avbryt
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleConfirmRemove}
-                    className="px-3 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
-                  >
-                    Ta bort
-                  </button>
-                </div>
-              </div>
-            )}
 
-            {showBlockedInfo && status?.status === 'unlocked' && !canRemove && (
-              <div className="mb-4 bg-background border border-border rounded p-3" role="region" aria-labelledby="blocked-remove-title">
-                <p id="blocked-remove-title" className="text-sm font-semibold text-foreground mb-2">
-                  Kan inte ta bort än
-                </p>
-                <p className="text-sm text-muted-foreground mb-2">
-                  De här upplåsta medaljerna beror på denna:
-                </p>
-                <ul className="text-sm text-muted-foreground list-disc ml-5 space-y-1">
-                  {blockingMedals.map(m => (
-                    <li key={m.id} className="break-words">{m.displayName || m.name}</li>
-                  ))}
-                </ul>
-                <div className="mt-3">
-                  <button
-                    type="button"
-                    onClick={() => setShowBlockedInfo(false)}
-                    className="px-3 py-2 rounded-md bg-background text-foreground hover:bg-bg-secondary ring-1 ring-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
-                  >
-                    OK
-                  </button>
-                </div>
-              </div>
-            )}
 
             {underReview && (
               <div id={`under-review-note-${medal.id}`} className="mb-4 bg-amber-50 text-amber-900 border border-amber-300 rounded p-3 dark:bg-amber-900/20 dark:text-amber-100 dark:border-amber-700">
@@ -494,6 +478,41 @@ export default function MedalDetailModal({ medalId, onClose }) {
               </div>
             )}
 
+            {unlockTargets.length > 0 && (
+              <div className="mb-4 bg-background border border-border rounded">
+                <button
+                  type="button"
+                  onClick={() => setShowUnlockTargets(v => !v)}
+                  aria-expanded={showUnlockTargets}
+                  aria-controls={unlockTargetsId}
+                  className="w-full text-left px-3 py-2 flex items-center justify-between hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary rounded-t"
+                >
+                  <span className="text-sm font-semibold text-foreground">
+                    Denna medalj krävs för
+                    <span className="ml-1 text-muted-foreground">({unlockTargets.length})</span>
+                  </span>
+                  <span aria-hidden="true" className="ml-2">{showUnlockTargets ? '▼' : '▶'}</span>
+                </button>
+                {showUnlockTargets && (
+                  <div className="px-3 pb-3" id={unlockTargetsId} aria-hidden={!showUnlockTargets}>
+                    <ul className="space-y-1">
+                      {unlockTargets.map(({ target }) => (
+                        <li key={target.id}>
+                          <a
+                            href={`/medals/${target.id}`}
+                            onClick={handleReferenceClick(target.id)}
+                            className="inline-flex items-center underline text-primary hover:text-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary px-2 py-2 rounded min-h-[44px]"
+                          >
+                            {target.displayName || target.name}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
+
           </div>
 
           {/* Footer */}
@@ -558,6 +577,21 @@ export default function MedalDetailModal({ medalId, onClose }) {
         medal={medal}
         open={unlockOpen}
         onClose={() => setUnlockOpen(false)}
+      />
+
+      <RemoveMedalDialog
+        medal={medal}
+        open={showConfirmRemove}
+        onClose={() => setShowConfirmRemove(false)}
+        variant="confirm"
+        onConfirmRemove={tryRemove}
+      />
+      <RemoveMedalDialog
+        medal={medal}
+        open={showBlockedInfo}
+        onClose={() => setShowBlockedInfo(false)}
+        variant="blocked"
+        blockingMedals={blockingMedals}
       />
     </div>
   )

@@ -6,6 +6,7 @@ import { useCanvasRenderer } from '../hooks/useCanvasRenderer'
 import { generateMedalLayout } from '../logic/canvasLayout'
 import MedalDetailModal from './MedalDetailModal'
 import { exportCanvasToPNG } from '../utils/canvasExport'
+import { useNavigate, useLocation } from 'react-router-dom'
 
 export default function SkillTreeCanvas() {
   const canvasRef = useRef(null)
@@ -15,6 +16,8 @@ export default function SkillTreeCanvas() {
   const { render } = useCanvasRenderer()
   
   const [selectedMedal, setSelectedMedal] = useState(null)
+  const navigate = useNavigate()
+  const location = useLocation()
   const layout = useMemo(() => {
     if (!medalDatabase) return null
     const medals = medalDatabase.getAllMedals()
@@ -214,7 +217,11 @@ export default function SkillTreeCanvas() {
       const dx = mouseX - nodeX
       const dy = mouseY - nodeY
       if (dx * dx + dy * dy < effectiveRadius * effectiveRadius) {
-        setSelectedMedal(medal.medalId)
+        if (isFullscreen) {
+          setSelectedMedal(medal.medalId)
+        } else {
+          navigate(`/medals/${medal.medalId}`, { state: { backgroundLocation: location } })
+        }
         return
       }
     }
@@ -387,17 +394,13 @@ export default function SkillTreeCanvas() {
             <MedalDetailModal
               medalId={selectedMedal}
               onClose={() => setSelectedMedal(null)}
+              onNavigateMedal={setSelectedMedal}
             />
           )}
         </div>
       )}
 
-      {selectedMedal && !isFullscreen && (
-        <MedalDetailModal
-          medalId={selectedMedal}
-          onClose={() => setSelectedMedal(null)}
-        />
-      )}
+      {/* Non-fullscreen modal is now route-driven via AppRoutes */}
     </div>
   )
 }
