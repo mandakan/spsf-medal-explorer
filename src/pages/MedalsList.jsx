@@ -182,25 +182,15 @@ export default function MedalsList() {
         placeholder="Sök märken... (klicka / för fokus)"
       />
 
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex items-center gap-2">
         <QuickFilterChips
+          className="flex-1 min-w-0"
           filters={filters}
-          onToggle={(key, value) => {
-            onToggleQuickFilter(key, value)
-          }}
+          onToggle={(key, value) => onToggleQuickFilter(key, value)}
+          onOpenFilters={() => setShowFilters(true)}
+          activeCount={activeFilterCount}
+          controlsId="mobile-filters-sheet"
         />
-        <div className="lg:hidden">
-          <button
-            type="button"
-            onClick={() => setShowFilters(true)}
-            className="btn btn-muted mt-2 min-h-[44px]"
-            aria-label="Öppna filter"
-            aria-haspopup="dialog"
-            aria-controls="mobile-filters-sheet"
-          >
-            {activeFilterCount > 0 ? `Filter (${activeFilterCount})` : 'Filter'}
-          </button>
-        </div>
       </div>
 
 
