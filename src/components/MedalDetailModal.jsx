@@ -191,9 +191,15 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
     const name = medal.displayName || medal.name || String(medalId)
     try {
       document.title = `${name} – Medaljdetaljer`
-    } catch {}
+    } catch {
+      // Ignore non-critical document title update errors
+    }
     return () => {
-      try { document.title = prev } catch {}
+      try {
+        document.title = prev
+      } catch {
+        // Ignore non-critical document title update errors
+      }
     }
   }, [medal, medalId])
 
