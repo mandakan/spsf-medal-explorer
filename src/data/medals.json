@@ -3,6 +3,7 @@
   "medals": [
     {
       "id": "pistol-mark-bronze",
+      "reviewed": true,
       "type": "pistol_mark",
       "tier": "bronze",
       "name": "Pistolskyttemärket - Brons",
@@ -1692,7 +1693,7 @@
       "requirements": [
         {
           "type": "military_fast_match",
-          "description": "Military Fast Match at district, regional, national or riks competitions",
+          "description": "Militär snabbmatch at district, regional, national or riks competitions",
           "minCompetitions": 3,
           "timeWindowYears": 1,
           "pointThresholds": {
@@ -1721,7 +1722,7 @@
       "requirements": [
         {
           "type": "military_fast_match",
-          "description": "Military Fast Match at district, regional, national or riks competitions",
+          "description": "Militär snabbmatch at district, regional, national or riks competitions",
           "minCompetitions": 3,
           "timeWindowYears": 1,
           "pointThresholds": {
@@ -1750,7 +1751,7 @@
       "requirements": [
         {
           "type": "military_fast_match",
-          "description": "Military Fast Match at district, regional, national or riks competitions",
+          "description": "Militär snabbmatch at district, regional, national or riks competitions",
           "minCompetitions": 3,
           "timeWindowYears": 1,
           "pointThresholds": {
@@ -2101,14 +2102,14 @@
       "references": [
         {
           "medalId": "pistol-mark-gold",
-          "description": "Fulfill requirements for Pistol Mark - Gold (accumulated over 3 years)."
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld."
         }
       ],
       "prerequisites": [{ "type": "medal", "medalId": "pistol-mark-gold" }],
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level Pistol Mark achievement",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
           "yearsOfAchievement": 3
         }
       ],
@@ -2130,7 +2131,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level Pistol Mark achievement",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
           "yearsOfAchievement": 3
         }
       ],
@@ -2152,7 +2153,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level Pistol Mark achievement",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
           "yearsOfAchievement": 3
         }
       ],
@@ -2168,11 +2169,11 @@
       "displayName": "Högre årtalsmärket - Brons",
       "color": "#CD7F32",
       "icon": "higher-annual-bronze",
-      "requirements_original": "3 years of **Gold-level Pistol Mark** achievement.",
+      "requirements_original": "Innehavare av lägre årtalsmärket med tre stjärnor som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
       "references": [
         {
           "medalId": "pistol-mark-gold",
-          "description": "Fulfill requirements for Pistol Mark - Gold (accumulated over 3 years)."
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld."
         }
       ],
       "prerequisites": [
@@ -2181,8 +2182,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level Pistol Mark achievement",
-
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
           "yearsOfAchievement": 3
         }
       ],
@@ -2198,13 +2198,19 @@
       "displayName": "Högre årtalsmärket - Silver",
       "color": "#C0C0C0",
       "icon": "higher-annual-silver",
+      "references": [
+        {
+          "medalId": "pistol-mark-gold",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld."
+        }
+      ],
       "prerequisites": [
         { "type": "medal", "medalId": "higher-annual-mark-bronze" }
       ],
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level Pistol Mark achievement",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
           "yearsOfAchievement": 3
         }
       ],
@@ -2220,13 +2226,19 @@
       "displayName": "Högre årtalsmärket - Guld",
       "color": "#FFD700",
       "icon": "higher-annual-gold",
+      "references": [
+        {
+          "medalId": "pistol-mark-gold",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld."
+        }
+      ],
       "prerequisites": [
         { "type": "medal", "medalId": "higher-annual-mark-silver" }
       ],
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level Pistol Mark achievement",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
           "yearsOfAchievement": 3
         }
       ],
@@ -2242,14 +2254,19 @@
       "displayName": "Högre årtalsmärket - Guld med en stjärna",
       "color": "#FFD700",
       "icon": "higher-annual-gold-star-1",
+      "references": [
+        {
+          "medalId": "pistol-mark-gold",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld."
+        }
+      ],
       "prerequisites": [
         { "type": "medal", "medalId": "higher-annual-mark-gold" }
       ],
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level Pistol Mark achievement",
-
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
           "yearsOfAchievement": 3
         }
       ],
@@ -2265,14 +2282,19 @@
       "displayName": "Högre årtalsmärket - Guld med två stjärnor",
       "color": "#FFD700",
       "icon": "higher-annual-gold-star-2",
+      "references": [
+        {
+          "medalId": "pistol-mark-gold",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld."
+        }
+      ],
       "prerequisites": [
         { "type": "medal", "medalId": "higher-annual-mark-gold-star-1" }
       ],
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level Pistol Mark achievement",
-
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
           "yearsOfAchievement": 3
         }
       ],
@@ -2288,14 +2310,19 @@
       "displayName": "Högre årtalsmärket - Guld med tre stjärnor",
       "color": "#FFD700",
       "icon": "higher-annual-gold-star-3",
+      "references": [
+        {
+          "medalId": "pistol-mark-gold",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld."
+        }
+      ],
       "prerequisites": [
         { "type": "medal", "medalId": "higher-annual-mark-gold-star-2" }
       ],
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level Pistol Mark achievement",
-
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
           "yearsOfAchievement": 3
         }
       ],
@@ -2311,14 +2338,19 @@
       "displayName": "Högre årtalsmärket - Guld med krans",
       "color": "#FFD700",
       "icon": "higher-annual-gold-wreath",
+      "references": [
+        {
+          "medalId": "pistol-mark-gold",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld."
+        }
+      ],
       "prerequisites": [
         { "type": "medal", "medalId": "higher-annual-mark-gold-star-3" }
       ],
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level Pistol Mark achievement",
-
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
           "yearsOfAchievement": 3
         }
       ],
@@ -2334,14 +2366,19 @@
       "displayName": "Högre årtalsmärket - Guld med krans och en stjärna",
       "color": "#FFD700",
       "icon": "higher-annual-gold-wreath-star-1",
+      "references": [
+        {
+          "medalId": "pistol-mark-gold",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld."
+        }
+      ],
       "prerequisites": [
         { "type": "medal", "medalId": "higher-annual-mark-gold-wreath" }
       ],
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level Pistol Mark achievement",
-
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
           "yearsOfAchievement": 3
         }
       ],
@@ -2357,14 +2394,19 @@
       "displayName": "Högre årtalsmärket - Guld med krans och två stjärnor",
       "color": "#FFD700",
       "icon": "higher-annual-gold-wreath-star-2",
+      "references": [
+        {
+          "medalId": "pistol-mark-gold",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld."
+        }
+      ],
       "prerequisites": [
         { "type": "medal", "medalId": "higher-annual-mark-gold-wreath-star-1" }
       ],
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level Pistol Mark achievement",
-
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
           "yearsOfAchievement": 3
         }
       ],
@@ -2380,14 +2422,19 @@
       "displayName": "Högre årtalsmärket - Guld med krans och tre stjärnor",
       "color": "#FFD700",
       "icon": "higher-annual-gold-wreath-star-3",
+      "references": [
+        {
+          "medalId": "pistol-mark-gold",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld."
+        }
+      ],
       "prerequisites": [
         { "type": "medal", "medalId": "higher-annual-mark-gold-wreath-star-2" }
       ],
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level Pistol Mark achievement",
-
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
           "yearsOfAchievement": 3
         }
       ],
@@ -2403,14 +2450,19 @@
       "displayName": "Högre årtalsmärket - Guld med emaljerad krans",
       "color": "#FFD700",
       "icon": "higher-annual-gold-enamel-wreath",
+      "references": [
+        {
+          "medalId": "pistol-mark-gold",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld."
+        }
+      ],
       "prerequisites": [
         { "type": "medal", "medalId": "higher-annual-mark-gold-wreath-star-3" }
       ],
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level Pistol Mark achievement",
-
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
           "yearsOfAchievement": 3
         }
       ],
@@ -2428,14 +2480,19 @@
       "displayName": "Högre årtalsmärket - Guld med emaljerad krans och en stjärna",
       "color": "#FFD700",
       "icon": "higher-annual-gold-enamel-wreath-star-1",
+      "references": [
+        {
+          "medalId": "pistol-mark-gold",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld."
+        }
+      ],
       "prerequisites": [
         { "type": "medal", "medalId": "higher-annual-mark-gold-enamel-wreath" }
       ],
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level Pistol Mark achievement",
-
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
           "yearsOfAchievement": 3
         }
       ],
@@ -2453,6 +2510,12 @@
       "displayName": "Högre årtalsmärket - Guld med emaljerad krans och två stjärnor",
       "color": "#FFD700",
       "icon": "higher-annual-gold-enamel-wreath-star-2",
+      "references": [
+        {
+          "medalId": "pistol-mark-gold",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld."
+        }
+      ],
       "prerequisites": [
         {
           "type": "medal",
@@ -2462,8 +2525,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level Pistol Mark achievement",
-
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
           "yearsOfAchievement": 3
         }
       ],
@@ -2481,6 +2543,12 @@
       "displayName": "Högre årtalsmärket - Guld med emaljerad krans och tre stjärnor",
       "color": "#FFD700",
       "icon": "higher-annual-gold-enamel-wreath-star-3",
+      "references": [
+        {
+          "medalId": "pistol-mark-gold",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld."
+        }
+      ],
       "prerequisites": [
         {
           "type": "medal",
@@ -2490,8 +2558,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level Pistol Mark achievement",
-
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
           "yearsOfAchievement": 3
         }
       ],
