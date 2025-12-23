@@ -14,8 +14,8 @@ export function generateMedalLayout(medals) {
   })
 
   const types = Object.keys(medalsByType)
-  const columnWidth = 180
-  const rowHeight = 100
+  const columnWidth = 200
+  const rowHeight = 120
 
   const layout = {
     medals: [],
