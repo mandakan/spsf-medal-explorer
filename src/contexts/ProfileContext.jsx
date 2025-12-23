@@ -4,6 +4,41 @@ import { LocalStorageDataManager } from '../data/localStorage'
 import { UserProfile } from '../models/Profile'
 export { ProfileContext } from './profileContext'
 
+const LAST_PROFILE_KEY = 'app:lastProfileId'
+
+function getLastProfileId() {
+  if (typeof window === 'undefined') return null
+  try {
+    return window.localStorage.getItem(LAST_PROFILE_KEY)
+  } catch {
+    return null
+  }
+}
+
+function setLastProfileId(id) {
+  if (typeof window === 'undefined') return
+  try {
+    if (id) {
+      window.localStorage.setItem(LAST_PROFILE_KEY, id)
+    } else {
+      window.localStorage.removeItem(LAST_PROFILE_KEY)
+    }
+  } catch {
+    // ignore
+  }
+}
+
+function getProfileOverrideFromURL() {
+  if (typeof window === 'undefined') return null
+  try {
+    const url = new URL(window.location.href)
+    const id = url.searchParams.get('profile')
+    return id || null
+  } catch {
+    return null
+  }
+}
+
 
 export function ProfileProvider({ children }) {
   const [storage] = useState(() => new LocalStorageDataManager())
@@ -32,6 +67,7 @@ export function ProfileProvider({ children }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+
   const createProfile = useCallback(
     async (displayName, dateOfBirth) => {
       try {
@@ -42,6 +78,7 @@ export function ProfileProvider({ children }) {
         })
         const saved = await storage.saveUserProfile(newProfile)
         setCurrentProfile(saved)
+        setLastProfileId(saved.userId)
         await loadProfiles()
         return saved
       } catch (err) {
@@ -61,6 +98,7 @@ export function ProfileProvider({ children }) {
         const profile = await storage.getUserProfile(userId)
         if (!profile) throw new Error('Profile not found')
         setCurrentProfile(profile)
+        setLastProfileId(profile.userId)
         setError(null)
       } catch (err) {
         setError(err.message)
@@ -71,12 +109,40 @@ export function ProfileProvider({ children }) {
     [storage]
   )
 
+  // Auto-select most recently used profile (or URL override) once profiles are loaded
+  React.useEffect(() => {
+    if (loading) return
+    if (currentProfile) return
+    if (!profiles || profiles.length === 0) return
+
+    // URL override takes precedence: ?profile=<userId>
+    const overrideId = getProfileOverrideFromURL()
+    if (overrideId && profiles.some(p => p.userId === overrideId)) {
+      selectProfile(overrideId)
+      setLastProfileId(overrideId)
+      return
+    }
+
+    // Restore last used profile from localStorage
+    const lastId = getLastProfileId()
+    if (lastId && profiles.some(p => p.userId === lastId)) {
+      selectProfile(lastId)
+      return
+    }
+    if (lastId) setLastProfileId(null)
+
+    // Fallback: pick most recently modified profile
+    const picked = [...profiles].sort((a, b) => new Date(b.lastModified) - new Date(a.lastModified))[0]
+    if (picked) selectProfile(picked.userId)
+  }, [profiles, currentProfile, loading, selectProfile])
+
   const updateProfile = useCallback(
     async (profile) => {
       try {
         setLoading(true)
         const updated = await storage.saveUserProfile(profile)
         setCurrentProfile(updated)
+        setLastProfileId(updated.userId)
         await loadProfiles()
         return updated
       } catch (err) {
@@ -96,6 +162,7 @@ export function ProfileProvider({ children }) {
         await storage.deleteProfile(userId)
         if (currentProfile?.userId === userId) {
           setCurrentProfile(null)
+          setLastProfileId(null)
         }
         await loadProfiles()
       } catch (err) {

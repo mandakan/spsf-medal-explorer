@@ -14,7 +14,7 @@ export default function ProfilePromptBanner({ id = 'profile-picker-inline' }) {
         <div aria-hidden="true" className="text-xl leading-none">👤</div>
         <div className="flex-1">
           <p className="text-foreground mb-2">
-            Välj eller skapa en profil för att fortsätta.
+            Välj eller skapa en profil.
           </p>
           <button
             type="button"
@@ -23,7 +23,7 @@ export default function ProfilePromptBanner({ id = 'profile-picker-inline' }) {
             aria-haspopup="dialog"
             aria-controls={id}
           >
-            Välj profil
+            Profil
           </button>
         </div>
       </div>
