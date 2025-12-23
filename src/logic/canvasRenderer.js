@@ -2,6 +2,7 @@
  * Canvas rendering utilities
  * Colors are resolved from global theme (CSS vars/Tailwind), with safe fallbacks.
  */
+import { Medal } from '../models/Medal.js'
 
 // Cache for measured Tailwind class colors to avoid reflow per call
 const classColorCache = new Map()
@@ -135,6 +136,11 @@ export const COLORS = {
 }
 
 export function drawMedalNode(ctx, x, y, radius, medal, status, scale) {
+  if (!(medal instanceof Medal)) {
+    if (!medal || typeof medal !== 'object') {
+      throw new Error('drawMedalNode requires a Medal instance or a plain medal-like object')
+    }
+  }
   const palette = getThemeColors(ctx?.canvas)
   const statusKey = status?.status || 'locked'
   const statusColor = palette[statusKey]
@@ -151,7 +157,7 @@ export function drawMedalNode(ctx, x, y, radius, medal, status, scale) {
   ctx.stroke()
 
   // Under review indicator: dashed ring and optional label
-  const underReview = medal && (medal.reviewed !== true)
+  const underReview = medal.reviewed !== true
   if (underReview) {
     const s = Math.max(scale, 0.001)
     const canSave = typeof ctx.save === 'function'
@@ -169,7 +175,7 @@ export function drawMedalNode(ctx, x, y, radius, medal, status, scale) {
     if (scale >= 1.2 && typeof ctx.measureText === 'function') {
       const pad = 4 / s
       const fontPx = Math.max(8, 10 / s)
-      const label = 'Under review'
+      const label = 'Under granskning'
       if (canSave) ctx.save()
       const fontFamily = getFontFamily(ctx.canvas)
       ctx.font = `${fontPx}px ${fontFamily}`
