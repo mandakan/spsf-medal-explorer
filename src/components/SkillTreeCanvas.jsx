@@ -29,6 +29,10 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   const closeBtnRef = useRef(null)
   const prevFocusRef = useRef(null)
 
+  // Keep latest interactive scale without causing re-renders
+  const scaleRef = useRef(scale)
+  useEffect(() => { scaleRef.current = scale }, [scale])
+
   // Fullscreen floating menu state and refs
   const [menuOpen, setMenuOpen] = useState(false)
   const menuButtonRef = useRef(null)
@@ -152,10 +156,11 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     // Target minimum effective scale for label readability (labels draw at >= 0.8)
     const minEff = 0.8
     const targetInteractive = minEff / Math.max(0.001, baseScale)
-    if (scale + 1e-3 < targetInteractive) {
+    const current = scaleRef.current
+    if (current + 1e-3 < targetInteractive) {
       setScaleAbsolute(targetInteractive)
     }
-  }, [computeBaseTransform, layout, scale, setScaleAbsolute])
+  }, [computeBaseTransform, layout, setScaleAbsolute])
 
   const setCanvasRef = useCallback((node) => {
     canvasRef.current = node
