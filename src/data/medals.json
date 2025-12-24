@@ -530,6 +530,7 @@
       "displayName": "Fältskyttemärket - Brons",
       "color": "#CD7F32",
       "icon": "field-bronze",
+      "requirements_original": "Prov för fältskyttemärke får endast avläggas av den, som under före gående kalenderår uppfyllt fordringarna för pistolskyttemärke i brons och som har fyllt 15 år.\nFältskyttemärket förekommer i valörerna brons, silver och guld samt med påbyggnad. Märkesprov får avläggas vid riks-, nationella, landsdels- och kretstävlingar i fältskjutning.\nEndast ett märke kan under året erövras av skytt och märke av högre valör endast av den, som förut löst märke av närmast lägre valör.\nFör att erhålla fältskyttemärket krävs att skytten vid tre olika tävlingar under samma kalenderår uppfyller kraven för resp. märke, nämligen:\n\n**Antal träff/poäng i vapengrupp A:**\n\n|Märke|6 stn, 36 tr|7 stn, 42 tr|8 stn, 48 tr|9 stn, 54 tr|10 stn, 60 tr|% av max|\n|-|-|-|-|-|-|-|\n|Brons|19|22|25|29|32|52|\n|Silver|23|27|31|36|40|65|\n|Guld|27|31|36|41|46|75|",
       "prerequisites": [
         {
           "type": "medal",
