@@ -635,11 +635,12 @@
       "displayName": "Fältskyttemärket - Guld med en stjärna",
       "color": "#FFD700",
       "icon": "field-gold-star-1",
+      "requirements_original": "Innehavare av fältskyttemärket i guld som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för fältskyttemärket i guld.",
       "prerequisites": [{ "type": "medal", "medalId": "field-mark-gold" }],
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level achievement",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för fältskyttemärket i guld.",
           "yearsOfAchievement": 3
         }
       ],
@@ -661,7 +662,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level achievement",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för fältskyttemärket i guld.",
           "yearsOfAchievement": 3
         }
       ],
@@ -683,7 +684,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level achievement",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för fältskyttemärket i guld.",
           "yearsOfAchievement": 3
         }
       ],
@@ -705,7 +706,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level achievement",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för fältskyttemärket i guld.",
           "yearsOfAchievement": 3
         }
       ],
@@ -727,7 +728,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level achievement",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för fältskyttemärket i guld.",
           "yearsOfAchievement": 3
         }
       ],
@@ -749,7 +750,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level achievement",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för fältskyttemärket i guld.",
           "yearsOfAchievement": 3
         }
       ],
@@ -771,7 +772,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level achievement",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för fältskyttemärket i guld.",
           "yearsOfAchievement": 3
         }
       ],
@@ -1024,7 +1025,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level achievement",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för precisionsskyttemärket i guld.",
 
           "yearsOfAchievement": 3
         }
@@ -1047,7 +1048,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level achievement",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för precisionsskyttemärket i guld.",
 
           "yearsOfAchievement": 3
         }
@@ -1070,7 +1071,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level achievement",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för precisionsskyttemärket i guld.",
 
           "yearsOfAchievement": 3
         }
@@ -1168,7 +1169,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level achievement",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för skidskyttemärket i guld.",
 
           "yearsOfAchievement": 3
         }
@@ -1191,7 +1192,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level achievement",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för skidskyttemärket i guld.",
 
           "yearsOfAchievement": 3
         }
@@ -1214,7 +1215,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level achievement",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för skidskyttemärket i guld.",
 
           "yearsOfAchievement": 3
         }
@@ -1237,7 +1238,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level achievement",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för skidskyttemärket i guld.",
 
           "yearsOfAchievement": 3
         }
@@ -1260,7 +1261,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level achievement",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för skidskyttemärket i guld.",
 
           "yearsOfAchievement": 3
         }
@@ -1283,7 +1284,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level achievement",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för skidskyttemärket i guld.",
 
           "yearsOfAchievement": 3
         }
@@ -1306,7 +1307,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level achievement",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för skidskyttemärket i guld.",
 
           "yearsOfAchievement": 3
         }
@@ -1404,7 +1405,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level achievement",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för springskyttemärket i guld.",
 
           "yearsOfAchievement": 3
         }
@@ -1427,7 +1428,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level achievement",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för springskyttemärket i guld.",
 
           "yearsOfAchievement": 3
         }
@@ -1450,7 +1451,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level achievement",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för springskyttemärket i guld.",
 
           "yearsOfAchievement": 3
         }
@@ -1473,7 +1474,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level achievement",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för springskyttemärket i guld.",
 
           "yearsOfAchievement": 3
         }
@@ -1496,7 +1497,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level achievement",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för springskyttemärket i guld.",
 
           "yearsOfAchievement": 3
         }
@@ -1519,7 +1520,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level achievement",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för springskyttemärket i guld.",
 
           "yearsOfAchievement": 3
         }
@@ -1542,7 +1543,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level achievement",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för springskyttemärket i guld.",
 
           "yearsOfAchievement": 3
         }
@@ -1647,7 +1648,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level achievement",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för märke i nationell helmatch i guld.",
 
           "yearsOfAchievement": 3
         }
@@ -1670,7 +1671,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level achievement",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för märke i nationell helmatch i guld.",
 
           "yearsOfAchievement": 3
         }
@@ -1693,7 +1694,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level achievement",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för märke i nationell helmatch i guld.",
 
           "yearsOfAchievement": 3
         }
@@ -1801,7 +1802,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level achievement",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för märke i nationell helmatch i guld.",
 
           "yearsOfAchievement": 3
         }
@@ -1824,7 +1825,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level achievement",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för märke i nationell helmatch i guld.",
 
           "yearsOfAchievement": 3
         }
@@ -1847,7 +1848,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "3 years of Gold-level achievement",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för märke i nationell helmatch i guld.",
 
           "yearsOfAchievement": 3
         }
