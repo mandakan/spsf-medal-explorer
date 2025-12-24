@@ -36,12 +36,12 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   // Compute a base transform that anchors the layout's top-left to the canvas' top-left with padding,
   // and auto-fits the layout into the viewport (mobile-first).
   const computeBaseTransform = useCallback((canvas, padding = 24) => {
-    if (!layout || !canvas) return { baseScale: 1, basePanX: 0, basePanY: 0 }
+    if (!layout || !canvas) return { baseScale: 1, minX: 0, minY: 0 }
     const width = canvas.width
     const height = canvas.height
-    if (!width || !height) return { baseScale: 1, basePanX: 0, basePanY: 0 }
+    if (!width || !height) return { baseScale: 1, minX: 0, minY: 0 }
     const medals = layout.medals || []
-    if (!medals.length) return { baseScale: 1, basePanX: 0, basePanY: 0 }
+    if (!medals.length) return { baseScale: 1, minX: 0, minY: 0 }
 
     let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity
     for (let i = 0; i < medals.length; i++) {
@@ -57,18 +57,21 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     const fitX = (width - padding * 2) / contentW
     const fitY = (height - padding * 2) / contentH
     const baseScale = Math.max(0.001, Math.min(fitX, fitY))
-    const basePanX = (padding - width / 2) / baseScale - minX
-    const basePanY = (padding - height / 2) / baseScale - minY
-    return { baseScale, basePanX, basePanY }
+    return { baseScale, minX, minY }
   }, [layout])
 
   // Effective transform combines the base (top-left anchored, auto-fit) with interactive pan/zoom.
   const getEffectiveTransform = useCallback((canvas, padding = 24) => {
-    const { baseScale, basePanX, basePanY } = computeBaseTransform(canvas, padding)
-    const effScale = Math.max(0.001, scale * baseScale)
+    const { baseScale, minX, minY } = computeBaseTransform(canvas, padding)
+    const width = canvas?.width || 0
+    const height = canvas?.height || 0
+    const effScale = Math.max(0.001, baseScale * scale)
+    // Compute base pan using the effective scale so the top-left stays anchored at padding
+    const basePanX = (padding - width / 2) / effScale - minX
+    const basePanY = (padding - height / 2) / effScale - minY
     const effPanX = panX + basePanX
     const effPanY = panY + basePanY
-    return { effScale, effPanX, effPanY, baseScale, basePanX, basePanY }
+    return { effScale, effPanX, effPanY, baseScale }
   }, [computeBaseTransform, panX, panY, scale])
 
   // Determine which medals are visible in the current viewport for culling
