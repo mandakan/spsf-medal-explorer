@@ -144,34 +144,35 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     )
   }, [getVisibleMedalsForCanvas, getEffectiveTransform, layout, medalDatabase, statuses, panX, panY, scale, selectedMedal, render])
 
-  // Ensure first frame renders whenever a canvas node is attached
+  // Ensure label readability at initial/reset states without fighting user zoom
   const ensureLabelVisibilityScale = useCallback(() => {
     const canvas = canvasRef.current
     if (!canvas || !layout) return
-    const { baseScale } = getEffectiveTransform(canvas)
-    // Target minimum effective scale for label readability (labels draw at >= 0.7)
+    const { baseScale } = computeBaseTransform(canvas)
+    // Target minimum effective scale for label readability (labels draw at >= 0.8)
     const minEff = 0.8
     const targetInteractive = minEff / Math.max(0.001, baseScale)
     if (scale + 1e-3 < targetInteractive) {
       setScaleAbsolute(targetInteractive)
     }
-  }, [getEffectiveTransform, layout, scale, setScaleAbsolute])
+  }, [computeBaseTransform, layout, scale, setScaleAbsolute])
 
   const setCanvasRef = useCallback((node) => {
     canvasRef.current = node
-    if (node) {
-      requestAnimationFrame(() => {
-        draw()
-        ensureLabelVisibilityScale()
-      })
-    }
-  }, [draw, ensureLabelVisibilityScale])
+  }, [])
 
   // Draw with requestAnimationFrame for smoothness
   useEffect(() => {
     let raf = requestAnimationFrame(draw)
     return () => cancelAnimationFrame(raf)
   }, [draw])
+
+  // Ensure label readability once layout is ready (initialization only)
+  useEffect(() => {
+    if (canvasRef.current && layout) {
+      ensureLabelVisibilityScale()
+    }
+  }, [layout, ensureLabelVisibilityScale])
 
   // Redraw on window resize and ensure readable label scale
   useEffect(() => {
