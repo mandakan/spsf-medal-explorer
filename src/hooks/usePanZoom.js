@@ -195,7 +195,7 @@ export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3) {
     if (pointersRef.current.size < 2) {
       pinchRef.current.initialDistance = 0
     }
-  }, [])
+  }, [startMomentum])
 
   const resetView = useCallback(() => {
     stopMomentum()
