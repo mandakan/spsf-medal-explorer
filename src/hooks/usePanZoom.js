@@ -9,8 +9,58 @@ export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3) {
   const pointersRef = useRef(new Map()) // pointerId -> { x, y }
   const pinchRef = useRef({ initialDistance: 0, initialScale: initialScale, lastCenter: null })
 
+  // Inertia state and helpers
+  const inertiaRef = useRef({ vx: 0, vy: 0, lastT: 0, raf: 0 })
+  const lastMoveRef = useRef({ x: 0, y: 0, t: 0 })
+  const getReduceMotion = () => {
+    if (typeof window === 'undefined' || !window.matchMedia) return false
+    try {
+      return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    } catch {
+      return false
+    }
+  }
+  const stopMomentum = () => {
+    const s = inertiaRef.current
+    if (s.raf) {
+      cancelAnimationFrame(s.raf)
+      s.raf = 0
+    }
+    s.vx = 0
+    s.vy = 0
+    s.lastT = 0
+  }
+  const startMomentum = (vx, vy) => {
+    if (!isFinite(vx) || !isFinite(vy)) return
+    if (getReduceMotion()) return
+    stopMomentum()
+    const s = inertiaRef.current
+    s.vx = vx
+    s.vy = vy
+    s.lastT = typeof performance !== 'undefined' ? performance.now() : Date.now()
+    const step = (t) => {
+      const prevT = s.lastT || t
+      const dt = Math.max(1, t - prevT) // ms
+      s.lastT = t
+      // Exponential decay; adjust constant for feel
+      const decay = Math.exp(-dt / 280)
+      s.vx *= decay
+      s.vy *= decay
+      // Integrate in world units (vx, vy are world units per ms)
+      setPanX(prev => prev + s.vx * dt)
+      setPanY(prev => prev + s.vy * dt)
+      if (Math.hypot(s.vx, s.vy) < 0.001) {
+        stopMomentum()
+        return
+      }
+      s.raf = requestAnimationFrame(step)
+    }
+    s.raf = requestAnimationFrame(step)
+  }
+
   const handleWheel = useCallback((e, effectiveScale) => {
     e.preventDefault()
+    stopMomentum()
     const el = e.currentTarget
     const rect = el?.getBoundingClientRect?.()
     const cx = rect ? e.clientX - rect.left : 0
@@ -35,8 +85,12 @@ export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3) {
 
   const handlePointerDown = useCallback((e) => {
     e.preventDefault()
+    stopMomentum()
     e.currentTarget?.setPointerCapture?.(e.pointerId)
     pointersRef.current.set(e.pointerId, { x: e.clientX, y: e.clientY })
+
+    const now = typeof performance !== 'undefined' ? performance.now() : Date.now()
+    lastMoveRef.current = { x: e.clientX, y: e.clientY, t: now }
 
     if (pointersRef.current.size === 1) {
       dragStartRef.current = { x: e.clientX, y: e.clientY, panX, panY }
@@ -47,12 +101,16 @@ export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3) {
       pinchRef.current.initialDistance = Math.hypot(dx, dy)
       pinchRef.current.initialScale = scale
       pinchRef.current.lastCenter = { x: (pts[0].x + pts[1].x) / 2, y: (pts[0].y + pts[1].y) / 2 }
+      // Clear velocity so pinch does not trigger momentum
+      inertiaRef.current.vx = 0
+      inertiaRef.current.vy = 0
     }
   }, [panX, panY, scale])
 
   const handlePointerMove = useCallback((e, effectiveScale) => {
     // Allow synthetic pan via keyboard; dx/dy are in world units already.
     if (e.syntheticPan) {
+      stopMomentum()
       const { dx, dy } = e.syntheticPan
       setPanX((prev) => prev + dx)
       setPanY((prev) => prev + dy)
@@ -91,8 +149,31 @@ export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3) {
       setScale(next)
       setPanX(prev => prev + corrX)
       setPanY(prev => prev + corrY)
+      // Clear velocity during pinch
+      inertiaRef.current.vx = 0
+      inertiaRef.current.vy = 0
     } else if (pointersRef.current.size === 1 && dragStartRef.current) {
       const s = Math.max(0.001, effectiveScale ?? scale)
+      const now = typeof performance !== 'undefined' ? performance.now() : Date.now()
+      const last = lastMoveRef.current
+      const dClientX = e.clientX - last.x
+      const dClientY = e.clientY - last.y
+      const dt = Math.max(1, now - last.t)
+
+      // World-space deltas for velocity sampling
+      const wdx = dClientX / s
+      const wdy = dClientY / s
+      const instVx = wdx / dt
+      const instVy = wdy / dt
+
+      // Exponential moving average for stable velocity
+      const v = inertiaRef.current
+      const alpha = 0.25
+      v.vx = (1 - alpha) * v.vx + alpha * instVx
+      v.vy = (1 - alpha) * v.vy + alpha * instVy
+
+      lastMoveRef.current = { x: e.clientX, y: e.clientY, t: now }
+
       const deltaX = (e.clientX - dragStartRef.current.x) / s
       const deltaY = (e.clientY - dragStartRef.current.y) / s
       setPanX(dragStartRef.current.panX + deltaX)
@@ -103,6 +184,12 @@ export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3) {
   const handlePointerUp = useCallback((e) => {
     pointersRef.current.delete(e.pointerId)
     if (pointersRef.current.size < 1) {
+      // Single-finger drag ended
+      const v = inertiaRef.current
+      const speed = Math.hypot(v.vx, v.vy)
+      if (dragStartRef.current && speed > 0.002) {
+        startMomentum(v.vx, v.vy)
+      }
       dragStartRef.current = null
     }
     if (pointersRef.current.size < 2) {
@@ -111,6 +198,7 @@ export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3) {
   }, [])
 
   const resetView = useCallback(() => {
+    stopMomentum()
     setPanX(0)
     setPanY(0)
     setScale(initialScale)
