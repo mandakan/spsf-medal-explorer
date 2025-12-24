@@ -11,7 +11,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   const canvasRef = useRef(null)
   const { medalDatabase } = useMedalDatabase()
   const statuses = useAllMedalStatuses()
-  const { panX, panY, scale, handleWheel, handlePointerDown, handlePointerMove, handlePointerUp, resetView } = usePanZoom()
+  const { panX, panY, scale, handleWheel, handlePointerDown, handlePointerMove, handlePointerUp, resetView } = usePanZoom(1, 0.5, 6)
   const { render } = useCanvasRenderer()
   
   const [selectedMedal, setSelectedMedal] = useState(null)
