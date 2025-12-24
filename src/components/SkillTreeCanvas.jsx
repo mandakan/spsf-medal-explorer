@@ -33,18 +33,57 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   const menuButtonRef = useRef(null)
   const menuRef = useRef(null)
 
+  // Compute a base transform that anchors the layout's top-left to the canvas' top-left with padding,
+  // and auto-fits the layout into the viewport (mobile-first).
+  const computeBaseTransform = useCallback((canvas, padding = 24) => {
+    if (!layout || !canvas) return { baseScale: 1, basePanX: 0, basePanY: 0 }
+    const width = canvas.width
+    const height = canvas.height
+    if (!width || !height) return { baseScale: 1, basePanX: 0, basePanY: 0 }
+    const medals = layout.medals || []
+    if (!medals.length) return { baseScale: 1, basePanX: 0, basePanY: 0 }
+
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity
+    for (let i = 0; i < medals.length; i++) {
+      const m = medals[i]
+      const r = m.radius || 20
+      if (m.x - r < minX) minX = m.x - r
+      if (m.y - r < minY) minY = m.y - r
+      if (m.x + r > maxX) maxX = m.x + r
+      if (m.y + r > maxY) maxY = m.y + r
+    }
+    const contentW = Math.max(1, maxX - minX)
+    const contentH = Math.max(1, maxY - minY)
+    const fitX = (width - padding * 2) / contentW
+    const fitY = (height - padding * 2) / contentH
+    const baseScale = Math.max(0.001, Math.min(fitX, fitY))
+    const basePanX = (padding - width / 2) / baseScale - minX
+    const basePanY = (padding - height / 2) / baseScale - minY
+    return { baseScale, basePanX, basePanY }
+  }, [layout])
+
+  // Effective transform combines the base (top-left anchored, auto-fit) with interactive pan/zoom.
+  const getEffectiveTransform = useCallback((canvas, padding = 24) => {
+    const { baseScale, basePanX, basePanY } = computeBaseTransform(canvas, padding)
+    const effScale = Math.max(0.001, scale * baseScale)
+    const effPanX = panX + basePanX
+    const effPanY = panY + basePanY
+    return { effScale, effPanX, effPanY }
+  }, [computeBaseTransform, panX, panY, scale])
+
   // Determine which medals are visible in the current viewport for culling
   const getVisibleMedalsForCanvas = useCallback((canvas, margin = 120) => {
     if (!layout || !canvas) return []
     const width = canvas.width
     const height = canvas.height
     const medals = layout.medals || []
+    const { effScale, effPanX, effPanY } = getEffectiveTransform(canvas)
     const result = []
     for (let i = 0; i < medals.length; i++) {
       const m = medals[i]
-      const nodeX = (m.x + panX) * scale + width / 2
-      const nodeY = (m.y + panY) * scale + height / 2
-      const r = (m.radius || 20) * scale
+      const nodeX = (m.x + effPanX) * effScale + width / 2
+      const nodeY = (m.y + effPanY) * effScale + height / 2
+      const r = (m.radius || 20) * effScale
       if (
         nodeX + r >= -margin &&
         nodeX - r <= width + margin &&
@@ -55,7 +94,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
       }
     }
     return result
-  }, [layout, panX, panY, scale])
+  }, [layout, getEffectiveTransform])
 
 
   const draw = useCallback(() => {
@@ -83,17 +122,19 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     const filteredLayout = { ...layout, medals: visibleMedals }
     const filteredMedals = allMedals.filter(m => visibleIds.has(m.id))
 
+    const { effScale, effPanX, effPanY } = getEffectiveTransform(canvas)
+
     render(
       ctx,
       filteredMedals,
       filteredLayout,
       statuses,
-      panX,
-      panY,
-      scale,
+      effPanX,
+      effPanY,
+      effScale,
       selectedMedal
     )
-  }, [getVisibleMedalsForCanvas, layout, medalDatabase, statuses, panX, panY, scale, selectedMedal, render])
+  }, [getVisibleMedalsForCanvas, getEffectiveTransform, layout, medalDatabase, statuses, panX, panY, scale, selectedMedal, render])
 
   // Ensure first frame renders whenever a canvas node is attached
   const setCanvasRef = useCallback((node) => {
@@ -207,12 +248,13 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     const mouseX = e.clientX - rect.left
     const mouseY = e.clientY - rect.top
 
-    // Hover hit test uses same transform as renderer (centered origin)
+    // Hover hit test uses the same transform as renderer (top-left anchored)
+    const { effScale, effPanX, effPanY } = getEffectiveTransform(canvasRef.current)
     const visibleMedals = getVisibleMedalsForCanvas(canvasRef.current)
     for (const medal of visibleMedals) {
-      const nodeX = (medal.x + panX) * scale + canvasRef.current.width / 2
-      const nodeY = (medal.y + panY) * scale + canvasRef.current.height / 2
-      const radius = (medal.radius || 20) * scale
+      const nodeX = (medal.x + effPanX) * effScale + canvasRef.current.width / 2
+      const nodeY = (medal.y + effPanY) * effScale + canvasRef.current.height / 2
+      const radius = (medal.radius || 20) * effScale
       const effectiveRadius = Math.max(radius, 24)
       const dx = mouseX - nodeX
       const dy = mouseY - nodeY
@@ -237,11 +279,12 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     const mouseY = e.clientY - rect.top
 
     // Determine clicked medal node (use culled set)
+    const { effScale, effPanX, effPanY } = getEffectiveTransform(canvasRef.current)
     const visibleMedals = getVisibleMedalsForCanvas(canvasRef.current)
     for (const medal of visibleMedals) {
-      const nodeX = (medal.x + panX) * scale + canvasRef.current.width / 2
-      const nodeY = (medal.y + panY) * scale + canvasRef.current.height / 2
-      const radius = (medal.radius || 20) * scale
+      const nodeX = (medal.x + effPanX) * effScale + canvasRef.current.width / 2
+      const nodeY = (medal.y + effPanY) * effScale + canvasRef.current.height / 2
+      const radius = (medal.radius || 20) * effScale
       const effectiveRadius = Math.max(radius, 24)
       const dx = mouseX - nodeX
       const dy = mouseY - nodeY
@@ -261,11 +304,12 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     const mouseX = e.clientX - rect.left
     const mouseY = e.clientY - rect.top
 
+    const { effScale, effPanX, effPanY } = getEffectiveTransform(canvasRef.current)
     const visibleMedals = getVisibleMedalsForCanvas(canvasRef.current)
     for (const medal of visibleMedals) {
-      const nodeX = (medal.x + panX) * scale + canvasRef.current.width / 2
-      const nodeY = (medal.y + panY) * scale + canvasRef.current.height / 2
-      const radius = (medal.radius || 20) * scale
+      const nodeX = (medal.x + effPanX) * effScale + canvasRef.current.width / 2
+      const nodeY = (medal.y + effPanY) * effScale + canvasRef.current.height / 2
+      const radius = (medal.radius || 20) * effScale
       const effectiveRadius = Math.max(radius, 24)
       const dx = mouseX - nodeX
       const dy = mouseY - nodeY
