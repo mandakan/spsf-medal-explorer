@@ -276,6 +276,7 @@
     },
     {
       "id": "elite-mark-bronze",
+      "reviewed": true,
       "type": "elite_mark",
       "tier": "bronze",
       "name": "Elitmärket - Brons",
@@ -322,6 +323,7 @@
     },
     {
       "id": "elite-mark-silver",
+      "reviewed": true,
       "type": "elite_mark",
       "tier": "silver",
       "name": "Elitmärket - Silver",
@@ -369,6 +371,7 @@
     },
     {
       "id": "elite-mark-gold",
+      "reviewed": true,
       "type": "elite_mark",
       "tier": "gold",
       "name": "Elitmärket - Guld",
@@ -524,13 +527,14 @@
     },
     {
       "id": "field-mark-bronze",
+      "reviewed": true,
       "type": "field_mark",
       "tier": "bronze",
       "name": "Fältskyttemärket - Brons",
       "displayName": "Fältskyttemärket - Brons",
       "color": "#CD7F32",
       "icon": "field-bronze",
-      "requirements_original": "Prov för fältskyttemärke får endast avläggas av den, som under före gående kalenderår uppfyllt fordringarna för pistolskyttemärke i brons och som har fyllt 15 år.\nFältskyttemärket förekommer i valörerna brons, silver och guld samt med påbyggnad. Märkesprov får avläggas vid riks-, nationella, landsdels- och kretstävlingar i fältskjutning.\nEndast ett märke kan under året erövras av skytt och märke av högre valör endast av den, som förut löst märke av närmast lägre valör.\nFör att erhålla fältskyttemärket krävs att skytten vid tre olika tävlingar under samma kalenderår uppfyller kraven för resp. märke, nämligen:\n\n**Antal träff/poäng i vapengrupp A:**\n\n|Märke|6 stn, 36 tr|7 stn, 42 tr|8 stn, 48 tr|9 stn, 54 tr|10 stn, 60 tr|% av max|\n|-|-|-|-|-|-|-|\n|Brons|19|22|25|29|32|52|\n|Silver|23|27|31|36|40|65|\n|Guld|27|31|36|41|46|75|",
+      "requirements_original": "Prov för fältskyttemärke får endast avläggas av den, som under före gående kalenderår uppfyllt fordringarna för pistolskyttemärke i brons och som har fyllt 15 år.\nFältskyttemärket förekommer i valörerna brons, silver och guld samt med påbyggnad. Märkesprov får avläggas vid riks-, nationella, landsdels- och kretstävlingar i fältskjutning.\nEndast ett märke kan under året erövras av skytt och märke av högre valör endast av den, som förut löst märke av närmast lägre valör.\nFör att erhålla fältskyttemärket krävs att skytten vid tre olika tävlingar under samma kalenderår uppfyller kraven för resp. märke, nämligen:\n\n**Antal träff/poäng i vapengrupp A:**\n\n|Märke|6 stn, 36 tr|7 stn, 42 tr|8 stn, 48 tr|9 stn, 54 tr|10 stn, 60 tr|% av max|\n|-|-|-|-|-|-|-|\n|Brons|19|22|25|29|32|52|\n|Silver|23|27|31|36|40|65|\n|Guld|27|31|36|41|46|75|\n\n**Antal träff/poäng i vapengrupp B och C:**\n\n|Märke|6 stn, 36 tr|7 stn, 42 tr|8 stn, 48 tr|9 stn, 54 tr|10 stn, 60 tr|% av max|\n|-|-|-|-|-|-|-|\n|Brons|22|25|29|32|36|60|\n|Silver|27|31|36|40|45|75|\n|Guld|31|36|41|46|51|86|\n\n**Antal träff/poäng i vapengrupp R:**\n\n|Märke|6 stn, 36 tr|7 stn, 42 tr|8 stn, 48 tr|9 stn, 54 tr|10 stn, 60 tr|% av max|\n|-|-|-|-|-|-|-|\n|Brons|20|23|27|30|34|56|\n|Silver|25|29|34|38|42|70|\n|Guld|29|34|38|44|49|80|",
       "prerequisites": [
         {
           "type": "medal",
@@ -563,13 +567,17 @@
     },
     {
       "id": "field-mark-silver",
+      "reviewed": true,
       "type": "field_mark",
       "tier": "silver",
       "name": "Fältskyttemärket - Silver",
       "displayName": "Fältskyttemärket - Silver",
       "color": "#C0C0C0",
       "icon": "field-silver",
-      "prerequisites": [{ "type": "medal", "medalId": "field-mark-bronze" }],
+      "requirements_original": "Prov för fältskyttemärke får endast avläggas av den, som under före gående kalenderår uppfyllt fordringarna för pistolskyttemärke i brons och som har fyllt 15 år.\nFältskyttemärket förekommer i valörerna brons, silver och guld samt med påbyggnad. Märkesprov får avläggas vid riks-, nationella, landsdels- och kretstävlingar i fältskjutning.\nEndast ett märke kan under året erövras av skytt och märke av högre valör endast av den, som förut löst märke av närmast lägre valör.\nFör att erhålla fältskyttemärket krävs att skytten vid tre olika tävlingar under samma kalenderår uppfyller kraven för resp. märke, nämligen:\n\n**Antal träff/poäng i vapengrupp A:**\n\n|Märke|6 stn, 36 tr|7 stn, 42 tr|8 stn, 48 tr|9 stn, 54 tr|10 stn, 60 tr|% av max|\n|-|-|-|-|-|-|-|\n|Brons|19|22|25|29|32|52|\n|Silver|23|27|31|36|40|65|\n|Guld|27|31|36|41|46|75|\n\n**Antal träff/poäng i vapengrupp B och C:**\n\n|Märke|6 stn, 36 tr|7 stn, 42 tr|8 stn, 48 tr|9 stn, 54 tr|10 stn, 60 tr|% av max|\n|-|-|-|-|-|-|-|\n|Brons|22|25|29|32|36|60|\n|Silver|27|31|36|40|45|75|\n|Guld|31|36|41|46|51|86|\n\n**Antal träff/poäng i vapengrupp R:**\n\n|Märke|6 stn, 36 tr|7 stn, 42 tr|8 stn, 48 tr|9 stn, 54 tr|10 stn, 60 tr|% av max|\n|-|-|-|-|-|-|-|\n|Brons|20|23|27|30|34|56|\n|Silver|25|29|34|38|42|70|\n|Guld|29|34|38|44|49|80|",
+      "prerequisites": [
+        { "type": "medal", "medalId": "field-mark-bronze", "yearOffset": 1 }
+      ],
       "requirements": [
         {
           "type": "competition_performance",
@@ -590,13 +598,17 @@
     },
     {
       "id": "field-mark-gold",
+      "reviewed": true,
       "type": "field_mark",
       "tier": "gold",
       "name": "Fältskyttemärket - Guld",
       "displayName": "Fältskyttemärket - Guld",
       "color": "#FFD700",
       "icon": "field-gold",
-      "prerequisites": [{ "type": "medal", "medalId": "field-mark-silver" }],
+      "requirements_original": "Prov för fältskyttemärke får endast avläggas av den, som under före gående kalenderår uppfyllt fordringarna för pistolskyttemärke i brons och som har fyllt 15 år.\nFältskyttemärket förekommer i valörerna brons, silver och guld samt med påbyggnad. Märkesprov får avläggas vid riks-, nationella, landsdels- och kretstävlingar i fältskjutning.\nEndast ett märke kan under året erövras av skytt och märke av högre valör endast av den, som förut löst märke av närmast lägre valör.\nFör att erhålla fältskyttemärket krävs att skytten vid tre olika tävlingar under samma kalenderår uppfyller kraven för resp. märke, nämligen:\n\n**Antal träff/poäng i vapengrupp A:**\n\n|Märke|6 stn, 36 tr|7 stn, 42 tr|8 stn, 48 tr|9 stn, 54 tr|10 stn, 60 tr|% av max|\n|-|-|-|-|-|-|-|\n|Brons|19|22|25|29|32|52|\n|Silver|23|27|31|36|40|65|\n|Guld|27|31|36|41|46|75|\n\n**Antal träff/poäng i vapengrupp B och C:**\n\n|Märke|6 stn, 36 tr|7 stn, 42 tr|8 stn, 48 tr|9 stn, 54 tr|10 stn, 60 tr|% av max|\n|-|-|-|-|-|-|-|\n|Brons|22|25|29|32|36|60|\n|Silver|27|31|36|40|45|75|\n|Guld|31|36|41|46|51|86|\n\n**Antal träff/poäng i vapengrupp R:**\n\n|Märke|6 stn, 36 tr|7 stn, 42 tr|8 stn, 48 tr|9 stn, 54 tr|10 stn, 60 tr|% av max|\n|-|-|-|-|-|-|-|\n|Brons|20|23|27|30|34|56|\n|Silver|25|29|34|38|42|70|\n|Guld|29|34|38|44|49|80|",
+      "prerequisites": [
+        { "type": "medal", "medalId": "field-mark-silver", "yearOffset": 1 }
+      ],
       "requirements": [
         {
           "type": "competition_performance",
@@ -628,7 +640,6 @@
         {
           "type": "sustained_achievement",
           "description": "3 years of Gold-level achievement",
-
           "yearsOfAchievement": 3
         }
       ],
@@ -651,7 +662,6 @@
         {
           "type": "sustained_achievement",
           "description": "3 years of Gold-level achievement",
-
           "yearsOfAchievement": 3
         }
       ],
@@ -674,7 +684,6 @@
         {
           "type": "sustained_achievement",
           "description": "3 years of Gold-level achievement",
-
           "yearsOfAchievement": 3
         }
       ],
@@ -697,7 +706,6 @@
         {
           "type": "sustained_achievement",
           "description": "3 years of Gold-level achievement",
-
           "yearsOfAchievement": 3
         }
       ],
@@ -720,7 +728,6 @@
         {
           "type": "sustained_achievement",
           "description": "3 years of Gold-level achievement",
-
           "yearsOfAchievement": 3
         }
       ],
@@ -743,7 +750,6 @@
         {
           "type": "sustained_achievement",
           "description": "3 years of Gold-level achievement",
-
           "yearsOfAchievement": 3
         }
       ],
@@ -766,7 +772,6 @@
         {
           "type": "sustained_achievement",
           "description": "3 years of Gold-level achievement",
-
           "yearsOfAchievement": 3
         }
       ],
