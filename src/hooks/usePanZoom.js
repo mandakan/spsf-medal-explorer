@@ -204,10 +204,16 @@ export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3) {
     setScale(initialScale)
   }, [initialScale])
 
+  const setScaleAbsolute = useCallback((s) => {
+    const clamped = Math.max(minScale, Math.min(maxScale, s))
+    setScale(clamped)
+  }, [minScale, maxScale])
+
   return {
     panX,
     panY,
     scale,
+    setScaleAbsolute,
     handleWheel,
     handlePointerDown,
     handlePointerMove,

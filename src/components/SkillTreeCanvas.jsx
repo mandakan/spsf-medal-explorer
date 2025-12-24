@@ -11,7 +11,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   const canvasRef = useRef(null)
   const { medalDatabase } = useMedalDatabase()
   const statuses = useAllMedalStatuses()
-  const { panX, panY, scale, handleWheel, handlePointerDown, handlePointerMove, handlePointerUp, resetView } = usePanZoom(1, 0.5, 6)
+  const { panX, panY, scale, setScaleAbsolute, handleWheel, handlePointerDown, handlePointerMove, handlePointerUp, resetView } = usePanZoom(1, 0.5, 6)
   const { render } = useCanvasRenderer()
   
   const [selectedMedal, setSelectedMedal] = useState(null)
@@ -68,7 +68,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     const effScale = Math.max(0.001, scale * baseScale)
     const effPanX = panX + basePanX
     const effPanY = panY + basePanY
-    return { effScale, effPanX, effPanY }
+    return { effScale, effPanX, effPanY, baseScale, basePanX, basePanY }
   }, [computeBaseTransform, panX, panY, scale])
 
   // Determine which medals are visible in the current viewport for culling
@@ -137,12 +137,27 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   }, [getVisibleMedalsForCanvas, getEffectiveTransform, layout, medalDatabase, statuses, panX, panY, scale, selectedMedal, render])
 
   // Ensure first frame renders whenever a canvas node is attached
+  const ensureLabelVisibilityScale = useCallback(() => {
+    const canvas = canvasRef.current
+    if (!canvas || !layout) return
+    const { baseScale } = getEffectiveTransform(canvas)
+    // Target minimum effective scale for label readability (labels draw at >= 0.7)
+    const minEff = 0.8
+    const targetInteractive = minEff / Math.max(0.001, baseScale)
+    if (scale + 1e-3 < targetInteractive) {
+      setScaleAbsolute(targetInteractive)
+    }
+  }, [getEffectiveTransform, layout, scale, setScaleAbsolute])
+
   const setCanvasRef = useCallback((node) => {
     canvasRef.current = node
     if (node) {
-      requestAnimationFrame(draw)
+      requestAnimationFrame(() => {
+        draw()
+        ensureLabelVisibilityScale()
+      })
     }
-  }, [draw])
+  }, [draw, ensureLabelVisibilityScale])
 
   // Draw with requestAnimationFrame for smoothness
   useEffect(() => {
@@ -150,14 +165,17 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     return () => cancelAnimationFrame(raf)
   }, [draw])
 
-  // Redraw on window resize
+  // Redraw on window resize and ensure readable label scale
   useEffect(() => {
     const onResize = () => {
-      if (canvasRef.current) draw()
+      if (canvasRef.current) {
+        draw()
+        ensureLabelVisibilityScale()
+      }
     }
     window.addEventListener('resize', onResize)
     return () => window.removeEventListener('resize', onResize)
-  }, [draw])
+  }, [draw, ensureLabelVisibilityScale])
 
   // Native wheel listener (passive: false) to prevent page scroll/zoom during canvas zoom gestures.
   useEffect(() => {
@@ -219,12 +237,15 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     return () => window.removeEventListener('pointerdown', onDown, { capture: true })
   }, [menuOpen])
 
-  // Redraw on fullscreen toggle to ensure immediate render after mount
+  // Redraw on fullscreen toggle and ensure readable label scale
   useEffect(() => {
     if (canvasRef.current) {
-      requestAnimationFrame(draw)
+      requestAnimationFrame(() => {
+        draw()
+        ensureLabelVisibilityScale()
+      })
     }
-  }, [isFullscreen, draw])
+  }, [isFullscreen, draw, ensureLabelVisibilityScale])
 
   // Keyboard pan shortcuts (scope to focused canvas for WCAG 2.1/2.2)
   const handleCanvasKeyDown = useCallback((e) => {
@@ -359,7 +380,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
         <div role="toolbar" aria-label="Träd-vy åtgärder" className="flex flex-wrap gap-2 sm:flex-nowrap">
           <button
             type="button"
-            onClick={resetView}
+            onClick={() => { resetView(); ensureLabelVisibilityScale() }}
             className="px-3 py-2 sm:px-4 sm:py-2 min-h-[44px] rounded bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-slate-700 dark:text-slate-50 dark:hover:bg-slate-600 border border-gray-300 dark:border-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
           >
             Återställ
@@ -479,7 +500,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                 <button
                   role="menuitem"
                   type="button"
-                  onClick={() => { setMenuOpen(false); resetView() }}
+                  onClick={() => { setMenuOpen(false); resetView(); ensureLabelVisibilityScale() }}
                   className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                 >
                   Återställ vy
