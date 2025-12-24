@@ -10,7 +10,8 @@ export function useCanvasRenderer() {
     panX,
     panY,
     scale,
-    selectedMedal
+    selectedMedal,
+    hoveredMedal
   ) => {
     if (!layout || !medals || !statuses) return
 
@@ -57,7 +58,8 @@ export function useCanvasRenderer() {
         ctx.stroke()
       }
 
-      drawMedalNode(ctx, x, y, radius, medal, status, scale)
+      const forceLabel = selectedMedal === medal.id || hoveredMedal === medal.id
+      drawMedalNode(ctx, x, y, radius, medal, status, scale, forceLabel)
     })
   }, [])
 

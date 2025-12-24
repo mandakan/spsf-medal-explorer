@@ -139,7 +139,7 @@ export const COLORS = {
   accent: '#3B82F6',
 }
 
-export function drawMedalNode(ctx, x, y, radius, medal, status, scale) {
+export function drawMedalNode(ctx, x, y, radius, medal, status, scale, forceLabel = false) {
   if (!(medal instanceof Medal)) {
     if (!medal || typeof medal !== 'object') {
       throw new Error('drawMedalNode requires a Medal instance or a plain medal-like object')
@@ -181,8 +181,8 @@ export function drawMedalNode(ctx, x, y, radius, medal, status, scale) {
 
   // Label text: draw full displayName below the node with wrapping for readability
   const name = medal?.displayName || medal?.name || medal?.tier || 'Medal'
-  // Avoid label clutter when zoomed far out
-  if (scale >= 0.7 && name) {
+  // Avoid label clutter when zoomed far out; always show when forced (hover/selected)
+  if ((forceLabel || scale >= 0.8) && name) {
     ctx.fillStyle = palette.text
     ctx.textAlign = 'center'
     ctx.textBaseline = 'top'
@@ -195,7 +195,8 @@ export function drawMedalNode(ctx, x, y, radius, medal, status, scale) {
 
     // Wrap to a max width and line count
     const maxWidth = 180
-    const lines = wrapText(ctx, name, maxWidth, 3)
+    const maxLines = forceLabel ? 3 : (scale >= 1.3 ? 3 : 2)
+    const lines = wrapText(ctx, name, maxWidth, maxLines)
 
     const startY = y + radius + 8
 

@@ -15,6 +15,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   const { render } = useCanvasRenderer()
   
   const [selectedMedal, setSelectedMedal] = useState(null)
+  const [hoveredMedal, setHoveredMedal] = useState(null)
   const navigate = useNavigate()
   const location = useLocation()
   const isFullscreen = location.pathname.endsWith('/skill-tree/fullscreen')
@@ -67,7 +68,10 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     const height = canvas?.height || 0
     const effScale = Math.max(0.001, baseScale * scale)
     // Compute base pan using the effective scale so the top-left stays anchored at padding
-    const basePanX = (padding - width / 2) / effScale - minX
+    // Include label half-width so the left-most label stays inside canvas padding.
+    const labelHalfPx = 90
+    const extraLeftWorld = labelHalfPx / effScale
+    const basePanX = (padding - width / 2) / effScale - (minX - extraLeftWorld)
     const basePanY = (padding - height / 2) / effScale - minY
     const effPanX = panX + basePanX
     const effPanY = panY + basePanY
@@ -135,7 +139,8 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
       effPanX,
       effPanY,
       effScale,
-      selectedMedal
+      selectedMedal,
+      hoveredMedal
     )
   }, [getVisibleMedalsForCanvas, getEffectiveTransform, layout, medalDatabase, statuses, panX, panY, scale, selectedMedal, render])
 
@@ -299,16 +304,19 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
       const dx = mouseX - nodeX
       const dy = mouseY - nodeY
       if (dx * dx + dy * dy < effectiveRadius * effectiveRadius) {
+        setHoveredMedal(medal.medalId)
         canvasRef.current.style.cursor = 'pointer'
         return
       }
     }
+    setHoveredMedal(null)
     canvasRef.current.style.cursor = 'grab'
   }
 
   const handleCanvasPointerUp = (e) => {
     setIsDragging(false)
     handlePointerUp(e)
+    setHoveredMedal(null)
   }
 
   const handleCanvasClick = (e) => {
