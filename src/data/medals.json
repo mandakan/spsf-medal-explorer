@@ -11,7 +11,7 @@
       "color": "#CD7F32",
       "icon": "medal-bronze",
       "prerequisites": [],
-      "requirements_original": "1. 1. att i 3 precisionsserier mot Pistoltavla 25 m precision 25 m avstånd, 5 skott\n5 minuters skjuttid ha uppnått i varje serie minst: **A ≥ 32**, **B ≥ 33**, **C ≥ 34**.\n2. att i 3 tillämpningsserier\nantingen\n- mot B 100 figur, 50 m av stånd, 6 skott, utgångsställning stående 45°\n- eller mot 1/6 rak eller cirkelmål C 30, 25 m av stånd, 6 skott utgångsställning stående 45°\nha erhållit i varje serie: minst **5 träff** inom tidsgränsen för gruppen (A: ≤60s, B: ≤60, C: ≤60s, R: ≤60s).",
+      "requirements_original": "1. att i 3 precisionsserier mot Pistoltavla 25 m precision 25 m avstånd, 5 skott\n5 minuters skjuttid ha uppnått i varje serie minst: **A ≥ 32**, **B ≥ 33**, **C ≥ 34**.\n2. att i 3 tillämpningsserier\nantingen\n- mot B 100 figur, 50 m av stånd, 6 skott, utgångsställning stående 45°\n- eller mot 1/6 rak eller cirkelmål C 30, 25 m av stånd, 6 skott utgångsställning stående 45°\n\nha erhållit i varje serie: minst **5 träff** inom tidsgränsen för gruppen (A: ≤60 s, B: ≤60 s, C: ≤60 s, R: ≤60 s)\n- eller erövrat minst en standardmedalj i fältskjutning.",
       "requirements": [
         {
           "type": "precision_series",
@@ -100,7 +100,7 @@
       "displayName": "Pistolskyttemärket - Silver",
       "color": "#C0C0C0",
       "icon": "medal-silver",
-      "requirements_original": "- 3 precisionsserier mot Pistoltavla 25 m med minsta antal poäng per grupp: **A ≥ 38**, **B ≥ 39**, **C ≥ 40**.\n- 3 tillämpningsserier (B100 50 m or 1/6 mål C30 25 m, utgångsställning stående 45°) med minst **6 träff** inom tidsgränsen för gruppen (A: ≤40s, B: ≤40s, C: ≤40s, R: ≤40s).",
+      "requirements_original": "1. att i 3 precisionsserier mot Pistoltavla 25 m precision 25 m avstånd, 5 skott\n5 minuters skjuttid ha uppnått i varje serie minst: **A ≥ 38**, **B ≥ 39**, **C ≥ 40**.\n2. att i 3 tillämpningsserier\nantingen\n- mot B 100 figur, 50 m av stånd, 6 skott, utgångsställning stående 45°\n- eller mot 1/6 rak eller cirkelmål C 30, 25 m av stånd, 6 skott utgångsställning stående 45°\n\nha erhållit i varje serie: minst **6 träff** inom tidsgränsen för gruppen (A: ≤40 s, B: ≤40 s, C: ≤40 s, R: ≤40 s)\n- eller erövrat minst en standardmedalj i fältskjutning.",
       "prerequisites": [
         {
           "type": "medal",
@@ -189,7 +189,7 @@
       "displayName": "Pistolskyttemärket - Guld",
       "color": "#FFD700",
       "icon": "medal-gold",
-      "requirements_original": "- 3 precisionsserier mot Pistoltavla 25 m med minsta antal poäng per grupp: **A ≥ 43**, **B ≥ 45**, **C ≥ 46**.\n- 3 tillämpningsserier (B100 50 m or 1/6 mål C30 25 m, utgångsställning stående 45°) med minst **6 träff** inom tidsgränsen för gruppen (A: ≤17s, B: ≤15s, C: ≤15s, R: ≤17s).",
+      "requirements_original": "1. att i 3 precisionsserier mot Pistoltavla 25 m precision 25 m avstånd, 5 skott\n5 minuters skjuttid ha uppnått i varje serie minst: **A ≥ 43**, **B ≥ 45**, **C ≥ 46**.\n2. att i 3 tillämpningsserier\nantingen\n- mot B 100 figur, 50 m av stånd, 6 skott, utgångsställning stående 45°\n- eller mot 1/6 rak eller cirkelmål C 30, 25 m av stånd, 6 skott utgångsställning stående 45°\n\nha erhållit i varje serie: minst **6 träff** inom tidsgränsen för gruppen (A: ≤17 s, B: ≤15 s, C: ≤15 s, R: ≤17 s)\n- eller erövrat minst en standardmedalj i fältskjutning.",
       "references": [],
       "prerequisites": [
         {
