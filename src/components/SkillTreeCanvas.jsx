@@ -214,7 +214,8 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
 
   // Keyboard pan shortcuts (scope to focused canvas for WCAG 2.1/2.2)
   const handleCanvasKeyDown = useCallback((e) => {
-    const step = 50 / Math.max(scale, 0.001)
+    const { effScale } = getEffectiveTransform(canvasRef.current)
+    const step = 50 / Math.max(effScale, 0.001)
     if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
       e.preventDefault()
     }
@@ -227,7 +228,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     } else if (e.key === 'ArrowDown') {
       handlePointerMove({ syntheticPan: { dx: 0, dy: step } })
     }
-  }, [handlePointerMove, scale])
+  }, [getEffectiveTransform, handlePointerMove])
 
   // Pointer events
   const handleCanvasPointerDown = (e) => {
@@ -237,7 +238,8 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
 
   const handleCanvasPointerMove = (e) => {
     if (isDragging) {
-      handlePointerMove(e)
+      const { effScale } = getEffectiveTransform(canvasRef.current)
+      handlePointerMove(e, effScale)
       if (canvasRef.current) canvasRef.current.style.cursor = 'grabbing'
       return
     }
@@ -380,7 +382,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
             onKeyDown={handleCanvasKeyDown}
             className="w-full h-[60vh] sm:h-[600px] bg-background cursor-grab active:cursor-grabbing touch-none select-none"
             onContextMenu={(e) => e.preventDefault()}
-            onWheel={handleWheel}
+            onWheel={(e) => { const { effScale } = getEffectiveTransform(canvasRef.current); handleWheel(e, effScale) }}
             onPointerDown={handleCanvasPointerDown}
             onPointerMove={handleCanvasPointerMove}
             onPointerUp={handleCanvasPointerUp}
@@ -502,7 +504,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
               onKeyDown={handleCanvasKeyDown}
               className="w-full h-full bg-background cursor-grab active:cursor-grabbing touch-none select-none"
               onContextMenu={(e) => e.preventDefault()}
-              onWheel={handleWheel}
+              onWheel={(e) => { const { effScale } = getEffectiveTransform(canvasRef.current); handleWheel(e, effScale) }}
               onPointerDown={handleCanvasPointerDown}
               onPointerMove={handleCanvasPointerMove}
               onPointerUp={handleCanvasPointerUp}
