@@ -550,7 +550,7 @@
       "requirements": [
         {
           "type": "competition_performance",
-          "description": "3 competitions in field shooting",
+          "description": "3 fältskyttetävlingar med minst bronsresultat",
           "minCompetitions": 3,
           "timeWindowYears": 1,
           "pointThresholdPercent": {
@@ -581,7 +581,7 @@
       "requirements": [
         {
           "type": "competition_performance",
-          "description": "3 competitions with Silver-level performance",
+          "description": "3 fältskyttetävlingar med minst silverresultat",
           "minCompetitions": 3,
           "timeWindowYears": 1,
           "pointThresholdPercent": {
@@ -612,7 +612,7 @@
       "requirements": [
         {
           "type": "competition_performance",
-          "description": "3 competitions with Gold-level performance",
+          "description": "3 fältskyttetävlingar med guldresultat",
           "minCompetitions": 3,
           "timeWindowYears": 1,
           "pointThresholdPercent": {
