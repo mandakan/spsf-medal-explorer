@@ -2096,6 +2096,7 @@
     },
     {
       "id": "lower-annual-mark-star-1",
+      "reviewed": true,
       "type": "pistol_mark",
       "tier": "star_1",
       "name": "Lägre årtalsmärket med en stjärna",
@@ -2123,6 +2124,7 @@
     },
     {
       "id": "lower-annual-mark-star-2",
+      "reviewed": true,
       "type": "pistol_mark",
       "tier": "star_2",
       "name": "Lägre årtalsmärket med två stjärnor",
@@ -2152,6 +2154,7 @@
     },
     {
       "id": "lower-annual-mark-star-3",
+      "reviewed": true,
       "type": "pistol_mark",
       "tier": "star_3",
       "name": "Lägre årtalsmärket med tre stjärnor",
@@ -2181,6 +2184,7 @@
     },
     {
       "id": "higher-annual-mark-bronze",
+      "reviewed": true,
       "type": "pistol_mark",
       "tier": "bronze",
       "name": "Högre årtalsmärket - Brons",
@@ -2210,12 +2214,14 @@
     },
     {
       "id": "higher-annual-mark-silver",
+      "reviewed": true,
       "type": "pistol_mark",
       "tier": "silver",
       "name": "Högre årtalsmärket - Silver",
       "displayName": "Högre årtalsmärket - Silver",
       "color": "#C0C0C0",
       "icon": "higher-annual-silver",
+      "requirements_original": "Innehavare av högre årtalsmärket i brons som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
       "references": [
         {
           "medalId": "pistol-mark-gold",
@@ -2238,12 +2244,14 @@
     },
     {
       "id": "higher-annual-mark-gold",
+      "reviewed": true,
       "type": "pistol_mark",
       "tier": "gold",
       "name": "Högre årtalsmärket - Guld",
       "displayName": "Högre årtalsmärket - Guld",
       "color": "#FFD700",
       "icon": "higher-annual-gold",
+      "requirements_original": "Innehavare av högre årtalsmärket i silver som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
       "references": [
         {
           "medalId": "pistol-mark-gold",
@@ -2266,12 +2274,14 @@
     },
     {
       "id": "higher-annual-mark-gold-star-1",
+      "reviewed": true,
       "type": "pistol_mark",
       "tier": "gold_star_1",
       "name": "Högre årtalsmärket - Guld med en stjärna",
       "displayName": "Högre årtalsmärket - Guld med en stjärna",
       "color": "#FFD700",
       "icon": "higher-annual-gold-star-1",
+      "requirements_original": "Innehavare av högre årtalsmärket i guld som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
       "references": [
         {
           "medalId": "pistol-mark-gold",
@@ -2294,12 +2304,14 @@
     },
     {
       "id": "higher-annual-mark-gold-star-2",
+      "reviewed": true,
       "type": "pistol_mark",
       "tier": "gold_star_2",
       "name": "Högre årtalsmärket - Guld med två stjärnor",
       "displayName": "Högre årtalsmärket - Guld med två stjärnor",
       "color": "#FFD700",
       "icon": "higher-annual-gold-star-2",
+      "requirements_original": "Innehavare av högre årtalsmärket i guld med en stjärna som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
       "references": [
         {
           "medalId": "pistol-mark-gold",
@@ -2322,12 +2334,14 @@
     },
     {
       "id": "higher-annual-mark-gold-star-3",
+      "reviewed": true,
       "type": "pistol_mark",
       "tier": "gold_star_3",
       "name": "Högre årtalsmärket - Guld med tre stjärnor",
       "displayName": "Högre årtalsmärket - Guld med tre stjärnor",
       "color": "#FFD700",
       "icon": "higher-annual-gold-star-3",
+      "requirements_original": "Innehavare av högre årtalsmärket i guld med två stjärnor som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
       "references": [
         {
           "medalId": "pistol-mark-gold",
@@ -2350,12 +2364,14 @@
     },
     {
       "id": "higher-annual-mark-gold-wreath",
+      "reviewed": true,
       "type": "pistol_mark",
       "tier": "gold_wreath",
       "name": "Högre årtalsmärket - Guld med krans",
       "displayName": "Högre årtalsmärket - Guld med krans",
       "color": "#FFD700",
       "icon": "higher-annual-gold-wreath",
+      "requirements_original": "Innehavare av högre årtalsmärket i guld med tre stjärnor som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
       "references": [
         {
           "medalId": "pistol-mark-gold",
@@ -2378,12 +2394,14 @@
     },
     {
       "id": "higher-annual-mark-gold-wreath-star-1",
+      "reviewed": true,
       "type": "pistol_mark",
       "tier": "gold_wreath_star_1",
       "name": "Högre årtalsmärket - Guld med krans och en stjärna",
       "displayName": "Högre årtalsmärket - Guld med krans och en stjärna",
       "color": "#FFD700",
       "icon": "higher-annual-gold-wreath-star-1",
+      "requirements_original": "Innehavare av högre årtalsmärket med krans som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
       "references": [
         {
           "medalId": "pistol-mark-gold",
@@ -2406,12 +2424,14 @@
     },
     {
       "id": "higher-annual-mark-gold-wreath-star-2",
+      "reviewed": true,
       "type": "pistol_mark",
       "tier": "gold_wreath_star_2",
       "name": "Högre årtalsmärket - Guld med krans och två stjärnor",
       "displayName": "Högre årtalsmärket - Guld med krans och två stjärnor",
       "color": "#FFD700",
       "icon": "higher-annual-gold-wreath-star-2",
+      "requirements_original": "Innehavare av högre årtalsmärket med krans och en stjärna som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
       "references": [
         {
           "medalId": "pistol-mark-gold",
@@ -2434,12 +2454,14 @@
     },
     {
       "id": "higher-annual-mark-gold-wreath-star-3",
+      "reviewed": true,
       "type": "pistol_mark",
       "tier": "gold_wreath_star_3",
       "name": "Högre årtalsmärket - Guld med krans och tre stjärnor",
       "displayName": "Högre årtalsmärket - Guld med krans och tre stjärnor",
       "color": "#FFD700",
       "icon": "higher-annual-gold-wreath-star-3",
+      "requirements_original": "Innehavare av högre årtalsmärket med krans och två stjärnor som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
       "references": [
         {
           "medalId": "pistol-mark-gold",
@@ -2462,12 +2484,14 @@
     },
     {
       "id": "higher-annual-mark-gold-enamel-wreath",
+      "reviewed": true,
       "type": "pistol_mark",
       "tier": "gold_enamel_wreath",
       "name": "Högre årtalsmärket - Guld med emaljerad krans",
       "displayName": "Högre årtalsmärket - Guld med emaljerad krans",
       "color": "#FFD700",
       "icon": "higher-annual-gold-enamel-wreath",
+      "requirements_original": "Innehavare av högre årtalsmärket med krans och tre stjärnor som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
       "references": [
         {
           "medalId": "pistol-mark-gold",
@@ -2492,12 +2516,14 @@
     },
     {
       "id": "higher-annual-mark-gold-enamel-wreath-star-1",
+      "reviewed": true,
       "type": "pistol_mark",
       "tier": "gold_enamel_wreath_star_1",
       "name": "Högre årtalsmärket - Guld med emaljerad krans och en stjärna",
       "displayName": "Högre årtalsmärket - Guld med emaljerad krans och en stjärna",
       "color": "#FFD700",
       "icon": "higher-annual-gold-enamel-wreath-star-1",
+      "requirements_original": "Innehavare av högre årtalsmärket med emaljerad krans som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
       "references": [
         {
           "medalId": "pistol-mark-gold",
@@ -2522,12 +2548,14 @@
     },
     {
       "id": "higher-annual-mark-gold-enamel-wreath-star-2",
+      "reviewed": true,
       "type": "pistol_mark",
       "tier": "gold_enamel_wreath_star_2",
       "name": "Högre årtalsmärket - Guld med emaljerad krans och två stjärnor",
       "displayName": "Högre årtalsmärket - Guld med emaljerad krans och två stjärnor",
       "color": "#FFD700",
       "icon": "higher-annual-gold-enamel-wreath-star-2",
+      "requirements_original": "Innehavare av högre årtalsmärket med emaljerad krans och en stjärna som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
       "references": [
         {
           "medalId": "pistol-mark-gold",
@@ -2555,12 +2583,14 @@
     },
     {
       "id": "higher-annual-mark-gold-enamel-wreath-star-3",
+      "reviewed": true,
       "type": "pistol_mark",
       "tier": "gold_enamel_wreath_star_3",
       "name": "Högre årtalsmärket - Guld med emaljerad krans och tre stjärnor",
       "displayName": "Högre årtalsmärket - Guld med emaljerad krans och tre stjärnor",
       "color": "#FFD700",
       "icon": "higher-annual-gold-enamel-wreath-star-3",
+      "requirements_original": "Innehavare av högre årtalsmärket med emaljerad krans och två stjärnor som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
       "references": [
         {
           "medalId": "pistol-mark-gold",
