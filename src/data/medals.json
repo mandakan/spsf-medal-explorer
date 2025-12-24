@@ -1849,7 +1849,6 @@
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för märke i nationell helmatch i guld.",
-
           "yearsOfAchievement": 3
         }
       ],
@@ -1869,7 +1868,7 @@
       "requirements": [
         {
           "type": "air_pistol_precision",
-          "description": "5 precisionsserier with luftpistol against 10-ringad internatio nell luftpistoltavla",
+          "description": "5 precisionsserier med luftpistol mot 10-ringad internationell luftpistoltavla",
           "minSeries": 5,
           "timeWindowYears": 1,
           "minPointsPerSeries": 66
@@ -1891,7 +1890,7 @@
       "requirements": [
         {
           "type": "air_pistol_precision",
-          "description": "5 precisionsserier with luftpistol against 10-ringad internatio nell luftpistoltavla",
+          "description": "5 precisionsserier med luftpistol mot 10-ringad internationell luftpistoltavla",
           "minSeries": 5,
           "timeWindowYears": 1,
           "minPointsPerSeries": 76
@@ -1913,7 +1912,7 @@
       "requirements": [
         {
           "type": "air_pistol_precision",
-          "description": "5 precisionsserier med luftpistol mot 10-ringad internatio nell luftpistoltavla",
+          "description": "5 precisionsserier med luftpistol mot 10-ringad internationell luftpistoltavla",
           "minSeries": 5,
           "timeWindowYears": 1,
           "minPointsPerSeries": 88
@@ -1935,14 +1934,14 @@
       "references": [
         {
           "medalId": "air-pistol-mark-gold",
-          "description": "Fulfill requirements for luftpistol Mark - Gold during the year."
+          "description": "Uppfyllt fordringarna för luftpistolmärket i guld"
         }
       ],
       "prerequisites": [{ "type": "medal", "medalId": "air-pistol-mark-gold" }],
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Yearly achievement of luftpistol Gold requirements",
+          "description": "Ånyo uppfyllt fordringarna för luftpistolmärket i guld",
           "minAchievements": 1,
           "timeWindowYears": 1
         }
@@ -1965,7 +1964,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Yearly achievement of luftpistol Gold requirements",
+          "description": "Ånyo uppfyllt fordringarna för luftpistolmärket i guld",
           "minAchievements": 1,
           "timeWindowYears": 1
         }
@@ -1988,7 +1987,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Yearly achievement of luftpistol Gold requirements",
+          "description": "Ånyo uppfyllt fordringarna för luftpistolmärket i guld",
           "minAchievements": 1,
           "timeWindowYears": 1
         }
@@ -2011,7 +2010,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Yearly achievement of luftpistol Gold requirements",
+          "description": "Ånyo uppfyllt fordringarna för luftpistolmärket i guld",
           "minAchievements": 1,
           "timeWindowYears": 1
         }
@@ -2034,7 +2033,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Yearly achievement of luftpistol Gold requirements",
+          "description": "Ånyo uppfyllt fordringarna för luftpistolmärket i guld",
           "minAchievements": 1,
           "timeWindowYears": 1
         }
@@ -2057,7 +2056,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Yearly achievement of luftpistol Gold requirements",
+          "description": "Ånyo uppfyllt fordringarna för luftpistolmärket i guld",
           "minAchievements": 1,
           "timeWindowYears": 1
         }
@@ -2080,7 +2079,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Yearly achievement of luftpistol Gold requirements",
+          "description": "Ånyo uppfyllt fordringarna för luftpistolmärket i guld",
           "minAchievements": 1,
           "timeWindowYears": 1
         }
@@ -2103,7 +2102,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Yearly achievement of luftpistol Gold requirements",
+          "description": "Ånyo uppfyllt fordringarna för luftpistolmärket i guld",
           "minAchievements": 1,
           "timeWindowYears": 1
         }
