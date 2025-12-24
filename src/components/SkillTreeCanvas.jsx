@@ -179,17 +179,16 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     }
   }, [layout, ensureLabelVisibilityScale])
 
-  // Redraw on window resize and ensure readable label scale
+  // Redraw on window resize
   useEffect(() => {
     const onResize = () => {
       if (canvasRef.current) {
         draw()
-        ensureLabelVisibilityScale()
       }
     }
     window.addEventListener('resize', onResize)
     return () => window.removeEventListener('resize', onResize)
-  }, [draw, ensureLabelVisibilityScale])
+  }, [draw])
 
   // Native wheel listener (passive: false) to prevent page scroll/zoom during canvas zoom gestures.
   useEffect(() => {
@@ -251,15 +250,14 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     return () => window.removeEventListener('pointerdown', onDown, { capture: true })
   }, [menuOpen])
 
-  // Redraw on fullscreen toggle and ensure readable label scale
+  // Redraw on fullscreen toggle
   useEffect(() => {
     if (canvasRef.current) {
       requestAnimationFrame(() => {
         draw()
-        ensureLabelVisibilityScale()
       })
     }
-  }, [isFullscreen, draw, ensureLabelVisibilityScale])
+  }, [isFullscreen, draw])
 
   // Keyboard pan shortcuts (scope to focused canvas for WCAG 2.1/2.2)
   const handleCanvasKeyDown = useCallback((e) => {
