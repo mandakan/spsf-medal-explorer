@@ -159,6 +159,20 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     return () => window.removeEventListener('resize', onResize)
   }, [draw])
 
+  // Native wheel listener (passive: false) to prevent page scroll/zoom during canvas zoom gestures.
+  useEffect(() => {
+    const el = canvasRef.current
+    if (!el) return
+    const onWheel = (e) => {
+      const { effScale } = getEffectiveTransform(el)
+      handleWheel(e, effScale)
+    }
+    el.addEventListener('wheel', onWheel, { passive: false })
+    return () => {
+      el.removeEventListener('wheel', onWheel, { passive: false })
+    }
+  }, [getEffectiveTransform, handleWheel, isFullscreen])
+
   // Fullscreen: lock page scroll, focus close, restore on exit, allow Esc to close
   useEffect(() => {
     if (!isFullscreen) return
@@ -380,9 +394,8 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
             aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown"
             tabIndex={0}
             onKeyDown={handleCanvasKeyDown}
-            className="w-full h-[60vh] sm:h-[600px] bg-background cursor-grab active:cursor-grabbing touch-none select-none"
+            className="w-full h-[60vh] sm:h-[600px] bg-background cursor-grab active:cursor-grabbing touch-none overscroll-contain select-none"
             onContextMenu={(e) => e.preventDefault()}
-            onWheel={(e) => { const { effScale } = getEffectiveTransform(canvasRef.current); handleWheel(e, effScale) }}
             onPointerDown={handleCanvasPointerDown}
             onPointerMove={handleCanvasPointerMove}
             onPointerUp={handleCanvasPointerUp}
@@ -502,9 +515,8 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
               aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown"
               tabIndex={0}
               onKeyDown={handleCanvasKeyDown}
-              className="w-full h-full bg-background cursor-grab active:cursor-grabbing touch-none select-none"
+              className="w-full h-full bg-background cursor-grab active:cursor-grabbing touch-none overscroll-contain select-none"
               onContextMenu={(e) => e.preventDefault()}
-              onWheel={(e) => { const { effScale } = getEffectiveTransform(canvasRef.current); handleWheel(e, effScale) }}
               onPointerDown={handleCanvasPointerDown}
               onPointerMove={handleCanvasPointerMove}
               onPointerUp={handleCanvasPointerUp}
