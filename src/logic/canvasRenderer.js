@@ -139,7 +139,7 @@ export const COLORS = {
   accent: '#3B82F6',
 }
 
-export function drawMedalNode(ctx, x, y, radius, medal, status, scale) {
+export function drawMedalNode(ctx, x, y, radius, medal, status, scale, forceLabel = false) {
   if (!(medal instanceof Medal)) {
     if (!medal || typeof medal !== 'object') {
       throw new Error('drawMedalNode requires a Medal instance or a plain medal-like object')
@@ -157,7 +157,7 @@ export function drawMedalNode(ctx, x, y, radius, medal, status, scale) {
 
   // Border
   ctx.strokeStyle = palette.border
-  ctx.lineWidth = Math.max(1, 2 / Math.max(scale, 0.001))
+  ctx.lineWidth = Math.max(0.5, 2 * Math.max(scale, 0.001))
   ctx.stroke()
 
   // Under review indicator: dashed ring and optional label
@@ -167,12 +167,13 @@ export function drawMedalNode(ctx, x, y, radius, medal, status, scale) {
     const canSave = typeof ctx.save === 'function'
     if (canSave) ctx.save()
     if (typeof ctx.setLineDash === 'function') {
-      ctx.setLineDash([6 / s, 6 / s])
+      const dash = Math.max(1, 6 * s)
+      ctx.setLineDash([dash, dash])
     }
     ctx.strokeStyle = palette.review
-    ctx.lineWidth = Math.max(1.5, 2.5 / s)
+    ctx.lineWidth = Math.max(0.75, 2.5 * s)
     ctx.beginPath()
-    ctx.arc(x, y, radius + Math.max(2, 3 / s), 0, Math.PI * 2)
+    ctx.arc(x, y, radius + Math.max(1, 3 * s), 0, Math.PI * 2)
     ctx.stroke()
     if (canSave && typeof ctx.restore === 'function') ctx.restore()
     // No text label for under-review in canvas; using dashed review ring only for consistency with list
@@ -180,8 +181,8 @@ export function drawMedalNode(ctx, x, y, radius, medal, status, scale) {
 
   // Label text: draw full displayName below the node with wrapping for readability
   const name = medal?.displayName || medal?.name || medal?.tier || 'Medal'
-  // Avoid label clutter when zoomed far out
-  if (scale >= 0.7 && name) {
+  // Avoid label clutter when zoomed far out; always show when forced (hover/selected)
+  if ((forceLabel || scale >= 0.8) && name) {
     ctx.fillStyle = palette.text
     ctx.textAlign = 'center'
     ctx.textBaseline = 'top'
@@ -194,7 +195,8 @@ export function drawMedalNode(ctx, x, y, radius, medal, status, scale) {
 
     // Wrap to a max width and line count
     const maxWidth = 180
-    const lines = wrapText(ctx, name, maxWidth, 3)
+    const maxLines = forceLabel ? 3 : (scale >= 1.3 ? 3 : 2)
+    const lines = wrapText(ctx, name, maxWidth, maxLines)
 
     const startY = y + radius + 8
 
@@ -224,7 +226,7 @@ export function drawConnection(ctx, x1, y1, x2, y2, type = 'prerequisite', scale
   const palette = getThemeColors(ctx?.canvas)
   void type
   ctx.strokeStyle = palette.connection
-  ctx.lineWidth = Math.max(1, 2 / Math.max(scale, 0.001))
+  ctx.lineWidth = Math.max(0.5, 2 * Math.max(scale, 0.001))
   ctx.beginPath()
   ctx.moveTo(x1, y1)
   ctx.lineTo(x2, y2)
@@ -232,7 +234,7 @@ export function drawConnection(ctx, x1, y1, x2, y2, type = 'prerequisite', scale
 
   // Arrowhead
   const angle = Math.atan2(y2 - y1, x2 - x1)
-  const arrowSize = Math.max(6, 10 / Math.max(scale, 0.001))
+  const arrowSize = Math.max(4, 10 * Math.max(scale, 0.001))
   
   ctx.beginPath()
   ctx.moveTo(x2, y2)
@@ -289,7 +291,7 @@ export function drawConnection(ctx, x1, y1, x2, y2, type = 'prerequisite', scale
     ctx.globalAlpha = prevAlpha
 
     ctx.strokeStyle = palette.accent
-    ctx.lineWidth = Math.max(1, 1.5 / Math.max(scale, 0.001))
+    ctx.lineWidth = Math.max(0.5, 1.5 * Math.max(scale, 0.001))
     ctx.beginPath()
     if (typeof ctx.arcTo === 'function') {
       ctx.moveTo(rx + r, ry)

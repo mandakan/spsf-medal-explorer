@@ -11,10 +11,11 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   const canvasRef = useRef(null)
   const { medalDatabase } = useMedalDatabase()
   const statuses = useAllMedalStatuses()
-  const { panX, panY, scale, handleWheel, handlePointerDown, handlePointerMove, handlePointerUp, resetView } = usePanZoom()
+  const { panX, panY, scale, setScaleAbsolute, handleWheel, handlePointerDown, handlePointerMove, handlePointerUp, resetView } = usePanZoom(1, 0.5, 6)
   const { render } = useCanvasRenderer()
   
   const [selectedMedal, setSelectedMedal] = useState(null)
+  const [hoveredMedal, setHoveredMedal] = useState(null)
   const navigate = useNavigate()
   const location = useLocation()
   const isFullscreen = location.pathname.endsWith('/skill-tree/fullscreen')
@@ -28,10 +29,58 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   const closeBtnRef = useRef(null)
   const prevFocusRef = useRef(null)
 
+  // Keep latest interactive scale without causing re-renders
+  const scaleRef = useRef(scale)
+  useEffect(() => { scaleRef.current = scale }, [scale])
+
   // Fullscreen floating menu state and refs
   const [menuOpen, setMenuOpen] = useState(false)
   const menuButtonRef = useRef(null)
   const menuRef = useRef(null)
+
+  // Compute a base transform that anchors the layout's top-left to the canvas' top-left with padding,
+  // and auto-fits the layout into the viewport (mobile-first).
+  const computeBaseTransform = useCallback((canvas, padding = 24) => {
+    if (!layout || !canvas) return { baseScale: 1, minX: 0, minY: 0 }
+    const width = canvas.width
+    const height = canvas.height
+    if (!width || !height) return { baseScale: 1, minX: 0, minY: 0 }
+    const medals = layout.medals || []
+    if (!medals.length) return { baseScale: 1, minX: 0, minY: 0 }
+
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity
+    for (let i = 0; i < medals.length; i++) {
+      const m = medals[i]
+      const r = m.radius || 20
+      if (m.x - r < minX) minX = m.x - r
+      if (m.y - r < minY) minY = m.y - r
+      if (m.x + r > maxX) maxX = m.x + r
+      if (m.y + r > maxY) maxY = m.y + r
+    }
+    const contentW = Math.max(1, maxX - minX)
+    const contentH = Math.max(1, maxY - minY)
+    const fitX = (width - padding * 2) / contentW
+    const fitY = (height - padding * 2) / contentH
+    const baseScale = Math.max(0.001, Math.min(fitX, fitY))
+    return { baseScale, minX, minY }
+  }, [layout])
+
+  // Effective transform combines the base (top-left anchored, auto-fit) with interactive pan/zoom.
+  const getEffectiveTransform = useCallback((canvas, padding = 24) => {
+    const { baseScale, minX, minY } = computeBaseTransform(canvas, padding)
+    const width = canvas?.width || 0
+    const height = canvas?.height || 0
+    const effScale = Math.max(0.001, baseScale * scale)
+    // Compute base pan using the effective scale so the top-left stays anchored at padding
+    // Include label half-width so the left-most label stays inside canvas padding.
+    const labelHalfPx = 90
+    const extraLeftWorld = labelHalfPx / effScale
+    const basePanX = (padding - width / 2) / effScale - (minX - extraLeftWorld)
+    const basePanY = (padding - height / 2) / effScale - minY
+    const effPanX = panX + basePanX
+    const effPanY = panY + basePanY
+    return { effScale, effPanX, effPanY, baseScale }
+  }, [computeBaseTransform, panX, panY, scale])
 
   // Determine which medals are visible in the current viewport for culling
   const getVisibleMedalsForCanvas = useCallback((canvas, margin = 120) => {
@@ -39,12 +88,13 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     const width = canvas.width
     const height = canvas.height
     const medals = layout.medals || []
+    const { effScale, effPanX, effPanY } = getEffectiveTransform(canvas)
     const result = []
     for (let i = 0; i < medals.length; i++) {
       const m = medals[i]
-      const nodeX = (m.x + panX) * scale + width / 2
-      const nodeY = (m.y + panY) * scale + height / 2
-      const r = (m.radius || 20) * scale
+      const nodeX = (m.x + effPanX) * effScale + width / 2
+      const nodeY = (m.y + effPanY) * effScale + height / 2
+      const r = (m.radius || 20) * effScale
       if (
         nodeX + r >= -margin &&
         nodeX - r <= width + margin &&
@@ -55,7 +105,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
       }
     }
     return result
-  }, [layout, panX, panY, scale])
+  }, [layout, getEffectiveTransform])
 
 
   const draw = useCallback(() => {
@@ -83,25 +133,38 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     const filteredLayout = { ...layout, medals: visibleMedals }
     const filteredMedals = allMedals.filter(m => visibleIds.has(m.id))
 
+    const { effScale, effPanX, effPanY } = getEffectiveTransform(canvas)
+
     render(
       ctx,
       filteredMedals,
       filteredLayout,
       statuses,
-      panX,
-      panY,
-      scale,
-      selectedMedal
+      effPanX,
+      effPanY,
+      effScale,
+      selectedMedal,
+      hoveredMedal
     )
-  }, [getVisibleMedalsForCanvas, layout, medalDatabase, statuses, panX, panY, scale, selectedMedal, render])
+  }, [getVisibleMedalsForCanvas, getEffectiveTransform, layout, medalDatabase, statuses, selectedMedal, render, hoveredMedal])
 
-  // Ensure first frame renders whenever a canvas node is attached
+  // Ensure label readability at initial/reset states without fighting user zoom
+  const ensureLabelVisibilityScale = useCallback(() => {
+    const canvas = canvasRef.current
+    if (!canvas || !layout) return
+    const { baseScale } = computeBaseTransform(canvas)
+    // Target minimum effective scale for label readability (labels draw at >= 0.8)
+    const minEff = 0.8
+    const targetInteractive = minEff / Math.max(0.001, baseScale)
+    const current = scaleRef.current
+    if (current + 1e-3 < targetInteractive) {
+      setScaleAbsolute(targetInteractive)
+    }
+  }, [computeBaseTransform, layout, setScaleAbsolute])
+
   const setCanvasRef = useCallback((node) => {
     canvasRef.current = node
-    if (node) {
-      requestAnimationFrame(draw)
-    }
-  }, [draw])
+  }, [])
 
   // Draw with requestAnimationFrame for smoothness
   useEffect(() => {
@@ -109,14 +172,37 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     return () => cancelAnimationFrame(raf)
   }, [draw])
 
+  // Ensure label readability once layout is ready (initialization only)
+  useEffect(() => {
+    if (canvasRef.current && layout) {
+      ensureLabelVisibilityScale()
+    }
+  }, [layout, ensureLabelVisibilityScale])
+
   // Redraw on window resize
   useEffect(() => {
     const onResize = () => {
-      if (canvasRef.current) draw()
+      if (canvasRef.current) {
+        draw()
+      }
     }
     window.addEventListener('resize', onResize)
     return () => window.removeEventListener('resize', onResize)
   }, [draw])
+
+  // Native wheel listener (passive: false) to prevent page scroll/zoom during canvas zoom gestures.
+  useEffect(() => {
+    const el = canvasRef.current
+    if (!el) return
+    const onWheel = (e) => {
+      const { effScale } = getEffectiveTransform(el)
+      handleWheel(e, effScale)
+    }
+    el.addEventListener('wheel', onWheel, { passive: false })
+    return () => {
+      el.removeEventListener('wheel', onWheel, { passive: false })
+    }
+  }, [getEffectiveTransform, handleWheel, isFullscreen])
 
   // Fullscreen: lock page scroll, focus close, restore on exit, allow Esc to close
   useEffect(() => {
@@ -164,16 +250,19 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     return () => window.removeEventListener('pointerdown', onDown, { capture: true })
   }, [menuOpen])
 
-  // Redraw on fullscreen toggle to ensure immediate render after mount
+  // Redraw on fullscreen toggle
   useEffect(() => {
     if (canvasRef.current) {
-      requestAnimationFrame(draw)
+      requestAnimationFrame(() => {
+        draw()
+      })
     }
   }, [isFullscreen, draw])
 
   // Keyboard pan shortcuts (scope to focused canvas for WCAG 2.1/2.2)
   const handleCanvasKeyDown = useCallback((e) => {
-    const step = 50 / Math.max(scale, 0.001)
+    const { effScale } = getEffectiveTransform(canvasRef.current)
+    const step = 50 / Math.max(effScale, 0.001)
     if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
       e.preventDefault()
     }
@@ -186,7 +275,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     } else if (e.key === 'ArrowDown') {
       handlePointerMove({ syntheticPan: { dx: 0, dy: step } })
     }
-  }, [handlePointerMove, scale])
+  }, [getEffectiveTransform, handlePointerMove])
 
   // Pointer events
   const handleCanvasPointerDown = (e) => {
@@ -196,7 +285,8 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
 
   const handleCanvasPointerMove = (e) => {
     if (isDragging) {
-      handlePointerMove(e)
+      const { effScale } = getEffectiveTransform(canvasRef.current)
+      handlePointerMove(e, effScale)
       if (canvasRef.current) canvasRef.current.style.cursor = 'grabbing'
       return
     }
@@ -207,26 +297,30 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     const mouseX = e.clientX - rect.left
     const mouseY = e.clientY - rect.top
 
-    // Hover hit test uses same transform as renderer (centered origin)
+    // Hover hit test uses the same transform as renderer (top-left anchored)
+    const { effScale, effPanX, effPanY } = getEffectiveTransform(canvasRef.current)
     const visibleMedals = getVisibleMedalsForCanvas(canvasRef.current)
     for (const medal of visibleMedals) {
-      const nodeX = (medal.x + panX) * scale + canvasRef.current.width / 2
-      const nodeY = (medal.y + panY) * scale + canvasRef.current.height / 2
-      const radius = (medal.radius || 20) * scale
+      const nodeX = (medal.x + effPanX) * effScale + canvasRef.current.width / 2
+      const nodeY = (medal.y + effPanY) * effScale + canvasRef.current.height / 2
+      const radius = (medal.radius || 20) * effScale
       const effectiveRadius = Math.max(radius, 24)
       const dx = mouseX - nodeX
       const dy = mouseY - nodeY
       if (dx * dx + dy * dy < effectiveRadius * effectiveRadius) {
+        setHoveredMedal(medal.medalId)
         canvasRef.current.style.cursor = 'pointer'
         return
       }
     }
+    setHoveredMedal(null)
     canvasRef.current.style.cursor = 'grab'
   }
 
   const handleCanvasPointerUp = (e) => {
     setIsDragging(false)
     handlePointerUp(e)
+    setHoveredMedal(null)
   }
 
   const handleCanvasClick = (e) => {
@@ -237,11 +331,12 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     const mouseY = e.clientY - rect.top
 
     // Determine clicked medal node (use culled set)
+    const { effScale, effPanX, effPanY } = getEffectiveTransform(canvasRef.current)
     const visibleMedals = getVisibleMedalsForCanvas(canvasRef.current)
     for (const medal of visibleMedals) {
-      const nodeX = (medal.x + panX) * scale + canvasRef.current.width / 2
-      const nodeY = (medal.y + panY) * scale + canvasRef.current.height / 2
-      const radius = (medal.radius || 20) * scale
+      const nodeX = (medal.x + effPanX) * effScale + canvasRef.current.width / 2
+      const nodeY = (medal.y + effPanY) * effScale + canvasRef.current.height / 2
+      const radius = (medal.radius || 20) * effScale
       const effectiveRadius = Math.max(radius, 24)
       const dx = mouseX - nodeX
       const dy = mouseY - nodeY
@@ -261,11 +356,12 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     const mouseX = e.clientX - rect.left
     const mouseY = e.clientY - rect.top
 
+    const { effScale, effPanX, effPanY } = getEffectiveTransform(canvasRef.current)
     const visibleMedals = getVisibleMedalsForCanvas(canvasRef.current)
     for (const medal of visibleMedals) {
-      const nodeX = (medal.x + panX) * scale + canvasRef.current.width / 2
-      const nodeY = (medal.y + panY) * scale + canvasRef.current.height / 2
-      const radius = (medal.radius || 20) * scale
+      const nodeX = (medal.x + effPanX) * effScale + canvasRef.current.width / 2
+      const nodeY = (medal.y + effPanY) * effScale + canvasRef.current.height / 2
+      const radius = (medal.radius || 20) * effScale
       const effectiveRadius = Math.max(radius, 24)
       const dx = mouseX - nodeX
       const dy = mouseY - nodeY
@@ -299,7 +395,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
         <div role="toolbar" aria-label="Träd-vy åtgärder" className="flex flex-wrap gap-2 sm:flex-nowrap">
           <button
             type="button"
-            onClick={resetView}
+            onClick={() => { resetView(); ensureLabelVisibilityScale() }}
             className="px-3 py-2 sm:px-4 sm:py-2 min-h-[44px] rounded bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-slate-700 dark:text-slate-50 dark:hover:bg-slate-600 border border-gray-300 dark:border-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
           >
             Återställ
@@ -334,9 +430,8 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
             aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown"
             tabIndex={0}
             onKeyDown={handleCanvasKeyDown}
-            className="w-full h-[60vh] sm:h-[600px] bg-background cursor-grab active:cursor-grabbing touch-none select-none"
+            className="w-full h-[60vh] sm:h-[600px] bg-background cursor-grab active:cursor-grabbing touch-none overscroll-contain select-none"
             onContextMenu={(e) => e.preventDefault()}
-            onWheel={handleWheel}
             onPointerDown={handleCanvasPointerDown}
             onPointerMove={handleCanvasPointerMove}
             onPointerUp={handleCanvasPointerUp}
@@ -420,7 +515,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                 <button
                   role="menuitem"
                   type="button"
-                  onClick={() => { setMenuOpen(false); resetView() }}
+                  onClick={() => { setMenuOpen(false); resetView(); ensureLabelVisibilityScale() }}
                   className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                 >
                   Återställ vy
@@ -456,9 +551,8 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
               aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown"
               tabIndex={0}
               onKeyDown={handleCanvasKeyDown}
-              className="w-full h-full bg-background cursor-grab active:cursor-grabbing touch-none select-none"
+              className="w-full h-full bg-background cursor-grab active:cursor-grabbing touch-none overscroll-contain select-none"
               onContextMenu={(e) => e.preventDefault()}
-              onWheel={handleWheel}
               onPointerDown={handleCanvasPointerDown}
               onPointerMove={handleCanvasPointerMove}
               onPointerUp={handleCanvasPointerUp}
