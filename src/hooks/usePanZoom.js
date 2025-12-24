@@ -12,15 +12,15 @@ export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3) {
   // Inertia state and helpers
   const inertiaRef = useRef({ vx: 0, vy: 0, lastT: 0, raf: 0 })
   const lastMoveRef = useRef({ x: 0, y: 0, t: 0 })
-  const getReduceMotion = () => {
+  const getReduceMotion = useCallback(() => {
     if (typeof window === 'undefined' || !window.matchMedia) return false
     try {
       return window.matchMedia('(prefers-reduced-motion: reduce)').matches
     } catch {
       return false
     }
-  }
-  const stopMomentum = () => {
+  }, [])
+  const stopMomentum = useCallback(() => {
     const s = inertiaRef.current
     if (s.raf) {
       cancelAnimationFrame(s.raf)
@@ -29,8 +29,8 @@ export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3) {
     s.vx = 0
     s.vy = 0
     s.lastT = 0
-  }
-  const startMomentum = (vx, vy) => {
+  }, [])
+  const startMomentum = useCallback((vx, vy) => {
     if (!isFinite(vx) || !isFinite(vy)) return
     if (getReduceMotion()) return
     stopMomentum()
@@ -56,7 +56,7 @@ export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3) {
       s.raf = requestAnimationFrame(step)
     }
     s.raf = requestAnimationFrame(step)
-  }
+  }, [getReduceMotion, stopMomentum])
 
   const handleWheel = useCallback((e, effectiveScale) => {
     e.preventDefault()
@@ -81,7 +81,7 @@ export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3) {
     setScale(s1)
     setPanX(prev => prev + corrX)
     setPanY(prev => prev + corrY)
-  }, [scale, minScale, maxScale])
+  }, [scale, minScale, maxScale, stopMomentum])
 
   const handlePointerDown = useCallback((e) => {
     e.preventDefault()
@@ -105,7 +105,7 @@ export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3) {
       inertiaRef.current.vx = 0
       inertiaRef.current.vy = 0
     }
-  }, [panX, panY, scale])
+  }, [panX, panY, scale, stopMomentum])
 
   const handlePointerMove = useCallback((e, effectiveScale) => {
     // Allow synthetic pan via keyboard; dx/dy are in world units already.
@@ -179,7 +179,7 @@ export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3) {
       setPanX(dragStartRef.current.panX + deltaX)
       setPanY(dragStartRef.current.panY + deltaY)
     }
-  }, [scale, minScale, maxScale])
+  }, [scale, minScale, maxScale, stopMomentum])
 
   const handlePointerUp = useCallback((e) => {
     pointersRef.current.delete(e.pointerId)
@@ -202,7 +202,7 @@ export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3) {
     setPanX(0)
     setPanY(0)
     setScale(initialScale)
-  }, [initialScale])
+  }, [initialScale, stopMomentum])
 
   const setScaleAbsolute = useCallback((s) => {
     const clamped = Math.max(minScale, Math.min(maxScale, s))

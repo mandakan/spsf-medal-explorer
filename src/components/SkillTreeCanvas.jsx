@@ -146,7 +146,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
       selectedMedal,
       hoveredMedal
     )
-  }, [getVisibleMedalsForCanvas, getEffectiveTransform, layout, medalDatabase, statuses, panX, panY, scale, selectedMedal, render, hoveredMedal])
+  }, [getVisibleMedalsForCanvas, getEffectiveTransform, layout, medalDatabase, statuses, selectedMedal, render, hoveredMedal])
 
   // Ensure label readability at initial/reset states without fighting user zoom
   const ensureLabelVisibilityScale = useCallback(() => {
