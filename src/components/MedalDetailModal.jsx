@@ -7,6 +7,7 @@ import UnlockMedalDialog from './UnlockMedalDialog'
 import RemoveMedalDialog from './RemoveMedalDialog'
 import { useUnlockGuard } from '../hooks/useUnlockGuard'
 const Markdown = lazy(() => import('react-markdown'))
+import remarkGfm from 'remark-gfm'
 import { useNavigate, useLocation } from 'react-router-dom'
 
 export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) {
@@ -210,6 +211,32 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
     achievable: '🎯 Uppnåelig',
     locked: '🔒 Låst'
   }[status?.status] || '🔒 Locked'
+
+  const mdComponents = {
+    ul: (props) => <ul className="list-disc pl-5 my-2 space-y-1" {...props} />,
+    ol: (props) => <ol className="list-decimal pl-5 my-2 space-y-1" {...props} />,
+    li: (props) => <li className="marker:text-muted-foreground" {...props} />,
+    table: (props) => (
+      <div className="my-2 overflow-x-auto">
+        <table className="w-full text-sm border-collapse" {...props} />
+      </div>
+    ),
+    thead: (props) => <thead className="bg-bg-secondary" {...props} />,
+    th: (props) => <th className="border border-border px-2 py-1 text-left font-semibold" {...props} />,
+    td: (props) => <td className="border border-border px-2 py-1 align-top" {...props} />,
+    a: ({ href, children, ...rest }) => (
+      <a
+        href={href}
+        className="underline text-primary hover:text-primary-hover"
+        target="_blank"
+        rel="noopener noreferrer"
+        {...rest}
+      >
+        {children}
+      </a>
+    ),
+    code: (props) => <code className="px-1 py-0.5 rounded bg-bg-secondary" {...props} />
+  }
 
 
   // Focus trap inside the panel
@@ -449,7 +476,9 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
                   <div className="px-3 pb-3" id={originalId} aria-hidden={!showOriginal}>
                     <div className="text-sm text-foreground break-words">
                       <Suspense fallback={null}>
-                        <Markdown>{medal.requirementsOriginal}</Markdown>
+                        <Markdown remarkPlugins={[remarkGfm]} components={mdComponents}>
+                          {medal.requirementsOriginal}
+                        </Markdown>
                       </Suspense>
                     </div>
                   </div>
