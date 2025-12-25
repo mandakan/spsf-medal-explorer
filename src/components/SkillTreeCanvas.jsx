@@ -260,13 +260,12 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     return () => cancelAnimationFrame(raf)
   }, [draw])
 
-  // Compute badge overlay positions in layout effect to stay in sync with canvas and pass lint rules
+  // Compute badge overlay positions in layout effect to stay in sync with canvas
   useLayoutEffect(() => {
     const el = canvasRef.current
-    if (!el) {
-      setBadgeData([])
-      return
-    }
+    if (!el) return
+    // Synchronize derived overlay with external canvas transform (canvas size + base fit).
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setBadgeData(getYearsBadgeData(el))
   }, [getYearsBadgeData, panX, panY, scale, hoveredMedal, selectedMedal, layout])
 
