@@ -57,15 +57,15 @@ function AppRoutes() {
 function App() {
   const base = (typeof document !== 'undefined' && document.querySelector('base')?.getAttribute('href')) || '/'
   useEffect(() => {
-    if (typeof window === 'undefined') return
+    if (typeof window === 'undefined' || !('matchMedia' in window)) return
     const mq = window.matchMedia('(prefers-color-scheme: dark)')
     const apply = (isDark) => {
       document.documentElement.classList.toggle('dark', isDark)
     }
     apply(mq.matches)
     const onChange = (e) => apply(e.matches)
-    mq.addEventListener('change', onChange)
-    return () => mq.removeEventListener('change', onChange)
+    mq.addEventListener?.('change', onChange)
+    return () => mq.removeEventListener?.('change', onChange)
   }, [])
   return (
     <MedalProvider>
