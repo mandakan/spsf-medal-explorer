@@ -3,10 +3,10 @@
 /* Design tokens (Tailwind v4) */
 @theme {
   /* Semantic colors */
-  --color-background: #fcfcf9;
-  --color-surface: #ffffff;
-  --color-foreground: #133452;
-  --color-muted: #626c71;
+  --color-background: #FFFFFF;
+  --color-surface: #F8F9FA;
+  --color-foreground: #212529;
+  --color-muted: #6C757D;
 
   --color-primary: #1d745f;
   --color-primary-hover: #16605a;
@@ -25,7 +25,7 @@
   --color-connection: #94A3B8;
   --color-review: #F59E0B;
   --color-placeholder: #6366F1;
-  --color-border: #5e5240;
+  --color-border: #E9ECEF;
   --color-muted-foreground: var(--color-text-secondary);
 
   /* Spacing scale */
