@@ -16,6 +16,9 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   
   const [selectedMedal, setSelectedMedal] = useState(null)
   const [hoveredMedal, setHoveredMedal] = useState(null)
+  // rAF-synced badge data to reduce jitter and keep DOM overlay in sync with canvas
+  const [badgeData, setBadgeData] = useState([])
+  const badgeRafRef = useRef(null)
   const navigate = useNavigate()
   const location = useLocation()
   const isFullscreen = location.pathname.endsWith('/skill-tree/fullscreen')
@@ -122,21 +125,10 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     for (const n of layout.medals || []) nodeById.set(n.medalId, n)
 
     // Fixed pill size and layout constants (screen px)
-    const PILL_W = 56  // tighter for less overlap
+    const PILL_W = 56
     const PILL_H = 22
-    const GAP_ALONG_PX = 8
-    const SIDE_OFFSET_PX = 20  // a touch more separation from the connection
-    const NODE_CLEAR = Math.max(PILL_H / 2 + 6, 12) // min radial clearance so pill never touches node
-
-    // Label block (approx) – mirrors canvasRenderer label layout
-    const LABEL_MAX_W = 160
-    const LABEL_FONT_PX = 12
-    const LABEL_LINE_H = Math.round(LABEL_FONT_PX * 1.3)
-    const LABEL_LINES = effScale >= 1.3 ? 3 : 2
-    const LABEL_TOP_MARGIN = 8
-
-    const rectsOverlap = (a, b) =>
-      a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y
+    const VERT_MARGIN = 12
+    const NODE_CLEAR = Math.max(PILL_H / 2 + 6, 12)
 
     const toScreen = (node) => {
       const x = (node.x + effPanX) * effScale + width / 2
@@ -151,50 +143,37 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
 
       const toNode = toScreen(m)
 
-      // Default placement (no connection found): up-left, outside the node with guaranteed clearance
-      let cx = toNode.x - (toNode.r + GAP_ALONG_PX + NODE_CLEAR)
-      let cy = toNode.y - (toNode.r + GAP_ALONG_PX + NODE_CLEAR)
+      // Default placement: centered horizontally, above the node with guaranteed clearance
+      let cx = toNode.x
+      let cy = toNode.y - (toNode.r + VERT_MARGIN + PILL_H / 2)
 
-      // If there is an incoming connection, place pill to the left of that connection
+      // If there is a single incoming connection and that source sits too close to the pill,
+      // nudge the pill slightly perpendicular to that connection to avoid overlap.
       const incoming = (layout.connections || []).find(c => c.to === m.medalId)
       if (incoming) {
         const fromNodeData = nodeById.get(incoming.from)
         if (fromNodeData) {
           const from = toScreen(fromNodeData)
-          // Vector from prerequisite to this node in screen space
           const vx = toNode.x - from.x
           const vy = toNode.y - from.y
           const vlen = Math.hypot(vx, vy) || 1
           const ux = vx / vlen
           const uy = vy / vlen
-          // Perpendicular "left" normal relative to the connection direction
           const nx = -uy
           const ny = ux
-          // Push far enough along the edge direction to clear the node by at least half pill thickness
-          const along = toNode.r + GAP_ALONG_PX + Math.max(PILL_W, PILL_H) / 2 + 6
-          cx = toNode.x - ux * along + nx * SIDE_OFFSET_PX
-          cy = toNode.y - uy * along + ny * SIDE_OFFSET_PX
+          const dx = cx - from.x
+          const dy = cy - from.y
+          const dist = Math.hypot(dx, dy) || 1
+          const minDist = from.r + Math.max(PILL_W, PILL_H) / 2 + 6
+          if (dist < minDist) {
+            const shift = (minDist - dist)
+            cx += nx * shift
+            cy += ny * shift
+          }
         }
       }
 
-      // Avoid overlapping the node label block: move pill above label if they intersect
-      const labelRect = {
-        x: toNode.x - LABEL_MAX_W / 2,
-        y: toNode.y + toNode.r + LABEL_TOP_MARGIN,
-        w: LABEL_MAX_W,
-        h: LABEL_LINE_H * LABEL_LINES
-      }
-      const pillRect = {
-        x: cx - PILL_W / 2,
-        y: cy - PILL_H / 2,
-        w: PILL_W,
-        h: PILL_H
-      }
-      if (rectsOverlap(pillRect, labelRect)) {
-        // Snap just above the label block with a small margin
-        const margin = 6
-        cy = labelRect.y - margin - PILL_H / 2
-      }
+      // Node label is drawn below the node; pill is above by design so no label-collision handling is needed.
 
       // Safety: if still too close to node center, nudge outward along the radial
       const dx = cx - toNode.x
@@ -552,14 +531,14 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
               onDoubleClick={handleCanvasDoubleClick}
             />
             <div className="pointer-events-none absolute inset-0">
-              {getYearsBadgeData(canvasRef.current).map(badge => (
+              {badgeData.map(badge => (
                 <span
                   key={badge.id}
                   role="note"
                   aria-label={`Kräver ${badge.text}`}
                   title={`Kräver ${badge.text}`}
                   className={[
-                    'inline-flex items-center justify-center gap-1 rounded-full border px-2 py-0.5 text-xs font-medium shadow-sm',
+                    'inline-flex items-center justify-center rounded-full border px-2 py-0.5 text-xs font-medium shadow-sm',
                     badge.variant === 'ready'
                       ? 'bg-primary text-white border-primary'
                       : 'bg-primary/10 dark:bg-primary/20 text-foreground border-primary'
@@ -574,7 +553,6 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                     whiteSpace: 'nowrap'
                   }}
                 >
-                  <span aria-hidden="true">📅</span>
                   <span aria-hidden="true">{badge.text}</span>
                 </span>
               ))}
@@ -703,14 +681,14 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                 onDoubleClick={handleCanvasDoubleClick}
               />
               <div className="pointer-events-none absolute inset-0">
-                {getYearsBadgeData(canvasRef.current).map(badge => (
+                {badgeData.map(badge => (
                   <span
                     key={badge.id}
                     role="note"
                     aria-label={`Kräver ${badge.text}`}
                     title={`Kräver ${badge.text}`}
                     className={[
-                      'inline-flex items-center justify-center gap-1 rounded-full border px-2 py-0.5 text-xs font-medium shadow-sm',
+                      'inline-flex items-center justify-center rounded-full border px-2 py-0.5 text-xs font-medium shadow-sm',
                       badge.variant === 'ready'
                         ? 'bg-primary text-white border-primary'
                         : 'bg-primary/10 dark:bg-primary/20 text-foreground border-primary'
@@ -725,7 +703,6 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                       whiteSpace: 'nowrap'
                     }}
                   >
-                    <span aria-hidden="true">📅</span>
                     <span aria-hidden="true">{badge.text}</span>
                   </span>
                 ))}
