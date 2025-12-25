@@ -1,6 +1,10 @@
 /**
  * Represents a single medal in the SHB system
  */
+const VALID_STATUS = new Set(['placeholder', 'under_review', 'reviewed'])
+function normalizeStatus(status) {
+  return VALID_STATUS.has(status) ? status : 'placeholder'
+}
 export class Medal {
   constructor(data) {
     this.id = data.id
@@ -10,7 +14,7 @@ export class Medal {
     this.displayName = data.displayName
     this.color = data.color
     this.icon = data.icon
-    this.reviewed = data.reviewed === true
+    this.status = normalizeStatus(data.status)
     this.prerequisites = data.prerequisites || []
     this.requirements = data.requirements || []
     this.unlocksFollowingMedals = data.unlocksFollowingMedals || []
@@ -42,8 +46,14 @@ export class Medal {
     }
     return map[this.color] || 'text-foreground'
   }
+  isPlaceholder() {
+    return this.status === 'placeholder'
+  }
   isUnderReview() {
-    return this.reviewed !== true
+    return this.status === 'under_review'
+  }
+  isReviewed() {
+    return this.status === 'reviewed'
   }
 }
 

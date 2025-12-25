@@ -135,10 +135,12 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
   const panelRef = useRef(null)
   const prevFocusRef = useRef(null)
   const titleId = `medal-detail-title-${medalId || 'unknown'}`
-  const underReview = medal ? (typeof medal.isUnderReview === 'function' ? medal.isUnderReview() : (medal.reviewed !== true)) : false
+  const isPlaceholder = medal ? (typeof medal.isPlaceholder === 'function' ? medal.isPlaceholder() : (medal.status === 'placeholder')) : false
+  const underReview = medal && !isPlaceholder ? (typeof medal.isUnderReview === 'function' ? medal.isUnderReview() : (medal.status === 'under_review')) : false
   const descBaseId = medal?.description ? `medal-detail-desc-${medalId || 'unknown'}` : null
   const underReviewNoteId = underReview && medal ? `under-review-note-${medal.id}` : null
-  const descId = [descBaseId, underReviewNoteId].filter(Boolean).join(' ') || undefined
+  const placeholderNoteId = isPlaceholder && medal ? `placeholder-note-${medal.id}` : null
+  const descId = [descBaseId, underReviewNoteId, placeholderNoteId].filter(Boolean).join(' ') || undefined
 
   // Lock body scroll, set focus, restore focus on close
   useEffect(() => {
@@ -341,7 +343,14 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
                 tabIndex={-1}
               >
                 {medal.displayName}
-                {underReview && (
+                {isPlaceholder ? (
+                  <span
+                    className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-900 border border-indigo-300 dark:bg-indigo-900/30 dark:text-indigo-200 dark:border-indigo-700"
+                    aria-label="Status: plats­hållare"
+                  >
+                    Plats­hållare
+                  </span>
+                ) : underReview && (
                   <span
                     className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-900 border border-amber-300 dark:bg-amber-900/40 dark:text-amber-200 dark:border-amber-700"
                     aria-label="Status för regler: under granskning"
@@ -350,9 +359,11 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
                   </span>
                 )}
               </h2>
-              <p className="mt-1 text-sm text-muted-foreground break-words">
-                {medal.type} • {medal.tier}
-              </p>
+              {!isPlaceholder && (
+                <p className="mt-1 text-sm text-muted-foreground break-words">
+                  {medal.type} • {medal.tier}
+                </p>
+              )}
             </div>
             <button
               onClick={onClose}
@@ -374,19 +385,111 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
                 linkUrl={LINKS.RULEBOOK}
               />
             </div>
-            <div className="mb-4">
-              <span
-                className={[
-                  'inline-block px-3 py-1 rounded-full text-sm font-semibold',
-                  'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900',
-                  statusClass
-                ].join(' ')}
-              >
-                {statusLabel}
-              </span>
-            </div>
+            {!isPlaceholder && (
+              <div className="mb-4">
+                <span
+                  className={[
+                    'inline-block px-3 py-1 rounded-full text-sm font-semibold',
+                    'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900',
+                    statusClass
+                  ].join(' ')}
+                >
+                  {statusLabel}
+                </span>
+              </div>
+            )}
+            {isPlaceholder && (
+              <>
+                <p id={placeholderNoteId} className="sr-only">
+                  Detta är ett platshållarmärke. Avsnitten nedan visar exempel på information som kommer att finnas här när märket publiceras.
+                </p>
 
-            {unlockedYear != null && (
+                <div className="mb-4 bg-background border border-border rounded p-3" role="region" aria-labelledby={`placeholder-unlocked-${medal.id}`}>
+                  <p id={`placeholder-unlocked-${medal.id}`} className="text-sm font-semibold text-foreground mb-1">
+                    Upplåst
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Här visas normalt vilket år du låste upp märket.
+                  </p>
+                </div>
+
+                <div className="mb-4 bg-background border border-border rounded p-3" role="region" aria-labelledby={`placeholder-prereq-${medal.id}`}>
+                  <p id={`placeholder-prereq-${medal.id}`} className="text-sm font-semibold text-foreground mb-2">
+                    Förhandskrav
+                  </p>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li>• Exempel: krav eller förkunskap 1</li>
+                    <li>• Exempel: krav eller förkunskap 2</li>
+                    <li>• Exempel: krav eller förkunskap 3</li>
+                  </ul>
+                </div>
+
+                <div className="mb-4 bg-background border border-border rounded p-3" role="region" aria-labelledby={`placeholder-req-${medal.id}`}>
+                  <p id={`placeholder-req-${medal.id}`} className="text-sm font-semibold text-foreground mb-2">
+                    Krav
+                  </p>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li><span className="text-foreground">✓</span> Exempel: uppfyllt krav</li>
+                    <li><span className="text-muted-foreground">○</span> Exempel: krav som återstår</li>
+                    <li><span className="text-muted-foreground">○</span> Exempel: ytterligare krav</li>
+                  </ul>
+                </div>
+
+                <div className="mb-4">
+                  <p id={descBaseId || `placeholder-desc-${medal.id}`} className="text-muted-foreground break-words">
+                    Beskrivning kommer att visas här när innehållet är klart.
+                  </p>
+                </div>
+
+                <div className="mb-4 bg-background border border-border rounded">
+                  <button
+                    type="button"
+                    onClick={() => setShowOriginal(v => !v)}
+                    aria-expanded={showOriginal}
+                    aria-controls={originalId}
+                    className="w-full text-left px-3 py-2 flex items-center justify-between hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary rounded-t"
+                  >
+                    <span className="text-sm font-semibold text-foreground">Visa ursprunglig kravtext</span>
+                    <span aria-hidden="true" className="ml-2">{showOriginal ? '▼' : '▶'}</span>
+                  </button>
+                  {showOriginal && (
+                    <div className="px-3 pb-3" id={originalId} aria-hidden={!showOriginal}>
+                      <div className="text-sm text-foreground break-words">
+                        <Suspense fallback={null}>
+                          <Markdown remarkPlugins={[remarkGfm]} components={mdComponents}>
+                            {`Det här avsnittet visar vanligtvis den ursprungliga kravtexten från regelboken.
+
+- Exempelpunkt 1
+- Exempelpunkt 2
+- Exempelpunkt 3`}
+                          </Markdown>
+                        </Suspense>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="mb-4 bg-background border border-border rounded p-3">
+                  <p className="text-sm font-semibold text-foreground mb-2">
+                    Uppfyller också kraven för:
+                  </p>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li>• Kommer snart</li>
+                  </ul>
+                </div>
+
+                <div className="mb-4 bg-background border border-border rounded p-3">
+                  <p className="text-sm font-semibold text-foreground mb-2">
+                    Detta märke krävs för
+                  </p>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li>• Kommer snart</li>
+                  </ul>
+                </div>
+              </>
+            )}
+
+            {!isPlaceholder && unlockedYear != null && (
               <div className="mb-4 bg-background border border-border rounded p-3" role="status" aria-live="polite">
                 <p className="text-sm text-foreground">
                   <span className="font-semibold">Upplåst</span>:{' '}
@@ -398,7 +501,7 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
             )}
 
             {/* Prerequisites */}
-            {prereqItemsResolved.length > 0 && (
+            {!isPlaceholder && prereqItemsResolved.length > 0 && (
               <div className="mb-4 bg-background border border-border rounded p-3" role="region" aria-labelledby={`prereq-title-${medal.id}`}>
                 <p id={`prereq-title-${medal.id}`} className="text-sm font-semibold text-foreground mb-2">
                   Förhandskrav
@@ -431,7 +534,7 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
               </div>
             )}
 
-            {medal.description && (
+            {!isPlaceholder && medal.description && (
               <div className="mb-4">
                 <p id={descBaseId} className="text-muted-foreground break-words">
                   {medal.description}
@@ -439,7 +542,7 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
               </div>
             )}
 
-            {status?.details?.missingItems?.length > 0 && (
+            {!isPlaceholder && status?.details?.missingItems?.length > 0 && (
               <div className="mb-4 bg-background border border-border rounded p-3">
                 <p className="text-sm font-semibold text-foreground mb-2">
                   Saknade förhandskrav:
@@ -452,7 +555,7 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
               </div>
             )}
 
-            {requirementItems.length > 0 && (
+            {!isPlaceholder && requirementItems.length > 0 && (
               <div className="mb-4 bg-background border border-border rounded p-3">
                 <p className="text-sm font-semibold text-foreground mb-2">
                   Krav:
@@ -470,7 +573,7 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
               </div>
             )}
 
-            {medal.requirementsOriginal && (
+            {!isPlaceholder && medal.requirementsOriginal && (
               <div className="mb-4 bg-background border border-border rounded">
                 <button
                   type="button"
@@ -496,7 +599,7 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
               </div>
             )}
 
-            {referencedMedals.length > 0 && (
+            {!isPlaceholder && referencedMedals.length > 0 && (
               <div className="mb-4 bg-background border border-border rounded p-3">
                 <p className="text-sm font-semibold text-foreground mb-2">
                   Uppfyller också kraven för:
@@ -517,7 +620,7 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
               </div>
             )}
 
-            {unlockTargets.length > 0 && (
+            {!isPlaceholder && unlockTargets.length > 0 && (
               <div className="mb-4 bg-background border border-border rounded">
                 <button
                   type="button"
@@ -563,7 +666,7 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
               Stäng
             </button>
 
-            {status?.status === 'unlocked' && currentProfile && (
+            {status?.status === 'unlocked' && currentProfile && !isPlaceholder && (
               <div className="flex-1 flex items-center gap-2">
                 <button
                   type="button"
@@ -587,7 +690,7 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
               </div>
             )}
 
-            {currentProfile && (status?.status === 'achievable' || (allowManual && status?.status !== 'unlocked')) && (
+            {currentProfile && !isPlaceholder && (status?.status === 'achievable' || (allowManual && status?.status !== 'unlocked')) && (
               <div className="flex-1 flex flex-col gap-2">
                 <button
                   type="button"

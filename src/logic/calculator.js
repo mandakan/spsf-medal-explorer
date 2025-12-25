@@ -17,6 +17,16 @@ export class MedalCalculator {
       throw new Error(`Medal not found: ${medalId}`)
     }
 
+    // Placeholders are non-actionable
+    if ((typeof medal.isPlaceholder === 'function' && medal.isPlaceholder()) || medal.status === 'placeholder') {
+      return {
+        medalId,
+        status: 'locked',
+        reason: 'placeholder',
+        details: { message: 'Placeholder medal' }
+      }
+    }
+
     // Check if already unlocked
     if (this.hasUnlockedMedal(medalId)) {
       return {

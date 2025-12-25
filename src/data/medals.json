@@ -3,7 +3,7 @@
   "medals": [
     {
       "id": "pistol-mark-bronze",
-      "reviewed": true,
+      "status": "reviewed",
       "type": "pistol_mark",
       "tier": "bronze",
       "name": "Pistolskyttemärket - Brons",
@@ -93,7 +93,7 @@
     },
     {
       "id": "pistol-mark-silver",
-      "reviewed": true,
+      "status": "reviewed",
       "type": "pistol_mark",
       "tier": "silver",
       "name": "Pistolskyttemärket - Silver",
@@ -182,7 +182,7 @@
     },
     {
       "id": "pistol-mark-gold",
-      "reviewed": true,
+      "status": "reviewed",
       "type": "pistol_mark",
       "tier": "gold",
       "name": "Pistolskyttemärket - Guld",
@@ -276,7 +276,7 @@
     },
     {
       "id": "elite-mark-bronze",
-      "reviewed": true,
+      "status": "reviewed",
       "type": "elite_mark",
       "tier": "bronze",
       "name": "Elitmärket - Brons",
@@ -323,7 +323,7 @@
     },
     {
       "id": "elite-mark-silver",
-      "reviewed": true,
+      "status": "reviewed",
       "type": "elite_mark",
       "tier": "silver",
       "name": "Elitmärket - Silver",
@@ -371,7 +371,7 @@
     },
     {
       "id": "elite-mark-gold",
-      "reviewed": true,
+      "status": "reviewed",
       "type": "elite_mark",
       "tier": "gold",
       "name": "Elitmärket - Guld",
@@ -419,7 +419,7 @@
     },
     {
       "id": "elite-mark-gold-wreath",
-      "reviewed": true,
+      "status": "reviewed",
       "type": "elite_mark",
       "tier": "gold_wreath",
       "name": "Elitmärket - Guld med kvistar",
@@ -446,7 +446,7 @@
     },
     {
       "id": "elite-mark-gold-wreath-star-1",
-      "reviewed": true,
+      "status": "reviewed",
       "type": "elite_mark",
       "tier": "gold_wreath_star_1",
       "name": "Elitmärket - Guld med kvistar och en stjärna",
@@ -473,7 +473,7 @@
     },
     {
       "id": "elite-mark-gold-wreath-star-2",
-      "reviewed": true,
+      "status": "reviewed",
       "type": "elite_mark",
       "tier": "gold_wreath_star_2",
       "name": "Elitmärket - Guld med kvistar och två stjärnor",
@@ -500,7 +500,7 @@
     },
     {
       "id": "elite-mark-gold-wreath-star-3",
-      "reviewed": true,
+      "status": "reviewed",
       "type": "elite_mark",
       "tier": "gold_wreath_star_3",
       "name": "Elitmärket - Guld med kvistar och tre stjärnor",
@@ -527,7 +527,7 @@
     },
     {
       "id": "field-mark-bronze",
-      "reviewed": true,
+      "status": "reviewed",
       "type": "field_mark",
       "tier": "bronze",
       "name": "Fältskyttemärket - Brons",
@@ -567,7 +567,7 @@
     },
     {
       "id": "field-mark-silver",
-      "reviewed": true,
+      "status": "reviewed",
       "type": "field_mark",
       "tier": "silver",
       "name": "Fältskyttemärket - Silver",
@@ -598,7 +598,7 @@
     },
     {
       "id": "field-mark-gold",
-      "reviewed": true,
+      "status": "reviewed",
       "type": "field_mark",
       "tier": "gold",
       "name": "Fältskyttemärket - Guld",
@@ -629,6 +629,7 @@
     },
     {
       "id": "field-mark-gold-star-1",
+      "status": "under_review",
       "type": "field_mark",
       "tier": "star_1",
       "name": "Fältskyttemärket - Guld med en stjärna",
@@ -650,6 +651,7 @@
     },
     {
       "id": "field-mark-gold-star-2",
+      "status": "under_review",
       "type": "field_mark",
       "tier": "star_2",
       "name": "Fältskyttemärket - Guld med två stjärnor",
@@ -672,6 +674,7 @@
     },
     {
       "id": "field-mark-gold-star-3",
+      "status": "under_review",
       "type": "field_mark",
       "tier": "star_3",
       "name": "Fältskyttemärket - Guld med tre stjärnor",
@@ -694,6 +697,7 @@
     },
     {
       "id": "field-mark-gold-wreath",
+      "status": "under_review",
       "type": "field_mark",
       "tier": "gold_wreath",
       "name": "Fältskyttemärket - Guld med kvistar",
@@ -716,6 +720,7 @@
     },
     {
       "id": "field-mark-gold-wreath-star-1",
+      "status": "under_review",
       "type": "field_mark",
       "tier": "gold_wreath_star_1",
       "name": "Fältskyttemärket - Guld med kvistar och en stjärna",
@@ -738,6 +743,7 @@
     },
     {
       "id": "field-mark-gold-wreath-star-2",
+      "status": "under_review",
       "type": "field_mark",
       "tier": "gold_wreath_star_2",
       "name": "Fältskyttemärket - Guld med kvistar och två stjärnor",
@@ -760,6 +766,7 @@
     },
     {
       "id": "field-mark-gold-wreath-star-3",
+      "status": "under_review",
       "type": "field_mark",
       "tier": "gold_wreath_star_3",
       "name": "Fältskyttemärket - Guld med kvistar och tre stjärnor",
@@ -2113,7 +2120,7 @@
     },
     {
       "id": "lower-annual-mark-star-1",
-      "reviewed": true,
+      "status": "reviewed",
       "type": "pistol_mark",
       "tier": "star_1",
       "name": "Lägre årtalsmärket med en stjärna",
@@ -2141,7 +2148,7 @@
     },
     {
       "id": "lower-annual-mark-star-2",
-      "reviewed": true,
+      "status": "reviewed",
       "type": "pistol_mark",
       "tier": "star_2",
       "name": "Lägre årtalsmärket med två stjärnor",
@@ -2171,7 +2178,7 @@
     },
     {
       "id": "lower-annual-mark-star-3",
-      "reviewed": true,
+      "status": "reviewed",
       "type": "pistol_mark",
       "tier": "star_3",
       "name": "Lägre årtalsmärket med tre stjärnor",
@@ -2201,7 +2208,7 @@
     },
     {
       "id": "higher-annual-mark-bronze",
-      "reviewed": true,
+      "status": "reviewed",
       "type": "pistol_mark",
       "tier": "bronze",
       "name": "Högre årtalsmärket - Brons",
@@ -2231,7 +2238,7 @@
     },
     {
       "id": "higher-annual-mark-silver",
-      "reviewed": true,
+      "status": "reviewed",
       "type": "pistol_mark",
       "tier": "silver",
       "name": "Högre årtalsmärket - Silver",
@@ -2261,7 +2268,7 @@
     },
     {
       "id": "higher-annual-mark-gold",
-      "reviewed": true,
+      "status": "reviewed",
       "type": "pistol_mark",
       "tier": "gold",
       "name": "Högre årtalsmärket - Guld",
@@ -2291,7 +2298,7 @@
     },
     {
       "id": "higher-annual-mark-gold-star-1",
-      "reviewed": true,
+      "status": "reviewed",
       "type": "pistol_mark",
       "tier": "gold_star_1",
       "name": "Högre årtalsmärket - Guld med en stjärna",
@@ -2321,7 +2328,7 @@
     },
     {
       "id": "higher-annual-mark-gold-star-2",
-      "reviewed": true,
+      "status": "reviewed",
       "type": "pistol_mark",
       "tier": "gold_star_2",
       "name": "Högre årtalsmärket - Guld med två stjärnor",
@@ -2351,7 +2358,7 @@
     },
     {
       "id": "higher-annual-mark-gold-star-3",
-      "reviewed": true,
+      "status": "reviewed",
       "type": "pistol_mark",
       "tier": "gold_star_3",
       "name": "Högre årtalsmärket - Guld med tre stjärnor",
@@ -2381,7 +2388,7 @@
     },
     {
       "id": "higher-annual-mark-gold-wreath",
-      "reviewed": true,
+      "status": "reviewed",
       "type": "pistol_mark",
       "tier": "gold_wreath",
       "name": "Högre årtalsmärket - Guld med krans",
@@ -2411,7 +2418,7 @@
     },
     {
       "id": "higher-annual-mark-gold-wreath-star-1",
-      "reviewed": true,
+      "status": "reviewed",
       "type": "pistol_mark",
       "tier": "gold_wreath_star_1",
       "name": "Högre årtalsmärket - Guld med krans och en stjärna",
@@ -2441,7 +2448,7 @@
     },
     {
       "id": "higher-annual-mark-gold-wreath-star-2",
-      "reviewed": true,
+      "status": "reviewed",
       "type": "pistol_mark",
       "tier": "gold_wreath_star_2",
       "name": "Högre årtalsmärket - Guld med krans och två stjärnor",
@@ -2471,7 +2478,7 @@
     },
     {
       "id": "higher-annual-mark-gold-wreath-star-3",
-      "reviewed": true,
+      "status": "reviewed",
       "type": "pistol_mark",
       "tier": "gold_wreath_star_3",
       "name": "Högre årtalsmärket - Guld med krans och tre stjärnor",
@@ -2501,7 +2508,7 @@
     },
     {
       "id": "higher-annual-mark-gold-enamel-wreath",
-      "reviewed": true,
+      "status": "reviewed",
       "type": "pistol_mark",
       "tier": "gold_enamel_wreath",
       "name": "Högre årtalsmärket - Guld med emaljerad krans",
@@ -2533,7 +2540,7 @@
     },
     {
       "id": "higher-annual-mark-gold-enamel-wreath-star-1",
-      "reviewed": true,
+      "status": "reviewed",
       "type": "pistol_mark",
       "tier": "gold_enamel_wreath_star_1",
       "name": "Högre årtalsmärket - Guld med emaljerad krans och en stjärna",
@@ -2565,7 +2572,7 @@
     },
     {
       "id": "higher-annual-mark-gold-enamel-wreath-star-2",
-      "reviewed": true,
+      "status": "reviewed",
       "type": "pistol_mark",
       "tier": "gold_enamel_wreath_star_2",
       "name": "Högre årtalsmärket - Guld med emaljerad krans och två stjärnor",
@@ -2600,7 +2607,7 @@
     },
     {
       "id": "higher-annual-mark-gold-enamel-wreath-star-3",
-      "reviewed": true,
+      "status": "reviewed",
       "type": "pistol_mark",
       "tier": "gold_enamel_wreath_star_3",
       "name": "Högre årtalsmärket - Guld med emaljerad krans och tre stjärnor",
