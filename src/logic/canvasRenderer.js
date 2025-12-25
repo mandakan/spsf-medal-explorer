@@ -86,6 +86,10 @@ export function getThemeColors(canvas) {
       (styles && readVar(styles, ['--color-review'])) ||
       getClassColor('text-amber-500') ||
       '#F59E0B',
+    placeholder:
+      (styles && readVar(styles, ['--color-placeholder'])) ||
+      getClassColor('text-indigo-400') ||
+      '#6366F1',
   }
   return palette
 }
@@ -146,6 +150,8 @@ export function drawMedalNode(ctx, x, y, radius, medal, status, scale, forceLabe
     }
   }
   const palette = getThemeColors(ctx?.canvas)
+  const isPlaceholder = (typeof medal?.isPlaceholder === 'function' ? medal.isPlaceholder() : (medal?.status === 'placeholder'))
+  const isUnderReview = !isPlaceholder && (typeof medal?.isUnderReview === 'function' ? medal.isUnderReview() : (medal?.status === 'under_review'))
   const statusKey = status?.status || 'locked'
   const statusColor = palette[statusKey]
   
@@ -160,9 +166,25 @@ export function drawMedalNode(ctx, x, y, radius, medal, status, scale, forceLabe
   ctx.lineWidth = Math.max(0.5, 2 * Math.max(scale, 0.001))
   ctx.stroke()
 
-  // Under review indicator: dashed ring and optional label
-  const underReview = medal.reviewed !== true
-  if (underReview) {
+  // Placeholder indicator: dotted ring
+  if (isPlaceholder) {
+    const s = Math.max(scale, 0.001)
+    const canSave = typeof ctx.save === 'function'
+    if (canSave) ctx.save()
+    if (typeof ctx.setLineDash === 'function') {
+      // dotted effect
+      const dot = Math.max(1, 2 * s)
+      ctx.setLineDash([dot, dot * 1.5])
+    }
+    ctx.strokeStyle = palette.placeholder
+    ctx.lineWidth = Math.max(0.75, 2.5 * s)
+    ctx.beginPath()
+    ctx.arc(x, y, radius + Math.max(1, 3 * s), 0, Math.PI * 2)
+    ctx.stroke()
+    if (canSave && typeof ctx.restore === 'function') ctx.restore()
+  }
+  // Under review indicator: dashed ring
+  if (isUnderReview) {
     const s = Math.max(scale, 0.001)
     const canSave = typeof ctx.save === 'function'
     if (canSave) ctx.save()

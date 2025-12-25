@@ -47,9 +47,10 @@ function MedalIcon({ iconUrl, alt, unlocked }) {
 function Row({ data, index, style }) {
   const { medals, onSelect, statusesById } = data
   const medal = medals[index]
-  const underReview = typeof medal?.isUnderReview === 'function' ? medal.isUnderReview() : (medal?.reviewed !== true)
+  const isPlaceholder = typeof medal?.isPlaceholder === 'function' ? medal.isPlaceholder() : (medal?.status === 'placeholder')
+  const underReview = !isPlaceholder && (typeof medal?.isUnderReview === 'function' ? medal.isUnderReview() : (medal?.status === 'under_review'))
   const status = statusesById?.[medal.id]
-  const isUnlocked = status?.status === 'unlocked'
+  const isUnlocked = !isPlaceholder && status?.status === 'unlocked'
   const unlockedYear = (() => {
     if (!isUnlocked) return null
     const iso = status?.unlockedDate
@@ -57,7 +58,9 @@ function Row({ data, index, style }) {
     const d = new Date(iso)
     return Number.isNaN(d.getTime()) ? null : d.getFullYear()
   })()
-  const ariaLabel = `${medal.displayName || medal.name} ${medal.tier || ''}${underReview ? ' • Under granskning' : ''}${isUnlocked && unlockedYear ? ' • Upplåst ' + unlockedYear : ''}`
+  const ariaLabel = isPlaceholder
+    ? `${medal.displayName || medal.name}`
+    : `${medal.displayName || medal.name} ${medal.tier || ''}${underReview ? ' • Under granskning' : ''}${isUnlocked && unlockedYear ? ' • Upplåst ' + unlockedYear : ''}`
   return (
     <div
       role="listitem"
@@ -72,17 +75,19 @@ function Row({ data, index, style }) {
       <div className="min-w-0">
         <div className="font-medium text-text-primary truncate flex items-center gap-2">
           <span className="truncate">{medal.displayName || medal.name}</span>
-          {underReview && (
+          {!isPlaceholder && underReview && (
             <span className="inline-flex items-center gap-1 text-xs text-review" title="Under granskning" aria-label="Under granskning">
               <span className="inline-block w-2 h-2 rounded-full bg-review" aria-hidden="true"></span>
               <span className="sr-only">Under granskning</span>
             </span>
           )}
         </div>
-        <div className="text-sm text-text-secondary truncate">
-          {medal.type} • {medal.tier}
-          {isUnlocked && unlockedYear != null ? ` • Upplåst ${unlockedYear}` : ''}
-        </div>
+        {!isPlaceholder && (
+          <div className="text-sm text-text-secondary truncate">
+            {medal.type} • {medal.tier}
+            {isUnlocked && unlockedYear != null ? ` • Upplåst ${unlockedYear}` : ''}
+          </div>
+        )}
       </div>
     </div>
   )
