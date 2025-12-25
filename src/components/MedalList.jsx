@@ -78,7 +78,6 @@ function Row({ data, index, style }) {
 
           {isPlaceholder && (
             <span className="inline-flex items-center gap-1 text-xs text-placeholder" title="Plats­hållare" aria-label="Plats­hållare">
-              <span className="inline-block w-3 h-3 rounded-full border-2 border-dotted border-placeholder" aria-hidden="true"></span>
               <span className="inline-block w-2 h-2 rounded-full bg-placeholder" aria-hidden="true"></span>
               <span className="sr-only">Plats­hållare</span>
             </span>
