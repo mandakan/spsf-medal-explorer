@@ -13,5 +13,5 @@ export const LINKS = {
   COFFEE: 'https://buymeacoffee.com/thias',
 
   // Official rulebook landing page
-  RULEBOOK: 'https://www.pistolskytteforbundet.se/om-forbundet/styrdokument/regelbocker',
+  RULEBOOK: 'https://www.pistolskytteforbundet.se/om-pistolskytte/regler/skjuthandboken-och-sakb/',
 }
