@@ -34,7 +34,7 @@ export default function Footer() {
   const licenseHref = `${base}LICENSE`
 
   return (
-    <footer role="contentinfo" className="w-full border-t border-gray-200 dark:border-gray-700 bg-bg-primary">
+    <footer role="contentinfo" className="w-full border-t border-border bg-bg-primary">
       <div className="max-w-6xl mx-auto px-4 py-6">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-text-secondary text-center md:text-left">
