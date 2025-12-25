@@ -1,6 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { useMedalDatabase } from '../hooks/useMedalDatabase'
+import Disclaimer from '../components/Disclaimer'
+import { LINKS } from '../config/links'
 
 export default function Home() {
   const { medalDatabase, loading } = useMedalDatabase()
@@ -15,6 +17,12 @@ export default function Home() {
           Dokumentera dina skyttemärken och medaljer med aktiviteter, utforska framtida märken och planera progression
         </p>
       </section>
+
+      <Disclaimer
+        id="disclaimer-home"
+        variant="info"
+        linkUrl={LINKS.RULEBOOK}
+      />
 
       <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Link

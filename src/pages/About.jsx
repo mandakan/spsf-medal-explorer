@@ -1,6 +1,7 @@
 import React from 'react'
 import { LINKS } from '../config/links'
 import { APP_INFO, CURRENT_RULEBOOK_VERSION, getRulebookVersionForYear } from '../config/appInfo'
+import Disclaimer from '../components/Disclaimer'
 
 export default function About() {
   const upcoming2026 = getRulebookVersionForYear(2026)
@@ -16,6 +17,13 @@ export default function About() {
             Svenska Pistolskytteförbundets regler.
           </p>
         </header>
+
+        <Disclaimer
+          id="disclaimer-about"
+          variant="warning"
+          text="Fristående app. Regelboken gäller före appen."
+          linkUrl={LINKS.RULEBOOK}
+        />
 
         <section aria-labelledby="about-author" className="mt-8">
           <h2 id="about-author" className="text-2xl font-semibold">Skapare</h2>
