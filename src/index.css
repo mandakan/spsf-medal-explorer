@@ -54,8 +54,21 @@
   .border-placeholder { border-color: var(--color-placeholder); }
 }
 
-/* Optional dark mode: toggle by adding 'dark' class to <html> */
-.dark { @theme {
+/* Dark mode: runtime variable overrides on the root element. */
+:root {
+  --color-background: #FFFFFF;
+  --color-surface: #F8F9FA;
+  --color-foreground: #212529;
+  --color-muted: #6C757D;
+  --color-border: #E9ECEF;
+
+  --color-bg-primary: var(--color-background);
+  --color-bg-secondary: var(--color-surface);
+  --color-text-primary: var(--color-foreground);
+  --color-text-secondary: var(--color-muted);
+}
+
+.dark {
   --color-background: #0f172a;      /* slate-900 */
   --color-surface: #1f2937;         /* gray-800 */
   --color-foreground: #e5e7eb;      /* gray-200 */
@@ -77,13 +90,12 @@
   --color-review: #F59E0B;
   --color-placeholder: #818CF8;
   --color-border: rgba(255,255,255,0.25);
-  --color-muted-foreground: var(--color-text-secondary);
 
   --color-bg-primary: var(--color-background);
   --color-bg-secondary: var(--color-surface);
   --color-text-primary: var(--color-foreground);
   --color-text-secondary: var(--color-muted);
-}}
+}
 
 html {
   @apply bg-background text-foreground;
