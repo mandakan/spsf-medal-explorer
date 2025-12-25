@@ -121,11 +121,22 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     const nodeById = new Map()
     for (const n of layout.medals || []) nodeById.set(n.medalId, n)
 
-    // Fixed pill size in screen pixels and fixed offsets so pills don't change shape or jump
-    const PILL_W = 64
-    const PILL_H = 24
-    const GAP_ALONG_PX = 8      // gap from node edge along the connection direction
-    const SIDE_OFFSET_PX = 18   // perpendicular offset to the left side of the connection
+    // Fixed pill size and layout constants (screen px)
+    const PILL_W = 56  // tighter for less overlap
+    const PILL_H = 22
+    const GAP_ALONG_PX = 8
+    const SIDE_OFFSET_PX = 20  // a touch more separation from the connection
+    const NODE_CLEAR = Math.max(PILL_H / 2 + 6, 12) // min radial clearance so pill never touches node
+
+    // Label block (approx) – mirrors canvasRenderer label layout
+    const LABEL_MAX_W = 160
+    const LABEL_FONT_PX = 12
+    const LABEL_LINE_H = Math.round(LABEL_FONT_PX * 1.3)
+    const LABEL_LINES = effScale >= 1.3 ? 3 : 2
+    const LABEL_TOP_MARGIN = 8
+
+    const rectsOverlap = (a, b) =>
+      a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y
 
     const toScreen = (node) => {
       const x = (node.x + effPanX) * effScale + width / 2
@@ -140,9 +151,9 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
 
       const toNode = toScreen(m)
 
-      // Default placement: left-above the node (stable)
-      let cx = toNode.x - (toNode.r + GAP_ALONG_PX)
-      let cy = toNode.y - (toNode.r + GAP_ALONG_PX)
+      // Default placement (no connection found): up-left, outside the node with guaranteed clearance
+      let cx = toNode.x - (toNode.r + GAP_ALONG_PX + NODE_CLEAR)
+      let cy = toNode.y - (toNode.r + GAP_ALONG_PX + NODE_CLEAR)
 
       // If there is an incoming connection, place pill to the left of that connection
       const incoming = (layout.connections || []).find(c => c.to === m.medalId)
@@ -159,9 +170,42 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
           // Perpendicular "left" normal relative to the connection direction
           const nx = -uy
           const ny = ux
-          cx = toNode.x - ux * (toNode.r + GAP_ALONG_PX) + nx * SIDE_OFFSET_PX
-          cy = toNode.y - uy * (toNode.r + GAP_ALONG_PX) + ny * SIDE_OFFSET_PX
+          // Push far enough along the edge direction to clear the node by at least half pill thickness
+          const along = toNode.r + GAP_ALONG_PX + Math.max(PILL_W, PILL_H) / 2 + 6
+          cx = toNode.x - ux * along + nx * SIDE_OFFSET_PX
+          cy = toNode.y - uy * along + ny * SIDE_OFFSET_PX
         }
+      }
+
+      // Avoid overlapping the node label block: move pill above label if they intersect
+      const labelRect = {
+        x: toNode.x - LABEL_MAX_W / 2,
+        y: toNode.y + toNode.r + LABEL_TOP_MARGIN,
+        w: LABEL_MAX_W,
+        h: LABEL_LINE_H * LABEL_LINES
+      }
+      const pillRect = {
+        x: cx - PILL_W / 2,
+        y: cy - PILL_H / 2,
+        w: PILL_W,
+        h: PILL_H
+      }
+      if (rectsOverlap(pillRect, labelRect)) {
+        // Snap just above the label block with a small margin
+        const margin = 6
+        cy = labelRect.y - margin - PILL_H / 2
+      }
+
+      // Safety: if still too close to node center, nudge outward along the radial
+      const dx = cx - toNode.x
+      const dy = cy - toNode.y
+      const dist = Math.hypot(dx, dy) || 1
+      const minCenterDist = toNode.r + NODE_CLEAR
+      if (dist < minCenterDist) {
+        const ux = dx / dist
+        const uy = dy / dist
+        cx = toNode.x + ux * minCenterDist
+        cy = toNode.y + uy * minCenterDist
       }
 
       const statusKey = statuses?.[m.medalId]?.status
