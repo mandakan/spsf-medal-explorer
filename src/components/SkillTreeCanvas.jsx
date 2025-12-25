@@ -261,6 +261,19 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     return () => cancelAnimationFrame(raf)
   }, [draw])
 
+  // Update badge overlay positions once per frame to avoid jitter
+  useEffect(() => {
+    const el = canvasRef.current
+    if (!el) return
+    if (badgeRafRef.current) cancelAnimationFrame(badgeRafRef.current)
+    badgeRafRef.current = requestAnimationFrame(() => {
+      setBadgeData(getYearsBadgeData(el))
+    })
+    return () => {
+      if (badgeRafRef.current) cancelAnimationFrame(badgeRafRef.current)
+    }
+  }, [getYearsBadgeData, panX, panY, scale, hoveredMedal, selectedMedal, layout])
+
   // Ensure label readability once layout is ready (initialization only)
   useEffect(() => {
     if (canvasRef.current && layout) {
