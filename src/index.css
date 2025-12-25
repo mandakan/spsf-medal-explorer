@@ -24,6 +24,7 @@
   --color-locked: #6C757D;
   --color-connection: #94A3B8;
   --color-review: #F59E0B;
+  --color-placeholder: #6366F1;
   --color-border: #5e5240;
   --color-muted-foreground: var(--color-text-secondary);
 
@@ -47,6 +48,10 @@
   .text-review { color: var(--color-review); }
   .bg-review { background-color: var(--color-review); }
   .border-review { border-color: var(--color-review); }
+
+  .text-placeholder { color: var(--color-placeholder); }
+  .bg-placeholder { background-color: var(--color-placeholder); }
+  .border-placeholder { border-color: var(--color-placeholder); }
 }
 
 /* Optional dark mode: toggle by adding 'dark' class to <html> */
@@ -70,6 +75,7 @@
   --color-locked: #94A3B8;             /* slate-400 */
   --color-connection: #94A3B8;         /* slate-400 */
   --color-review: #F59E0B;
+  --color-placeholder: #818CF8;
   --color-border: rgba(255,255,255,0.25);
   --color-muted-foreground: var(--color-text-secondary);
 

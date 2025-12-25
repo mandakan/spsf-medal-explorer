@@ -75,6 +75,15 @@ function Row({ data, index, style }) {
       <div className="min-w-0">
         <div className="font-medium text-text-primary truncate flex items-center gap-2">
           <span className="truncate">{medal.displayName || medal.name}</span>
+
+          {isPlaceholder && (
+            <span className="inline-flex items-center gap-1 text-xs text-placeholder" title="Plats­hållare" aria-label="Plats­hållare">
+              <span className="inline-block w-3 h-3 rounded-full border-2 border-dotted border-placeholder" aria-hidden="true"></span>
+              <span className="inline-block w-2 h-2 rounded-full bg-placeholder" aria-hidden="true"></span>
+              <span className="sr-only">Plats­hållare</span>
+            </span>
+          )}
+
           {!isPlaceholder && underReview && (
             <span className="inline-flex items-center gap-1 text-xs text-review" title="Under granskning" aria-label="Under granskning">
               <span className="inline-block w-2 h-2 rounded-full bg-review" aria-hidden="true"></span>
