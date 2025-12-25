@@ -107,6 +107,41 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     return result
   }, [layout, getEffectiveTransform])
 
+  // Node-anchored "years required" badges (DOM overlay for accessibility)
+  const getYearsBadgeData = useCallback((canvas) => {
+    if (!canvas || !layout) return []
+    const { effScale, effPanX, effPanY } = getEffectiveTransform(canvas)
+    const width = canvas.width
+    const height = canvas.height
+    const visible = getVisibleMedalsForCanvas(canvas)
+    const badges = []
+    const shouldShow = (medalId) => (hoveredMedal === medalId || selectedMedal === medalId || effScale >= 0.8)
+
+    for (const m of visible) {
+      const years = m.yearsRequired || 0
+      if (!years || !shouldShow(m.medalId)) continue
+
+      const nodeX = (m.x + effPanX) * effScale + width / 2
+      const nodeY = (m.y + effPanY) * effScale + height / 2
+      const r = (m.radius || 20) * effScale
+
+      const statusKey = statuses?.[m.medalId]?.status
+      const variant = (statusKey === 'achievable' || statusKey === 'unlocked') ? 'ready' : 'neutral'
+
+      const text = `${years} år`
+      // Rough width estimate for flip logic (12px font, padding, icon)
+      const estW = text.length * 7 + 12 + 14
+      const leftPref = nodeX - r - 8
+      const anchorRight = (leftPref - estW) < 8
+
+      const left = anchorRight ? nodeX + r + 8 : nodeX - r - 8
+      const top = nodeY - r - 8
+
+      badges.push({ id: m.medalId, left, top, anchorRight, text, variant })
+    }
+    return badges
+  }, [layout, getEffectiveTransform, getVisibleMedalsForCanvas, hoveredMedal, selectedMedal, statuses])
+
 
   const draw = useCallback(() => {
     if (!canvasRef.current || !layout || !medalDatabase) return
@@ -422,24 +457,51 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
 
       <div className="card overflow-hidden overscroll-contain mt-2" role="region" aria-label="Trädvy canvas" aria-describedby={legendDescribedById ? 'skilltree-help ' + legendDescribedById : 'skilltree-help'}>
         {!isFullscreen && (
-          <canvas
-            ref={setCanvasRef}
-            role="img"
-            aria-label="Interaktiv träd-vy-canvas"
-            aria-describedby={legendDescribedById}
-            aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown"
-            tabIndex={0}
-            onKeyDown={handleCanvasKeyDown}
-            className="w-full h-[60vh] sm:h-[600px] bg-background cursor-grab active:cursor-grabbing touch-none overscroll-contain select-none"
-            onContextMenu={(e) => e.preventDefault()}
-            onPointerDown={handleCanvasPointerDown}
-            onPointerMove={handleCanvasPointerMove}
-            onPointerUp={handleCanvasPointerUp}
-            onPointerLeave={handleCanvasPointerUp}
-            onPointerCancel={handleCanvasPointerUp}
-            onClick={handleCanvasClick}
-            onDoubleClick={handleCanvasDoubleClick}
-          />
+          <div className="relative">
+            <canvas
+              ref={setCanvasRef}
+              role="img"
+              aria-label="Interaktiv träd-vy-canvas"
+              aria-describedby={legendDescribedById}
+              aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown"
+              tabIndex={0}
+              onKeyDown={handleCanvasKeyDown}
+              className="w-full h-[60vh] sm:h-[600px] bg-background cursor-grab active:cursor-grabbing touch-none overscroll-contain select-none"
+              onContextMenu={(e) => e.preventDefault()}
+              onPointerDown={handleCanvasPointerDown}
+              onPointerMove={handleCanvasPointerMove}
+              onPointerUp={handleCanvasPointerUp}
+              onPointerLeave={handleCanvasPointerUp}
+              onPointerCancel={handleCanvasPointerUp}
+              onClick={handleCanvasClick}
+              onDoubleClick={handleCanvasDoubleClick}
+            />
+            <div className="pointer-events-none absolute inset-0">
+              {getYearsBadgeData(canvasRef.current).map(badge => (
+                <span
+                  key={badge.id}
+                  role="note"
+                  aria-label={`Kräver ${badge.text}`}
+                  title={`Kräver ${badge.text}`}
+                  className={[
+                    'inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-medium shadow-sm',
+                    badge.variant === 'ready'
+                      ? 'bg-primary text-white border-primary'
+                      : 'bg-primary/10 dark:bg-primary/20 text-foreground border-primary'
+                  ].join(' ')}
+                  style={{
+                    position: 'absolute',
+                    left: `${badge.left}px`,
+                    top: `${badge.top}px`,
+                    transform: badge.anchorRight ? 'translate(0,-100%)' : 'translate(-100%,-100%)'
+                  }}
+                >
+                  <span aria-hidden="true">📅</span>
+                  <span aria-hidden="true">{badge.text}</span>
+                </span>
+              ))}
+            </div>
+          </div>
         )}
       </div>
 
@@ -543,24 +605,51 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
           </div>
 
           <div className="flex-1">
-            <canvas
-              ref={setCanvasRef}
-              role="img"
-              aria-label="Interaktiv träd-vy-canvas"
-              aria-describedby={legendDescribedById ? 'skilltree-help-fs ' + legendDescribedById : 'skilltree-help-fs'}
-              aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown"
-              tabIndex={0}
-              onKeyDown={handleCanvasKeyDown}
-              className="w-full h-full bg-background cursor-grab active:cursor-grabbing touch-none overscroll-contain select-none"
-              onContextMenu={(e) => e.preventDefault()}
-              onPointerDown={handleCanvasPointerDown}
-              onPointerMove={handleCanvasPointerMove}
-              onPointerUp={handleCanvasPointerUp}
-              onPointerLeave={handleCanvasPointerUp}
-              onPointerCancel={handleCanvasPointerUp}
-              onClick={handleCanvasClick}
-              onDoubleClick={handleCanvasDoubleClick}
-            />
+            <div className="relative h-full">
+              <canvas
+                ref={setCanvasRef}
+                role="img"
+                aria-label="Interaktiv träd-vy-canvas"
+                aria-describedby={legendDescribedById ? 'skilltree-help-fs ' + legendDescribedById : 'skilltree-help-fs'}
+                aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown"
+                tabIndex={0}
+                onKeyDown={handleCanvasKeyDown}
+                className="w-full h-full bg-background cursor-grab active:cursor-grabbing touch-none overscroll-contain select-none"
+                onContextMenu={(e) => e.preventDefault()}
+                onPointerDown={handleCanvasPointerDown}
+                onPointerMove={handleCanvasPointerMove}
+                onPointerUp={handleCanvasPointerUp}
+                onPointerLeave={handleCanvasPointerUp}
+                onPointerCancel={handleCanvasPointerUp}
+                onClick={handleCanvasClick}
+                onDoubleClick={handleCanvasDoubleClick}
+              />
+              <div className="pointer-events-none absolute inset-0">
+                {getYearsBadgeData(canvasRef.current).map(badge => (
+                  <span
+                    key={badge.id}
+                    role="note"
+                    aria-label={`Kräver ${badge.text}`}
+                    title={`Kräver ${badge.text}`}
+                    className={[
+                      'inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-medium shadow-sm',
+                      badge.variant === 'ready'
+                        ? 'bg-primary text-white border-primary'
+                        : 'bg-primary/10 dark:bg-primary/20 text-foreground border-primary'
+                    ].join(' ')}
+                    style={{
+                      position: 'absolute',
+                      left: `${badge.left}px`,
+                      top: `${badge.top}px`,
+                      transform: badge.anchorRight ? 'translate(0,-100%)' : 'translate(-100%,-100%)'
+                    }}
+                  >
+                    <span aria-hidden="true">📅</span>
+                    <span aria-hidden="true">{badge.text}</span>
+                  </span>
+                ))}
+              </div>
+            </div>
           </div>
 
           <p id="skilltree-help-fs" className="sr-only">
