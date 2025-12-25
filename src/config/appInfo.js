@@ -2,7 +2,7 @@
  * Central app info and versioning.
  */
 export const APP_INFO = {
-  APP_NAME: 'Skyttemärken / Medal Tracker',
+  APP_NAME: 'Skyttemärken',
   AUTHOR_NAME: 'Mathias A',
   LICENSE: 'MIT',
   // Map of year -> Skytteboken upplaga
