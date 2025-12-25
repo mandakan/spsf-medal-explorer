@@ -32,7 +32,7 @@ export function generateMedalLayout(medals) {
         type: medal.type,
         x: typeIndex * columnWidth,
         y: medalIndex * rowHeight,
-        radius: 25,
+        radius: 20,
         yearsRequired: 0,
       }
       layout.medals.push(node)
