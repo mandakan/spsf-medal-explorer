@@ -126,8 +126,8 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
 
     // Fixed pill size and layout constants (screen px)
     const PILL_W = 56
-    const PILL_H = 22
-    const VERT_MARGIN = 12
+    const PILL_H = 20
+    const VERT_MARGIN = 8
     const NODE_CLEAR = Math.max(PILL_H / 2 + 6, 12)
 
     const toScreen = (node) => {
