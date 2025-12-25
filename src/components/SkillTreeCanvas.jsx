@@ -117,27 +117,58 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     const badges = []
     const shouldShow = (medalId) => (hoveredMedal === medalId || selectedMedal === medalId || effScale >= 0.8)
 
+    // Build quick lookup for node by medalId
+    const nodeById = new Map()
+    for (const n of layout.medals || []) nodeById.set(n.medalId, n)
+
+    // Fixed pill size in screen pixels and fixed offsets so pills don't change shape or jump
+    const PILL_W = 64
+    const PILL_H = 24
+    const GAP_ALONG_PX = 8      // gap from node edge along the connection direction
+    const SIDE_OFFSET_PX = 18   // perpendicular offset to the left side of the connection
+
+    const toScreen = (node) => {
+      const x = (node.x + effPanX) * effScale + width / 2
+      const y = (node.y + effPanY) * effScale + height / 2
+      const r = (node.radius || 20) * effScale
+      return { x, y, r }
+    }
+
     for (const m of visible) {
       const years = m.yearsRequired || 0
       if (!years || !shouldShow(m.medalId)) continue
 
-      const nodeX = (m.x + effPanX) * effScale + width / 2
-      const nodeY = (m.y + effPanY) * effScale + height / 2
-      const r = (m.radius || 20) * effScale
+      const toNode = toScreen(m)
+
+      // Default placement: left-above the node (stable)
+      let cx = toNode.x - (toNode.r + GAP_ALONG_PX)
+      let cy = toNode.y - (toNode.r + GAP_ALONG_PX)
+
+      // If there is an incoming connection, place pill to the left of that connection
+      const incoming = (layout.connections || []).find(c => c.to === m.medalId)
+      if (incoming) {
+        const fromNodeData = nodeById.get(incoming.from)
+        if (fromNodeData) {
+          const from = toScreen(fromNodeData)
+          // Vector from prerequisite to this node in screen space
+          const vx = toNode.x - from.x
+          const vy = toNode.y - from.y
+          const vlen = Math.hypot(vx, vy) || 1
+          const ux = vx / vlen
+          const uy = vy / vlen
+          // Perpendicular "left" normal relative to the connection direction
+          const nx = -uy
+          const ny = ux
+          cx = toNode.x - ux * (toNode.r + GAP_ALONG_PX) + nx * SIDE_OFFSET_PX
+          cy = toNode.y - uy * (toNode.r + GAP_ALONG_PX) + ny * SIDE_OFFSET_PX
+        }
+      }
 
       const statusKey = statuses?.[m.medalId]?.status
       const variant = (statusKey === 'achievable' || statusKey === 'unlocked') ? 'ready' : 'neutral'
-
       const text = `${years} år`
-      // Rough width estimate for flip logic (12px font, padding, icon)
-      const estW = text.length * 7 + 12 + 14
-      const leftPref = nodeX - r - 8
-      const anchorRight = (leftPref - estW) < 8
 
-      const left = anchorRight ? nodeX + r + 8 : nodeX - r - 8
-      const top = nodeY - r - 8
-
-      badges.push({ id: m.medalId, left, top, anchorRight, text, variant })
+      badges.push({ id: m.medalId, left: cx, top: cy, text, variant, w: PILL_W, h: PILL_H })
     }
     return badges
   }, [layout, getEffectiveTransform, getVisibleMedalsForCanvas, hoveredMedal, selectedMedal, statuses])
@@ -484,7 +515,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                   aria-label={`Kräver ${badge.text}`}
                   title={`Kräver ${badge.text}`}
                   className={[
-                    'inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-medium shadow-sm',
+                    'inline-flex items-center justify-center gap-1 rounded-full border px-2 py-0.5 text-xs font-medium shadow-sm',
                     badge.variant === 'ready'
                       ? 'bg-primary text-white border-primary'
                       : 'bg-primary/10 dark:bg-primary/20 text-foreground border-primary'
@@ -493,7 +524,10 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                     position: 'absolute',
                     left: `${badge.left}px`,
                     top: `${badge.top}px`,
-                    transform: badge.anchorRight ? 'translate(0,-100%)' : 'translate(-100%,-100%)'
+                    transform: 'translate(-50%,-50%)',
+                    width: `${badge.w}px`,
+                    height: `${badge.h}px`,
+                    whiteSpace: 'nowrap'
                   }}
                 >
                   <span aria-hidden="true">📅</span>
@@ -632,7 +666,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                     aria-label={`Kräver ${badge.text}`}
                     title={`Kräver ${badge.text}`}
                     className={[
-                      'inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-medium shadow-sm',
+                      'inline-flex items-center justify-center gap-1 rounded-full border px-2 py-0.5 text-xs font-medium shadow-sm',
                       badge.variant === 'ready'
                         ? 'bg-primary text-white border-primary'
                         : 'bg-primary/10 dark:bg-primary/20 text-foreground border-primary'
@@ -641,7 +675,10 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                       position: 'absolute',
                       left: `${badge.left}px`,
                       top: `${badge.top}px`,
-                      transform: badge.anchorRight ? 'translate(0,-100%)' : 'translate(-100%,-100%)'
+                      transform: 'translate(-50%,-50%)',
+                      width: `${badge.w}px`,
+                      height: `${badge.h}px`,
+                      whiteSpace: 'nowrap'
                     }}
                   >
                     <span aria-hidden="true">📅</span>
