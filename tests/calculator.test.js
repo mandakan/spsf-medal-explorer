@@ -11,6 +11,7 @@ describe('MedalCalculator', () => {
       medals: [
         {
           id: 'pistol-mark-bronze',
+          status: 'reviewed',
           type: 'pistol_mark',
           tier: 'bronze',
           displayName: 'Pistol Mark - Bronze',
@@ -28,6 +29,7 @@ describe('MedalCalculator', () => {
         },
         {
           id: 'pistol-mark-silver',
+          status: 'reviewed',
           type: 'pistol_mark',
           tier: 'silver',
           displayName: 'Pistol Mark - Silver',
