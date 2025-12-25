@@ -3,10 +3,10 @@
 /* Design tokens (Tailwind v4) */
 @theme {
   /* Semantic colors */
-  --color-background: #fcfcf9;
-  --color-surface: #ffffff;
-  --color-foreground: #133452;
-  --color-muted: #626c71;
+  --color-background: #FFFFFF;
+  --color-surface: #F8F9FA;
+  --color-foreground: #212529;
+  --color-muted: #6C757D;
 
   --color-primary: #1d745f;
   --color-primary-hover: #16605a;
@@ -25,7 +25,7 @@
   --color-connection: #94A3B8;
   --color-review: #F59E0B;
   --color-placeholder: #6366F1;
-  --color-border: #5e5240;
+  --color-border: #E9ECEF;
   --color-muted-foreground: var(--color-text-secondary);
 
   /* Spacing scale */
@@ -54,8 +54,21 @@
   .border-placeholder { border-color: var(--color-placeholder); }
 }
 
-/* Optional dark mode: toggle by adding 'dark' class to <html> */
-.dark { @theme {
+/* Dark mode: runtime variable overrides on the root element. */
+:root {
+  --color-background: #FFFFFF;
+  --color-surface: #F8F9FA;
+  --color-foreground: #212529;
+  --color-muted: #6C757D;
+  --color-border: #E9ECEF;
+
+  --color-bg-primary: var(--color-background);
+  --color-bg-secondary: var(--color-surface);
+  --color-text-primary: var(--color-foreground);
+  --color-text-secondary: var(--color-muted);
+}
+
+.dark {
   --color-background: #0f172a;      /* slate-900 */
   --color-surface: #1f2937;         /* gray-800 */
   --color-foreground: #e5e7eb;      /* gray-200 */
@@ -77,13 +90,12 @@
   --color-review: #F59E0B;
   --color-placeholder: #818CF8;
   --color-border: rgba(255,255,255,0.25);
-  --color-muted-foreground: var(--color-text-secondary);
 
   --color-bg-primary: var(--color-background);
   --color-bg-secondary: var(--color-surface);
   --color-text-primary: var(--color-foreground);
   --color-text-secondary: var(--color-muted);
-}}
+}
 
 html {
   @apply bg-background text-foreground;
