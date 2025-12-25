@@ -16,9 +16,6 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   
   const [selectedMedal, setSelectedMedal] = useState(null)
   const [hoveredMedal, setHoveredMedal] = useState(null)
-  // rAF-synced badge data to reduce jitter and keep DOM overlay in sync with canvas
-  const [badgeData, setBadgeData] = useState([])
-  const badgeRafRef = useRef(null)
   const navigate = useNavigate()
   const location = useLocation()
   const isFullscreen = location.pathname.endsWith('/skill-tree/fullscreen')
@@ -196,6 +193,11 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     return badges
   }, [layout, getEffectiveTransform, getVisibleMedalsForCanvas, hoveredMedal, selectedMedal, statuses])
 
+  // Compute badge overlay positions synchronously with current pan/zoom to avoid visual lag
+  const badgeData = useMemo(() => {
+    const el = canvasRef.current
+    return el ? getYearsBadgeData(el) : []
+  }, [getYearsBadgeData, panX, panY, scale, hoveredMedal, selectedMedal, layout])
 
   const draw = useCallback(() => {
     if (!canvasRef.current || !layout || !medalDatabase) return
@@ -261,18 +263,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     return () => cancelAnimationFrame(raf)
   }, [draw])
 
-  // Update badge overlay positions once per frame to avoid jitter
-  useEffect(() => {
-    const el = canvasRef.current
-    if (!el) return
-    if (badgeRafRef.current) cancelAnimationFrame(badgeRafRef.current)
-    badgeRafRef.current = requestAnimationFrame(() => {
-      setBadgeData(getYearsBadgeData(el))
-    })
-    return () => {
-      if (badgeRafRef.current) cancelAnimationFrame(badgeRafRef.current)
-    }
-  }, [getYearsBadgeData, panX, panY, scale, hoveredMedal, selectedMedal, layout])
+  
 
   // Ensure label readability once layout is ready (initialization only)
   useEffect(() => {
@@ -560,7 +551,8 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                     position: 'absolute',
                     left: `${badge.left}px`,
                     top: `${badge.top}px`,
-                    transform: 'translate(-50%,-50%)',
+                    transform: 'translate3d(-50%, -50%, 0)',
+                    willChange: 'transform',
                     width: `${badge.w}px`,
                     height: `${badge.h}px`,
                     whiteSpace: 'nowrap'
@@ -710,7 +702,8 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                       position: 'absolute',
                       left: `${badge.left}px`,
                       top: `${badge.top}px`,
-                      transform: 'translate(-50%,-50%)',
+                      transform: 'translate3d(-50%, -50%, 0)',
+                      willChange: 'transform',
                       width: `${badge.w}px`,
                       height: `${badge.h}px`,
                       whiteSpace: 'nowrap'
