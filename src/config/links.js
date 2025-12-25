@@ -11,4 +11,7 @@ export const LINKS = {
 
   // Optional: Buy me a coffee / donation link. Leave empty string to hide section.
   COFFEE: 'https://buymeacoffee.com/thias',
+
+  // Official rulebook landing page
+  RULEBOOK: 'https://www.pistolskytteforbundet.se/om-forbundet/styrdokument/regelbocker',
 }

@@ -9,6 +9,8 @@ import { useUnlockGuard } from '../hooks/useUnlockGuard'
 const Markdown = lazy(() => import('react-markdown'))
 import remarkGfm from 'remark-gfm'
 import { useNavigate, useLocation } from 'react-router-dom'
+import Disclaimer from './Disclaimer'
+import { LINKS } from '../config/links'
 
 export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) {
   const { medalDatabase } = useMedalDatabase()
@@ -364,6 +366,14 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
 
           {/* Body */}
           <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 sm:p-6">
+            <div className="mb-4">
+              <Disclaimer
+                id="disclaimer-rules"
+                variant="warning"
+                text="Regelboken gäller före appens tolkning. Kontrollera alltid senaste officiella regelbok."
+                linkUrl={LINKS.RULEBOOK}
+              />
+            </div>
             <div className="mb-4">
               <span
                 className={[
