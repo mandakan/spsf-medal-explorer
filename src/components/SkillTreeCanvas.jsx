@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react'
+import React, { useRef, useEffect, useLayoutEffect, useState, useCallback, useMemo } from 'react'
 import { useMedalDatabase } from '../hooks/useMedalDatabase'
 import { useAllMedalStatuses } from '../hooks/useMedalCalculator'
 import { usePanZoom } from '../hooks/usePanZoom'
@@ -16,6 +16,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   
   const [selectedMedal, setSelectedMedal] = useState(null)
   const [hoveredMedal, setHoveredMedal] = useState(null)
+  const [badgeData, setBadgeData] = useState([])
   const navigate = useNavigate()
   const location = useLocation()
   const isFullscreen = location.pathname.endsWith('/skill-tree/fullscreen')
@@ -193,11 +194,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     return badges
   }, [layout, getEffectiveTransform, getVisibleMedalsForCanvas, hoveredMedal, selectedMedal, statuses])
 
-  // Compute badge overlay positions synchronously with current pan/zoom to avoid visual lag
-  const badgeData = useMemo(() => {
-    const el = canvasRef.current
-    return el ? getYearsBadgeData(el) : []
-  }, [getYearsBadgeData, panX, panY, scale, hoveredMedal, selectedMedal, layout])
+  // Badge overlay positions are computed in a layout effect to avoid ref access during render
 
   const draw = useCallback(() => {
     if (!canvasRef.current || !layout || !medalDatabase) return
@@ -263,7 +260,15 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     return () => cancelAnimationFrame(raf)
   }, [draw])
 
-  
+  // Compute badge overlay positions in layout effect to stay in sync with canvas and pass lint rules
+  useLayoutEffect(() => {
+    const el = canvasRef.current
+    if (!el) {
+      setBadgeData([])
+      return
+    }
+    setBadgeData(getYearsBadgeData(el))
+  }, [getYearsBadgeData, panX, panY, scale, hoveredMedal, selectedMedal, layout])
 
   // Ensure label readability once layout is ready (initialization only)
   useEffect(() => {
