@@ -1295,17 +1295,20 @@
     },
     {
       "id": "precision-mark-bronze",
+      "status": "under_review",
       "type": "precision_mark",
       "tier": "bronze",
       "name": "Precisionsskyttemärket",
       "displayName": "Precisionsskyttemärket Brons",
       "color": "#CD7F32",
       "icon": "precision-bronze",
+      "requirements_original": "Prov för Precisionsskyttemärke får endast avläggas av den, som under föregående kalenderår uppfyllt fordringarna för pistolskyttemärke i brons.\n\nPrecisionsskyttemärket förekommer i valörerna brons, silver och guld, samt i guld med en, två och tre stjärnor.\n\nMärkesprov får avläggas vid riks-, landsdels-, nationella och kretstävlingar i Precisionsskjutning.\n\nEndast ett märke kan under året erövras och märke av högre valör endast av den, som förut löst märke av lägre valör.\nFör erhållande av precisionsskyttemärket krävs att skytten vid tre olika tävlingar under samma kalenderår uppfyller kraven för respektive märke, enligt följande:\n\n**Poänggränser vapengrupp A**\n\n|Märke|6 serier|7 serier|8 serier|\n|-|-|-|-|\n|Brons|194|226|322|\n|Silver|231|269|383|\n|Guld|262|305|434|\n\n**Poänggränser vapengrupp B**\n\n|Märke|6 serier|7 serier|8 serier|\n|-|-|-|-|\n|Brons|200|233|332|\n|Silver|237|276|393|\n|Guld|274|319|454|\n\n**Poänggränser vapengrupp C**\n\n|Märke|6 serier|7 serier|8 serier|\n|-|-|-|-|\n|Brons|206|240|342|\n|Silver|243|283|403|\n|Guld|280|326|464|",
       "prerequisites": [
         {
           "type": "medal",
           "medalId": "pistol-mark-bronze",
-          "description": "Must achieve in previous calendar year"
+          "yearOffset": 1,
+          "description": "Uppfyllt kraven för pistolskyttemärket i brons föregående år"
         }
       ],
       "requirements": [
@@ -1334,15 +1337,18 @@
     },
     {
       "id": "precision-mark-silver",
+      "status": "under_review",
       "type": "precision_mark",
       "tier": "silver",
       "name": "Precisionsskyttemärket",
       "displayName": "Precisionsskyttemärket Silver",
       "color": "#C0C0C0",
       "icon": "precision-silver",
+      "requirements_original": "Prov för Precisionsskyttemärke får endast avläggas av den, som under föregående kalenderår uppfyllt fordringarna för pistolskyttemärke i brons.\n\nPrecisionsskyttemärket förekommer i valörerna brons, silver och guld, samt i guld med en, två och tre stjärnor.\n\nMärkesprov får avläggas vid riks-, landsdels-, nationella och kretstävlingar i Precisionsskjutning.\n\nEndast ett märke kan under året erövras och märke av högre valör endast av den, som förut löst märke av lägre valör.\nFör erhållande av precisionsskyttemärket krävs att skytten vid tre olika tävlingar under samma kalenderår uppfyller kraven för respektive märke, enligt följande:\n\n**Poänggränser vapengrupp A**\n\n|Märke|6 serier|7 serier|8 serier|\n|-|-|-|-|\n|Brons|194|226|322|\n|Silver|231|269|383|\n|Guld|262|305|434|\n\n**Poänggränser vapengrupp B**\n\n|Märke|6 serier|7 serier|8 serier|\n|-|-|-|-|\n|Brons|200|233|332|\n|Silver|237|276|393|\n|Guld|274|319|454|\n\n**Poänggränser vapengrupp C**\n\n|Märke|6 serier|7 serier|8 serier|\n|-|-|-|-|\n|Brons|206|240|342|\n|Silver|243|283|403|\n|Guld|280|326|464|",
       "prerequisites": [
         {
           "type": "medal",
+          "yearOffset": 1,
           "medalId": "precision-mark-bronze"
         }
       ],
@@ -1371,15 +1377,18 @@
     },
     {
       "id": "precision-mark-gold",
+      "status": "under_review",
       "type": "precision_mark",
       "tier": "gold",
       "name": "Precisionsskyttemärket",
       "displayName": "Precisionsskyttemärket Guld",
       "color": "#FFD700",
       "icon": "precision-gold",
+      "requirements_original": "Prov för Precisionsskyttemärke får endast avläggas av den, som under föregående kalenderår uppfyllt fordringarna för pistolskyttemärke i brons.\n\nPrecisionsskyttemärket förekommer i valörerna brons, silver och guld, samt i guld med en, två och tre stjärnor.\n\nMärkesprov får avläggas vid riks-, landsdels-, nationella och kretstävlingar i Precisionsskjutning.\n\nEndast ett märke kan under året erövras och märke av högre valör endast av den, som förut löst märke av lägre valör.\nFör erhållande av precisionsskyttemärket krävs att skytten vid tre olika tävlingar under samma kalenderår uppfyller kraven för respektive märke, enligt följande:\n\n**Poänggränser vapengrupp A**\n\n|Märke|6 serier|7 serier|8 serier|\n|-|-|-|-|\n|Brons|194|226|322|\n|Silver|231|269|383|\n|Guld|262|305|434|\n\n**Poänggränser vapengrupp B**\n\n|Märke|6 serier|7 serier|8 serier|\n|-|-|-|-|\n|Brons|200|233|332|\n|Silver|237|276|393|\n|Guld|274|319|454|\n\n**Poänggränser vapengrupp C**\n\n|Märke|6 serier|7 serier|8 serier|\n|-|-|-|-|\n|Brons|206|240|342|\n|Silver|243|283|403|\n|Guld|280|326|464|",
       "prerequisites": [
         {
           "type": "medal",
+          "yearOffset": 1,
           "medalId": "precision-mark-silver"
         }
       ],
@@ -1408,12 +1417,14 @@
     },
     {
       "id": "precision-mark-gold-star-1",
+      "status": "under_review",
       "type": "precision_mark",
       "tier": "star_1",
       "name": "Precisionsskyttemärket",
       "displayName": "Precisionsskyttemärket Guld med en stjärna",
       "color": "#FFD700",
       "icon": "precision-gold-star-1",
+      "requirements_original": "Innehavare av precisionsskyttemärket i guld som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för precisionsskyttemärket i guld.",
       "prerequisites": [
         {
           "type": "medal",
@@ -1424,7 +1435,12 @@
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för precisionsskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "yearsOfAchievement": 3,
+          "references": [
+            {
+              "medalId": "precision-mark-gold"
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["precision-mark-gold-star-2"],
@@ -1434,12 +1450,14 @@
     },
     {
       "id": "precision-mark-gold-star-2",
+      "status": "under_review",
       "type": "precision_mark",
       "tier": "star_2",
       "name": "Precisionsskyttemärket",
       "displayName": "Precisionsskyttemärket Guld med två stjärnor",
       "color": "#FFD700",
       "icon": "precision-gold-star-2",
+      "requirements_original": "Innehavare av precisionsskyttemärket i guld med en stjärna som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för precisionsskyttemärket i guld.",
       "prerequisites": [
         {
           "type": "medal",
@@ -1450,7 +1468,12 @@
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för precisionsskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "yearsOfAchievement": 3,
+          "references": [
+            {
+              "medalId": "precision-mark-gold"
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["precision-mark-gold-star-3"],
@@ -1460,12 +1483,14 @@
     },
     {
       "id": "precision-mark-gold-star-3",
+      "status": "under_review",
       "type": "precision_mark",
       "tier": "star_3",
       "name": "Precisionsskyttemärket",
       "displayName": "Precisionsskyttemärket Guld med tre stjärnor",
       "color": "#FFD700",
       "icon": "precision-gold-star-3",
+      "requirements_original": "Innehavare av precisionsskyttemärket i guld med två stjärnor som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för precisionsskyttemärket i guld.",
       "prerequisites": [
         {
           "type": "medal",
@@ -1476,7 +1501,12 @@
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för precisionsskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "yearsOfAchievement": 3,
+          "references": [
+            {
+              "medalId": "precision-mark-gold"
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": [],
