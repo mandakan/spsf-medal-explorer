@@ -30,10 +30,34 @@ describe('Medal Database', () => {
 
   test('precision series requirement has correct point thresholds', () => {
     const medal = medalDb.getMedalById('pistol-mark-bronze')
-    const goldSeriesReq = medal.requirements.find(r => r.type === 'precision_series')
-    expect(goldSeriesReq.pointThresholds.A.min).toBe(32)
-    expect(goldSeriesReq.pointThresholds.B.min).toBe(33)
-    expect(goldSeriesReq.pointThresholds.C.min).toBe(34)
+    const reqs = medal.requirements
+
+    // Support both legacy array format and new object/nested formats
+    let seriesReq = null
+    if (Array.isArray(reqs)) {
+      seriesReq = reqs.find(r => r && r.type === 'precision_series') || null
+    } else if (reqs && typeof reqs === 'object') {
+      if (reqs.precision_series && typeof reqs.precision_series === 'object') {
+        seriesReq = reqs.precision_series
+      } else if (Array.isArray(reqs.items)) {
+        seriesReq = reqs.items.find(r => r && r.type === 'precision_series') || null
+      }
+    }
+
+    expect(seriesReq).toBeTruthy()
+
+    // Normalize threshold structure
+    const pts = seriesReq.pointThresholds || seriesReq.thresholds || {}
+    const getMin = (group) => {
+      const g = pts[group] || {}
+      if (typeof g.min === 'number') return g.min
+      if (typeof g.minPoints === 'number') return g.minPoints
+      return undefined
+    }
+
+    expect(getMin('A')).toBe(32)
+    expect(getMin('B')).toBe(33)
+    expect(getMin('C')).toBe(34)
   })
 
   test('medals unlock following medals correctly', () => {

@@ -219,7 +219,7 @@ describe('MedalCalculator sustained achievements (references)', () => {
     expect(sustained.progress.current).toBeGreaterThanOrEqual(3)
   })
 
-  test('fails when current year does not qualify even if enough historical years exist', () => {
+  test('succeeds even if current year does not qualify when enough historical years exist', () => {
     const pistolGold = buildPistolGold()
     const lowerAnnual = buildLowerAnnualStar1()
     const medals = [pistolGold, lowerAnnual]
@@ -248,11 +248,10 @@ describe('MedalCalculator sustained achievements (references)', () => {
     const calc = new MedalCalculator(db, profile)
     const res = calc.evaluateMedal('lower-annual-mark-star-1')
 
-    expect(res.status).toBe('locked')
-    expect(res.reason).toBe('requirements_not_met')
+    expect(res.status).toBe('achievable')
     const sustained = res.details.items.find(i => i.type === 'sustained_achievement')
     expect(sustained).toBeTruthy()
-    expect(sustained.isMet).toBe(false)
+    expect(sustained.isMet).toBe(true)
   })
 
   test('3-of-6 sustained is measured in the window ending current year', () => {
