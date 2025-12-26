@@ -890,7 +890,7 @@
     },
     {
       "id": "field-mark-gold-star-1",
-      "status": "under_review",
+      "status": "reviewed",
       "type": "field_mark",
       "tier": "star_1",
       "name": "Fältskyttemärket",
@@ -908,7 +908,13 @@
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för fältskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "yearsOfAchievement": 3,
+          "references": [
+            {
+              "medalId": "field-mark-gold",
+              "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för fältskyttemärket i guld."
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["field-mark-gold-star-2"],
@@ -918,7 +924,7 @@
     },
     {
       "id": "field-mark-gold-star-2",
-      "status": "under_review",
+      "status": "reviewed",
       "type": "field_mark",
       "tier": "star_2",
       "name": "Fältskyttemärket",
@@ -935,7 +941,13 @@
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för fältskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "yearsOfAchievement": 3,
+          "references": [
+            {
+              "medalId": "field-mark-gold",
+              "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för fältskyttemärket i guld."
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["field-mark-gold-star-3"],
@@ -945,7 +957,7 @@
     },
     {
       "id": "field-mark-gold-star-3",
-      "status": "under_review",
+      "status": "reviewed",
       "type": "field_mark",
       "tier": "star_3",
       "name": "Fältskyttemärket",
@@ -962,7 +974,13 @@
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för fältskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "yearsOfAchievement": 3,
+          "references": [
+            {
+              "medalId": "field-mark-gold",
+              "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för fältskyttemärket i guld."
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["field-mark-gold-wreath"],
@@ -972,7 +990,7 @@
     },
     {
       "id": "field-mark-gold-wreath",
-      "status": "under_review",
+      "status": "reviewed",
       "type": "field_mark",
       "tier": "gold_wreath",
       "name": "Fältskyttemärket",
@@ -989,7 +1007,13 @@
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för fältskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "yearsOfAchievement": 3,
+          "references": [
+            {
+              "medalId": "field-mark-gold",
+              "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för fältskyttemärket i guld."
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["field-mark-gold-wreath-star-1"],
@@ -999,7 +1023,7 @@
     },
     {
       "id": "field-mark-gold-wreath-star-1",
-      "status": "under_review",
+      "status": "reviewed",
       "type": "field_mark",
       "tier": "gold_wreath_star_1",
       "name": "Fältskyttemärket",
@@ -1016,7 +1040,13 @@
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för fältskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "yearsOfAchievement": 3,
+          "references": [
+            {
+              "medalId": "field-mark-gold",
+              "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för fältskyttemärket i guld."
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["field-mark-gold-wreath-star-2"],
@@ -1026,7 +1056,7 @@
     },
     {
       "id": "field-mark-gold-wreath-star-2",
-      "status": "under_review",
+      "status": "reviewed",
       "type": "field_mark",
       "tier": "gold_wreath_star_2",
       "name": "Fältskyttemärket",
@@ -1043,7 +1073,13 @@
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för fältskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "yearsOfAchievement": 3,
+          "references": [
+            {
+              "medalId": "field-mark-gold",
+              "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för fältskyttemärket i guld."
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["field-mark-gold-wreath-star-3"],
@@ -1053,7 +1089,7 @@
     },
     {
       "id": "field-mark-gold-wreath-star-3",
-      "status": "under_review",
+      "status": "reviewed",
       "type": "field_mark",
       "tier": "gold_wreath_star_3",
       "name": "Fältskyttemärket",
@@ -1070,7 +1106,13 @@
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för fältskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "yearsOfAchievement": 3,
+          "references": [
+            {
+              "medalId": "field-mark-gold",
+              "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för fältskyttemärket i guld."
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": [],
