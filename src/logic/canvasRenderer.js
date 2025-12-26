@@ -201,10 +201,10 @@ export function drawMedalNode(ctx, x, y, radius, medal, status, scale, forceLabe
     // No text label for under-review in canvas; using dashed review ring only for consistency with list
   }
 
-  // Label text: draw full displayName below the node with wrapping for readability
-  const name = medal?.name || medal?.displayName || medal?.tier || 'Medal'
+  // Label text: base name on first line; tierName on subsequent lines
+  const baseName = (typeof medal?.name === 'string' ? medal.name.trim() : '') || 'Medal'
   // Avoid label clutter when zoomed far out; always show when forced (hover/selected)
-  if ((forceLabel || scale >= 0.8) && name) {
+  if ((forceLabel || scale >= 0.8) && baseName) {
     ctx.fillStyle = palette.text
     ctx.textAlign = 'center'
     ctx.textBaseline = 'top'
@@ -222,17 +222,9 @@ export function drawMedalNode(ctx, x, y, radius, medal, status, scale, forceLabe
     let lines
     if (tier) {
       const restLines = wrapText(ctx, tier, maxWidth, Math.max(0, maxLines - 1))
-      lines = [name, ...restLines]
+      lines = [baseName, ...restLines]
     } else {
-      const parts = String(name).split(/\s[-–—]\s/)
-      if (parts.length > 1) {
-        const top = parts[0]
-        const rest = parts.slice(1).join(' - ')
-        const restLines = wrapText(ctx, rest, maxWidth, Math.max(0, maxLines - 1))
-        lines = [top, ...restLines]
-      } else {
-        lines = wrapText(ctx, name, maxWidth, maxLines)
-      }
+      lines = wrapText(ctx, baseName, maxWidth, maxLines)
     }
 
     const startY = y + radius + 8
