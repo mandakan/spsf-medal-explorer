@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react'
+import React, { useRef, useEffect, useLayoutEffect, useState, useCallback, useMemo } from 'react'
 import { useMedalDatabase } from '../hooks/useMedalDatabase'
 import { useAllMedalStatuses } from '../hooks/useMedalCalculator'
 import { usePanZoom } from '../hooks/usePanZoom'
@@ -11,11 +11,12 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   const canvasRef = useRef(null)
   const { medalDatabase } = useMedalDatabase()
   const statuses = useAllMedalStatuses()
-  const { panX, panY, scale, setScaleAbsolute, handleWheel, handlePointerDown, handlePointerMove, handlePointerUp, resetView } = usePanZoom(1, 0.5, 6)
+  
   const { render } = useCanvasRenderer()
   
   const [selectedMedal, setSelectedMedal] = useState(null)
   const [hoveredMedal, setHoveredMedal] = useState(null)
+  const [badgeData, setBadgeData] = useState([])
   const navigate = useNavigate()
   const location = useLocation()
   const isFullscreen = location.pathname.endsWith('/skill-tree/fullscreen')
@@ -25,6 +26,34 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     const medals = medalDatabase.getAllMedals()
     return generateMedalLayout(medals)
   }, [medalDatabase])
+
+  // Shared canvas/label padding constants
+  const CANVAS_PAD = 24
+  const LABEL_HALF_PX = 90           // approximate half-width of label text area
+  const LABEL_BOTTOM_PX = 56         // reserve for up to two lines of label text at bottom
+  const getWorldBounds = useCallback(() => {
+    if (!layout || !layout.medals?.length) return { minX: 0, minY: 0, maxX: 0, maxY: 0 }
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity
+    for (let i = 0; i < layout.medals.length; i++) {
+      const m = layout.medals[i]
+      const r = m.radius || 20
+      if (m.x - r < minX) minX = m.x - r
+      if (m.y - r < minY) minY = m.y - r
+      if (m.x + r > maxX) maxX = m.x + r
+      if (m.y + r > maxY) maxY = m.y + r
+    }
+    return { minX, minY, maxX, maxY }
+  }, [layout])
+  const { panX, panY, scale, setScaleAbsolute, handleWheel, handlePointerDown, handlePointerMove, handlePointerUp, resetView } = usePanZoom(1, 0.5, 6, {
+    getBounds: getWorldBounds,
+    overscrollPx: 48,
+    contentPaddingPx: {
+      left: LABEL_HALF_PX + CANVAS_PAD,
+      top: CANVAS_PAD,
+      right: LABEL_HALF_PX + CANVAS_PAD,
+      bottom: LABEL_BOTTOM_PX + CANVAS_PAD
+    }
+  })
   const [isDragging, setIsDragging] = useState(false)
   const closeBtnRef = useRef(null)
   const prevFocusRef = useRef(null)
@@ -66,15 +95,14 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   }, [layout])
 
   // Effective transform combines the base (top-left anchored, auto-fit) with interactive pan/zoom.
-  const getEffectiveTransform = useCallback((canvas, padding = 24) => {
+  const getEffectiveTransform = useCallback((canvas, padding = CANVAS_PAD) => {
     const { baseScale, minX, minY } = computeBaseTransform(canvas, padding)
     const width = canvas?.width || 0
     const height = canvas?.height || 0
     const effScale = Math.max(0.001, baseScale * scale)
     // Compute base pan using the effective scale so the top-left stays anchored at padding
     // Include label half-width so the left-most label stays inside canvas padding.
-    const labelHalfPx = 90
-    const extraLeftWorld = labelHalfPx / effScale
+    const extraLeftWorld = LABEL_HALF_PX / effScale
     const basePanX = (padding - width / 2) / effScale - (minX - extraLeftWorld)
     const basePanY = (padding - height / 2) / effScale - minY
     const effPanX = panX + basePanX
@@ -107,6 +135,93 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     return result
   }, [layout, getEffectiveTransform])
 
+  // Node-anchored "years required" badges (DOM overlay for accessibility)
+  const getYearsBadgeData = useCallback((canvas) => {
+    if (!canvas || !layout) return []
+    const { effScale, effPanX, effPanY } = getEffectiveTransform(canvas)
+    const width = canvas.width
+    const height = canvas.height
+    const visible = getVisibleMedalsForCanvas(canvas)
+    const badges = []
+    const shouldShow = (medalId) => (hoveredMedal === medalId || selectedMedal === medalId || effScale >= 0.8)
+
+    // Build quick lookup for node by medalId
+    const nodeById = new Map()
+    for (const n of layout.medals || []) nodeById.set(n.medalId, n)
+
+    // Fixed pill size and layout constants (screen px)
+    const PILL_W = 56
+    const PILL_H = 20
+    const VERT_MARGIN = 8
+    const NODE_CLEAR = Math.max(PILL_H / 2 + 6, 12)
+
+    const toScreen = (node) => {
+      const x = (node.x + effPanX) * effScale + width / 2
+      const y = (node.y + effPanY) * effScale + height / 2
+      const r = (node.radius || 20) * effScale
+      return { x, y, r }
+    }
+
+    for (const m of visible) {
+      const years = m.yearsRequired || 0
+      if (!years || !shouldShow(m.medalId)) continue
+
+      const toNode = toScreen(m)
+
+      // Default placement: centered horizontally, above the node with guaranteed clearance
+      let cx = toNode.x
+      let cy = toNode.y - (toNode.r + VERT_MARGIN + PILL_H / 2)
+
+      // If there is a single incoming connection and that source sits too close to the pill,
+      // nudge the pill slightly perpendicular to that connection to avoid overlap.
+      const incoming = (layout.connections || []).find(c => c.to === m.medalId)
+      if (incoming) {
+        const fromNodeData = nodeById.get(incoming.from)
+        if (fromNodeData) {
+          const from = toScreen(fromNodeData)
+          const vx = toNode.x - from.x
+          const vy = toNode.y - from.y
+          const vlen = Math.hypot(vx, vy) || 1
+          const ux = vx / vlen
+          const uy = vy / vlen
+          const nx = -uy
+          const ny = ux
+          const dx = cx - from.x
+          const dy = cy - from.y
+          const dist = Math.hypot(dx, dy) || 1
+          const minDist = from.r + Math.max(PILL_W, PILL_H) / 2 + 6
+          if (dist < minDist) {
+            const shift = (minDist - dist)
+            cx += nx * shift
+            cy += ny * shift
+          }
+        }
+      }
+
+      // Node label is drawn below the node; pill is above by design so no label-collision handling is needed.
+
+      // Safety: if still too close to node center, nudge outward along the radial
+      const dx = cx - toNode.x
+      const dy = cy - toNode.y
+      const dist = Math.hypot(dx, dy) || 1
+      const minCenterDist = toNode.r + NODE_CLEAR
+      if (dist < minCenterDist) {
+        const ux = dx / dist
+        const uy = dy / dist
+        cx = toNode.x + ux * minCenterDist
+        cy = toNode.y + uy * minCenterDist
+      }
+
+      const statusKey = statuses?.[m.medalId]?.status
+      const variant = (statusKey === 'achievable' || statusKey === 'unlocked') ? 'ready' : 'neutral'
+      const text = `${years} år`
+
+      badges.push({ id: m.medalId, left: cx, top: cy, text, variant, w: PILL_W, h: PILL_H })
+    }
+    return badges
+  }, [layout, getEffectiveTransform, getVisibleMedalsForCanvas, hoveredMedal, selectedMedal, statuses])
+
+  // Badge overlay positions are computed in a layout effect to avoid ref access during render
 
   const draw = useCallback(() => {
     if (!canvasRef.current || !layout || !medalDatabase) return
@@ -162,6 +277,16 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     }
   }, [computeBaseTransform, layout, setScaleAbsolute])
 
+  const handleResetView = useCallback(() => {
+    const el = canvasRef.current
+    if (!el || !layout) return
+    const { baseScale } = computeBaseTransform(el)
+    const minEff = 0.8
+    const targetInteractive = minEff / Math.max(0.001, baseScale)
+    resetView()
+    setScaleAbsolute(targetInteractive)
+  }, [computeBaseTransform, layout, resetView, setScaleAbsolute])
+
   const setCanvasRef = useCallback((node) => {
     canvasRef.current = node
   }, [])
@@ -172,6 +297,21 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     return () => cancelAnimationFrame(raf)
   }, [draw])
 
+  // Compute badge overlay positions in layout effect to stay in sync with canvas
+  useLayoutEffect(() => {
+    const el = canvasRef.current
+    if (!el) return
+    // Ensure canvas pixel size matches DOM before computing overlay
+    const rect = el.getBoundingClientRect()
+    const w = Math.floor(rect.width)
+    const h = Math.floor(rect.height)
+    if (w > 0 && h > 0 && (el.width !== w || el.height !== h)) {
+      el.width = w
+      el.height = h
+    }
+    setBadgeData(getYearsBadgeData(el))
+  }, [getYearsBadgeData, panX, panY, scale, hoveredMedal, selectedMedal, layout])
+
   // Ensure label readability once layout is ready (initialization only)
   useEffect(() => {
     if (canvasRef.current && layout) {
@@ -179,16 +319,24 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     }
   }, [layout, ensureLabelVisibilityScale])
 
-  // Redraw on window resize
+  // Redraw and recompute overlay on window resize
   useEffect(() => {
     const onResize = () => {
-      if (canvasRef.current) {
-        draw()
+      const el = canvasRef.current
+      if (!el) return
+      const rect = el.getBoundingClientRect()
+      const w = Math.floor(rect.width)
+      const h = Math.floor(rect.height)
+      if (w > 0 && h > 0 && (el.width !== w || el.height !== h)) {
+        el.width = w
+        el.height = h
       }
+      draw()
+      setBadgeData(getYearsBadgeData(el))
     }
     window.addEventListener('resize', onResize)
     return () => window.removeEventListener('resize', onResize)
-  }, [draw])
+  }, [draw, getYearsBadgeData])
 
   // Native wheel listener (passive: false) to prevent page scroll/zoom during canvas zoom gestures.
   useEffect(() => {
@@ -267,13 +415,13 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
       e.preventDefault()
     }
     if (e.key === 'ArrowLeft') {
-      handlePointerMove({ syntheticPan: { dx: -step, dy: 0 } })
+      handlePointerMove({ syntheticPan: { dx: -step, dy: 0 } }, effScale)
     } else if (e.key === 'ArrowRight') {
-      handlePointerMove({ syntheticPan: { dx: step, dy: 0 } })
+      handlePointerMove({ syntheticPan: { dx: step, dy: 0 } }, effScale)
     } else if (e.key === 'ArrowUp') {
-      handlePointerMove({ syntheticPan: { dx: 0, dy: -step } })
+      handlePointerMove({ syntheticPan: { dx: 0, dy: -step } }, effScale)
     } else if (e.key === 'ArrowDown') {
-      handlePointerMove({ syntheticPan: { dx: 0, dy: step } })
+      handlePointerMove({ syntheticPan: { dx: 0, dy: step } }, effScale)
     }
   }, [getEffectiveTransform, handlePointerMove])
 
@@ -319,7 +467,9 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
 
   const handleCanvasPointerUp = (e) => {
     setIsDragging(false)
-    handlePointerUp(e)
+    const el = canvasRef.current
+    const { effScale } = el ? getEffectiveTransform(el) : { effScale: scaleRef.current }
+    handlePointerUp(e, effScale)
     setHoveredMedal(null)
   }
 
@@ -395,7 +545,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
         <div role="toolbar" aria-label="Träd-vy åtgärder" className="flex flex-wrap gap-2 sm:flex-nowrap">
           <button
             type="button"
-            onClick={() => { resetView(); ensureLabelVisibilityScale() }}
+            onClick={handleResetView}
             className="px-3 py-2 sm:px-4 sm:py-2 min-h-[44px] rounded bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-slate-700 dark:text-slate-50 dark:hover:bg-slate-600 border border-gray-300 dark:border-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
           >
             Återställ
@@ -422,24 +572,72 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
 
       <div className="card overflow-hidden overscroll-contain mt-2" role="region" aria-label="Trädvy canvas" aria-describedby={legendDescribedById ? 'skilltree-help ' + legendDescribedById : 'skilltree-help'}>
         {!isFullscreen && (
-          <canvas
-            ref={setCanvasRef}
-            role="img"
-            aria-label="Interaktiv träd-vy-canvas"
-            aria-describedby={legendDescribedById}
-            aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown"
-            tabIndex={0}
-            onKeyDown={handleCanvasKeyDown}
-            className="w-full h-[60vh] sm:h-[600px] bg-background cursor-grab active:cursor-grabbing touch-none overscroll-contain select-none"
-            onContextMenu={(e) => e.preventDefault()}
-            onPointerDown={handleCanvasPointerDown}
-            onPointerMove={handleCanvasPointerMove}
-            onPointerUp={handleCanvasPointerUp}
-            onPointerLeave={handleCanvasPointerUp}
-            onPointerCancel={handleCanvasPointerUp}
-            onClick={handleCanvasClick}
-            onDoubleClick={handleCanvasDoubleClick}
-          />
+          <div className="relative">
+            <canvas
+              ref={setCanvasRef}
+              role="img"
+              aria-label="Interaktiv träd-vy-canvas"
+              aria-describedby={legendDescribedById}
+              aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown"
+              tabIndex={0}
+              onKeyDown={handleCanvasKeyDown}
+              className="w-full h-[60vh] sm:h-[600px] bg-background cursor-grab active:cursor-grabbing touch-none overscroll-contain select-none"
+              onContextMenu={(e) => e.preventDefault()}
+              onPointerDown={handleCanvasPointerDown}
+              onPointerMove={handleCanvasPointerMove}
+              onPointerUp={handleCanvasPointerUp}
+              onPointerLeave={handleCanvasPointerUp}
+              onPointerCancel={handleCanvasPointerUp}
+              onClick={handleCanvasClick}
+              onDoubleClick={handleCanvasDoubleClick}
+            />
+            <div className="pointer-events-none absolute inset-0">
+              {badgeData.map(badge => (
+                <React.Fragment key={badge.id}>
+                  <span
+                    aria-hidden="true"
+                    style={{
+                      position: 'absolute',
+                      left: `${badge.left}px`,
+                      top: `${badge.top}px`,
+                      transform: 'translate3d(-50%, -50%, 0)',
+                      willChange: 'transform',
+                      width: `${badge.w}px`,
+                      height: `${badge.h}px`,
+                      borderRadius: '9999px',
+                      background: 'var(--color-background, #fff)',
+                      boxShadow: '0 0 0 3px var(--color-background, #fff)',
+                      zIndex: 0
+                    }}
+                  />
+                  <span
+                    role="note"
+                    aria-label={`Kräver ${badge.text}`}
+                    title={`Kräver ${badge.text}`}
+                    className={[
+                      'inline-flex items-center justify-center rounded-full border px-2 py-0.5 text-xs font-medium shadow-sm',
+                      badge.variant === 'ready'
+                        ? 'bg-primary text-white border-primary'
+                        : 'bg-primary/10 dark:bg-primary/20 text-foreground border-primary'
+                    ].join(' ')}
+                    style={{
+                      position: 'absolute',
+                      left: `${badge.left}px`,
+                      top: `${badge.top}px`,
+                      transform: 'translate3d(-50%, -50%, 0)',
+                      willChange: 'transform',
+                      width: `${badge.w}px`,
+                      height: `${badge.h}px`,
+                      whiteSpace: 'nowrap',
+                      zIndex: 1
+                    }}
+                  >
+                    <span aria-hidden="true">{badge.text}</span>
+                  </span>
+                </React.Fragment>
+              ))}
+            </div>
+          </div>
         )}
       </div>
 
@@ -515,7 +713,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                 <button
                   role="menuitem"
                   type="button"
-                  onClick={() => { setMenuOpen(false); resetView(); ensureLabelVisibilityScale() }}
+                  onClick={() => { setMenuOpen(false); handleResetView() }}
                   className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                 >
                   Återställ vy
@@ -543,24 +741,72 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
           </div>
 
           <div className="flex-1">
-            <canvas
-              ref={setCanvasRef}
-              role="img"
-              aria-label="Interaktiv träd-vy-canvas"
-              aria-describedby={legendDescribedById ? 'skilltree-help-fs ' + legendDescribedById : 'skilltree-help-fs'}
-              aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown"
-              tabIndex={0}
-              onKeyDown={handleCanvasKeyDown}
-              className="w-full h-full bg-background cursor-grab active:cursor-grabbing touch-none overscroll-contain select-none"
-              onContextMenu={(e) => e.preventDefault()}
-              onPointerDown={handleCanvasPointerDown}
-              onPointerMove={handleCanvasPointerMove}
-              onPointerUp={handleCanvasPointerUp}
-              onPointerLeave={handleCanvasPointerUp}
-              onPointerCancel={handleCanvasPointerUp}
-              onClick={handleCanvasClick}
-              onDoubleClick={handleCanvasDoubleClick}
-            />
+            <div className="relative h-full">
+              <canvas
+                ref={setCanvasRef}
+                role="img"
+                aria-label="Interaktiv träd-vy-canvas"
+                aria-describedby={legendDescribedById ? 'skilltree-help-fs ' + legendDescribedById : 'skilltree-help-fs'}
+                aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown"
+                tabIndex={0}
+                onKeyDown={handleCanvasKeyDown}
+                className="w-full h-full bg-background cursor-grab active:cursor-grabbing touch-none overscroll-contain select-none"
+                onContextMenu={(e) => e.preventDefault()}
+                onPointerDown={handleCanvasPointerDown}
+                onPointerMove={handleCanvasPointerMove}
+                onPointerUp={handleCanvasPointerUp}
+                onPointerLeave={handleCanvasPointerUp}
+                onPointerCancel={handleCanvasPointerUp}
+                onClick={handleCanvasClick}
+                onDoubleClick={handleCanvasDoubleClick}
+              />
+              <div className="pointer-events-none absolute inset-0">
+                {badgeData.map(badge => (
+                  <React.Fragment key={badge.id}>
+                    <span
+                      aria-hidden="true"
+                      style={{
+                        position: 'absolute',
+                        left: `${badge.left}px`,
+                        top: `${badge.top}px`,
+                        transform: 'translate3d(-50%, -50%, 0)',
+                        willChange: 'transform',
+                        width: `${badge.w}px`,
+                        height: `${badge.h}px`,
+                        borderRadius: '9999px',
+                        background: 'var(--color-background, #fff)',
+                        boxShadow: '0 0 0 3px var(--color-background, #fff)',
+                        zIndex: 0
+                      }}
+                    />
+                    <span
+                      role="note"
+                      aria-label={`Kräver ${badge.text}`}
+                      title={`Kräver ${badge.text}`}
+                      className={[
+                        'inline-flex items-center justify-center rounded-full border px-2 py-0.5 text-xs font-medium shadow-sm',
+                        badge.variant === 'ready'
+                          ? 'bg-primary text-white border-primary'
+                          : 'bg-primary/10 dark:bg-primary/20 text-foreground border-primary'
+                      ].join(' ')}
+                      style={{
+                        position: 'absolute',
+                        left: `${badge.left}px`,
+                        top: `${badge.top}px`,
+                        transform: 'translate3d(-50%, -50%, 0)',
+                        willChange: 'transform',
+                        width: `${badge.w}px`,
+                        height: `${badge.h}px`,
+                        whiteSpace: 'nowrap',
+                        zIndex: 1
+                      }}
+                    >
+                      <span aria-hidden="true">{badge.text}</span>
+                    </span>
+                  </React.Fragment>
+                ))}
+              </div>
+            </div>
           </div>
 
           <p id="skilltree-help-fs" className="sr-only">

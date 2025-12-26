@@ -1,9 +1,10 @@
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 
-export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3) {
+export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3, opts = {}) {
   const [panX, setPanX] = useState(0)
   const [panY, setPanY] = useState(0)
   const [scale, setScale] = useState(initialScale)
+  const { getBounds = null, overscrollPx = 48, contentPaddingPx = { left: 0, top: 0, right: 0, bottom: 0 } } = opts
 
   const dragStartRef = useRef(null)
   const pointersRef = useRef(new Map()) // pointerId -> { x, y }
@@ -30,7 +31,88 @@ export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3) {
     s.vy = 0
     s.lastT = 0
   }, [])
-  const startMomentum = useCallback((vx, vy) => {
+  // Viewport rect cache (updated from events that carry a currentTarget)
+  const lastRectRef = useRef({ width: 0, height: 0 })
+  // Live pan/scale refs for momentum and snap-back without re-renders
+  const panRef = useRef({ x: 0, y: 0 })
+  const scaleRef = useRef(initialScale)
+  useEffect(() => { scaleRef.current = scale }, [scale])
+  useEffect(() => { panRef.current = { x: panX, y: panY } }, [panX, panY])
+
+  const updateRectFromEvent = useCallback((e) => {
+    const r = e?.currentTarget?.getBoundingClientRect?.()
+    if (r) lastRectRef.current = { width: r.width, height: r.height }
+  }, [])
+
+  // Non-linear rubberband mapping for overscroll; d is distance past the hard limit (world units),
+  // over is the maximum "feel" distance in world units corresponding to overscrollPx.
+  const rubberband = (d, over) => {
+    if (over <= 0 || d <= 0) return 0
+    return (d * over) / (d + over)
+  }
+
+  // Compute allowed pan range in world units for current scale and viewport
+  const computePanLimits = useCallback((s, rect = lastRectRef.current) => {
+    if (!opts || !getBounds || !rect?.width) return null
+    const b = getBounds()
+    const sEff = Math.max(0.001, s)
+
+    // Viewport size in world units at current effective scale
+    const viewW = rect.width / sEff
+    const viewH = rect.height / sEff
+
+    // Paddings converted to world units
+    const padL = (contentPaddingPx?.left || 0) / sEff
+    const padR = (contentPaddingPx?.right || 0) / sEff
+    const padT = (contentPaddingPx?.top || 0) / sEff
+    const padB = (contentPaddingPx?.bottom || 0) / sEff
+
+    // Content size in world units
+    const contentW = Math.max(0, (b.maxX - b.minX))
+    const contentH = Math.max(0, (b.maxY - b.minY))
+
+    // Available interactive pan space in world units.
+    // pan = 0 means content's top-left (with padding) is aligned to viewport's top-left.
+    const availX = viewW - (contentW + padL + padR)
+    const availY = viewH - (contentH + padT + padB)
+
+    // Pan-space limits
+    const minX = Math.min(0, availX)
+    const maxX = Math.max(0, availX)
+    const minY = Math.min(0, availY)
+    const maxY = Math.max(0, availY)
+
+    return { minX, maxX, minY, maxY }
+  }, [getBounds, opts, contentPaddingPx])
+
+  // Clamp pan to limits with optional rubberband overscroll (in screen px)
+  const applyClamp = useCallback((x, y, s, hard = false, rect = lastRectRef.current) => {
+    const limits = computePanLimits(s, rect)
+    if (!limits) return [x, y]
+    const { minX, maxX, minY, maxY } = limits
+    if (hard) {
+      const cx = Math.min(Math.max(x, minX), maxX)
+      const cy = Math.min(Math.max(y, minY), maxY)
+      return [cx, cy]
+    }
+    const over = (overscrollPx || 0) / Math.max(0.001, s) // px -> world units
+    let cx = x
+    let cy = y
+    if (x < minX) cx = minX - rubberband(minX - x, over)
+    else if (x > maxX) cx = maxX + rubberband(x - maxX, over)
+    if (y < minY) cy = minY - rubberband(minY - y, over)
+    else if (y > maxY) cy = maxY + rubberband(y - maxY, over)
+    return [cx, cy]
+  }, [computePanLimits, overscrollPx])
+
+  // Centralized pan setter that applies clamping
+  const setPan = useCallback((x, y, s, hard = false, rect) => {
+    const [cx, cy] = applyClamp(x, y, s, hard, rect)
+    setPanX(cx)
+    setPanY(cy)
+    panRef.current = { x: cx, y: cy }
+  }, [applyClamp])
+  const startMomentum = useCallback((vx, vy, sEff) => {
     if (!isFinite(vx) || !isFinite(vy)) return
     if (getReduceMotion()) return
     stopMomentum()
@@ -38,6 +120,7 @@ export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3) {
     s.vx = vx
     s.vy = vy
     s.lastT = typeof performance !== 'undefined' ? performance.now() : Date.now()
+    const eff = Math.max(0.001, sEff ?? (scaleRef.current || initialScale))
     const step = (t) => {
       const prevT = s.lastT || t
       const dt = Math.max(1, t - prevT) // ms
@@ -47,20 +130,50 @@ export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3) {
       s.vx *= decay
       s.vy *= decay
       // Integrate in world units (vx, vy are world units per ms)
-      setPanX(prev => prev + s.vx * dt)
-      setPanY(prev => prev + s.vy * dt)
+      const nx = panRef.current.x + s.vx * dt
+      const ny = panRef.current.y + s.vy * dt
+      setPan(nx, ny, eff, true)
       if (Math.hypot(s.vx, s.vy) < 0.001) {
         stopMomentum()
+        // Snap back inside hard bounds at rest
+        const [sx, sy] = applyClamp(panRef.current.x, panRef.current.y, eff, true)
+        setPan(sx, sy, eff, true)
         return
       }
       s.raf = requestAnimationFrame(step)
     }
     s.raf = requestAnimationFrame(step)
-  }, [getReduceMotion, stopMomentum])
+  }, [getReduceMotion, stopMomentum, setPan, applyClamp, initialScale])
+
+  // Animate a snap-back to the nearest hard-clamped position without overshoot.
+  const startSnapBack = useCallback((tx, ty, sEff, duration = 220) => {
+    if (getReduceMotion()) {
+      setPan(tx, ty, sEff, true)
+      return
+    }
+    stopMomentum()
+    const s = inertiaRef.current
+    const startX = panRef.current.x
+    const startY = panRef.current.y
+    const t0 = typeof performance !== 'undefined' ? performance.now() : Date.now()
+    const easeOut = (t) => 1 - Math.pow(1 - t, 3)
+    const step = (now) => {
+      const p = Math.min(1, (now - t0) / duration)
+      const k = easeOut(p)
+      const nx = startX + (tx - startX) * k
+      const ny = startY + (ty - startY) * k
+      setPan(nx, ny, sEff, true)
+      if (p < 1) {
+        s.raf = requestAnimationFrame(step)
+      }
+    }
+    s.raf = requestAnimationFrame(step)
+  }, [getReduceMotion, setPan, stopMomentum])
 
   const handleWheel = useCallback((e, effectiveScale) => {
     e.preventDefault()
     stopMomentum()
+    updateRectFromEvent(e)
     const el = e.currentTarget
     const rect = el?.getBoundingClientRect?.()
     const cx = rect ? e.clientX - rect.left : 0
@@ -79,13 +192,13 @@ export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3) {
     const corrY = dy * (1 / eff1 - 1 / eff0)
 
     setScale(s1)
-    setPanX(prev => prev + corrX)
-    setPanY(prev => prev + corrY)
-  }, [scale, minScale, maxScale, stopMomentum])
+    setPan(panX + corrX, panY + corrY, eff1, false, rect)
+  }, [scale, minScale, maxScale, stopMomentum, updateRectFromEvent, setPan, panX, panY])
 
   const handlePointerDown = useCallback((e) => {
     e.preventDefault()
     stopMomentum()
+    updateRectFromEvent(e)
     e.currentTarget?.setPointerCapture?.(e.pointerId)
     pointersRef.current.set(e.pointerId, { x: e.clientX, y: e.clientY })
 
@@ -105,20 +218,21 @@ export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3) {
       inertiaRef.current.vx = 0
       inertiaRef.current.vy = 0
     }
-  }, [panX, panY, scale, stopMomentum])
+  }, [panX, panY, scale, stopMomentum, updateRectFromEvent])
 
   const handlePointerMove = useCallback((e, effectiveScale) => {
     // Allow synthetic pan via keyboard; dx/dy are in world units already.
     if (e.syntheticPan) {
       stopMomentum()
+      const s = Math.max(0.001, effectiveScale ?? scale)
       const { dx, dy } = e.syntheticPan
-      setPanX((prev) => prev + dx)
-      setPanY((prev) => prev + dy)
+      setPan(panX + dx, panY + dy, s)
       return
     }
 
     if (!pointersRef.current.has(e.pointerId)) return
     e.preventDefault()
+    updateRectFromEvent(e)
     pointersRef.current.set(e.pointerId, { x: e.clientX, y: e.clientY })
 
     if (pointersRef.current.size === 2) {
@@ -147,8 +261,7 @@ export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3) {
       const corrY = dyLocal * (1 / eff1 - 1 / eff0)
 
       setScale(next)
-      setPanX(prev => prev + corrX)
-      setPanY(prev => prev + corrY)
+      setPan(panX + corrX, panY + corrY, eff1, false, rect)
       // Clear velocity during pinch
       inertiaRef.current.vx = 0
       inertiaRef.current.vy = 0
@@ -156,15 +269,19 @@ export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3) {
       const s = Math.max(0.001, effectiveScale ?? scale)
       const now = typeof performance !== 'undefined' ? performance.now() : Date.now()
       const last = lastMoveRef.current
-      const dClientX = e.clientX - last.x
-      const dClientY = e.clientY - last.y
       const dt = Math.max(1, now - last.t)
 
-      // World-space deltas for velocity sampling
-      const wdx = dClientX / s
-      const wdy = dClientY / s
-      const instVx = wdx / dt
-      const instVy = wdy / dt
+      const deltaX = (e.clientX - dragStartRef.current.x) / s
+      const deltaY = (e.clientY - dragStartRef.current.y) / s
+
+      // Apply pan first (clamped with rubberband), then sample velocity from applied delta
+      const prevX = panRef.current.x
+      const prevY = panRef.current.y
+      setPan(dragStartRef.current.panX + deltaX, dragStartRef.current.panY + deltaY, s)
+      const ax = panRef.current.x - prevX
+      const ay = panRef.current.y - prevY
+      const instVx = ax / dt
+      const instVy = ay / dt
 
       // Exponential moving average for stable velocity
       const v = inertiaRef.current
@@ -173,41 +290,47 @@ export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3) {
       v.vy = (1 - alpha) * v.vy + alpha * instVy
 
       lastMoveRef.current = { x: e.clientX, y: e.clientY, t: now }
-
-      const deltaX = (e.clientX - dragStartRef.current.x) / s
-      const deltaY = (e.clientY - dragStartRef.current.y) / s
-      setPanX(dragStartRef.current.panX + deltaX)
-      setPanY(dragStartRef.current.panY + deltaY)
     }
-  }, [scale, minScale, maxScale, stopMomentum])
+  }, [scale, minScale, maxScale, stopMomentum, setPan, updateRectFromEvent, panX, panY])
 
-  const handlePointerUp = useCallback((e) => {
+  const handlePointerUp = useCallback((e, effectiveScale) => {
     pointersRef.current.delete(e.pointerId)
     if (pointersRef.current.size < 1) {
       // Single-finger drag ended
       const v = inertiaRef.current
       const speed = Math.hypot(v.vx, v.vy)
-      if (dragStartRef.current && speed > 0.002) {
-        startMomentum(v.vx, v.vy)
+      const currScale = Math.max(0.001, effectiveScale ?? (scaleRef.current || scale))
+      const [hx, hy] = applyClamp(panRef.current.x, panRef.current.y, currScale, true)
+      const nearly = (a, b) => Math.abs(a - b) < 1e-4
+      const outOfBounds = !nearly(hx, panRef.current.x) || !nearly(hy, panRef.current.y)
+
+      if (outOfBounds) {
+        // Snap back to hard bounds with no overshoot
+        startSnapBack(hx, hy, currScale)
+      } else if (dragStartRef.current && speed > 0.002) {
+        startMomentum(v.vx, v.vy, currScale)
+      } else {
+        setPan(hx, hy, currScale, true)
       }
       dragStartRef.current = null
     }
     if (pointersRef.current.size < 2) {
       pinchRef.current.initialDistance = 0
     }
-  }, [startMomentum])
+  }, [startMomentum, applyClamp, setPan, scale, startSnapBack])
 
   const resetView = useCallback(() => {
     stopMomentum()
-    setPanX(0)
-    setPanY(0)
     setScale(initialScale)
-  }, [initialScale, stopMomentum])
+    setPan(0, 0, initialScale, true)
+  }, [initialScale, stopMomentum, setPan])
 
   const setScaleAbsolute = useCallback((s) => {
     const clamped = Math.max(minScale, Math.min(maxScale, s))
     setScale(clamped)
-  }, [minScale, maxScale])
+    const { x, y } = panRef.current
+    setPan(x, y, clamped)
+  }, [minScale, maxScale, setPan])
 
   return {
     panX,

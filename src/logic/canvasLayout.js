@@ -25,45 +25,48 @@ export function generateMedalLayout(medals) {
   types.forEach((type, typeIndex) => {
     const typeMedals = medalsByType[type] || []
     typeMedals.forEach((medal, medalIndex) => {
-      layout.medals.push({
+      const node = {
         medalId: medal.id,
         displayName: medal.displayName,
         tier: medal.tier,
         type: medal.type,
         x: typeIndex * columnWidth,
         y: medalIndex * rowHeight,
-        radius: 25
-      })
+        radius: 20,
+        yearsRequired: 0,
+      }
+      layout.medals.push(node)
 
-      // Add prerequisites as connections
+      // Add prerequisites as connections (no edge labels). Compute node-anchored yearsRequired.
+      let yearsRequired = 0
+      const sustainedYears = Array.isArray(medal.requirements)
+        ? (medal.requirements.find(r =>
+            r && r.type === 'sustained_achievement' && Number.isFinite(r.yearsOfAchievement)
+          )?.yearsOfAchievement || 0)
+        : 0
+
       if (Array.isArray(medal.prerequisites)) {
         medal.prerequisites.forEach(prereq => {
           if (prereq && prereq.type === 'medal' && prereq.medalId) {
             const fromMedal = medalById.get(prereq.medalId)
-            let label = null
             const sameType = fromMedal && fromMedal.type === medal.type
-            // 1) Edge-specific offset takes precedence
+            let candidate = 0
             if (Number.isFinite(prereq.yearOffset) && prereq.yearOffset > 0) {
-              label = `${prereq.yearOffset} år`
-            // 2) Otherwise, show sustained requirement years on same-type edges
-            } else if (sameType && Array.isArray(medal.requirements)) {
-              const sustain = medal.requirements.find(r =>
-                r && r.type === 'sustained_achievement' && Number.isFinite(r.yearsOfAchievement)
-              )
-              const years = sustain?.yearsOfAchievement
-              if (typeof years === 'number' && years > 1) {
-                label = `${years} år`
-              }
+              candidate = prereq.yearOffset
+            } else if (sameType && typeof sustainedYears === 'number' && sustainedYears > 1) {
+              candidate = sustainedYears
             }
+            if (candidate > yearsRequired) yearsRequired = candidate
+
             layout.connections.push({
               from: prereq.medalId,
               to: medal.id,
-              type: 'prerequisite',
-              label
+              type: 'prerequisite'
             })
           }
         })
       }
+      node.yearsRequired = yearsRequired
     })
   })
 
