@@ -506,7 +506,7 @@ export class LocalStorageDataManager extends DataManager {
       normalized.userId = this._ensureUniqueId(this._generateUserId())
     } else if (strategy === 'overwrite') {
       if (!normalized.userId) throw new Error('userId is required for overwrite')
-      normalized.userId = this._ensureUniqueId(normalized.userId) // ensure we don’t collide with an existing different profile suffix pattern
+      // keep provided userId; overwrite if exists, or create if missing
     } else {
       throw new Error('Invalid restore strategy')
     }
