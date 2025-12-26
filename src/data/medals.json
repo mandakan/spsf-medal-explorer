@@ -624,7 +624,6 @@
       "displayName": "Elitmärket Guld med kvistar",
       "color": "#FFD700",
       "icon": "elite-gold-wreath",
-
       "requirements_original": "Innehavare av elitmärket i guld som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för elitmärket i guld.",
       "prerequisites": [
         {
@@ -669,7 +668,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under 3 år uppnått kraven för Elitmärket i guld",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för elitmärket i guld.",
           "yearsOfAchievement": 3,
           "references": [
             {
@@ -703,7 +702,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under 3 år uppnått kraven för Elitmärket i guld",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för elitmärket i guld.",
           "yearsOfAchievement": 3,
           "references": [
             {
@@ -737,7 +736,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under 3 år uppnått kraven för Elitmärket i guld",
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för elitmärket i guld.",
           "yearsOfAchievement": 3,
           "references": [
             {
