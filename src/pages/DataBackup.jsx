@@ -87,7 +87,7 @@ export default function DataBackup() {
     try {
       const achievements = Array.isArray(currentProfile?.prerequisites) ? currentProfile.prerequisites : []
       const csv = achievementsToCSV(achievements, '1')
-      downloadCSV(csv, 'meriter.csv')
+      downloadCSV(csv, 'aktiviteter.csv')
       setCsvError(null)
     } catch (e) {
       setCsvError(e.message || 'Export av CSV misslyckades')
@@ -97,7 +97,7 @@ export default function DataBackup() {
   const handleDownloadTemplate = () => {
     try {
       const csv = exportCsvTemplate('1')
-      downloadCSV(csv, 'meriter_mall.csv')
+      downloadCSV(csv, 'aktiviteter_mall.csv')
       setCsvError(null)
     } catch (e) {
       setCsvError(e.message || 'Nedladdning av mall misslyckades')
@@ -228,14 +228,14 @@ export default function DataBackup() {
           </div>
 
           <div className="card p-4 md:col-span-2" role="region" aria-labelledby="csv-title">
-            <h2 id="csv-title" className="text-lg font-semibold text-foreground mb-3">CSV (Meriter)</h2>
+            <h2 id="csv-title" className="text-lg font-semibold text-foreground mb-3">CSV (Aktiviteter)</h2>
             <p className="text-sm text-muted-foreground mb-4">
-              Exportera, redigera och importera meriter via CSV. För säkerhet körs en förhandsgranskning först.
+              Exportera, redigera och importera aktiviteter via CSV. För säkerhet körs en förhandsgranskning först.
             </p>
 
             <div className="flex flex-wrap gap-2 mb-4">
-              <button onClick={handleExportCsv} className="btn btn-primary min-h-[44px]" aria-label="Exportera meriter som CSV">
-                Exportera meriter (CSV)
+              <button onClick={handleExportCsv} className="btn btn-primary min-h-[44px]" aria-label="Exportera aktiviteter som CSV">
+                Exportera aktiviteter (CSV)
               </button>
               <button onClick={handleDownloadTemplate} className="btn btn-secondary min-h-[44px]" aria-label="Ladda ned CSV-mall">
                 Ladda ned CSV‑mall
@@ -344,7 +344,7 @@ export default function DataBackup() {
             <details className="mt-4">
               <summary className="cursor-pointer text-sm text-foreground">Hjälp: Kolumner och arbetsflöde</summary>
               <div className="mt-2 text-sm text-muted-foreground space-y-2">
-                <p>Arbetsflöde: 1) Exportera meriter, 2) Redigera i kalkylark, 3) Importera CSV. Behåll kolumnen <code>id</code> för att uppdatera rader; nya rader kan lämna <code>id</code> tomt.</p>
+                <p>Arbetsflöde: 1) Exportera aktiviteter, 2) Redigera i kalkylark, 3) Importera CSV. Behåll kolumnen <code>id</code> för att uppdatera rader; nya rader kan lämna <code>id</code> tomt.</p>
                 <p>Tillåtna kolumner (valfria där det inte krävs): id, type, year, weaponGroup, points, date, timeSeconds, hits, competitionName, competitionType, medalType, disciplineType, weapon, score, teamName, position, eventName, notes, schema_version.</p>
                 <p>Standardmatchning: Uppdatera via ID. Alternativt kan du matcha utan ID via naturlig nyckel (avancerat).</p>
               </div>
