@@ -2431,6 +2431,7 @@
     },
     {
       "id": "air-pistol-mark-bronze",
+      "status": "reviewed",
       "type": "air_pistol_mark",
       "tier": "bronze",
       "name": "Luftpistolmärket",
@@ -2454,6 +2455,7 @@
     },
     {
       "id": "air-pistol-mark-silver",
+      "status": "reviewed",
       "type": "air_pistol_mark",
       "tier": "silver",
       "name": "Luftpistolmärket",
@@ -2477,6 +2479,7 @@
     },
     {
       "id": "air-pistol-mark-gold",
+      "status": "reviewed",
       "type": "air_pistol_mark",
       "tier": "gold",
       "name": "Luftpistolmärket",
@@ -2500,6 +2503,7 @@
     },
     {
       "id": "air-pistol-mark-annual",
+      "status": "reviewed",
       "type": "air_pistol_mark",
       "tier": "annual",
       "name": "Årtalsmärke luftpistol",
@@ -2533,6 +2537,7 @@
     },
     {
       "id": "air-pistol-mark-annual-star-1",
+      "status": "reviewed",
       "type": "air_pistol_mark",
       "tier": "annual_star_1",
       "name": "Årtalsmärke luftpistol",
@@ -2566,6 +2571,7 @@
     },
     {
       "id": "air-pistol-mark-annual-star-2",
+      "status": "reviewed",
       "type": "air_pistol_mark",
       "tier": "annual_star_2",
       "name": "Årtalsmärke luftpistol",
@@ -2599,6 +2605,7 @@
     },
     {
       "id": "air-pistol-mark-annual-star-3",
+      "status": "reviewed",
       "type": "air_pistol_mark",
       "tier": "annual_star_3",
       "name": "Årtalsmärke luftpistol",
@@ -2632,6 +2639,7 @@
     },
     {
       "id": "air-pistol-mark-annual-wreath",
+      "status": "reviewed",
       "type": "air_pistol_mark",
       "tier": "annual_wreath",
       "name": "Årtalsmärke luftpistol",
@@ -2665,6 +2673,7 @@
     },
     {
       "id": "air-pistol-mark-annual-wreath-star-1",
+      "status": "reviewed",
       "type": "air_pistol_mark",
       "tier": "annual_wreath_star_1",
       "name": "Årtalsmärke luftpistol",
@@ -2698,6 +2707,7 @@
     },
     {
       "id": "air-pistol-mark-annual-wreath-star-2",
+      "status": "reviewed",
       "type": "air_pistol_mark",
       "tier": "annual_wreath_star_2",
       "name": "Årtalsmärke luftpistol",
@@ -2731,6 +2741,7 @@
     },
     {
       "id": "air-pistol-mark-annual-wreath-star-3",
+      "status": "reviewed",
       "type": "air_pistol_mark",
       "tier": "annual_wreath_star_3",
       "name": "Årtalsmärke luftpistol",
