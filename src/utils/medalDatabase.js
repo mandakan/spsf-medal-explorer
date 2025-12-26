@@ -61,19 +61,9 @@ export function validatePrerequisites(data) {
 }
 
 /**
- * Attempt to load the complete dataset; fall back to base medals.json.
- * Consumers can use this in a provider to decide which dataset to expose.
+ * Load the normalized medals dataset (name + tierName).
  */
 export async function loadBestAvailableData() {
-  // Vite/webpack will inline JSON imports; dynamic import guarded with catch.
-  try {
-    const complete = await import('../data/complete.json')
-    if (Array.isArray(complete.default?.medals) && complete.default.medals.length > 0) {
-      return complete.default
-    }
-  } catch {
-    // ignore
-  }
   const base = await import('../data/medals.json')
   return base.default || base
 }
