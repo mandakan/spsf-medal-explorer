@@ -27,8 +27,6 @@ export function generateMedalLayout(medals) {
     typeMedals.forEach((medal, medalIndex) => {
       const node = {
         medalId: medal.id,
-        displayName: medal.displayName,
-        tier: medal.tier,
         type: medal.type,
         x: typeIndex * columnWidth,
         y: medalIndex * rowHeight,

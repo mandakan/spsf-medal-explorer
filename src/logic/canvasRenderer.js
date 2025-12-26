@@ -219,10 +219,24 @@ export function drawMedalNode(ctx, x, y, radius, medal, status, scale, forceLabe
     const maxWidth = 180
     const maxLines = forceLabel ? 3 : (scale >= 1.3 ? 3 : 2)
     const tier = typeof medal?.tierName === 'string' ? medal.tierName.trim() : ''
+
+    // Ensure the base name occupies a single header line if a tier is present; otherwise it can wrap.
+    const clampOneLine = (text) => {
+      if (!text) return ''
+      if (ctx.measureText(text).width <= maxWidth) return text
+      const ellipsis = '…'
+      let t = text
+      while (t.length && ctx.measureText(t + ellipsis).width > maxWidth) {
+        t = t.slice(0, -1)
+      }
+      return t.length ? t + ellipsis : text
+    }
+
     let lines
     if (tier) {
+      const header = clampOneLine(baseName)
       const restLines = wrapText(ctx, tier, maxWidth, Math.max(0, maxLines - 1))
-      lines = [baseName, ...restLines]
+      lines = [header, ...restLines]
     } else {
       lines = wrapText(ctx, baseName, maxWidth, maxLines)
     }
