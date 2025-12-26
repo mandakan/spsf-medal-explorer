@@ -100,7 +100,7 @@ export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3, opts 
     setPanY(cy)
     panRef.current = { x: cx, y: cy }
   }, [applyClamp])
-  const startMomentum = useCallback((vx, vy) => {
+  const startMomentum = useCallback((vx, vy, sEff) => {
     if (!isFinite(vx) || !isFinite(vy)) return
     if (getReduceMotion()) return
     stopMomentum()
@@ -108,6 +108,7 @@ export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3, opts 
     s.vx = vx
     s.vy = vy
     s.lastT = typeof performance !== 'undefined' ? performance.now() : Date.now()
+    const eff = Math.max(0.001, sEff ?? (scaleRef.current || initialScale))
     const step = (t) => {
       const prevT = s.lastT || t
       const dt = Math.max(1, t - prevT) // ms
@@ -117,15 +118,14 @@ export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3, opts 
       s.vx *= decay
       s.vy *= decay
       // Integrate in world units (vx, vy are world units per ms)
-      const currScale = scaleRef.current || initialScale
       const nx = panRef.current.x + s.vx * dt
       const ny = panRef.current.y + s.vy * dt
-      setPan(nx, ny, currScale)
+      setPan(nx, ny, eff)
       if (Math.hypot(s.vx, s.vy) < 0.001) {
         stopMomentum()
         // Snap back inside hard bounds at rest
-        const [sx, sy] = applyClamp(panRef.current.x, panRef.current.y, currScale, true)
-        setPan(sx, sy, currScale, true)
+        const [sx, sy] = applyClamp(panRef.current.x, panRef.current.y, eff, true)
+        setPan(sx, sy, eff, true)
         return
       }
       s.raf = requestAnimationFrame(step)
@@ -262,11 +262,11 @@ export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3, opts 
       // Single-finger drag ended
       const v = inertiaRef.current
       const speed = Math.hypot(v.vx, v.vy)
+      const currScale = Math.max(0.001, effectiveScale ?? (scaleRef.current || scale))
       if (dragStartRef.current && speed > 0.002) {
-        startMomentum(v.vx, v.vy)
+        startMomentum(v.vx, v.vy, currScale)
       } else {
         // Snap back to hard bounds if no momentum starts
-        const currScale = Math.max(0.001, effectiveScale ?? (scaleRef.current || scale))
         const [sx, sy] = applyClamp(panRef.current.x, panRef.current.y, currScale, true)
         setPan(sx, sy, currScale, true)
       }
