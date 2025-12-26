@@ -402,13 +402,13 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
       e.preventDefault()
     }
     if (e.key === 'ArrowLeft') {
-      handlePointerMove({ syntheticPan: { dx: -step, dy: 0 } })
+      handlePointerMove({ syntheticPan: { dx: -step, dy: 0 } }, effScale)
     } else if (e.key === 'ArrowRight') {
-      handlePointerMove({ syntheticPan: { dx: step, dy: 0 } })
+      handlePointerMove({ syntheticPan: { dx: step, dy: 0 } }, effScale)
     } else if (e.key === 'ArrowUp') {
-      handlePointerMove({ syntheticPan: { dx: 0, dy: -step } })
+      handlePointerMove({ syntheticPan: { dx: 0, dy: -step } }, effScale)
     } else if (e.key === 'ArrowDown') {
-      handlePointerMove({ syntheticPan: { dx: 0, dy: step } })
+      handlePointerMove({ syntheticPan: { dx: 0, dy: step } }, effScale)
     }
   }, [getEffectiveTransform, handlePointerMove])
 

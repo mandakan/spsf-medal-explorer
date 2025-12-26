@@ -49,25 +49,34 @@ export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3, opts 
     if (!opts || !getBounds || !rect?.width) return null
     const b = getBounds()
     const sEff = Math.max(0.001, s)
-    const halfW = rect.width / (2 * sEff)
-    const halfH = rect.height / (2 * sEff)
+
+    // Viewport size in world units at current effective scale
+    const viewW = rect.width / sEff
+    const viewH = rect.height / sEff
+
+    // Paddings converted to world units
     const padL = (contentPaddingPx?.left || 0) / sEff
     const padR = (contentPaddingPx?.right || 0) / sEff
     const padT = (contentPaddingPx?.top || 0) / sEff
     const padB = (contentPaddingPx?.bottom || 0) / sEff
-    const minWorldX = b.minX - padL
-    const maxWorldX = b.maxX + padR
-    const minWorldY = b.minY - padT
-    const maxWorldY = b.maxY + padB
-    let minX = -maxWorldX + halfW
-    let maxX = -minWorldX - halfW
-    let minY = -maxWorldY + halfH
-    let maxY = -minWorldY - halfH
-    // If content is smaller than viewport, lock to center on that axis
-    if (minX > maxX) { const mid = (minX + maxX) / 2; minX = maxX = mid }
-    if (minY > maxY) { const mid = (minY + maxY) / 2; minY = maxY = mid }
+
+    // Content size in world units
+    const contentW = Math.max(0, (b.maxX - b.minX))
+    const contentH = Math.max(0, (b.maxY - b.minY))
+
+    // Available interactive pan space in world units.
+    // pan = 0 means content's top-left (with padding) is aligned to viewport's top-left.
+    const availX = viewW - (contentW + padL + padR)
+    const availY = viewH - (contentH + padT + padB)
+
+    // Pan-space limits
+    const minX = Math.min(0, availX)
+    const maxX = Math.max(0, availX)
+    const minY = Math.min(0, availY)
+    const maxY = Math.max(0, availY)
+
     return { minX, maxX, minY, maxY }
-  }, [getBounds, opts])
+  }, [getBounds, opts, contentPaddingPx])
 
   // Clamp pan to limits with optional rubberband overscroll (in screen px)
   const applyClamp = useCallback((x, y, s, hard = false, rect = lastRectRef.current) => {
