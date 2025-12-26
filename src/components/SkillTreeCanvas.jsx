@@ -265,7 +265,6 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     const el = canvasRef.current
     if (!el) return
     // Synchronize derived overlay with external canvas transform (canvas size + base fit).
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setBadgeData(getYearsBadgeData(el))
   }, [getYearsBadgeData, panX, panY, scale, hoveredMedal, selectedMedal, layout])
 
