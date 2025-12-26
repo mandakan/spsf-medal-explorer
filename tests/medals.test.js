@@ -15,8 +15,10 @@ function collectRequirementLeaves(spec, acc = []) {
     return acc
   }
 
-  // Common container
+  // Common containers
   if (Array.isArray(spec.items)) collectRequirementLeaves(spec.items, acc)
+  if (Array.isArray(spec.and)) collectRequirementLeaves(spec.and, acc)
+  if (Array.isArray(spec.or)) collectRequirementLeaves(spec.or, acc)
 
   // Keyed by type names
   Object.entries(spec).forEach(([key, val]) => {
