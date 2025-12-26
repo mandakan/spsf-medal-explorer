@@ -13,13 +13,13 @@ jest.mock('react-router-dom', () => {
 })
 
 // Mock providers to pass through children for routing isolation in tests
-jest.mock('../src/contexts/MedalContext', () => ({
+jest.mock('../src/contexts/MedalContext.jsx', () => ({
   MedalProvider: ({ children }) => children,
 }))
-jest.mock('../src/contexts/ProfileContext', () => ({
+jest.mock('../src/contexts/ProfileContext.jsx', () => ({
   ProfileProvider: ({ children }) => children,
 }))
-jest.mock('../src/contexts/CalculatorContext', () => ({
+jest.mock('../src/contexts/CalculatorContext.jsx', () => ({
   CalculatorProvider: ({ children }) => children,
 }))
 

@@ -15,7 +15,7 @@ describe('Medal Database', () => {
   test('finds medal by id', () => {
     const medal = medalDb.getMedalById('pistol-mark-bronze')
     expect(medal).toBeDefined()
-    expect(medal.displayName).toBe('Pistolskyttemärket - Brons')
+    expect(medal.displayName).toBe('Pistolskyttemärket Brons')
   })
 
   test('bronze pistol mark has no prerequisites', () => {
