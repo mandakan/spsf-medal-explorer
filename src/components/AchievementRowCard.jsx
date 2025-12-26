@@ -5,6 +5,7 @@ export default function AchievementRowCard({ row, index, onEdit, onRemove }) {
     switch (row.type) {
       case 'precision_series': return `Points: ${row.points ?? '—'}`
       case 'application_series': return `Time: ${row.timeSeconds ?? '—'} • Hits: ${row.hits ?? '—'}`
+      case 'standard_medal': return `${row.disciplineType || '—'} • ${row.medalType || '—'}`
       case 'competition_result': return `${row.competitionType || '—'} • ${row.medalType || '—'}`
       case 'qualification_result': return `Weapon: ${row.weapon || '—'} • Score: ${row.score || '—'}`
       case 'team_event': return `Team: ${row.teamName || '—'} • Pos: ${row.position || '—'}`

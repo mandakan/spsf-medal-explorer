@@ -11,6 +11,7 @@ export default function AchievementDialog({
   mode = 'batch',
   submitLabel,
   WG = ['A', 'B', 'C', 'R'],
+  DISCIPLINE_TYPES = ['field', 'precision', 'military_fast'],
   COMP_TYPES = ['national', 'regional/landsdels', 'crewmate/krets', 'championship'],
   MEDAL_TYPES = ['bronze', 'silver', 'gold'],
   APP_TIME_OPTIONS = [
@@ -43,6 +44,7 @@ export default function AchievementDialog({
           mode={mode}
           submitLabel={submitLabel}
           WG={WG}
+          DISCIPLINE_TYPES={DISCIPLINE_TYPES}
           COMP_TYPES={COMP_TYPES}
           MEDAL_TYPES={MEDAL_TYPES}
           APP_TIME_OPTIONS={APP_TIME_OPTIONS}
@@ -59,6 +61,7 @@ function FormContent({
   mode = 'batch',
   submitLabel,
   WG,
+  DISCIPLINE_TYPES,
   COMP_TYPES,
   MEDAL_TYPES,
   APP_TIME_OPTIONS,
@@ -72,8 +75,8 @@ function FormContent({
     return (row) => {
       const errs = []
       const y = Number(row.year)
-      if (!Number.isFinite(y) || y < 2000 || y > currentYear) {
-        errs.push(`Året måste vara mellan 2000 och ${currentYear}`)
+      if (!Number.isFinite(y) || y < 1900 || y > currentYear) {
+        errs.push(`Året måste vara mellan 1900 och ${currentYear}`)
       }
       if (!WG.includes(row.weaponGroup)) {
         errs.push('Ogiltig grupp (A, B, C, R)')
@@ -122,7 +125,7 @@ function FormContent({
       }
       return errs
     }
-  }, [WG, COMP_TYPES, MEDAL_TYPES, APP_TIME_OPTIONS])
+  }, [WG, DISCIPLINE_TYPES, COMP_TYPES, MEDAL_TYPES, APP_TIME_OPTIONS])
 
   const onSubmit = (addAnother = false) => {
     const errs = validate(form)
@@ -144,6 +147,7 @@ function FormContent({
         points: '',
         competitionType: '',
         medalType: '',
+        disciplineType: '',
         competitionName: '',
         weapon: '',
         score: '',
@@ -166,7 +170,7 @@ function FormContent({
           <input
             id="br-year"
             type="number"
-            min="2000"
+            min="1900"
             max={currentYear}
             className="input py-3"
             value={form.year ?? currentYear}
@@ -199,6 +203,7 @@ function FormContent({
         >
           <option value="precision_series">Precisionsserier</option>
           <option value="application_series">Tillämpningsserier</option>
+          <option value="standard_medal">Standardmedalj</option>
           <option value="competition_result">Tävlingsresultat</option>
           <option value="qualification_result">Kvalificering</option>
           <option value="team_event">Lag-eventt</option>
@@ -261,6 +266,45 @@ function FormContent({
               value={form.hits ?? ''}
               onChange={(e) => setField('hits', e.target.value)}
               aria-invalid={errors.list?.some(e => /hits?/i.test(e)) || undefined}
+            />
+          </div>
+        </div>
+      )}
+
+      {form.type === 'standard_medal' && (
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label htmlFor="br-ctype" className="field-label mb-2">Gren</label>
+            <select
+              id="br-ctype"
+              className="select py-3"
+              value={form.disciplineType ?? ''}
+              onChange={(e) => setField('disciplineType', e.target.value)}
+            >
+              <option value="">Välj disciplin...</option>
+              {DISCIPLINE_TYPES.map(o => <option key={o} value={o}>{o}</option>)}
+            </select>
+          </div>
+          <div>
+            <label htmlFor="br-mtype" className="field-label mb-2">Medalj</label>
+            <select
+              id="br-mtype"
+              className="select py-3"
+              value={form.medalType ?? ''}
+              onChange={(e) => setField('medalType', e.target.value)}
+            >
+              <option value="">Välj medalj...</option>
+              {MEDAL_TYPES.map(o => <option key={o} value={o}>{o}</option>)}
+            </select>
+          </div>
+          <div>
+            <label htmlFor="br-cname" className="field-label mb-2">Namn (valfritt)</label>
+            <input
+              id="br-cname"
+              type="text"
+              className="input py-3"
+              value={form.competitionName ?? ''}
+              onChange={(e) => setField('competitionName', e.target.value)}
             />
           </div>
         </div>

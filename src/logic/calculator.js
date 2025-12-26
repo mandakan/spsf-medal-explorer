@@ -557,6 +557,9 @@ export class MedalCalculator {
       case 'championship_competition':
         leaf = this.checkChampionshipRequirement(req, -1, opts)
         break
+      case 'standard_medal':
+        leaf = this.checkStandardMedalRequirement(req, -1, opts)
+        break
       default:
         leaf = {
           type: req.type,
@@ -699,12 +702,12 @@ export class MedalCalculator {
     }
   }
 
-  checkChampionshipRequirement(req, index, opts = {}) {
-    const achievements = (this.profile.prerequisites || []).filter(a => a.type === 'competition_result')
+  checkStandardMedalRequirement(req, index, opts = {}) {
+    const achievements = (this.profile.prerequisites || []).filter(a => a.type === 'standard_medal')
 
     let list = achievements
-    if (req.competitionType) {
-      list = list.filter(a => a.competitionType === req.competitionType)
+    if (req.discplineType) {
+      list = list.filter(a => a.disciplineType === req.disciplineType)
     }
     if (req.medalTier) {
       list = list.filter(a => a.medalType === req.medalTier)
@@ -724,7 +727,7 @@ export class MedalCalculator {
     const met = progress.current >= required
 
     return {
-      type: 'championship_competition',
+      type: 'standard_medal',
       index,
       isMet: met,
       progress,

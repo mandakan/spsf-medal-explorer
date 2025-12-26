@@ -103,9 +103,11 @@ export function useAchievementHistory() {
         notes: row.notes || '',
         // precision_series
         points: row.type === 'precision_series' ? toNum(row.points) : undefined,
+        // standard_medal
+        disciplineType: row.type === 'standard_medal' ? (row.disciplineType || '') : undefined,
+        medalType: (row.type === 'standard_medal' || row.type === 'competition_result' )? (row.medalType || '') : undefined,
         // competition_result
         competitionType: row.type === 'competition_result' ? (row.competitionType || '') : undefined,
-        medalType: row.type === 'competition_result' ? (row.medalType || '') : undefined,
         // qualification_result
         weapon: row.type === 'qualification_result' ? (row.weapon || '') : undefined,
         score: row.type === 'qualification_result' ? toNum(row.score) : undefined,
