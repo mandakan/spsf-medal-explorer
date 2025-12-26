@@ -6,8 +6,8 @@
       "status": "reviewed",
       "type": "pistol_mark",
       "tier": "bronze",
-      "name": "Pistolskyttemärket - Brons",
-      "displayName": "Pistolskyttemärket - Brons",
+      "name": "Pistolskyttemärket",
+      "displayName": "Pistolskyttemärket Brons",
       "color": "#CD7F32",
       "icon": "medal-bronze",
       "prerequisites": [],
@@ -20,9 +20,15 @@
           "timeWindowYears": 1,
           "seriesType": "precision",
           "pointThresholds": {
-            "A": { "min": 32 },
-            "B": { "min": 33 },
-            "C": { "min": 34 }
+            "A": {
+              "min": 32
+            },
+            "B": {
+              "min": 33
+            },
+            "C": {
+              "min": 34
+            }
           },
           "ageCategories": [
             {
@@ -31,9 +37,15 @@
               "ageMax": 54,
               "description": "Under 55 år",
               "pointThresholds": {
-                "A": { "min": 32 },
-                "B": { "min": 33 },
-                "C": { "min": 34 }
+                "A": {
+                  "min": 32
+                },
+                "B": {
+                  "min": 33
+                },
+                "C": {
+                  "min": 34
+                }
               },
               "timeSeconds": 17,
               "hitsRequired": 6
@@ -44,9 +56,15 @@
               "ageMax": 64,
               "description": "55 till 64 år",
               "pointThresholds": {
-                "A": { "min": 31 },
-                "B": { "min": 32 },
-                "C": { "min": 33 }
+                "A": {
+                  "min": 31
+                },
+                "B": {
+                  "min": 32
+                },
+                "C": {
+                  "min": 33
+                }
               },
               "timeSeconds": 17,
               "hitsRequired": 6
@@ -57,9 +75,15 @@
               "ageMax": 999,
               "description": "65 år och äldre",
               "pointThresholds": {
-                "A": { "min": 30 },
-                "B": { "min": 31 },
-                "C": { "min": 32 }
+                "A": {
+                  "min": 30
+                },
+                "B": {
+                  "min": 31
+                },
+                "C": {
+                  "min": 32
+                }
               },
               "timeSeconds": 17,
               "hitsRequired": 6
@@ -72,10 +96,22 @@
           "minAchievements": 3,
           "timeWindowYears": 1,
           "thresholds": {
-            "A": { "minHits": 5, "maxTimeSeconds": 60 },
-            "B": { "minHits": 5, "maxTimeSeconds": 60 },
-            "C": { "minHits": 5, "maxTimeSeconds": 60 },
-            "R": { "minHits": 5, "maxTimeSeconds": 60 }
+            "A": {
+              "minHits": 5,
+              "maxTimeSeconds": 60
+            },
+            "B": {
+              "minHits": 5,
+              "maxTimeSeconds": 60
+            },
+            "C": {
+              "minHits": 5,
+              "maxTimeSeconds": 60
+            },
+            "R": {
+              "minHits": 5,
+              "maxTimeSeconds": 60
+            }
           }
         }
       ],
@@ -89,15 +125,16 @@
         "military-match-mark-bronze"
       ],
       "yearIntroduced": 1900,
-      "sortOrder": 1
+      "sortOrder": 1,
+      "tierName": "Brons"
     },
     {
       "id": "pistol-mark-silver",
       "status": "reviewed",
       "type": "pistol_mark",
       "tier": "silver",
-      "name": "Pistolskyttemärket - Silver",
-      "displayName": "Pistolskyttemärket - Silver",
+      "name": "Pistolskyttemärket",
+      "displayName": "Pistolskyttemärket Silver",
       "color": "#C0C0C0",
       "icon": "medal-silver",
       "requirements_original": "1. att i 3 precisionsserier mot Pistoltavla 25 m precision 25 m avstånd, 5 skott\n5 minuters skjuttid ha uppnått i varje serie minst:\n\n| Märkesvalör | Grupp A | Grupp B | Grupp C |\n| - | - | - | - |\n| Brons | 32 | 33 | 34 |\n| Silver | 38 | 39 | 40 |\n| Guld | 43 | 45 | 46 |\n\n2. att i 3 tillämpningsserier\nantingen\n- mot B 100 figur, 50 m av stånd, 6 skott, utgångsställning stående 45°\n- eller mot 1/6 rak eller cirkelmål C 30, 25 m av stånd, 6 skott utgångsställning stående 45°\n\nha erhållit i varje serie:\n\n| Märkesvalör | Antal träff | Skjuttid |\n| - | - | - |\n| Brons | 5 | 60 sek |\n| Silver | 6 | 40 sek |\n| Guld | 6 | A och R 17 sek, B och C 15 sek |\n- eller erövrat minst en standardmedalj i fältskjutning.",
@@ -117,9 +154,15 @@
           "minAchievements": 3,
           "timeWindowYears": 1,
           "pointThresholds": {
-            "A": { "min": 38 },
-            "B": { "min": 39 },
-            "C": { "min": 40 }
+            "A": {
+              "min": 38
+            },
+            "B": {
+              "min": 39
+            },
+            "C": {
+              "min": 40
+            }
           },
           "ageCategories": [
             {
@@ -128,9 +171,15 @@
               "ageMax": 54,
               "description": "Under 55 år",
               "pointThresholds": {
-                "A": { "min": 38 },
-                "B": { "min": 39 },
-                "C": { "min": 40 }
+                "A": {
+                  "min": 38
+                },
+                "B": {
+                  "min": 39
+                },
+                "C": {
+                  "min": 40
+                }
               },
               "timeSeconds": 17,
               "hitsRequired": 6
@@ -141,9 +190,15 @@
               "ageMax": 64,
               "description": "55 till 64 år",
               "pointThresholds": {
-                "A": { "min": 37 },
-                "B": { "min": 38 },
-                "C": { "min": 39 }
+                "A": {
+                  "min": 37
+                },
+                "B": {
+                  "min": 38
+                },
+                "C": {
+                  "min": 39
+                }
               },
               "timeSeconds": 17,
               "hitsRequired": 6
@@ -154,9 +209,15 @@
               "ageMax": 999,
               "description": "65 år och äldre",
               "pointThresholds": {
-                "A": { "min": 36 },
-                "B": { "min": 37 },
-                "C": { "min": 38 }
+                "A": {
+                  "min": 36
+                },
+                "B": {
+                  "min": 37
+                },
+                "C": {
+                  "min": 38
+                }
               },
               "timeSeconds": 17,
               "hitsRequired": 6
@@ -169,24 +230,37 @@
           "minAchievements": 3,
           "timeWindowYears": 1,
           "thresholds": {
-            "A": { "minHits": 6, "maxTimeSeconds": 40 },
-            "B": { "minHits": 6, "maxTimeSeconds": 40 },
-            "C": { "minHits": 6, "maxTimeSeconds": 40 },
-            "R": { "minHits": 6, "maxTimeSeconds": 40 }
+            "A": {
+              "minHits": 6,
+              "maxTimeSeconds": 40
+            },
+            "B": {
+              "minHits": 6,
+              "maxTimeSeconds": 40
+            },
+            "C": {
+              "minHits": 6,
+              "maxTimeSeconds": 40
+            },
+            "R": {
+              "minHits": 6,
+              "maxTimeSeconds": 40
+            }
           }
         }
       ],
       "unlocksFollowingMedals": ["pistol-mark-gold"],
       "yearIntroduced": 1900,
-      "sortOrder": 2
+      "sortOrder": 2,
+      "tierName": "Silver"
     },
     {
       "id": "pistol-mark-gold",
       "status": "reviewed",
       "type": "pistol_mark",
       "tier": "gold",
-      "name": "Pistolskyttemärket - Guld",
-      "displayName": "Pistolskyttemärket - Guld",
+      "name": "Pistolskyttemärket",
+      "displayName": "Pistolskyttemärket Guld",
       "color": "#FFD700",
       "icon": "medal-gold",
       "requirements_original": "1. att i 3 precisionsserier mot Pistoltavla 25 m precision 25 m avstånd, 5 skott\n5 minuters skjuttid ha uppnått i varje serie minst:\n\n| Märkesvalör | Grupp A | Grupp B | Grupp C |\n| - | - | - | - |\n| Brons | 32 | 33 | 34 |\n| Silver | 38 | 39 | 40 |\n| Guld | 43 | 45 | 46 |\n\n2. att i 3 tillämpningsserier\nantingen\n- mot B 100 figur, 50 m av stånd, 6 skott, utgångsställning stående 45°\n- eller mot 1/6 rak eller cirkelmål C 30, 25 m av stånd, 6 skott utgångsställning stående 45°\n\nha erhållit i varje serie:\n\n| Märkesvalör | Antal träff | Skjuttid |\n| - | - | - |\n| Brons | 5 | 60 sek |\n| Silver | 6 | 40 sek |\n| Guld | 6 | A och R 17 sek, B och C 15 sek |\n- eller erövrat minst en standardmedalj i fältskjutning.",
@@ -207,9 +281,15 @@
           "minAchievements": 3,
           "timeWindowYears": 1,
           "pointThresholds": {
-            "A": { "min": 43 },
-            "B": { "min": 44 },
-            "C": { "min": 46 }
+            "A": {
+              "min": 43
+            },
+            "B": {
+              "min": 44
+            },
+            "C": {
+              "min": 46
+            }
           },
           "ageCategories": [
             {
@@ -218,9 +298,15 @@
               "ageMax": 54,
               "description": "Under 55 år",
               "pointThresholds": {
-                "A": { "min": 43 },
-                "B": { "min": 44 },
-                "C": { "min": 46 }
+                "A": {
+                  "min": 43
+                },
+                "B": {
+                  "min": 44
+                },
+                "C": {
+                  "min": 46
+                }
               },
               "timeSeconds": 17,
               "hitsRequired": 6
@@ -231,9 +317,15 @@
               "ageMax": 64,
               "description": "55 till 64 år",
               "pointThresholds": {
-                "A": { "min": 42 },
-                "B": { "min": 43 },
-                "C": { "min": 45 }
+                "A": {
+                  "min": 42
+                },
+                "B": {
+                  "min": 43
+                },
+                "C": {
+                  "min": 45
+                }
               },
               "timeSeconds": 17,
               "hitsRequired": 6
@@ -244,9 +336,15 @@
               "ageMax": 999,
               "description": "65 år och äldre",
               "pointThresholds": {
-                "A": { "min": 41 },
-                "B": { "min": 42 },
-                "C": { "min": 44 }
+                "A": {
+                  "min": 41
+                },
+                "B": {
+                  "min": 42
+                },
+                "C": {
+                  "min": 44
+                }
               },
               "timeSeconds": 17,
               "hitsRequired": 6
@@ -259,10 +357,22 @@
           "minAchievements": 3,
           "timeWindowYears": 1,
           "thresholds": {
-            "A": { "minHits": 6, "maxTimeSeconds": 17 },
-            "B": { "minHits": 6, "maxTimeSeconds": 15 },
-            "C": { "minHits": 6, "maxTimeSeconds": 15 },
-            "R": { "minHits": 6, "maxTimeSeconds": 17 }
+            "A": {
+              "minHits": 6,
+              "maxTimeSeconds": 17
+            },
+            "B": {
+              "minHits": 6,
+              "maxTimeSeconds": 15
+            },
+            "C": {
+              "minHits": 6,
+              "maxTimeSeconds": 15
+            },
+            "R": {
+              "minHits": 6,
+              "maxTimeSeconds": 17
+            }
           }
         }
       ],
@@ -272,15 +382,16 @@
         "lower-annual-mark-star-1"
       ],
       "yearIntroduced": 1900,
-      "sortOrder": 3
+      "sortOrder": 3,
+      "tierName": "Guld"
     },
     {
       "id": "elite-mark-bronze",
       "status": "reviewed",
       "type": "elite_mark",
       "tier": "bronze",
-      "name": "Elitmärket - Brons",
-      "displayName": "Elitmärket - Brons",
+      "name": "Elitmärket",
+      "displayName": "Elitmärket Brons",
       "color": "#CD7F32",
       "icon": "elite-bronze",
       "requirements_original": "1. att i 5 precisionsserier enligt bestämmelserna för pistolskyttemärket ha uppnått följande poäng:\n\n| Märkesvalör | Poäng per serie |\n| - | - |\n| Brons | 45 |\n| Silver | 48 |\n| Guld | 49 |\n2. att i fem 5-skottsserier mot Snabbpistoltavla 25 meter, tid 3 sek per skott enligt bestämmelserna för snabbskjutning, ha uppfyllt följande fordring ar:\n\n| Märkesvalör | Poäng per serie |\n| - | - |\n| Brons | 45 |\n| Silver | 48 |\n| Guld | 49 |\n\nEndast ett märke kan under året erövras av skytt och märke av högre grad endast av den, som förut innehar märke av närmast lägre grad.",
@@ -298,10 +409,18 @@
           "minAchievements": 5,
           "timeWindowYears": 1,
           "pointThresholds": {
-            "A": { "min": 45 },
-            "B": { "min": 45 },
-            "C": { "min": 45 },
-            "R": { "min": 45 }
+            "A": {
+              "min": 45
+            },
+            "B": {
+              "min": 45
+            },
+            "C": {
+              "min": 45
+            },
+            "R": {
+              "min": 45
+            }
           }
         },
         {
@@ -310,24 +429,33 @@
           "minAchievements": 5,
           "timeWindowYears": 1,
           "pointThresholds": {
-            "A": { "min": 45 },
-            "B": { "min": 45 },
-            "C": { "min": 45 },
-            "R": { "min": 45 }
+            "A": {
+              "min": 45
+            },
+            "B": {
+              "min": 45
+            },
+            "C": {
+              "min": 45
+            },
+            "R": {
+              "min": 45
+            }
           }
         }
       ],
       "unlocksFollowingMedals": ["elite-mark-silver"],
       "yearIntroduced": 1900,
-      "sortOrder": 10
+      "sortOrder": 10,
+      "tierName": "Brons"
     },
     {
       "id": "elite-mark-silver",
       "status": "reviewed",
       "type": "elite_mark",
       "tier": "silver",
-      "name": "Elitmärket - Silver",
-      "displayName": "Elitmärket - Silver",
+      "name": "Elitmärket",
+      "displayName": "Elitmärket Silver",
       "color": "#C0C0C0",
       "icon": "elite-silver",
       "requirements_original": "1. att i 5 precisionsserier enligt bestämmelserna för pistolskyttemärket ha uppnått följande poäng:\n\n| Märkesvalör | Poäng per serie |\n| - | - |\n| Brons | 45 |\n| Silver | 48 |\n| Guld | 49 |\n2. att i fem 5-skottsserier mot Snabbpistoltavla 25 meter, tid 3 sek per skott enligt bestämmelserna för snabbskjutning, ha uppfyllt följande fordring ar:\n\n| Märkesvalör | Poäng per serie |\n| - | - |\n| Brons | 45 |\n| Silver | 48 |\n| Guld | 49 |\n\nEndast ett märke kan under året erövras av skytt och märke av högre grad endast av den, som förut innehar märke av närmast lägre grad.",
@@ -346,10 +474,18 @@
           "minAchievements": 5,
           "timeWindowYears": 1,
           "pointThresholds": {
-            "A": { "min": 48 },
-            "B": { "min": 48 },
-            "C": { "min": 48 },
-            "R": { "min": 48 }
+            "A": {
+              "min": 48
+            },
+            "B": {
+              "min": 48
+            },
+            "C": {
+              "min": 48
+            },
+            "R": {
+              "min": 48
+            }
           }
         },
         {
@@ -358,24 +494,33 @@
           "minAchievements": 5,
           "timeWindowYears": 1,
           "pointThresholds": {
-            "A": { "min": 48 },
-            "B": { "min": 48 },
-            "C": { "min": 48 },
-            "R": { "min": 48 }
+            "A": {
+              "min": 48
+            },
+            "B": {
+              "min": 48
+            },
+            "C": {
+              "min": 48
+            },
+            "R": {
+              "min": 48
+            }
           }
         }
       ],
       "unlocksFollowingMedals": ["elite-mark-gold"],
       "yearIntroduced": 1900,
-      "sortOrder": 11
+      "sortOrder": 11,
+      "tierName": "Silver"
     },
     {
       "id": "elite-mark-gold",
       "status": "reviewed",
       "type": "elite_mark",
       "tier": "gold",
-      "name": "Elitmärket - Guld",
-      "displayName": "Elitmärket - Guld",
+      "name": "Elitmärket",
+      "displayName": "Elitmärket Guld",
       "color": "#FFD700",
       "icon": "elite-gold",
       "requirements_original": "1. att i 5 precisionsserier enligt bestämmelserna för pistolskyttemärket ha uppnått följande poäng:\n\n| Märkesvalör | Poäng per serie |\n| - | - |\n| Brons | 45 |\n| Silver | 48 |\n| Guld | 49 |\n2. att i fem 5-skottsserier mot Snabbpistoltavla 25 meter, tid 3 sek per skott enligt bestämmelserna för snabbskjutning, ha uppfyllt följande fordring ar:\n\n| Märkesvalör | Poäng per serie |\n| - | - |\n| Brons | 45 |\n| Silver | 48 |\n| Guld | 49 |\n\nEndast ett märke kan under året erövras av skytt och märke av högre grad endast av den, som förut innehar märke av närmast lägre grad.",
@@ -394,10 +539,18 @@
           "minAchievements": 5,
           "timeWindowYears": 1,
           "pointThresholds": {
-            "A": { "min": 49 },
-            "B": { "min": 49 },
-            "C": { "min": 49 },
-            "R": { "min": 49 }
+            "A": {
+              "min": 49
+            },
+            "B": {
+              "min": 49
+            },
+            "C": {
+              "min": 49
+            },
+            "R": {
+              "min": 49
+            }
           }
         },
         {
@@ -406,24 +559,33 @@
           "minAchievements": 5,
           "timeWindowYears": 1,
           "pointThresholds": {
-            "A": { "min": 49 },
-            "B": { "min": 49 },
-            "C": { "min": 49 },
-            "R": { "min": 49 }
+            "A": {
+              "min": 49
+            },
+            "B": {
+              "min": 49
+            },
+            "C": {
+              "min": 49
+            },
+            "R": {
+              "min": 49
+            }
           }
         }
       ],
       "unlocksFollowingMedals": ["elite-mark-gold-wreath"],
       "yearIntroduced": 1900,
-      "sortOrder": 12
+      "sortOrder": 12,
+      "tierName": "Guld"
     },
     {
       "id": "elite-mark-gold-wreath",
       "status": "reviewed",
       "type": "elite_mark",
       "tier": "gold_wreath",
-      "name": "Elitmärket - Guld med kvistar",
-      "displayName": "Elitmärket - Guld med kvistar",
+      "name": "Elitmärket",
+      "displayName": "Elitmärket Guld med kvistar",
       "color": "#FFD700",
       "icon": "elite-gold-wreath",
       "requirements_original": "Innehavare av elitmärket i guld som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för elitmärket i guld.",
@@ -442,15 +604,16 @@
       ],
       "unlocksFollowingMedals": ["elite-mark-gold-wreath-star-1"],
       "yearIntroduced": 1900,
-      "sortOrder": 13
+      "sortOrder": 13,
+      "tierName": "Guld med kvistar"
     },
     {
       "id": "elite-mark-gold-wreath-star-1",
       "status": "reviewed",
       "type": "elite_mark",
       "tier": "gold_wreath_star_1",
-      "name": "Elitmärket - Guld med kvistar och en stjärna",
-      "displayName": "Elitmärket - Guld med kvistar och en stjärna",
+      "name": "Elitmärket",
+      "displayName": "Elitmärket Guld med kvistar och en stjärna",
       "color": "#FFD700",
       "icon": "elite-gold-wreath-star-1",
       "requirements_original": "Innehavare av elitmärket i guld med kvistar som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för elitmärket i guld.",
@@ -469,15 +632,16 @@
       ],
       "unlocksFollowingMedals": ["elite-mark-gold-wreath-star-2"],
       "yearIntroduced": 1900,
-      "sortOrder": 14
+      "sortOrder": 14,
+      "tierName": "Guld med kvistar och en stjärna"
     },
     {
       "id": "elite-mark-gold-wreath-star-2",
       "status": "reviewed",
       "type": "elite_mark",
       "tier": "gold_wreath_star_2",
-      "name": "Elitmärket - Guld med kvistar och två stjärnor",
-      "displayName": "Elitmärket - Guld med kvistar och två stjärnor",
+      "name": "Elitmärket",
+      "displayName": "Elitmärket Guld med kvistar och två stjärnor",
       "color": "#FFD700",
       "icon": "elite-gold-wreath-star-2",
       "requirements_original": "Innehavare av elitmärket i guld med kvistar och en stjärna som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för elitmärket i guld.",
@@ -496,15 +660,16 @@
       ],
       "unlocksFollowingMedals": ["elite-mark-gold-wreath-star-3"],
       "yearIntroduced": 1900,
-      "sortOrder": 15
+      "sortOrder": 15,
+      "tierName": "Guld med kvistar och två stjärnor"
     },
     {
       "id": "elite-mark-gold-wreath-star-3",
       "status": "reviewed",
       "type": "elite_mark",
       "tier": "gold_wreath_star_3",
-      "name": "Elitmärket - Guld med kvistar och tre stjärnor",
-      "displayName": "Elitmärket - Guld med kvistar och tre stjärnor",
+      "name": "Elitmärket",
+      "displayName": "Elitmärket Guld med kvistar och tre stjärnor",
       "color": "#FFD700",
       "icon": "elite-gold-wreath-star-3",
       "requirements_original": "Innehavare av elitmärket i guld med kvistar och två stjärnor som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för elitmärket i guld.",
@@ -523,15 +688,16 @@
       ],
       "unlocksFollowingMedals": [],
       "yearIntroduced": 1900,
-      "sortOrder": 16
+      "sortOrder": 16,
+      "tierName": "Guld med kvistar och tre stjärnor"
     },
     {
       "id": "field-mark-bronze",
       "status": "reviewed",
       "type": "field_mark",
       "tier": "bronze",
-      "name": "Fältskyttemärket - Brons",
-      "displayName": "Fältskyttemärket - Brons",
+      "name": "Fältskyttemärket",
+      "displayName": "Fältskyttemärket Brons",
       "color": "#CD7F32",
       "icon": "field-bronze",
       "requirements_original": "Prov för fältskyttemärke får endast avläggas av den, som under före gående kalenderår uppfyllt fordringarna för pistolskyttemärke i brons och som har fyllt 15 år.\nFältskyttemärket förekommer i valörerna brons, silver och guld samt med påbyggnad. Märkesprov får avläggas vid riks-, nationella, landsdels- och kretstävlingar i fältskjutning.\nEndast ett märke kan under året erövras av skytt och märke av högre valör endast av den, som förut löst märke av närmast lägre valör.\nFör att erhålla fältskyttemärket krävs att skytten vid tre olika tävlingar under samma kalenderår uppfyller kraven för resp. märke, nämligen:\n\n**Antal träff/poäng i vapengrupp A:**\n\n|Märke|6 stn, 36 tr|7 stn, 42 tr|8 stn, 48 tr|9 stn, 54 tr|10 stn, 60 tr|% av max|\n|-|-|-|-|-|-|-|\n|Brons|19|22|25|29|32|52|\n|Silver|23|27|31|36|40|65|\n|Guld|27|31|36|41|46|75|\n\n**Antal träff/poäng i vapengrupp B och C:**\n\n|Märke|6 stn, 36 tr|7 stn, 42 tr|8 stn, 48 tr|9 stn, 54 tr|10 stn, 60 tr|% av max|\n|-|-|-|-|-|-|-|\n|Brons|22|25|29|32|36|60|\n|Silver|27|31|36|40|45|75|\n|Guld|31|36|41|46|51|86|\n\n**Antal träff/poäng i vapengrupp R:**\n\n|Märke|6 stn, 36 tr|7 stn, 42 tr|8 stn, 48 tr|9 stn, 54 tr|10 stn, 60 tr|% av max|\n|-|-|-|-|-|-|-|\n|Brons|20|23|27|30|34|56|\n|Silver|25|29|34|38|42|70|\n|Guld|29|34|38|44|49|80|",
@@ -554,29 +720,42 @@
           "minCompetitions": 3,
           "timeWindowYears": 1,
           "pointThresholdPercent": {
-            "A": { "min": 52 },
-            "B": { "min": 60 },
-            "C": { "min": 60 },
-            "R": { "min": 56 }
+            "A": {
+              "min": 52
+            },
+            "B": {
+              "min": 60
+            },
+            "C": {
+              "min": 60
+            },
+            "R": {
+              "min": 56
+            }
           }
         }
       ],
       "unlocksFollowingMedals": ["field-mark-silver"],
       "yearIntroduced": 1900,
-      "sortOrder": 20
+      "sortOrder": 20,
+      "tierName": "Brons"
     },
     {
       "id": "field-mark-silver",
       "status": "reviewed",
       "type": "field_mark",
       "tier": "silver",
-      "name": "Fältskyttemärket - Silver",
-      "displayName": "Fältskyttemärket - Silver",
+      "name": "Fältskyttemärket",
+      "displayName": "Fältskyttemärket Silver",
       "color": "#C0C0C0",
       "icon": "field-silver",
       "requirements_original": "Prov för fältskyttemärke får endast avläggas av den, som under före gående kalenderår uppfyllt fordringarna för pistolskyttemärke i brons och som har fyllt 15 år.\nFältskyttemärket förekommer i valörerna brons, silver och guld samt med påbyggnad. Märkesprov får avläggas vid riks-, nationella, landsdels- och kretstävlingar i fältskjutning.\nEndast ett märke kan under året erövras av skytt och märke av högre valör endast av den, som förut löst märke av närmast lägre valör.\nFör att erhålla fältskyttemärket krävs att skytten vid tre olika tävlingar under samma kalenderår uppfyller kraven för resp. märke, nämligen:\n\n**Antal träff/poäng i vapengrupp A:**\n\n|Märke|6 stn, 36 tr|7 stn, 42 tr|8 stn, 48 tr|9 stn, 54 tr|10 stn, 60 tr|% av max|\n|-|-|-|-|-|-|-|\n|Brons|19|22|25|29|32|52|\n|Silver|23|27|31|36|40|65|\n|Guld|27|31|36|41|46|75|\n\n**Antal träff/poäng i vapengrupp B och C:**\n\n|Märke|6 stn, 36 tr|7 stn, 42 tr|8 stn, 48 tr|9 stn, 54 tr|10 stn, 60 tr|% av max|\n|-|-|-|-|-|-|-|\n|Brons|22|25|29|32|36|60|\n|Silver|27|31|36|40|45|75|\n|Guld|31|36|41|46|51|86|\n\n**Antal träff/poäng i vapengrupp R:**\n\n|Märke|6 stn, 36 tr|7 stn, 42 tr|8 stn, 48 tr|9 stn, 54 tr|10 stn, 60 tr|% av max|\n|-|-|-|-|-|-|-|\n|Brons|20|23|27|30|34|56|\n|Silver|25|29|34|38|42|70|\n|Guld|29|34|38|44|49|80|",
       "prerequisites": [
-        { "type": "medal", "medalId": "field-mark-bronze", "yearOffset": 1 }
+        {
+          "type": "medal",
+          "medalId": "field-mark-bronze",
+          "yearOffset": 1
+        }
       ],
       "requirements": [
         {
@@ -585,29 +764,42 @@
           "minCompetitions": 3,
           "timeWindowYears": 1,
           "pointThresholdPercent": {
-            "A": { "min": 65 },
-            "B": { "min": 75 },
-            "C": { "min": 75 },
-            "R": { "min": 70 }
+            "A": {
+              "min": 65
+            },
+            "B": {
+              "min": 75
+            },
+            "C": {
+              "min": 75
+            },
+            "R": {
+              "min": 70
+            }
           }
         }
       ],
       "unlocksFollowingMedals": ["field-mark-gold"],
       "yearIntroduced": 1900,
-      "sortOrder": 21
+      "sortOrder": 21,
+      "tierName": "Silver"
     },
     {
       "id": "field-mark-gold",
       "status": "reviewed",
       "type": "field_mark",
       "tier": "gold",
-      "name": "Fältskyttemärket - Guld",
-      "displayName": "Fältskyttemärket - Guld",
+      "name": "Fältskyttemärket",
+      "displayName": "Fältskyttemärket Guld",
       "color": "#FFD700",
       "icon": "field-gold",
       "requirements_original": "Prov för fältskyttemärke får endast avläggas av den, som under före gående kalenderår uppfyllt fordringarna för pistolskyttemärke i brons och som har fyllt 15 år.\nFältskyttemärket förekommer i valörerna brons, silver och guld samt med påbyggnad. Märkesprov får avläggas vid riks-, nationella, landsdels- och kretstävlingar i fältskjutning.\nEndast ett märke kan under året erövras av skytt och märke av högre valör endast av den, som förut löst märke av närmast lägre valör.\nFör att erhålla fältskyttemärket krävs att skytten vid tre olika tävlingar under samma kalenderår uppfyller kraven för resp. märke, nämligen:\n\n**Antal träff/poäng i vapengrupp A:**\n\n|Märke|6 stn, 36 tr|7 stn, 42 tr|8 stn, 48 tr|9 stn, 54 tr|10 stn, 60 tr|% av max|\n|-|-|-|-|-|-|-|\n|Brons|19|22|25|29|32|52|\n|Silver|23|27|31|36|40|65|\n|Guld|27|31|36|41|46|75|\n\n**Antal träff/poäng i vapengrupp B och C:**\n\n|Märke|6 stn, 36 tr|7 stn, 42 tr|8 stn, 48 tr|9 stn, 54 tr|10 stn, 60 tr|% av max|\n|-|-|-|-|-|-|-|\n|Brons|22|25|29|32|36|60|\n|Silver|27|31|36|40|45|75|\n|Guld|31|36|41|46|51|86|\n\n**Antal träff/poäng i vapengrupp R:**\n\n|Märke|6 stn, 36 tr|7 stn, 42 tr|8 stn, 48 tr|9 stn, 54 tr|10 stn, 60 tr|% av max|\n|-|-|-|-|-|-|-|\n|Brons|20|23|27|30|34|56|\n|Silver|25|29|34|38|42|70|\n|Guld|29|34|38|44|49|80|",
       "prerequisites": [
-        { "type": "medal", "medalId": "field-mark-silver", "yearOffset": 1 }
+        {
+          "type": "medal",
+          "medalId": "field-mark-silver",
+          "yearOffset": 1
+        }
       ],
       "requirements": [
         {
@@ -616,28 +808,42 @@
           "minCompetitions": 3,
           "timeWindowYears": 1,
           "pointThresholdPercent": {
-            "A": { "min": 75 },
-            "B": { "min": 86 },
-            "C": { "min": 86 },
-            "R": { "min": 80 }
+            "A": {
+              "min": 75
+            },
+            "B": {
+              "min": 86
+            },
+            "C": {
+              "min": 86
+            },
+            "R": {
+              "min": 80
+            }
           }
         }
       ],
       "unlocksFollowingMedals": ["field-mark-gold-star-1"],
       "yearIntroduced": 1900,
-      "sortOrder": 22
+      "sortOrder": 22,
+      "tierName": "Guld"
     },
     {
       "id": "field-mark-gold-star-1",
       "status": "under_review",
       "type": "field_mark",
       "tier": "star_1",
-      "name": "Fältskyttemärket - Guld med en stjärna",
-      "displayName": "Fältskyttemärket - Guld med en stjärna",
+      "name": "Fältskyttemärket",
+      "displayName": "Fältskyttemärket Guld med en stjärna",
       "color": "#FFD700",
       "icon": "field-gold-star-1",
       "requirements_original": "Innehavare av fältskyttemärket i guld som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för fältskyttemärket i guld.",
-      "prerequisites": [{ "type": "medal", "medalId": "field-mark-gold" }],
+      "prerequisites": [
+        {
+          "type": "medal",
+          "medalId": "field-mark-gold"
+        }
+      ],
       "requirements": [
         {
           "type": "sustained_achievement",
@@ -647,19 +853,23 @@
       ],
       "unlocksFollowingMedals": ["field-mark-gold-star-2"],
       "yearIntroduced": 1900,
-      "sortOrder": 23
+      "sortOrder": 23,
+      "tierName": "Guld med en stjärna"
     },
     {
       "id": "field-mark-gold-star-2",
       "status": "under_review",
       "type": "field_mark",
       "tier": "star_2",
-      "name": "Fältskyttemärket - Guld med två stjärnor",
-      "displayName": "Fältskyttemärket - Guld med två stjärnor",
+      "name": "Fältskyttemärket",
+      "displayName": "Fältskyttemärket Guld med två stjärnor",
       "color": "#FFD700",
       "icon": "field-gold-star-2",
       "prerequisites": [
-        { "type": "medal", "medalId": "field-mark-gold-star-1" }
+        {
+          "type": "medal",
+          "medalId": "field-mark-gold-star-1"
+        }
       ],
       "requirements": [
         {
@@ -670,19 +880,23 @@
       ],
       "unlocksFollowingMedals": ["field-mark-gold-star-3"],
       "yearIntroduced": 1900,
-      "sortOrder": 24
+      "sortOrder": 24,
+      "tierName": "Guld med två stjärnor"
     },
     {
       "id": "field-mark-gold-star-3",
       "status": "under_review",
       "type": "field_mark",
       "tier": "star_3",
-      "name": "Fältskyttemärket - Guld med tre stjärnor",
-      "displayName": "Fältskyttemärket - Guld med tre stjärnor",
+      "name": "Fältskyttemärket",
+      "displayName": "Fältskyttemärket Guld med tre stjärnor",
       "color": "#FFD700",
       "icon": "field-gold-star-3",
       "prerequisites": [
-        { "type": "medal", "medalId": "field-mark-gold-star-2" }
+        {
+          "type": "medal",
+          "medalId": "field-mark-gold-star-2"
+        }
       ],
       "requirements": [
         {
@@ -693,19 +907,23 @@
       ],
       "unlocksFollowingMedals": ["field-mark-gold-wreath"],
       "yearIntroduced": 1900,
-      "sortOrder": 25
+      "sortOrder": 25,
+      "tierName": "Guld med tre stjärnor"
     },
     {
       "id": "field-mark-gold-wreath",
       "status": "under_review",
       "type": "field_mark",
       "tier": "gold_wreath",
-      "name": "Fältskyttemärket - Guld med kvistar",
-      "displayName": "Fältskyttemärket - Guld med kvistar",
+      "name": "Fältskyttemärket",
+      "displayName": "Fältskyttemärket Guld med kvistar",
       "color": "#FFD700",
       "icon": "field-gold-wreath",
       "prerequisites": [
-        { "type": "medal", "medalId": "field-mark-gold-star-3" }
+        {
+          "type": "medal",
+          "medalId": "field-mark-gold-star-3"
+        }
       ],
       "requirements": [
         {
@@ -716,19 +934,23 @@
       ],
       "unlocksFollowingMedals": ["field-mark-gold-wreath-star-1"],
       "yearIntroduced": 1900,
-      "sortOrder": 26
+      "sortOrder": 26,
+      "tierName": "Guld med kvistar"
     },
     {
       "id": "field-mark-gold-wreath-star-1",
       "status": "under_review",
       "type": "field_mark",
       "tier": "gold_wreath_star_1",
-      "name": "Fältskyttemärket - Guld med kvistar och en stjärna",
-      "displayName": "Fältskyttemärket - Guld med kvistar och en stjärna",
+      "name": "Fältskyttemärket",
+      "displayName": "Fältskyttemärket Guld med kvistar och en stjärna",
       "color": "#FFD700",
       "icon": "field-gold-wreath-star-1",
       "prerequisites": [
-        { "type": "medal", "medalId": "field-mark-gold-wreath" }
+        {
+          "type": "medal",
+          "medalId": "field-mark-gold-wreath"
+        }
       ],
       "requirements": [
         {
@@ -739,19 +961,23 @@
       ],
       "unlocksFollowingMedals": ["field-mark-gold-wreath-star-2"],
       "yearIntroduced": 1900,
-      "sortOrder": 27
+      "sortOrder": 27,
+      "tierName": "Guld med kvistar och en stjärna"
     },
     {
       "id": "field-mark-gold-wreath-star-2",
       "status": "under_review",
       "type": "field_mark",
       "tier": "gold_wreath_star_2",
-      "name": "Fältskyttemärket - Guld med kvistar och två stjärnor",
-      "displayName": "Fältskyttemärket - Guld med kvistar och två stjärnor",
+      "name": "Fältskyttemärket",
+      "displayName": "Fältskyttemärket Guld med kvistar och två stjärnor",
       "color": "#FFD700",
       "icon": "field-gold-wreath-star-2",
       "prerequisites": [
-        { "type": "medal", "medalId": "field-mark-gold-wreath-star-1" }
+        {
+          "type": "medal",
+          "medalId": "field-mark-gold-wreath-star-1"
+        }
       ],
       "requirements": [
         {
@@ -762,19 +988,23 @@
       ],
       "unlocksFollowingMedals": ["field-mark-gold-wreath-star-3"],
       "yearIntroduced": 1900,
-      "sortOrder": 28
+      "sortOrder": 28,
+      "tierName": "Guld med kvistar och två stjärnor"
     },
     {
       "id": "field-mark-gold-wreath-star-3",
       "status": "under_review",
       "type": "field_mark",
       "tier": "gold_wreath_star_3",
-      "name": "Fältskyttemärket - Guld med kvistar och tre stjärnor",
-      "displayName": "Fältskyttemärket - Guld med kvistar och tre stjärnor",
+      "name": "Fältskyttemärket",
+      "displayName": "Fältskyttemärket Guld med kvistar och tre stjärnor",
       "color": "#FFD700",
       "icon": "field-gold-wreath-star-3",
       "prerequisites": [
-        { "type": "medal", "medalId": "field-mark-gold-wreath-star-2" }
+        {
+          "type": "medal",
+          "medalId": "field-mark-gold-wreath-star-2"
+        }
       ],
       "requirements": [
         {
@@ -785,17 +1015,23 @@
       ],
       "unlocksFollowingMedals": [],
       "yearIntroduced": 1900,
-      "sortOrder": 29
+      "sortOrder": 29,
+      "tierName": "Guld med kvistar och tre stjärnor"
     },
     {
       "id": "championship-mark-bronze",
       "type": "championship_mark",
       "tier": "bronze",
-      "name": "Mästarmärket - Brons",
-      "displayName": "Mästarmärket - Brons",
+      "name": "Mästarmärket",
+      "displayName": "Mästarmärket Brons",
       "color": "#CD7F32",
       "icon": "championship-bronze",
-      "prerequisites": [{ "type": "medal", "medalId": "pistol-mark-gold" }],
+      "prerequisites": [
+        {
+          "type": "medal",
+          "medalId": "pistol-mark-gold"
+        }
+      ],
       "requirements": [
         {
           "type": "championship_achievement",
@@ -819,18 +1055,22 @@
       ],
       "unlocksFollowingMedals": ["championship-mark-silver"],
       "yearIntroduced": 1900,
-      "sortOrder": 30
+      "sortOrder": 30,
+      "tierName": "Brons"
     },
     {
       "id": "championship-mark-silver",
       "type": "championship_mark",
       "tier": "silver",
-      "name": "Mästarmärket - Silver",
-      "displayName": "Mästarmärket - Silver",
+      "name": "Mästarmärket",
+      "displayName": "Mästarmärket Silver",
       "color": "#C0C0C0",
       "icon": "championship-silver",
       "prerequisites": [
-        { "type": "medal", "medalId": "championship-mark-bronze" }
+        {
+          "type": "medal",
+          "medalId": "championship-mark-bronze"
+        }
       ],
       "requirements": [
         {
@@ -841,18 +1081,22 @@
       ],
       "unlocksFollowingMedals": ["championship-mark-gold"],
       "yearIntroduced": 1900,
-      "sortOrder": 31
+      "sortOrder": 31,
+      "tierName": "Silver"
     },
     {
       "id": "championship-mark-gold",
       "type": "championship_mark",
       "tier": "gold",
-      "name": "Mästarmärket - Guld",
-      "displayName": "Mästarmärket - Guld",
+      "name": "Mästarmärket",
+      "displayName": "Mästarmärket Guld",
       "color": "#FFD700",
       "icon": "championship-gold",
       "prerequisites": [
-        { "type": "medal", "medalId": "championship-mark-silver" }
+        {
+          "type": "medal",
+          "medalId": "championship-mark-silver"
+        }
       ],
       "requirements": [
         {
@@ -863,18 +1107,22 @@
       ],
       "unlocksFollowingMedals": ["championship-mark-gold-star-1"],
       "yearIntroduced": 1900,
-      "sortOrder": 32
+      "sortOrder": 32,
+      "tierName": "Guld"
     },
     {
       "id": "championship-mark-gold-star-1",
       "type": "championship_mark",
       "tier": "gold_star_1",
-      "name": "Mästarmärket - Guld med en stjärna",
-      "displayName": "Mästarmärket - Guld med en stjärna",
+      "name": "Mästarmärket",
+      "displayName": "Mästarmärket Guld med en stjärna",
       "color": "#FFD700",
       "icon": "championship-gold-star-1",
       "prerequisites": [
-        { "type": "medal", "medalId": "championship-mark-gold" }
+        {
+          "type": "medal",
+          "medalId": "championship-mark-gold"
+        }
       ],
       "requirements": [
         {
@@ -886,18 +1134,22 @@
       ],
       "unlocksFollowingMedals": ["championship-mark-gold-star-2"],
       "yearIntroduced": 1900,
-      "sortOrder": 33
+      "sortOrder": 33,
+      "tierName": "Guld med en stjärna"
     },
     {
       "id": "championship-mark-gold-star-2",
       "type": "championship_mark",
       "tier": "gold_star_2",
-      "name": "Mästarmärket - Guld med två stjärnor",
-      "displayName": "Mästarmärket - Guld med två stjärnor",
+      "name": "Mästarmärket",
+      "displayName": "Mästarmärket Guld med två stjärnor",
       "color": "#FFD700",
       "icon": "championship-gold-star-2",
       "prerequisites": [
-        { "type": "medal", "medalId": "championship-mark-gold-star-1" }
+        {
+          "type": "medal",
+          "medalId": "championship-mark-gold-star-1"
+        }
       ],
       "requirements": [
         {
@@ -909,18 +1161,22 @@
       ],
       "unlocksFollowingMedals": ["championship-mark-gold-star-3"],
       "yearIntroduced": 1900,
-      "sortOrder": 34
+      "sortOrder": 34,
+      "tierName": "Guld med två stjärnor"
     },
     {
       "id": "championship-mark-gold-star-3",
       "type": "championship_mark",
       "tier": "gold_star_3",
-      "name": "Mästarmärket - Guld med tre stjärnor",
-      "displayName": "Mästarmärket - Guld med tre stjärnor",
+      "name": "Mästarmärket",
+      "displayName": "Mästarmärket Guld med tre stjärnor",
       "color": "#FFD700",
       "icon": "championship-gold-star-3",
       "prerequisites": [
-        { "type": "medal", "medalId": "championship-mark-gold-star-2" }
+        {
+          "type": "medal",
+          "medalId": "championship-mark-gold-star-2"
+        }
       ],
       "requirements": [
         {
@@ -932,14 +1188,15 @@
       ],
       "unlocksFollowingMedals": [],
       "yearIntroduced": 1900,
-      "sortOrder": 35
+      "sortOrder": 35,
+      "tierName": "Guld med tre stjärnor"
     },
     {
       "id": "precision-mark-bronze",
       "type": "precision_mark",
       "tier": "bronze",
-      "name": "Precisionsskyttemärket - Brons",
-      "displayName": "Precisionsskyttemärket - Brons",
+      "name": "Precisionsskyttemärket",
+      "displayName": "Precisionsskyttemärket Brons",
       "color": "#CD7F32",
       "icon": "precision-bronze",
       "prerequisites": [
@@ -956,26 +1213,36 @@
           "minCompetitions": 3,
           "timeWindowYears": 1,
           "pointThresholds": {
-            "A": { "min": 194 },
-            "B": { "min": 200 },
-            "C": { "min": 206 }
+            "A": {
+              "min": 194
+            },
+            "B": {
+              "min": 200
+            },
+            "C": {
+              "min": 206
+            }
           }
         }
       ],
       "unlocksFollowingMedals": ["precision-mark-silver"],
       "yearIntroduced": 1900,
-      "sortOrder": 40
+      "sortOrder": 40,
+      "tierName": "Brons"
     },
     {
       "id": "precision-mark-silver",
       "type": "precision_mark",
       "tier": "silver",
-      "name": "Precisionsskyttemärket - Silver",
-      "displayName": "Precisionsskyttemärket - Silver",
+      "name": "Precisionsskyttemärket",
+      "displayName": "Precisionsskyttemärket Silver",
       "color": "#C0C0C0",
       "icon": "precision-silver",
       "prerequisites": [
-        { "type": "medal", "medalId": "precision-mark-bronze" }
+        {
+          "type": "medal",
+          "medalId": "precision-mark-bronze"
+        }
       ],
       "requirements": [
         {
@@ -983,26 +1250,36 @@
           "minCompetitions": 3,
           "timeWindowYears": 1,
           "pointThresholds": {
-            "A": { "min": 231 },
-            "B": { "min": 237 },
-            "C": { "min": 243 }
+            "A": {
+              "min": 231
+            },
+            "B": {
+              "min": 237
+            },
+            "C": {
+              "min": 243
+            }
           }
         }
       ],
       "unlocksFollowingMedals": ["precision-mark-gold"],
       "yearIntroduced": 1900,
-      "sortOrder": 41
+      "sortOrder": 41,
+      "tierName": "Silver"
     },
     {
       "id": "precision-mark-gold",
       "type": "precision_mark",
       "tier": "gold",
-      "name": "Precisionsskyttemärket - Guld",
-      "displayName": "Precisionsskyttemärket - Guld",
+      "name": "Precisionsskyttemärket",
+      "displayName": "Precisionsskyttemärket Guld",
       "color": "#FFD700",
       "icon": "precision-gold",
       "prerequisites": [
-        { "type": "medal", "medalId": "precision-mark-silver" }
+        {
+          "type": "medal",
+          "medalId": "precision-mark-silver"
+        }
       ],
       "requirements": [
         {
@@ -1010,92 +1287,115 @@
           "minCompetitions": 3,
           "timeWindowYears": 1,
           "pointThresholds": {
-            "A": { "min": 262 },
-            "B": { "min": 274 },
-            "C": { "min": 280 }
+            "A": {
+              "min": 262
+            },
+            "B": {
+              "min": 274
+            },
+            "C": {
+              "min": 280
+            }
           }
         }
       ],
       "unlocksFollowingMedals": ["precision-mark-gold-star-1"],
       "yearIntroduced": 1900,
-      "sortOrder": 42
+      "sortOrder": 42,
+      "tierName": "Guld"
     },
     {
       "id": "precision-mark-gold-star-1",
       "type": "precision_mark",
       "tier": "star_1",
-      "name": "Precisionsskyttemärket - Guld med en stjärna",
-      "displayName": "Precisionsskyttemärket - Guld med en stjärna",
+      "name": "Precisionsskyttemärket",
+      "displayName": "Precisionsskyttemärket Guld med en stjärna",
       "color": "#FFD700",
       "icon": "precision-gold-star-1",
-      "prerequisites": [{ "type": "medal", "medalId": "precision-mark-gold" }],
+      "prerequisites": [
+        {
+          "type": "medal",
+          "medalId": "precision-mark-gold"
+        }
+      ],
       "requirements": [
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för precisionsskyttemärket i guld.",
-
           "yearsOfAchievement": 3
         }
       ],
       "unlocksFollowingMedals": ["precision-mark-gold-star-2"],
       "yearIntroduced": 1900,
-      "sortOrder": 43
+      "sortOrder": 43,
+      "tierName": "Guld med en stjärna"
     },
     {
       "id": "precision-mark-gold-star-2",
       "type": "precision_mark",
       "tier": "star_2",
-      "name": "Precisionsskyttemärket - Guld med två stjärnor",
-      "displayName": "Precisionsskyttemärket - Guld med två stjärnor",
+      "name": "Precisionsskyttemärket",
+      "displayName": "Precisionsskyttemärket Guld med två stjärnor",
       "color": "#FFD700",
       "icon": "precision-gold-star-2",
       "prerequisites": [
-        { "type": "medal", "medalId": "precision-mark-gold-star-1" }
+        {
+          "type": "medal",
+          "medalId": "precision-mark-gold-star-1"
+        }
       ],
       "requirements": [
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för precisionsskyttemärket i guld.",
-
           "yearsOfAchievement": 3
         }
       ],
       "unlocksFollowingMedals": ["precision-mark-gold-star-3"],
       "yearIntroduced": 1900,
-      "sortOrder": 44
+      "sortOrder": 44,
+      "tierName": "Guld med två stjärnor"
     },
     {
       "id": "precision-mark-gold-star-3",
       "type": "precision_mark",
       "tier": "star_3",
-      "name": "Precisionsskyttemärket - Guld med tre stjärnor",
-      "displayName": "Precisionsskyttemärket - Guld med tre stjärnor",
+      "name": "Precisionsskyttemärket",
+      "displayName": "Precisionsskyttemärket Guld med tre stjärnor",
       "color": "#FFD700",
       "icon": "precision-gold-star-3",
       "prerequisites": [
-        { "type": "medal", "medalId": "precision-mark-gold-star-2" }
+        {
+          "type": "medal",
+          "medalId": "precision-mark-gold-star-2"
+        }
       ],
       "requirements": [
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för precisionsskyttemärket i guld.",
-
           "yearsOfAchievement": 3
         }
       ],
       "unlocksFollowingMedals": [],
       "yearIntroduced": 1900,
-      "sortOrder": 45
+      "sortOrder": 45,
+      "tierName": "Guld med tre stjärnor"
     },
     {
       "id": "skis-mark-bronze",
       "type": "skis_mark",
       "tier": "bronze",
-      "name": "Skidskyttemärket - Brons",
-      "displayName": "Skidskyttemärket - Brons",
+      "name": "Skidskyttemärket",
+      "displayName": "Skidskyttemärket Brons",
       "color": "#CD7F32",
       "icon": "skis-bronze",
-      "prerequisites": [{ "type": "medal", "medalId": "pistol-mark-bronze" }],
+      "prerequisites": [
+        {
+          "type": "medal",
+          "medalId": "pistol-mark-bronze"
+        }
+      ],
       "requirements": [
         {
           "type": "skis_shooting_course",
@@ -1110,17 +1410,23 @@
       ],
       "unlocksFollowingMedals": ["skis-mark-silver"],
       "yearIntroduced": 1900,
-      "sortOrder": 50
+      "sortOrder": 50,
+      "tierName": "Brons"
     },
     {
       "id": "skis-mark-silver",
       "type": "skis_mark",
       "tier": "silver",
-      "name": "Skidskyttemärket - Silver",
-      "displayName": "Skidskyttemärket - Silver",
+      "name": "Skidskyttemärket",
+      "displayName": "Skidskyttemärket Silver",
       "color": "#C0C0C0",
       "icon": "skis-silver",
-      "prerequisites": [{ "type": "medal", "medalId": "skis-mark-bronze" }],
+      "prerequisites": [
+        {
+          "type": "medal",
+          "medalId": "skis-mark-bronze"
+        }
+      ],
       "requirements": [
         {
           "type": "skis_shooting_course",
@@ -1135,18 +1441,23 @@
       ],
       "unlocksFollowingMedals": ["skis-mark-gold"],
       "yearIntroduced": 1900,
-      "sortOrder": 51
+      "sortOrder": 51,
+      "tierName": "Silver"
     },
     {
       "id": "skis-mark-gold",
       "type": "skis_mark",
       "tier": "gold",
-      "name": "Skidskyttemärket - Guld",
-      "displayName": "Skidskyttemärket - Guld",
+      "name": "Skidskyttemärket",
+      "displayName": "Skidskyttemärket Guld",
       "color": "#FFD700",
       "icon": "skis-gold",
       "prerequisites": [
-        { "type": "medal", "medalId": "skis-mark-silver", "yearOffset": 1 }
+        {
+          "type": "medal",
+          "medalId": "skis-mark-silver",
+          "yearOffset": 1
+        }
       ],
       "requirements": [
         {
@@ -1162,176 +1473,205 @@
       ],
       "unlocksFollowingMedals": ["skis-mark-gold-star-1"],
       "yearIntroduced": 1900,
-      "sortOrder": 52
+      "sortOrder": 52,
+      "tierName": "Guld"
     },
     {
       "id": "skis-mark-gold-star-1",
       "type": "skis_mark",
       "tier": "star_1",
-      "name": "Skidskyttemärket - Guld med en stjärna",
-      "displayName": "Skidskyttemärket - Guld med en stjärna",
+      "name": "Skidskyttemärket",
+      "displayName": "Skidskyttemärket Guld med en stjärna",
       "color": "#FFD700",
       "icon": "skis-gold-star-1",
-      "prerequisites": [{ "type": "medal", "medalId": "skis-mark-gold" }],
+      "prerequisites": [
+        {
+          "type": "medal",
+          "medalId": "skis-mark-gold"
+        }
+      ],
       "requirements": [
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för skidskyttemärket i guld.",
-
           "yearsOfAchievement": 3
         }
       ],
       "unlocksFollowingMedals": ["skis-mark-gold-star-2"],
       "yearIntroduced": 1900,
-      "sortOrder": 53
+      "sortOrder": 53,
+      "tierName": "Guld med en stjärna"
     },
     {
       "id": "skis-mark-gold-star-2",
       "type": "skis_mark",
       "tier": "star_2",
-      "name": "Skidskyttemärket - Guld med två stjärnor",
-      "displayName": "Skidskyttemärket - Guld med två stjärnor",
+      "name": "Skidskyttemärket",
+      "displayName": "Skidskyttemärket Guld med två stjärnor",
       "color": "#FFD700",
       "icon": "skis-gold-star-2",
       "prerequisites": [
-        { "type": "medal", "medalId": "skis-mark-gold-star-1" }
+        {
+          "type": "medal",
+          "medalId": "skis-mark-gold-star-1"
+        }
       ],
       "requirements": [
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för skidskyttemärket i guld.",
-
           "yearsOfAchievement": 3
         }
       ],
       "unlocksFollowingMedals": ["skis-mark-gold-star-3"],
       "yearIntroduced": 1900,
-      "sortOrder": 54
+      "sortOrder": 54,
+      "tierName": "Guld med två stjärnor"
     },
     {
       "id": "skis-mark-gold-star-3",
       "type": "skis_mark",
       "tier": "star_3",
-      "name": "Skidskyttemärket - Guld med tre stjärnor",
-      "displayName": "Skidskyttemärket - Guld med tre stjärnor",
+      "name": "Skidskyttemärket",
+      "displayName": "Skidskyttemärket Guld med tre stjärnor",
       "color": "#FFD700",
       "icon": "skis-gold-star-3",
       "prerequisites": [
-        { "type": "medal", "medalId": "skis-mark-gold-star-2" }
+        {
+          "type": "medal",
+          "medalId": "skis-mark-gold-star-2"
+        }
       ],
       "requirements": [
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för skidskyttemärket i guld.",
-
           "yearsOfAchievement": 3
         }
       ],
       "unlocksFollowingMedals": ["skis-mark-gold-enamel"],
       "yearIntroduced": 1900,
-      "sortOrder": 55
+      "sortOrder": 55,
+      "tierName": "Guld med tre stjärnor"
     },
     {
       "id": "skis-mark-gold-enamel",
       "type": "skis_mark",
       "tier": "gold_enamel",
-      "name": "Skidskyttemärket - Guld med blå emalj",
-      "displayName": "Skidskyttemärket - Guld med blå emalj",
+      "name": "Skidskyttemärket",
+      "displayName": "Skidskyttemärket Guld med blå emalj",
       "color": "#FFD700",
       "icon": "skis-gold-enamel",
       "prerequisites": [
-        { "type": "medal", "medalId": "skis-mark-gold-star-3" }
+        {
+          "type": "medal",
+          "medalId": "skis-mark-gold-star-3"
+        }
       ],
       "requirements": [
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för skidskyttemärket i guld.",
-
           "yearsOfAchievement": 3
         }
       ],
       "unlocksFollowingMedals": ["skis-mark-gold-enamel-star-1"],
       "yearIntroduced": 1900,
-      "sortOrder": 56
+      "sortOrder": 56,
+      "tierName": "Guld med blå emalj"
     },
     {
       "id": "skis-mark-gold-enamel-star-1",
       "type": "skis_mark",
       "tier": "gold_enamel_star_1",
-      "name": "Skidskyttemärket - Guld med blå emalj och en stjärna",
-      "displayName": "Skidskyttemärket - Guld med blå emalj och en stjärna",
+      "name": "Skidskyttemärket",
+      "displayName": "Skidskyttemärket Guld med blå emalj och en stjärna",
       "color": "#FFD700",
       "icon": "skis-gold-enamel-star-1",
       "prerequisites": [
-        { "type": "medal", "medalId": "skis-mark-gold-enamel" }
+        {
+          "type": "medal",
+          "medalId": "skis-mark-gold-enamel"
+        }
       ],
       "requirements": [
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för skidskyttemärket i guld.",
-
           "yearsOfAchievement": 3
         }
       ],
       "unlocksFollowingMedals": ["skis-mark-gold-enamel-star-2"],
       "yearIntroduced": 1900,
-      "sortOrder": 57
+      "sortOrder": 57,
+      "tierName": "Guld med blå emalj och en stjärna"
     },
     {
       "id": "skis-mark-gold-enamel-star-2",
       "type": "skis_mark",
       "tier": "gold_enamel_star_2",
-      "name": "Skidskyttemärket - Guld med blå emalj och två stjärnor",
-      "displayName": "Skidskyttemärket - Guld med blå emalj och två stjärnor",
+      "name": "Skidskyttemärket",
+      "displayName": "Skidskyttemärket Guld med blå emalj och två stjärnor",
       "color": "#FFD700",
       "icon": "skis-gold-enamel-star-2",
       "prerequisites": [
-        { "type": "medal", "medalId": "skis-mark-gold-enamel-star-1" }
+        {
+          "type": "medal",
+          "medalId": "skis-mark-gold-enamel-star-1"
+        }
       ],
       "requirements": [
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för skidskyttemärket i guld.",
-
           "yearsOfAchievement": 3
         }
       ],
       "unlocksFollowingMedals": ["skis-mark-gold-enamel-star-3"],
       "yearIntroduced": 1900,
-      "sortOrder": 58
+      "sortOrder": 58,
+      "tierName": "Guld med blå emalj och två stjärnor"
     },
     {
       "id": "skis-mark-gold-enamel-star-3",
       "type": "skis_mark",
       "tier": "gold_enamel_star_3",
-      "name": "Skidskyttemärket - Guld med blå emalj och tre stjärnor",
-      "displayName": "Skidskyttemärket - Guld med blå emalj och tre stjärnor",
+      "name": "Skidskyttemärket",
+      "displayName": "Skidskyttemärket Guld med blå emalj och tre stjärnor",
       "color": "#FFD700",
       "icon": "skis-gold-enamel-star-3",
       "prerequisites": [
-        { "type": "medal", "medalId": "skis-mark-gold-enamel-star-2" }
+        {
+          "type": "medal",
+          "medalId": "skis-mark-gold-enamel-star-2"
+        }
       ],
       "requirements": [
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för skidskyttemärket i guld.",
-
           "yearsOfAchievement": 3
         }
       ],
       "unlocksFollowingMedals": [],
       "yearIntroduced": 1900,
-      "sortOrder": 59
+      "sortOrder": 59,
+      "tierName": "Guld med blå emalj och tre stjärnor"
     },
     {
       "id": "spring-mark-bronze",
       "type": "spring_running_mark",
       "tier": "bronze",
-      "name": "Springskyttemärket - Brons",
-      "displayName": "Springskyttemärket - Brons",
+      "name": "Springskyttemärket",
+      "displayName": "Springskyttemärket Brons",
       "color": "#CD7F32",
       "icon": "spring-bronze",
-      "prerequisites": [{ "type": "medal", "medalId": "pistol-mark-bronze" }],
+      "prerequisites": [
+        {
+          "type": "medal",
+          "medalId": "pistol-mark-bronze"
+        }
+      ],
       "requirements": [
         {
           "type": "running_shooting_course",
@@ -1346,17 +1686,23 @@
       ],
       "unlocksFollowingMedals": ["spring-mark-silver"],
       "yearIntroduced": 1900,
-      "sortOrder": 60
+      "sortOrder": 60,
+      "tierName": "Brons"
     },
     {
       "id": "spring-mark-silver",
       "type": "spring_running_mark",
       "tier": "silver",
-      "name": "Springskyttemärket - Silver",
-      "displayName": "Springskyttemärket - Silver",
+      "name": "Springskyttemärket",
+      "displayName": "Springskyttemärket Silver",
       "color": "#C0C0C0",
       "icon": "spring-silver",
-      "prerequisites": [{ "type": "medal", "medalId": "spring-mark-bronze" }],
+      "prerequisites": [
+        {
+          "type": "medal",
+          "medalId": "spring-mark-bronze"
+        }
+      ],
       "requirements": [
         {
           "type": "running_shooting_course",
@@ -1371,18 +1717,23 @@
       ],
       "unlocksFollowingMedals": ["spring-mark-gold"],
       "yearIntroduced": 1900,
-      "sortOrder": 61
+      "sortOrder": 61,
+      "tierName": "Silver"
     },
     {
       "id": "spring-mark-gold",
       "type": "spring_running_mark",
       "tier": "gold",
-      "name": "Springskyttemärket - Guld",
-      "displayName": "Springskyttemärket - Guld",
+      "name": "Springskyttemärket",
+      "displayName": "Springskyttemärket Guld",
       "color": "#FFD700",
       "icon": "spring-gold",
       "prerequisites": [
-        { "type": "medal", "medalId": "spring-mark-silver", "yearOffset": 1 }
+        {
+          "type": "medal",
+          "medalId": "spring-mark-silver",
+          "yearOffset": 1
+        }
       ],
       "requirements": [
         {
@@ -1398,176 +1749,205 @@
       ],
       "unlocksFollowingMedals": ["spring-mark-gold-star-1"],
       "yearIntroduced": 1900,
-      "sortOrder": 62
+      "sortOrder": 62,
+      "tierName": "Guld"
     },
     {
       "id": "spring-mark-gold-star-1",
       "type": "spring_running_mark",
       "tier": "star_1",
-      "name": "Springskyttemärket - Guld med en stjärna",
-      "displayName": "Springskyttemärket - Guld med en stjärna",
+      "name": "Springskyttemärket",
+      "displayName": "Springskyttemärket Guld med en stjärna",
       "color": "#FFD700",
       "icon": "spring-gold-star-1",
-      "prerequisites": [{ "type": "medal", "medalId": "spring-mark-gold" }],
+      "prerequisites": [
+        {
+          "type": "medal",
+          "medalId": "spring-mark-gold"
+        }
+      ],
       "requirements": [
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för springskyttemärket i guld.",
-
           "yearsOfAchievement": 3
         }
       ],
       "unlocksFollowingMedals": ["spring-mark-gold-star-2"],
       "yearIntroduced": 1900,
-      "sortOrder": 63
+      "sortOrder": 63,
+      "tierName": "Guld med en stjärna"
     },
     {
       "id": "spring-mark-gold-star-2",
       "type": "spring_running_mark",
       "tier": "star_2",
-      "name": "Springskyttemärket - Guld med två stjärnor",
-      "displayName": "Springskyttemärket - Guld med två stjärnor",
+      "name": "Springskyttemärket",
+      "displayName": "Springskyttemärket Guld med två stjärnor",
       "color": "#FFD700",
       "icon": "spring-gold-star-2",
       "prerequisites": [
-        { "type": "medal", "medalId": "spring-mark-gold-star-1" }
+        {
+          "type": "medal",
+          "medalId": "spring-mark-gold-star-1"
+        }
       ],
       "requirements": [
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för springskyttemärket i guld.",
-
           "yearsOfAchievement": 3
         }
       ],
       "unlocksFollowingMedals": ["spring-mark-gold-star-3"],
       "yearIntroduced": 1900,
-      "sortOrder": 64
+      "sortOrder": 64,
+      "tierName": "Guld med två stjärnor"
     },
     {
       "id": "spring-mark-gold-star-3",
       "type": "spring_running_mark",
       "tier": "star_3",
-      "name": "Springskyttemärket - Guld med tre stjärnor",
-      "displayName": "Springskyttemärket - Guld med tre stjärnor",
+      "name": "Springskyttemärket",
+      "displayName": "Springskyttemärket Guld med tre stjärnor",
       "color": "#FFD700",
       "icon": "spring-gold-star-3",
       "prerequisites": [
-        { "type": "medal", "medalId": "spring-mark-gold-star-2" }
+        {
+          "type": "medal",
+          "medalId": "spring-mark-gold-star-2"
+        }
       ],
       "requirements": [
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för springskyttemärket i guld.",
-
           "yearsOfAchievement": 3
         }
       ],
       "unlocksFollowingMedals": ["spring-mark-gold-enamel"],
       "yearIntroduced": 1900,
-      "sortOrder": 65
+      "sortOrder": 65,
+      "tierName": "Guld med tre stjärnor"
     },
     {
       "id": "spring-mark-gold-enamel",
       "type": "spring_running_mark",
       "tier": "gold_enamel",
-      "name": "Springskyttemärket - Guld med blå emalj",
-      "displayName": "Springskyttemärket - Guld med blå emalj",
+      "name": "Springskyttemärket",
+      "displayName": "Springskyttemärket Guld med blå emalj",
       "color": "#FFD700",
       "icon": "spring-gold-enamel",
       "prerequisites": [
-        { "type": "medal", "medalId": "spring-mark-gold-star-3" }
+        {
+          "type": "medal",
+          "medalId": "spring-mark-gold-star-3"
+        }
       ],
       "requirements": [
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för springskyttemärket i guld.",
-
           "yearsOfAchievement": 3
         }
       ],
       "unlocksFollowingMedals": ["spring-mark-gold-enamel-star-1"],
       "yearIntroduced": 1900,
-      "sortOrder": 66
+      "sortOrder": 66,
+      "tierName": "Guld med blå emalj"
     },
     {
       "id": "spring-mark-gold-enamel-star-1",
       "type": "spring_running_mark",
       "tier": "gold_enamel_star_1",
-      "name": "Springskyttemärket - Guld med blå emalj och en stjärna",
-      "displayName": "Springskyttemärket - Guld med blå emalj och en stjärna",
+      "name": "Springskyttemärket",
+      "displayName": "Springskyttemärket Guld med blå emalj och en stjärna",
       "color": "#FFD700",
       "icon": "spring-gold-enamel-star-1",
       "prerequisites": [
-        { "type": "medal", "medalId": "spring-mark-gold-enamel" }
+        {
+          "type": "medal",
+          "medalId": "spring-mark-gold-enamel"
+        }
       ],
       "requirements": [
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för springskyttemärket i guld.",
-
           "yearsOfAchievement": 3
         }
       ],
       "unlocksFollowingMedals": ["spring-mark-gold-enamel-star-2"],
       "yearIntroduced": 1900,
-      "sortOrder": 67
+      "sortOrder": 67,
+      "tierName": "Guld med blå emalj och en stjärna"
     },
     {
       "id": "spring-mark-gold-enamel-star-2",
       "type": "spring_running_mark",
       "tier": "gold_enamel_star_2",
-      "name": "Springskyttemärket - Guld med blå emalj och två stjärnor",
-      "displayName": "Springskyttemärket - Guld med blå emalj och två stjärnor",
+      "name": "Springskyttemärket",
+      "displayName": "Springskyttemärket Guld med blå emalj och två stjärnor",
       "color": "#FFD700",
       "icon": "spring-gold-enamel-star-2",
       "prerequisites": [
-        { "type": "medal", "medalId": "spring-mark-gold-enamel-star-1" }
+        {
+          "type": "medal",
+          "medalId": "spring-mark-gold-enamel-star-1"
+        }
       ],
       "requirements": [
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för springskyttemärket i guld.",
-
           "yearsOfAchievement": 3
         }
       ],
       "unlocksFollowingMedals": ["spring-mark-gold-enamel-star-3"],
       "yearIntroduced": 1900,
-      "sortOrder": 68
+      "sortOrder": 68,
+      "tierName": "Guld med blå emalj och två stjärnor"
     },
     {
       "id": "spring-mark-gold-enamel-star-3",
       "type": "spring_running_mark",
       "tier": "gold_enamel_star_3",
-      "name": "Springskyttemärket - Guld med blå emalj och tre stjärnor",
-      "displayName": "Springskyttemärket - Guld med blå emalj och tre stjärnor",
+      "name": "Springskyttemärket",
+      "displayName": "Springskyttemärket Guld med blå emalj och tre stjärnor",
       "color": "#FFD700",
       "icon": "spring-gold-enamel-star-3",
       "prerequisites": [
-        { "type": "medal", "medalId": "spring-mark-gold-enamel-star-2" }
+        {
+          "type": "medal",
+          "medalId": "spring-mark-gold-enamel-star-2"
+        }
       ],
       "requirements": [
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för springskyttemärket i guld.",
-
           "yearsOfAchievement": 3
         }
       ],
       "unlocksFollowingMedals": [],
       "yearIntroduced": 1900,
-      "sortOrder": 69
+      "sortOrder": 69,
+      "tierName": "Guld med blå emalj och tre stjärnor"
     },
     {
       "id": "national-match-mark-bronze",
       "type": "national_full_match_mark",
       "tier": "bronze",
-      "name": "Märke i Nationell Helmatch - Brons",
-      "displayName": "Märke i Nationell Helmatch - Brons",
+      "name": "Märke i Nationell Helmatch",
+      "displayName": "Märke i Nationell Helmatch Brons",
       "color": "#CD7F32",
       "icon": "national-full-bronze",
-      "prerequisites": [{ "type": "medal", "medalId": "pistol-mark-bronze" }],
+      "prerequisites": [
+        {
+          "type": "medal",
+          "medalId": "pistol-mark-bronze"
+        }
+      ],
       "requirements": [
         {
           "type": "full_match_competition",
@@ -1575,26 +1955,36 @@
           "minCompetitions": 2,
           "timeWindowYears": 1,
           "pointThresholds": {
-            "A": { "min": 365 },
-            "B": { "min": 380 },
-            "C": { "min": 390 }
+            "A": {
+              "min": 365
+            },
+            "B": {
+              "min": 380
+            },
+            "C": {
+              "min": 390
+            }
           }
         }
       ],
       "unlocksFollowingMedals": ["national-match-mark-silver"],
       "yearIntroduced": 1900,
-      "sortOrder": 70
+      "sortOrder": 70,
+      "tierName": "Brons"
     },
     {
       "id": "national-match-mark-silver",
       "type": "national_full_match_mark",
       "tier": "silver",
-      "name": "Märke i Nationell Helmatch - Silver",
-      "displayName": "Märke i Nationell Helmatch - Silver",
+      "name": "Märke i Nationell Helmatch",
+      "displayName": "Märke i Nationell Helmatch Silver",
       "color": "#C0C0C0",
       "icon": "national-full-silver",
       "prerequisites": [
-        { "type": "medal", "medalId": "national-match-mark-bronze" }
+        {
+          "type": "medal",
+          "medalId": "national-match-mark-bronze"
+        }
       ],
       "requirements": [
         {
@@ -1603,26 +1993,36 @@
           "minCompetitions": 2,
           "timeWindowYears": 1,
           "pointThresholds": {
-            "A": { "min": 435 },
-            "B": { "min": 450 },
-            "C": { "min": 460 }
+            "A": {
+              "min": 435
+            },
+            "B": {
+              "min": 450
+            },
+            "C": {
+              "min": 460
+            }
           }
         }
       ],
       "unlocksFollowingMedals": ["national-match-mark-gold"],
       "yearIntroduced": 1900,
-      "sortOrder": 71
+      "sortOrder": 71,
+      "tierName": "Silver"
     },
     {
       "id": "national-match-mark-gold",
       "type": "national_full_match_mark",
       "tier": "gold",
-      "name": "Märke i Nationell Helmatch - Guld",
-      "displayName": "Märke i Nationell Helmatch - Guld",
+      "name": "Märke i Nationell Helmatch",
+      "displayName": "Märke i Nationell Helmatch Guld",
       "color": "#FFD700",
       "icon": "national-full-gold",
       "prerequisites": [
-        { "type": "medal", "medalId": "national-match-mark-silver" }
+        {
+          "type": "medal",
+          "medalId": "national-match-mark-silver"
+        }
       ],
       "requirements": [
         {
@@ -1631,94 +2031,115 @@
           "minCompetitions": 2,
           "timeWindowYears": 1,
           "pointThresholds": {
-            "A": { "min": 500 },
-            "B": { "min": 520 },
-            "C": { "min": 530 }
+            "A": {
+              "min": 500
+            },
+            "B": {
+              "min": 520
+            },
+            "C": {
+              "min": 530
+            }
           }
         }
       ],
       "unlocksFollowingMedals": ["national-match-mark-gold-star-1"],
       "yearIntroduced": 1900,
-      "sortOrder": 72
+      "sortOrder": 72,
+      "tierName": "Guld"
     },
     {
       "id": "national-match-mark-gold-star-1",
       "type": "national_full_match_mark",
       "tier": "star_1",
-      "name": "Märke i Nationell Helmatch - Guld med en stjärna",
-      "displayName": "Märke i Nationell Helmatch - Guld med en stjärna",
+      "name": "Märke i Nationell Helmatch",
+      "displayName": "Märke i Nationell Helmatch Guld med en stjärna",
       "color": "#FFD700",
       "icon": "national-full-gold-star-1",
       "prerequisites": [
-        { "type": "medal", "medalId": "national-match-mark-gold" }
+        {
+          "type": "medal",
+          "medalId": "national-match-mark-gold"
+        }
       ],
       "requirements": [
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för märke i nationell helmatch i guld.",
-
           "yearsOfAchievement": 3
         }
       ],
       "unlocksFollowingMedals": ["national-match-mark-gold-star-2"],
       "yearIntroduced": 1900,
-      "sortOrder": 73
+      "sortOrder": 73,
+      "tierName": "Guld med en stjärna"
     },
     {
       "id": "national-match-mark-gold-star-2",
       "type": "national_full_match_mark",
       "tier": "star_2",
-      "name": "Märke i Nationell Helmatch - Guld med två stjärnor",
-      "displayName": "Märke i Nationell Helmatch - Guld med två stjärnor",
+      "name": "Märke i Nationell Helmatch",
+      "displayName": "Märke i Nationell Helmatch Guld med två stjärnor",
       "color": "#FFD700",
       "icon": "national-full-gold-star-2",
       "prerequisites": [
-        { "type": "medal", "medalId": "national-match-mark-gold-star-1" }
+        {
+          "type": "medal",
+          "medalId": "national-match-mark-gold-star-1"
+        }
       ],
       "requirements": [
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för märke i nationell helmatch i guld.",
-
           "yearsOfAchievement": 3
         }
       ],
       "unlocksFollowingMedals": ["national-match-mark-gold-star-3"],
       "yearIntroduced": 1900,
-      "sortOrder": 74
+      "sortOrder": 74,
+      "tierName": "Guld med två stjärnor"
     },
     {
       "id": "national-match-mark-gold-star-3",
       "type": "national_full_match_mark",
       "tier": "star_3",
-      "name": "Märke i Nationell Helmatch - Guld med tre stjärnor",
-      "displayName": "Märke i Nationell Helmatch - Guld med tre stjärnor",
+      "name": "Märke i Nationell Helmatch",
+      "displayName": "Märke i Nationell Helmatch Guld med tre stjärnor",
       "color": "#FFD700",
       "icon": "national-full-gold-star-3",
       "prerequisites": [
-        { "type": "medal", "medalId": "national-match-mark-gold-star-2" }
+        {
+          "type": "medal",
+          "medalId": "national-match-mark-gold-star-2"
+        }
       ],
       "requirements": [
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för märke i nationell helmatch i guld.",
-
           "yearsOfAchievement": 3
         }
       ],
       "unlocksFollowingMedals": [],
       "yearIntroduced": 1900,
-      "sortOrder": 75
+      "sortOrder": 75,
+      "tierName": "Guld med tre stjärnor"
     },
     {
       "id": "military-match-mark-bronze",
       "type": "military_fast_match_mark",
       "tier": "bronze",
-      "name": "Militär Snabbmatchmärket - Brons",
-      "displayName": "Militär Snabbmatchmärket - Brons",
+      "name": "Militär Snabbmatchmärket",
+      "displayName": "Militär Snabbmatchmärket Brons",
       "color": "#CD7F32",
       "icon": "military-fast-bronze",
-      "prerequisites": [{ "type": "medal", "medalId": "pistol-mark-bronze" }],
+      "prerequisites": [
+        {
+          "type": "medal",
+          "medalId": "pistol-mark-bronze"
+        }
+      ],
       "requirements": [
         {
           "type": "military_fast_match",
@@ -1726,27 +2147,39 @@
           "minCompetitions": 3,
           "timeWindowYears": 1,
           "pointThresholds": {
-            "A": { "min": 377 },
-            "B": { "min": 391 },
-            "C": { "min": 404 },
-            "R": { "min": 388 }
+            "A": {
+              "min": 377
+            },
+            "B": {
+              "min": 391
+            },
+            "C": {
+              "min": 404
+            },
+            "R": {
+              "min": 388
+            }
           }
         }
       ],
       "unlocksFollowingMedals": ["military-match-mark-silver"],
       "yearIntroduced": 2010,
-      "sortOrder": 80
+      "sortOrder": 80,
+      "tierName": "Brons"
     },
     {
       "id": "military-match-mark-silver",
       "type": "military_fast_match_mark",
       "tier": "silver",
-      "name": "Militär Snabbmatchmärket - Silver",
-      "displayName": "Militär Snabbmatchmärket - Silver",
+      "name": "Militär Snabbmatchmärket",
+      "displayName": "Militär Snabbmatchmärket Silver",
       "color": "#C0C0C0",
       "icon": "military-fast-silver",
       "prerequisites": [
-        { "type": "medal", "medalId": "military-match-mark-bronze" }
+        {
+          "type": "medal",
+          "medalId": "military-match-mark-bronze"
+        }
       ],
       "requirements": [
         {
@@ -1755,27 +2188,39 @@
           "minCompetitions": 3,
           "timeWindowYears": 1,
           "pointThresholds": {
-            "A": { "min": 454 },
-            "B": { "min": 472 },
-            "C": { "min": 481 },
-            "R": { "min": 467 }
+            "A": {
+              "min": 454
+            },
+            "B": {
+              "min": 472
+            },
+            "C": {
+              "min": 481
+            },
+            "R": {
+              "min": 467
+            }
           }
         }
       ],
       "unlocksFollowingMedals": ["military-match-mark-gold"],
       "yearIntroduced": 2010,
-      "sortOrder": 81
+      "sortOrder": 81,
+      "tierName": "Silver"
     },
     {
       "id": "military-match-mark-gold",
       "type": "military_fast_match_mark",
       "tier": "gold",
-      "name": "Militär Snabbmatchmärket - Guld",
-      "displayName": "Militär Snabbmatchmärket - Guld",
+      "name": "Militär Snabbmatchmärket",
+      "displayName": "Militär Snabbmatchmärket Guld",
       "color": "#FFD700",
       "icon": "military-fast-gold",
       "prerequisites": [
-        { "type": "medal", "medalId": "military-match-mark-silver" }
+        {
+          "type": "medal",
+          "medalId": "military-match-mark-silver"
+        }
       ],
       "requirements": [
         {
@@ -1784,73 +2229,91 @@
           "minCompetitions": 3,
           "timeWindowYears": 1,
           "pointThresholds": {
-            "A": { "min": 515 },
-            "B": { "min": 543 },
-            "C": { "min": 550 },
-            "R": { "min": 532 }
+            "A": {
+              "min": 515
+            },
+            "B": {
+              "min": 543
+            },
+            "C": {
+              "min": 550
+            },
+            "R": {
+              "min": 532
+            }
           }
         }
       ],
       "unlocksFollowingMedals": ["military-match-mark-gold-star-1"],
       "yearIntroduced": 2010,
-      "sortOrder": 82
+      "sortOrder": 82,
+      "tierName": "Guld"
     },
     {
       "id": "military-match-mark-gold-star-1",
       "type": "military_fast_match_mark",
       "tier": "star_1",
-      "name": "Militär Snabbmatchmärket - Guld med en stjärna",
-      "displayName": "Militär Snabbmatchmärket - Guld med en stjärna",
+      "name": "Militär Snabbmatchmärket",
+      "displayName": "Militär Snabbmatchmärket Guld med en stjärna",
       "color": "#FFD700",
       "icon": "military-fast-gold-star-1",
       "prerequisites": [
-        { "type": "medal", "medalId": "military-match-mark-gold" }
+        {
+          "type": "medal",
+          "medalId": "military-match-mark-gold"
+        }
       ],
       "requirements": [
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för märke i nationell helmatch i guld.",
-
           "yearsOfAchievement": 3
         }
       ],
       "unlocksFollowingMedals": ["military-match-mark-gold-star-2"],
       "yearIntroduced": 2010,
-      "sortOrder": 83
+      "sortOrder": 83,
+      "tierName": "Guld med en stjärna"
     },
     {
       "id": "military-match-mark-gold-star-2",
       "type": "military_fast_match_mark",
       "tier": "star_2",
-      "name": "Militär Snabbmatchmärket - Guld med två stjärnor",
-      "displayName": "Militär Snabbmatchmärket - Guld med två stjärnor",
+      "name": "Militär Snabbmatchmärket",
+      "displayName": "Militär Snabbmatchmärket Guld med två stjärnor",
       "color": "#FFD700",
       "icon": "military-fast-gold-star-2",
       "prerequisites": [
-        { "type": "medal", "medalId": "military-match-mark-gold-star-1" }
+        {
+          "type": "medal",
+          "medalId": "military-match-mark-gold-star-1"
+        }
       ],
       "requirements": [
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för märke i nationell helmatch i guld.",
-
           "yearsOfAchievement": 3
         }
       ],
       "unlocksFollowingMedals": ["military-match-mark-gold-star-3"],
       "yearIntroduced": 2010,
-      "sortOrder": 84
+      "sortOrder": 84,
+      "tierName": "Guld med två stjärnor"
     },
     {
       "id": "military-match-mark-gold-star-3",
       "type": "military_fast_match_mark",
       "tier": "star_3",
-      "name": "Militär Snabbmatchmärket - Guld med tre stjärnor",
-      "displayName": "Militär Snabbmatchmärket - Guld med tre stjärnor",
+      "name": "Militär Snabbmatchmärket",
+      "displayName": "Militär Snabbmatchmärket Guld med tre stjärnor",
       "color": "#FFD700",
       "icon": "military-fast-gold-star-3",
       "prerequisites": [
-        { "type": "medal", "medalId": "military-match-mark-gold-star-2" }
+        {
+          "type": "medal",
+          "medalId": "military-match-mark-gold-star-2"
+        }
       ],
       "requirements": [
         {
@@ -1861,14 +2324,15 @@
       ],
       "unlocksFollowingMedals": [],
       "yearIntroduced": 2010,
-      "sortOrder": 85
+      "sortOrder": 85,
+      "tierName": "Guld med tre stjärnor"
     },
     {
       "id": "air-pistol-mark-bronze",
       "type": "air_pistol_mark",
       "tier": "bronze",
-      "name": "Luftpistolmärket - Brons",
-      "displayName": "Luftpistolmärket - Brons",
+      "name": "Luftpistolmärket",
+      "displayName": "Luftpistolmärket Brons",
       "color": "#CD7F32",
       "icon": "air-pistol-bronze",
       "prerequisites": [],
@@ -1883,14 +2347,15 @@
       ],
       "unlocksFollowingMedals": [],
       "yearIntroduced": 1900,
-      "sortOrder": 90
+      "sortOrder": 90,
+      "tierName": "Brons"
     },
     {
       "id": "air-pistol-mark-silver",
       "type": "air_pistol_mark",
       "tier": "silver",
-      "name": "Luftpistolmärket - Silver",
-      "displayName": "Luftpistolmärket - Silver",
+      "name": "Luftpistolmärket",
+      "displayName": "Luftpistolmärket Silver",
       "color": "#C0C0C0",
       "icon": "air-pistol-silver",
       "prerequisites": [],
@@ -1905,14 +2370,15 @@
       ],
       "unlocksFollowingMedals": [],
       "yearIntroduced": 1900,
-      "sortOrder": 91
+      "sortOrder": 91,
+      "tierName": "Silver"
     },
     {
       "id": "air-pistol-mark-gold",
       "type": "air_pistol_mark",
       "tier": "gold",
-      "name": "Luftpistolmärket - Guld",
-      "displayName": "Luftpistolmärket - Guld",
+      "name": "Luftpistolmärket",
+      "displayName": "Luftpistolmärket Guld",
       "color": "#FFD700",
       "icon": "air-pistol-gold",
       "prerequisites": [],
@@ -1927,7 +2393,8 @@
       ],
       "unlocksFollowingMedals": ["air-pistol-mark-annual"],
       "yearIntroduced": 1900,
-      "sortOrder": 92
+      "sortOrder": 92,
+      "tierName": "Guld"
     },
     {
       "id": "air-pistol-mark-annual",
@@ -1961,12 +2428,15 @@
       "id": "air-pistol-mark-annual-star-1",
       "type": "air_pistol_mark",
       "tier": "annual_star_1",
-      "name": "Årtalsmärke luftpistol med en stjärna",
+      "name": "Årtalsmärke luftpistol",
       "displayName": "Årtalsmärke luftpistol med en stjärna",
       "color": "#FFD700",
       "icon": "air-pistol-annual-star-1",
       "prerequisites": [
-        { "type": "medal", "medalId": "air-pistol-mark-annual" }
+        {
+          "type": "medal",
+          "medalId": "air-pistol-mark-annual"
+        }
       ],
       "requirements": [
         {
@@ -1978,18 +2448,22 @@
       ],
       "unlocksFollowingMedals": ["air-pistol-mark-annual-star-2"],
       "yearIntroduced": 1900,
-      "sortOrder": 94
+      "sortOrder": 94,
+      "tierName": "med en stjärna"
     },
     {
       "id": "air-pistol-mark-annual-star-2",
       "type": "air_pistol_mark",
       "tier": "annual_star_2",
-      "name": "Årtalsmärke luftpistol med två stjärnor",
+      "name": "Årtalsmärke luftpistol",
       "displayName": "Årtalsmärke luftpistol med två stjärnor",
       "color": "#FFD700",
       "icon": "air-pistol-annual-star-2",
       "prerequisites": [
-        { "type": "medal", "medalId": "air-pistol-mark-annual-star-1" }
+        {
+          "type": "medal",
+          "medalId": "air-pistol-mark-annual-star-1"
+        }
       ],
       "requirements": [
         {
@@ -2001,18 +2475,22 @@
       ],
       "unlocksFollowingMedals": ["air-pistol-mark-annual-star-3"],
       "yearIntroduced": 1900,
-      "sortOrder": 95
+      "sortOrder": 95,
+      "tierName": "med två stjärnor"
     },
     {
       "id": "air-pistol-mark-annual-star-3",
       "type": "air_pistol_mark",
       "tier": "annual_star_3",
-      "name": "Årtalsmärke luftpistol med tre stjärnor",
+      "name": "Årtalsmärke luftpistol",
       "displayName": "Årtalsmärke luftpistol med tre stjärnor",
       "color": "#FFD700",
       "icon": "air-pistol-annual-star-3",
       "prerequisites": [
-        { "type": "medal", "medalId": "air-pistol-mark-annual-star-2" }
+        {
+          "type": "medal",
+          "medalId": "air-pistol-mark-annual-star-2"
+        }
       ],
       "requirements": [
         {
@@ -2024,18 +2502,22 @@
       ],
       "unlocksFollowingMedals": ["air-pistol-mark-annual-wreath"],
       "yearIntroduced": 1900,
-      "sortOrder": 96
+      "sortOrder": 96,
+      "tierName": "med tre stjärnor"
     },
     {
       "id": "air-pistol-mark-annual-wreath",
       "type": "air_pistol_mark",
       "tier": "annual_wreath",
-      "name": "Årtalsmärke luftpistol med krans",
+      "name": "Årtalsmärke luftpistol",
       "displayName": "Årtalsmärke luftpistol med krans",
       "color": "#FFD700",
       "icon": "air-pistol-annual-wreath",
       "prerequisites": [
-        { "type": "medal", "medalId": "air-pistol-mark-annual-star-3" }
+        {
+          "type": "medal",
+          "medalId": "air-pistol-mark-annual-star-3"
+        }
       ],
       "requirements": [
         {
@@ -2047,18 +2529,22 @@
       ],
       "unlocksFollowingMedals": ["air-pistol-mark-annual-wreath-star-1"],
       "yearIntroduced": 1900,
-      "sortOrder": 97
+      "sortOrder": 97,
+      "tierName": "med krans"
     },
     {
       "id": "air-pistol-mark-annual-wreath-star-1",
       "type": "air_pistol_mark",
       "tier": "annual_wreath_star_1",
-      "name": "Årtalsmärke luftpistol med krans och en stjärna",
+      "name": "Årtalsmärke luftpistol",
       "displayName": "Årtalsmärke luftpistol med krans och en stjärna",
       "color": "#FFD700",
       "icon": "air-pistol-annual-wreath-star-1",
       "prerequisites": [
-        { "type": "medal", "medalId": "air-pistol-mark-annual-wreath" }
+        {
+          "type": "medal",
+          "medalId": "air-pistol-mark-annual-wreath"
+        }
       ],
       "requirements": [
         {
@@ -2070,18 +2556,22 @@
       ],
       "unlocksFollowingMedals": ["air-pistol-mark-annual-wreath-star-2"],
       "yearIntroduced": 1900,
-      "sortOrder": 98
+      "sortOrder": 98,
+      "tierName": "med krans och en stjärna"
     },
     {
       "id": "air-pistol-mark-annual-wreath-star-2",
       "type": "air_pistol_mark",
       "tier": "annual_wreath_star_2",
-      "name": "Årtalsmärke luftpistol med krans och två stjärnor",
+      "name": "Årtalsmärke luftpistol",
       "displayName": "Årtalsmärke luftpistol med krans och två stjärnor",
       "color": "#FFD700",
       "icon": "air-pistol-annual-wreath-star-2",
       "prerequisites": [
-        { "type": "medal", "medalId": "air-pistol-mark-annual-wreath-star-1" }
+        {
+          "type": "medal",
+          "medalId": "air-pistol-mark-annual-wreath-star-1"
+        }
       ],
       "requirements": [
         {
@@ -2093,18 +2583,22 @@
       ],
       "unlocksFollowingMedals": ["air-pistol-mark-annual-wreath-star-3"],
       "yearIntroduced": 1900,
-      "sortOrder": 99
+      "sortOrder": 99,
+      "tierName": "med krans och två stjärnor"
     },
     {
       "id": "air-pistol-mark-annual-wreath-star-3",
       "type": "air_pistol_mark",
       "tier": "annual_wreath_star_3",
-      "name": "Årtalsmärke luftpistol med krans och tre stjärnor",
+      "name": "Årtalsmärke luftpistol",
       "displayName": "Årtalsmärke luftpistol med krans och tre stjärnor",
       "color": "#FFD700",
       "icon": "air-pistol-annual-wreath-star-3",
       "prerequisites": [
-        { "type": "medal", "medalId": "air-pistol-mark-annual-wreath-star-2" }
+        {
+          "type": "medal",
+          "medalId": "air-pistol-mark-annual-wreath-star-2"
+        }
       ],
       "requirements": [
         {
@@ -2116,14 +2610,15 @@
       ],
       "unlocksFollowingMedals": [],
       "yearIntroduced": 1900,
-      "sortOrder": 100
+      "sortOrder": 100,
+      "tierName": "med krans och tre stjärnor"
     },
     {
       "id": "lower-annual-mark-star-1",
       "status": "reviewed",
       "type": "pistol_mark",
       "tier": "star_1",
-      "name": "Lägre årtalsmärket med en stjärna",
+      "name": "Lägre årtalsmärket",
       "displayName": "Lägre årtalsmärket med en stjärna",
       "color": "#FFD700",
       "icon": "lower-annual-star-1",
@@ -2134,7 +2629,12 @@
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld."
         }
       ],
-      "prerequisites": [{ "type": "medal", "medalId": "pistol-mark-gold" }],
+      "prerequisites": [
+        {
+          "type": "medal",
+          "medalId": "pistol-mark-gold"
+        }
+      ],
       "requirements": [
         {
           "type": "sustained_achievement",
@@ -2144,14 +2644,15 @@
       ],
       "unlocksFollowingMedals": ["lower-annual-mark-star-2"],
       "yearIntroduced": 1900,
-      "sortOrder": 110
+      "sortOrder": 110,
+      "tierName": "med en stjärna"
     },
     {
       "id": "lower-annual-mark-star-2",
       "status": "reviewed",
       "type": "pistol_mark",
       "tier": "star_2",
-      "name": "Lägre årtalsmärket med två stjärnor",
+      "name": "Lägre årtalsmärket",
       "displayName": "Lägre årtalsmärket med två stjärnor",
       "color": "#FFD700",
       "icon": "lower-annual-star-2",
@@ -2163,7 +2664,10 @@
         }
       ],
       "prerequisites": [
-        { "type": "medal", "medalId": "lower-annual-mark-star-1" }
+        {
+          "type": "medal",
+          "medalId": "lower-annual-mark-star-1"
+        }
       ],
       "requirements": [
         {
@@ -2174,14 +2678,15 @@
       ],
       "unlocksFollowingMedals": ["lower-annual-mark-star-3"],
       "yearIntroduced": 1900,
-      "sortOrder": 111
+      "sortOrder": 111,
+      "tierName": "med två stjärnor"
     },
     {
       "id": "lower-annual-mark-star-3",
       "status": "reviewed",
       "type": "pistol_mark",
       "tier": "star_3",
-      "name": "Lägre årtalsmärket med tre stjärnor",
+      "name": "Lägre årtalsmärket",
       "displayName": "Lägre årtalsmärket med tre stjärnor",
       "color": "#FFD700",
       "icon": "lower-annual-star-3",
@@ -2193,7 +2698,10 @@
         }
       ],
       "prerequisites": [
-        { "type": "medal", "medalId": "lower-annual-mark-star-2" }
+        {
+          "type": "medal",
+          "medalId": "lower-annual-mark-star-2"
+        }
       ],
       "requirements": [
         {
@@ -2204,15 +2712,16 @@
       ],
       "unlocksFollowingMedals": ["higher-annual-mark-bronze"],
       "yearIntroduced": 1900,
-      "sortOrder": 112
+      "sortOrder": 112,
+      "tierName": "med tre stjärnor"
     },
     {
       "id": "higher-annual-mark-bronze",
       "status": "reviewed",
       "type": "pistol_mark",
       "tier": "bronze",
-      "name": "Högre årtalsmärket - Brons",
-      "displayName": "Högre årtalsmärket - Brons",
+      "name": "Högre årtalsmärket",
+      "displayName": "Högre årtalsmärket Brons",
       "color": "#CD7F32",
       "icon": "higher-annual-bronze",
       "requirements_original": "Innehavare av lägre årtalsmärket med tre stjärnor som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
@@ -2223,7 +2732,10 @@
         }
       ],
       "prerequisites": [
-        { "type": "medal", "medalId": "lower-annual-mark-star-3" }
+        {
+          "type": "medal",
+          "medalId": "lower-annual-mark-star-3"
+        }
       ],
       "requirements": [
         {
@@ -2234,15 +2746,16 @@
       ],
       "unlocksFollowingMedals": ["higher-annual-mark-silver"],
       "yearIntroduced": 1900,
-      "sortOrder": 113
+      "sortOrder": 113,
+      "tierName": "Brons"
     },
     {
       "id": "higher-annual-mark-silver",
       "status": "reviewed",
       "type": "pistol_mark",
       "tier": "silver",
-      "name": "Högre årtalsmärket - Silver",
-      "displayName": "Högre årtalsmärket - Silver",
+      "name": "Högre årtalsmärket",
+      "displayName": "Högre årtalsmärket Silver",
       "color": "#C0C0C0",
       "icon": "higher-annual-silver",
       "requirements_original": "Innehavare av högre årtalsmärket i brons som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
@@ -2253,7 +2766,10 @@
         }
       ],
       "prerequisites": [
-        { "type": "medal", "medalId": "higher-annual-mark-bronze" }
+        {
+          "type": "medal",
+          "medalId": "higher-annual-mark-bronze"
+        }
       ],
       "requirements": [
         {
@@ -2264,15 +2780,16 @@
       ],
       "unlocksFollowingMedals": ["higher-annual-mark-gold"],
       "yearIntroduced": 1900,
-      "sortOrder": 114
+      "sortOrder": 114,
+      "tierName": "Silver"
     },
     {
       "id": "higher-annual-mark-gold",
       "status": "reviewed",
       "type": "pistol_mark",
       "tier": "gold",
-      "name": "Högre årtalsmärket - Guld",
-      "displayName": "Högre årtalsmärket - Guld",
+      "name": "Högre årtalsmärket",
+      "displayName": "Högre årtalsmärket Guld",
       "color": "#FFD700",
       "icon": "higher-annual-gold",
       "requirements_original": "Innehavare av högre årtalsmärket i silver som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
@@ -2283,7 +2800,10 @@
         }
       ],
       "prerequisites": [
-        { "type": "medal", "medalId": "higher-annual-mark-silver" }
+        {
+          "type": "medal",
+          "medalId": "higher-annual-mark-silver"
+        }
       ],
       "requirements": [
         {
@@ -2294,15 +2814,16 @@
       ],
       "unlocksFollowingMedals": ["higher-annual-mark-gold-star-1"],
       "yearIntroduced": 1900,
-      "sortOrder": 115
+      "sortOrder": 115,
+      "tierName": "Guld"
     },
     {
       "id": "higher-annual-mark-gold-star-1",
       "status": "reviewed",
       "type": "pistol_mark",
       "tier": "gold_star_1",
-      "name": "Högre årtalsmärket - Guld med en stjärna",
-      "displayName": "Högre årtalsmärket - Guld med en stjärna",
+      "name": "Högre årtalsmärket",
+      "displayName": "Högre årtalsmärket Guld med en stjärna",
       "color": "#FFD700",
       "icon": "higher-annual-gold-star-1",
       "requirements_original": "Innehavare av högre årtalsmärket i guld som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
@@ -2313,7 +2834,10 @@
         }
       ],
       "prerequisites": [
-        { "type": "medal", "medalId": "higher-annual-mark-gold" }
+        {
+          "type": "medal",
+          "medalId": "higher-annual-mark-gold"
+        }
       ],
       "requirements": [
         {
@@ -2324,15 +2848,16 @@
       ],
       "unlocksFollowingMedals": ["higher-annual-mark-gold-star-2"],
       "yearIntroduced": 1900,
-      "sortOrder": 116
+      "sortOrder": 116,
+      "tierName": "Guld med en stjärna"
     },
     {
       "id": "higher-annual-mark-gold-star-2",
       "status": "reviewed",
       "type": "pistol_mark",
       "tier": "gold_star_2",
-      "name": "Högre årtalsmärket - Guld med två stjärnor",
-      "displayName": "Högre årtalsmärket - Guld med två stjärnor",
+      "name": "Högre årtalsmärket",
+      "displayName": "Högre årtalsmärket Guld med två stjärnor",
       "color": "#FFD700",
       "icon": "higher-annual-gold-star-2",
       "requirements_original": "Innehavare av högre årtalsmärket i guld med en stjärna som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
@@ -2343,7 +2868,10 @@
         }
       ],
       "prerequisites": [
-        { "type": "medal", "medalId": "higher-annual-mark-gold-star-1" }
+        {
+          "type": "medal",
+          "medalId": "higher-annual-mark-gold-star-1"
+        }
       ],
       "requirements": [
         {
@@ -2354,15 +2882,16 @@
       ],
       "unlocksFollowingMedals": ["higher-annual-mark-gold-star-3"],
       "yearIntroduced": 1900,
-      "sortOrder": 117
+      "sortOrder": 117,
+      "tierName": "Guld med två stjärnor"
     },
     {
       "id": "higher-annual-mark-gold-star-3",
       "status": "reviewed",
       "type": "pistol_mark",
       "tier": "gold_star_3",
-      "name": "Högre årtalsmärket - Guld med tre stjärnor",
-      "displayName": "Högre årtalsmärket - Guld med tre stjärnor",
+      "name": "Högre årtalsmärket",
+      "displayName": "Högre årtalsmärket Guld med tre stjärnor",
       "color": "#FFD700",
       "icon": "higher-annual-gold-star-3",
       "requirements_original": "Innehavare av högre årtalsmärket i guld med två stjärnor som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
@@ -2373,7 +2902,10 @@
         }
       ],
       "prerequisites": [
-        { "type": "medal", "medalId": "higher-annual-mark-gold-star-2" }
+        {
+          "type": "medal",
+          "medalId": "higher-annual-mark-gold-star-2"
+        }
       ],
       "requirements": [
         {
@@ -2384,15 +2916,16 @@
       ],
       "unlocksFollowingMedals": ["higher-annual-mark-gold-wreath"],
       "yearIntroduced": 1900,
-      "sortOrder": 118
+      "sortOrder": 118,
+      "tierName": "Guld med tre stjärnor"
     },
     {
       "id": "higher-annual-mark-gold-wreath",
       "status": "reviewed",
       "type": "pistol_mark",
       "tier": "gold_wreath",
-      "name": "Högre årtalsmärket - Guld med krans",
-      "displayName": "Högre årtalsmärket - Guld med krans",
+      "name": "Högre årtalsmärket",
+      "displayName": "Högre årtalsmärket Guld med krans",
       "color": "#FFD700",
       "icon": "higher-annual-gold-wreath",
       "requirements_original": "Innehavare av högre årtalsmärket i guld med tre stjärnor som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
@@ -2403,7 +2936,10 @@
         }
       ],
       "prerequisites": [
-        { "type": "medal", "medalId": "higher-annual-mark-gold-star-3" }
+        {
+          "type": "medal",
+          "medalId": "higher-annual-mark-gold-star-3"
+        }
       ],
       "requirements": [
         {
@@ -2414,15 +2950,16 @@
       ],
       "unlocksFollowingMedals": ["higher-annual-mark-gold-wreath-star-1"],
       "yearIntroduced": 1900,
-      "sortOrder": 119
+      "sortOrder": 119,
+      "tierName": "Guld med krans"
     },
     {
       "id": "higher-annual-mark-gold-wreath-star-1",
       "status": "reviewed",
       "type": "pistol_mark",
       "tier": "gold_wreath_star_1",
-      "name": "Högre årtalsmärket - Guld med krans och en stjärna",
-      "displayName": "Högre årtalsmärket - Guld med krans och en stjärna",
+      "name": "Högre årtalsmärket",
+      "displayName": "Högre årtalsmärket Guld med krans och en stjärna",
       "color": "#FFD700",
       "icon": "higher-annual-gold-wreath-star-1",
       "requirements_original": "Innehavare av högre årtalsmärket med krans som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
@@ -2433,7 +2970,10 @@
         }
       ],
       "prerequisites": [
-        { "type": "medal", "medalId": "higher-annual-mark-gold-wreath" }
+        {
+          "type": "medal",
+          "medalId": "higher-annual-mark-gold-wreath"
+        }
       ],
       "requirements": [
         {
@@ -2444,15 +2984,16 @@
       ],
       "unlocksFollowingMedals": ["higher-annual-mark-gold-wreath-star-2"],
       "yearIntroduced": 1900,
-      "sortOrder": 120
+      "sortOrder": 120,
+      "tierName": "Guld med krans och en stjärna"
     },
     {
       "id": "higher-annual-mark-gold-wreath-star-2",
       "status": "reviewed",
       "type": "pistol_mark",
       "tier": "gold_wreath_star_2",
-      "name": "Högre årtalsmärket - Guld med krans och två stjärnor",
-      "displayName": "Högre årtalsmärket - Guld med krans och två stjärnor",
+      "name": "Högre årtalsmärket",
+      "displayName": "Högre årtalsmärket Guld med krans och två stjärnor",
       "color": "#FFD700",
       "icon": "higher-annual-gold-wreath-star-2",
       "requirements_original": "Innehavare av högre årtalsmärket med krans och en stjärna som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
@@ -2463,7 +3004,10 @@
         }
       ],
       "prerequisites": [
-        { "type": "medal", "medalId": "higher-annual-mark-gold-wreath-star-1" }
+        {
+          "type": "medal",
+          "medalId": "higher-annual-mark-gold-wreath-star-1"
+        }
       ],
       "requirements": [
         {
@@ -2474,15 +3018,16 @@
       ],
       "unlocksFollowingMedals": ["higher-annual-mark-gold-wreath-star-3"],
       "yearIntroduced": 1900,
-      "sortOrder": 121
+      "sortOrder": 121,
+      "tierName": "Guld med krans och två stjärnor"
     },
     {
       "id": "higher-annual-mark-gold-wreath-star-3",
       "status": "reviewed",
       "type": "pistol_mark",
       "tier": "gold_wreath_star_3",
-      "name": "Högre årtalsmärket - Guld med krans och tre stjärnor",
-      "displayName": "Högre årtalsmärket - Guld med krans och tre stjärnor",
+      "name": "Högre årtalsmärket",
+      "displayName": "Högre årtalsmärket Guld med krans och tre stjärnor",
       "color": "#FFD700",
       "icon": "higher-annual-gold-wreath-star-3",
       "requirements_original": "Innehavare av högre årtalsmärket med krans och två stjärnor som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
@@ -2493,7 +3038,10 @@
         }
       ],
       "prerequisites": [
-        { "type": "medal", "medalId": "higher-annual-mark-gold-wreath-star-2" }
+        {
+          "type": "medal",
+          "medalId": "higher-annual-mark-gold-wreath-star-2"
+        }
       ],
       "requirements": [
         {
@@ -2504,15 +3052,16 @@
       ],
       "unlocksFollowingMedals": ["higher-annual-mark-gold-enamel-wreath"],
       "yearIntroduced": 1900,
-      "sortOrder": 122
+      "sortOrder": 122,
+      "tierName": "Guld med krans och tre stjärnor"
     },
     {
       "id": "higher-annual-mark-gold-enamel-wreath",
       "status": "reviewed",
       "type": "pistol_mark",
       "tier": "gold_enamel_wreath",
-      "name": "Högre årtalsmärket - Guld med emaljerad krans",
-      "displayName": "Högre årtalsmärket - Guld med emaljerad krans",
+      "name": "Högre årtalsmärket",
+      "displayName": "Högre årtalsmärket Guld med emaljerad krans",
       "color": "#FFD700",
       "icon": "higher-annual-gold-enamel-wreath",
       "requirements_original": "Innehavare av högre årtalsmärket med krans och tre stjärnor som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
@@ -2523,7 +3072,10 @@
         }
       ],
       "prerequisites": [
-        { "type": "medal", "medalId": "higher-annual-mark-gold-wreath-star-3" }
+        {
+          "type": "medal",
+          "medalId": "higher-annual-mark-gold-wreath-star-3"
+        }
       ],
       "requirements": [
         {
@@ -2536,15 +3088,16 @@
         "higher-annual-mark-gold-enamel-wreath-star-1"
       ],
       "yearIntroduced": 1900,
-      "sortOrder": 123
+      "sortOrder": 123,
+      "tierName": "Guld med emaljerad krans"
     },
     {
       "id": "higher-annual-mark-gold-enamel-wreath-star-1",
       "status": "reviewed",
       "type": "pistol_mark",
       "tier": "gold_enamel_wreath_star_1",
-      "name": "Högre årtalsmärket - Guld med emaljerad krans och en stjärna",
-      "displayName": "Högre årtalsmärket - Guld med emaljerad krans och en stjärna",
+      "name": "Högre årtalsmärket",
+      "displayName": "Högre årtalsmärket Guld med emaljerad krans och en stjärna",
       "color": "#FFD700",
       "icon": "higher-annual-gold-enamel-wreath-star-1",
       "requirements_original": "Innehavare av högre årtalsmärket med emaljerad krans som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
@@ -2555,7 +3108,10 @@
         }
       ],
       "prerequisites": [
-        { "type": "medal", "medalId": "higher-annual-mark-gold-enamel-wreath" }
+        {
+          "type": "medal",
+          "medalId": "higher-annual-mark-gold-enamel-wreath"
+        }
       ],
       "requirements": [
         {
@@ -2568,15 +3124,16 @@
         "higher-annual-mark-gold-enamel-wreath-star-2"
       ],
       "yearIntroduced": 1900,
-      "sortOrder": 124
+      "sortOrder": 124,
+      "tierName": "Guld med emaljerad krans och en stjärna"
     },
     {
       "id": "higher-annual-mark-gold-enamel-wreath-star-2",
       "status": "reviewed",
       "type": "pistol_mark",
       "tier": "gold_enamel_wreath_star_2",
-      "name": "Högre årtalsmärket - Guld med emaljerad krans och två stjärnor",
-      "displayName": "Högre årtalsmärket - Guld med emaljerad krans och två stjärnor",
+      "name": "Högre årtalsmärket",
+      "displayName": "Högre årtalsmärket Guld med emaljerad krans och två stjärnor",
       "color": "#FFD700",
       "icon": "higher-annual-gold-enamel-wreath-star-2",
       "requirements_original": "Innehavare av högre årtalsmärket med emaljerad krans och en stjärna som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
@@ -2603,15 +3160,16 @@
         "higher-annual-mark-gold-enamel-wreath-star-3"
       ],
       "yearIntroduced": 1900,
-      "sortOrder": 125
+      "sortOrder": 125,
+      "tierName": "Guld med emaljerad krans och två stjärnor"
     },
     {
       "id": "higher-annual-mark-gold-enamel-wreath-star-3",
       "status": "reviewed",
       "type": "pistol_mark",
       "tier": "gold_enamel_wreath_star_3",
-      "name": "Högre årtalsmärket - Guld med emaljerad krans och tre stjärnor",
-      "displayName": "Högre årtalsmärket - Guld med emaljerad krans och tre stjärnor",
+      "name": "Högre årtalsmärket",
+      "displayName": "Högre årtalsmärket Guld med emaljerad krans och tre stjärnor",
       "color": "#FFD700",
       "icon": "higher-annual-gold-enamel-wreath-star-3",
       "requirements_original": "Innehavare av högre årtalsmärket med emaljerad krans och två stjärnor som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
@@ -2636,7 +3194,8 @@
       ],
       "unlocksFollowingMedals": [],
       "yearIntroduced": 1900,
-      "sortOrder": 126
+      "sortOrder": 126,
+      "tierName": "Guld med emaljerad krans och tre stjärnor"
     }
   ]
 }
