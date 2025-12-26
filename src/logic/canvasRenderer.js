@@ -202,7 +202,7 @@ export function drawMedalNode(ctx, x, y, radius, medal, status, scale, forceLabe
   }
 
   // Label text: draw full displayName below the node with wrapping for readability
-  const name = medal?.displayName || medal?.name || medal?.tier || 'Medal'
+  const name = medal?.name || medal?.displayName || medal?.tier || 'Medal'
   // Avoid label clutter when zoomed far out; always show when forced (hover/selected)
   if ((forceLabel || scale >= 0.8) && name) {
     ctx.fillStyle = palette.text
@@ -218,7 +218,22 @@ export function drawMedalNode(ctx, x, y, radius, medal, status, scale, forceLabe
     // Wrap to a max width and line count
     const maxWidth = 180
     const maxLines = forceLabel ? 3 : (scale >= 1.3 ? 3 : 2)
-    const lines = wrapText(ctx, name, maxWidth, maxLines)
+    const tier = typeof medal?.tierName === 'string' ? medal.tierName.trim() : ''
+    let lines
+    if (tier) {
+      const restLines = wrapText(ctx, tier, maxWidth, Math.max(0, maxLines - 1))
+      lines = [name, ...restLines]
+    } else {
+      const parts = String(name).split(/\s[-–—]\s/)
+      if (parts.length > 1) {
+        const top = parts[0]
+        const rest = parts.slice(1).join(' - ')
+        const restLines = wrapText(ctx, rest, maxWidth, Math.max(0, maxLines - 1))
+        lines = [top, ...restLines]
+      } else {
+        lines = wrapText(ctx, name, maxWidth, maxLines)
+      }
+    }
 
     const startY = y + radius + 8
 

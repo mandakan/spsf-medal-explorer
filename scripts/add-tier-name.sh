@@ -66,11 +66,9 @@ for in_file in "$@"; do
     def dash_parts($s):
       try ($s | capture("^(?<base>.*?)\\s*[-–—]\\s*(?<tier>.*?)\\s*$")) catch null;
 
-    # Generic Swedish suffix: capture trailing tier-like phrase.
-    # Accepts:
-    #   - Colors: Guld|Silver|Brons (optionally followed by more words)
-    #   - Any "med ..." phrase (e.g., "med en/två/tre stjärna/stjärnor", "med krans/kvistar",
-    #     "med blå emalj", "med emaljerad krans ...", etc.)
+    # Generic trailing tier phrase (no dash):
+    #  - Colors (Guld|Silver|Brons) possibly with extra words
+    #  - Any "med ..." phrase (e.g. "med kvistar", "med en stjärna", "med blå emalj", ...)
     def generic_parts($s):
       try (
         $s | capture("^(?<base>.*?)\\s+(?<tier>(?:Guld|Silver|Brons)(?:\\s+.*)?|med\\s+.*)\\s*$")
@@ -85,37 +83,29 @@ for in_file in "$@"; do
       else ""
       end;
 
-    def update_obj:
-      if type=="object" then
-        (choose_candidate) as $cand
-        | (dash_parts($cand) // generic_parts($cand)) as $p
-        | if $p != null and ($p.base | length) > 0 and ($p.tier | length) > 0 then
-            ($p.base | trim) as $base
-            | ($p.tier | trim) as $tier
-            | (if ((.tierName? // "") | length) == 0 then .tierName = $tier else . end)
-            | .name = (($base + " " + $tier) | normalize_spaces)
-            | .displayName = .name
-          else
-            # No structured parts found; at minimum remove dashes if present
-            (if has_str_name then .name = normalize_no_dash(.name) else . end)
-            | (if has_str_display then .displayName = normalize_no_dash(.displayName) else . end)
-          end
-      else
-        .
-      end;
+    def fix_one:
+      . as $orig
+      | (choose_candidate) as $cand
+      | (dash_parts($cand) // generic_parts($cand)) as $p
+      | if ($cand | type) == "string" and $p != null and ($p.base | length) > 0 and ($p.tier | length) > 0 then
+          ($p.base | trim) as $base
+          | ($p.tier | trim) as $tier
+          | .tierName = (if ((.tierName? // "") | length) == 0 then $tier else .tierName end)
+          | .name = $base
+          | .displayName = (($base + " " + .tierName) | normalize_spaces)
+        else
+          # No structured parts found; at minimum remove dashes if present
+          (if has_str_name then .name = normalize_no_dash(.name) else . end)
+          | (if has_str_display then .displayName = normalize_no_dash(.displayName) else . end)
+        end;
 
-    # Robust recursive walk: recurse first, then apply f to each value
-    def walk(f):
-      . as $in
-      | (if type == "object" then
-           reduce keys[] as $k ({}; . + { ($k): ($in[$k] | walk(f)) })
-         elif type == "array" then
-           map( walk(f) )
-         else
-           .
-         end) | f;
-
-    walk(update_obj)
+    if has("medals") and (.medals | type=="array") then
+      .medals |= map(fix_one)
+    elif type=="array" then
+      map(fix_one)
+    else
+      fix_one
+    end
   ' "$in_file" > "$tmp"
 
   if [ ! -s "$tmp" ]; then
