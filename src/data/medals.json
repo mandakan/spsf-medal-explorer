@@ -624,12 +624,7 @@
       "displayName": "Elitmärket Guld med kvistar",
       "color": "#FFD700",
       "icon": "elite-gold-wreath",
-      "references": [
-        {
-          "medalId": "elite-mark-gold",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för elitmärket i guld."
-        }
-      ],
+
       "requirements_original": "Innehavare av elitmärket i guld som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för elitmärket i guld.",
       "prerequisites": [
         {
@@ -640,8 +635,14 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under 3 år uppnått kraven för Elitmärket i guld",
-          "yearsOfAchievement": 3
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för elitmärket i guld.",
+          "yearsOfAchievement": 3,
+          "references": [
+            {
+              "medalId": "elite-mark-gold",
+              "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för elitmärket i guld."
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["elite-mark-gold-wreath-star-1"],
@@ -658,12 +659,6 @@
       "displayName": "Elitmärket Guld med kvistar och en stjärna",
       "color": "#FFD700",
       "icon": "elite-gold-wreath-star-1",
-      "references": [
-        {
-          "medalId": "elite-mark-gold",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för elitmärket i guld."
-        }
-      ],
       "requirements_original": "Innehavare av elitmärket i guld med kvistar som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för elitmärket i guld.",
       "prerequisites": [
         {
@@ -675,7 +670,13 @@
         {
           "type": "sustained_achievement",
           "description": "Under 3 år uppnått kraven för Elitmärket i guld",
-          "yearsOfAchievement": 3
+          "yearsOfAchievement": 3,
+          "references": [
+            {
+              "medalId": "elite-mark-gold",
+              "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för elitmärket i guld."
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["elite-mark-gold-wreath-star-2"],
@@ -692,12 +693,6 @@
       "displayName": "Elitmärket Guld med kvistar och två stjärnor",
       "color": "#FFD700",
       "icon": "elite-gold-wreath-star-2",
-      "references": [
-        {
-          "medalId": "elite-mark-gold",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för elitmärket i guld."
-        }
-      ],
       "requirements_original": "Innehavare av elitmärket i guld med kvistar och en stjärna som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för elitmärket i guld.",
       "prerequisites": [
         {
@@ -709,7 +704,13 @@
         {
           "type": "sustained_achievement",
           "description": "Under 3 år uppnått kraven för Elitmärket i guld",
-          "yearsOfAchievement": 3
+          "yearsOfAchievement": 3,
+          "references": [
+            {
+              "medalId": "elite-mark-gold",
+              "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för elitmärket i guld."
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["elite-mark-gold-wreath-star-3"],
@@ -726,12 +727,6 @@
       "displayName": "Elitmärket Guld med kvistar och tre stjärnor",
       "color": "#FFD700",
       "icon": "elite-gold-wreath-star-3",
-      "references": [
-        {
-          "medalId": "elite-mark-gold",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för elitmärket i guld."
-        }
-      ],
       "requirements_original": "Innehavare av elitmärket i guld med kvistar och två stjärnor som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för elitmärket i guld.",
       "prerequisites": [
         {
@@ -743,7 +738,13 @@
         {
           "type": "sustained_achievement",
           "description": "Under 3 år uppnått kraven för Elitmärket i guld",
-          "yearsOfAchievement": 3
+          "yearsOfAchievement": 3,
+          "references": [
+            {
+              "medalId": "elite-mark-gold",
+              "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för elitmärket i guld."
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": [],
