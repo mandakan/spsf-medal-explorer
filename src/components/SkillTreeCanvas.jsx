@@ -250,6 +250,16 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     }
   }, [computeBaseTransform, layout, setScaleAbsolute])
 
+  const handleResetView = useCallback(() => {
+    const el = canvasRef.current
+    if (!el || !layout) return
+    const { baseScale } = computeBaseTransform(el)
+    const minEff = 0.8
+    const targetInteractive = minEff / Math.max(0.001, baseScale)
+    resetView()
+    setScaleAbsolute(targetInteractive)
+  }, [computeBaseTransform, layout, resetView, setScaleAbsolute])
+
   const setCanvasRef = useCallback((node) => {
     canvasRef.current = node
   }, [])
@@ -506,7 +516,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
         <div role="toolbar" aria-label="Träd-vy åtgärder" className="flex flex-wrap gap-2 sm:flex-nowrap">
           <button
             type="button"
-            onClick={() => { resetView(); ensureLabelVisibilityScale() }}
+            onClick={handleResetView}
             className="px-3 py-2 sm:px-4 sm:py-2 min-h-[44px] rounded bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-slate-700 dark:text-slate-50 dark:hover:bg-slate-600 border border-gray-300 dark:border-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
           >
             Återställ
@@ -674,7 +684,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                 <button
                   role="menuitem"
                   type="button"
-                  onClick={() => { setMenuOpen(false); resetView(); ensureLabelVisibilityScale() }}
+                  onClick={() => { setMenuOpen(false); handleResetView() }}
                   className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                 >
                   Återställ vy
