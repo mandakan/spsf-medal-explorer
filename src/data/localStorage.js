@@ -186,74 +186,7 @@ export class LocalStorageDataManager extends DataManager {
     await this.saveUserProfile(profile)
   }
 
-  /**
-   * Export profile data as JSON-compatible object
-   */
-  async exportData(userId) {
-    const profile = await this.getUserProfile(userId)
-    if (!profile) throw new Error('Profile not found')
 
-    return {
-      exportVersion: '1.0',
-      exportDate: new Date().toISOString(),
-      userProfile: {
-        displayName: profile.displayName,
-        createdDate: profile.createdDate,
-        dateOfBirth: profile.dateOfBirth,
-        features: profile.features || {},
-      },
-      achievements: profile.prerequisites || [],
-      unlockedMedals: profile.unlockedMedals || [],
-    }
-  }
-
-  /**
-   * Import profile data from JSON string
-   * Returns the saved profile
-   * - Always creates a brand-new unique userId
-   * - Normalizes achievements with ids if missing
-   */
-  async importData(jsonData) {
-    const parsed = this.parseImportedJson(jsonData)
-
-    // Basic validation of export payload
-    this.validateExportPayload(parsed)
-
-    // Generate a brand-new unique userId
-    const existing = await this.getAllProfiles()
-    const makeId = () => {
-      try {
-        // Prefer crypto.randomUUID when available (browser/jsdom)
-        if (typeof crypto !== 'undefined' && crypto.randomUUID) {
-          return `user-${crypto.randomUUID()}`
-        }
-      } catch {
-        // ignore
-      }
-      return `user-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
-    }
-    let newId = makeId()
-    while (existing.some(p => p.userId === newId)) {
-      newId = makeId()
-    }
-
-    // Normalize achievements: ensure each has an id
-    const achievements = Array.isArray(parsed.achievements) ? parsed.achievements.map(a => {
-      const id = a && a.id ? a.id : `achievement-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
-      return { ...a, id }
-    }) : []
-
-    const profile = new UserProfile({
-      userId: newId,
-      displayName: (parsed.userProfile && parsed.userProfile.displayName) || '',
-      dateOfBirth: parsed.userProfile && parsed.userProfile.dateOfBirth,
-      prerequisites: achievements,
-      unlockedMedals: Array.isArray(parsed.unlockedMedals) ? parsed.unlockedMedals : [],
-      features: (parsed.userProfile && parsed.userProfile.features) || {},
-    })
-
-    return await this.saveUserProfile(profile)
-  }
 
   /**
    * Validate profile structure per docs/02-Data-Model.md
@@ -363,42 +296,7 @@ export class LocalStorageDataManager extends DataManager {
     }
   }
 
-  /**
-   * Parse imported JSON string safely
-   */
-  parseImportedJson(jsonString) {
-    try {
-      // Accept both string and object input
-      const data = typeof jsonString === 'string' ? JSON.parse(jsonString) : jsonString
-      return data
-    } catch (error) {
-      throw new Error(`Failed to parse JSON: ${error.message}`)
-    }
-  }
 
-  /**
-   * Validate export payload shape
-   */
-  validateExportPayload(data) {
-    if (!data || typeof data !== 'object') {
-      throw new Error('Invalid export file: not an object')
-    }
-    if (!data.exportVersion) {
-      throw new Error('Invalid export file: missing exportVersion')
-    }
-    if (!data.userProfile || typeof data.userProfile !== 'object') {
-      throw new Error('Invalid export file: missing userProfile')
-    }
-    if (!data.userProfile.dateOfBirth || typeof data.userProfile.dateOfBirth !== 'string') {
-      throw new Error('Invalid export file: missing dateOfBirth')
-    }
-    if (!('achievements' in data) || !Array.isArray(data.achievements)) {
-      throw new Error('Invalid export file: missing achievements')
-    }
-    if (!('unlockedMedals' in data) || !Array.isArray(data.unlockedMedals)) {
-      throw new Error('Invalid export file: missing unlockedMedals')
-    }
-  }
 
   _isValidDob(dob) {
     if (!dob || typeof dob !== 'string') return false
