@@ -15,6 +15,8 @@ export function achievementsToCSV(achievements = []) {
     'Points',
     'Date',
     'Competition Name',
+    'Medal Type',
+    'Discipline Type',
     'Notes'
   ]
   const rows = achievements.map(a => ([
@@ -25,6 +27,8 @@ export function achievementsToCSV(achievements = []) {
     a.points,
     a.date || a.competitionDate || '',
     a.competitionName || '',
+    a.medalType || '',
+    a.disciplineType || '',
     a.notes || ''
   ].map(escapeCsvCell).join(',')))
 

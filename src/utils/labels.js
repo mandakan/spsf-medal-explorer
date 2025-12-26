@@ -1,13 +1,13 @@
 export const ACHIEVEMENT_TYPE_LABELS = {
-  precision_series: 'Precision series',
-  application_series: 'Application series',
-  competition_result: 'Competition result',
+  precision_series: 'Precisionsserier',
+  application_series: 'Tillämpningsserier',
+  competition_result: 'Tävlingsresultat',
   qualification_result: 'Qualification',
-  team_event: 'Team event',
+  team_event: 'Lag-event',
   event: 'Event',
   custom: 'Custom',
   special_achievement: 'Special achievement',
-  standard_medal: 'Standard medal',
+  standard_medal: 'Standardmedalj',
 }
 
 export function getAchievementTypeLabel(type) {

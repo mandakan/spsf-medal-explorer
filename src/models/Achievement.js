@@ -21,6 +21,9 @@ export class Achievement {
       ? data.points
       : (data.points != null && data.points !== '' ? Number(data.points) : undefined)
 
+    // standard_medal
+    this.disciplineType = data.disciplineType
+
     // competition_result specific fields required by validator
     this.competitionType = data.competitionType
     this.medalType = data.medalType

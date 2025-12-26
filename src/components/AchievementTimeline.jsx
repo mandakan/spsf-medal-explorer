@@ -80,7 +80,7 @@ export default function AchievementTimeline() {
               onChange={(e) => setFilterType(e.target.value || null)}
               className="select"
             >
-              <option value="">All Types</option>
+              <option value="">All typer</option>
               {['precision_series','competition_result','standard_medal'].map((t) => (
                 <option key={t} value={t}>{getAchievementTypeLabel(t)}</option>
               ))}

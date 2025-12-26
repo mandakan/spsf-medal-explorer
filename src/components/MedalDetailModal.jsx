@@ -11,6 +11,7 @@ import remarkGfm from 'remark-gfm'
 import { useNavigate, useLocation } from 'react-router-dom'
 import Disclaimer from './Disclaimer'
 import { LINKS } from '../config/links'
+import RequirementTree from './RequirementTree'
 
 export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) {
   const { medalDatabase } = useMedalDatabase()
@@ -54,16 +55,14 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
     return Number.isNaN(d.getTime()) ? null : d.getFullYear()
   }, [unlockedIso])
 
-  const requirementItems = useMemo(() => {
-    if (!medal) return []
-    const hasReqFromStatus =
-      status?.details && status.reason !== 'prerequisites_not_met' && Array.isArray(status.details.items)
-    if (hasReqFromStatus) return status.details.items
+  const reqTree = useMemo(() => {
+    if (!medal) return null
+    const fromStatus = status?.details?.tree
+    if (fromStatus) return fromStatus
     try {
-      const res = calculator?.checkRequirements?.(medal)
-      return res?.items || []
+      return calculator?.checkRequirements?.(medal)?.tree ?? null
     } catch {
-      return []
+      return null
     }
   }, [calculator, medal, status])
 
@@ -555,21 +554,10 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
               </div>
             )}
 
-            {!isPlaceholder && requirementItems.length > 0 && (
-              <div className="mb-4 bg-background border border-border rounded p-3">
-                <p className="text-sm font-semibold text-foreground mb-2">
-                  Krav:
-                </p>
-                <ul className="text-sm text-muted-foreground space-y-1">
-                  {requirementItems.map((item, i) => (
-                    <li key={i} className="break-words">
-                      <span className={item.isMet ? 'text-foreground' : 'text-muted-foreground'}>
-                        {item.isMet ? '✓' : '○'}
-                      </span>{' '}
-                      {item.description || item.type}
-                    </li>
-                  ))}
-                </ul>
+            {!isPlaceholder && reqTree && (
+              <div className="mb-4">
+                <p className="text-sm font-semibold text-foreground mb-2">Krav:</p>
+                <RequirementTree tree={reqTree} />
               </div>
             )}
 

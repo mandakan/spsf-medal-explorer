@@ -6,6 +6,7 @@ import { useAchievementHistory } from '../hooks/useAchievementHistory'
 
 const WG = ['A', 'B', 'C', 'R']
 const COMP_TYPES = ['national', 'regional/landsdels', 'crewmate/krets', 'championship']
+const DISCIPLINE_TYPES = ['field', 'precision', 'military_fast']
 const MEDAL_TYPES = ['bronze', 'silver', 'gold']
 const APP_TIME_OPTIONS = [
   { value: 60, label: '60, Brons' },
@@ -24,6 +25,7 @@ const newRow = () => ({
   points: '',
   competitionType: '',
   medalType: '',
+  disciplineType: '',
   competitionName: '',
   weapon: '',
   score: '',
@@ -135,6 +137,7 @@ export default function BatchAchievementForm() {
           if (!MEDAL_TYPES.includes(mt)) errs.push('Välj giltig märkestyp')
           break
         }
+        case 'standard_medal':
         case 'qualification_result':
         case 'team_event':
         case 'event':
@@ -280,6 +283,7 @@ export default function BatchAchievementForm() {
                     >
                       <option value="precision_series">Precisionsserie</option>
                       <option value="application_series">Tillämpningsserie</option>
+                      <option value="standard_medal">Standardmedalj</option>
                       <option value="competition_result">Tävlingsresultat</option>
                       <option value="qualification_result">Kvalificering</option>
                       <option value="team_event">Lag-Event</option>
@@ -364,6 +368,42 @@ export default function BatchAchievementForm() {
                           aria-describedby={rowErrs.length ? errorId : undefined}
                         />
                       </div>
+                    ) : row.type === 'standard_medal' ? (
+                      <div className="flex flex-wrap gap-2">
+                        <select
+                          value={row.disciplineType}
+                          onChange={(e) => handleRowChange(index, 'disciplineType', e.target.value)}
+                          className="select w-40"
+                          disabled={submitting}
+                          aria-label={`Tävlinggren för rad ${index + 1}`}
+                        >
+                          <option value="">Välj disciplin...</option>
+                          {DISCIPLINE_TYPES.map(opt => (
+                            <option key={opt} value={opt}>{opt}</option>
+                          ))}
+                        </select>
+                        <select
+                          value={row.medalType}
+                          onChange={(e) => handleRowChange(index, 'medalType', e.target.value)}
+                          className="select w-32"
+                          disabled={submitting}
+                          aria-label={`Medaljtyp för rad ${index + 1}`}
+                        >
+                          <option value="">Välj medalj...</option>
+                          {MEDAL_TYPES.map(opt => (
+                            <option key={opt} value={opt}>{opt}</option>
+                          ))}
+                        </select>
+                         <input
+                          type="text"
+                          value={row.competitionName}
+                          onChange={(e) => handleRowChange(index, 'competitionName', e.target.value)}
+                          className="input flex-1 min-w-[10rem]"
+                          placeholder="Tävlingsnamn (valfritt)"
+                          disabled={submitting}
+                          aria-label={`Tävlingsnamn för rad ${index + 1}`}
+                        />
+                        </div>
                     ) : row.type === 'competition_result' ? (
                       <div className="flex flex-wrap gap-2">
                         <select

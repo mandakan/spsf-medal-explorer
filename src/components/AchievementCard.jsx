@@ -30,6 +30,7 @@ export default function AchievementCard({ achievement }) {
     hits: a.hits,
     competitionType: a.competitionType,
     medalType: a.medalType,
+    disciplineType: a.disciplineType,
     competitionName: a.competitionName,
     weapon: a.weapon,
     score: a.score,
@@ -59,6 +60,13 @@ export default function AchievementCard({ achievement }) {
           ...base,
           timeSeconds: row.timeSeconds === '' ? undefined : Number(row.timeSeconds ?? 0),
           hits: row.hits === '' ? undefined : Number(row.hits ?? 0),
+        }
+      case 'standard_medal':
+        return {
+          ...base,
+          disciplineType: row.disciplineType || '',
+          competitionName: row.competitionName || '',
+          medalType: row.medalType || '',
         }
       case 'competition_result':
         return {
@@ -106,6 +114,7 @@ export default function AchievementCard({ achievement }) {
       timeSeconds: '',
       hits: '',
       competitionType: '',
+      disciplineType: '',
       medalType: '',
       competitionName: '',
       weapon: '',
