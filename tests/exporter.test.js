@@ -1,9 +1,10 @@
 import { LocalStorageDataManager } from '../src/data/localStorage'
-import { UserProfile } from '../src/models/Profile'
+import { exportProfileBackupToJson, importProfileBackupFromJson } from '../src/logic/exporter'
+import { parseProfileBackup } from '../src/utils/importManager'
 import { Achievement } from '../src/models/Achievement'
-import { exportProfileToJson, parseExportJson, validateExportPayload, importProfileFromJson } from '../src/logic/exporter'
+import { UserProfile } from '../src/models/Profile'
 
-describe('Exporter import/export', () => {
+describe('Profile backup export/import (new format)', () => {
   let storage
 
   beforeEach(() => {
@@ -11,21 +12,22 @@ describe('Exporter import/export', () => {
     storage = new LocalStorageDataManager()
   })
 
-  test('exports profile to valid JSON string', async () => {
+  test('exports profile to valid profile-backup JSON string', async () => {
     const profile = new UserProfile({ displayName: 'Exporter User', dateOfBirth: '1990-05-10' })
-    await storage.saveUserProfile(profile)
+    const saved = await storage.saveUserProfile(profile)
 
-    const json = await exportProfileToJson(storage, profile.userId)
+    const json = await exportProfileBackupToJson(storage, saved.userId)
     expect(typeof json).toBe('string')
 
-    const parsed = parseExportJson(json)
-    expect(parsed.userProfile.displayName).toBe('Exporter User')
-    validateExportPayload(parsed) // should not throw
+    const parsed = JSON.parse(json)
+    expect(parsed.kind).toBe('profile-backup')
+    expect(parsed.version).toBe('1.0')
+    expect(parsed.profile.displayName).toBe('Exporter User')
   })
 
   test('import after export preserves achievements and medals', async () => {
     const profile = new UserProfile({ displayName: 'Roundtrip User', dateOfBirth: '1985-01-20' })
-    await storage.saveUserProfile(profile)
+    const saved = await storage.saveUserProfile(profile)
 
     const a1 = new Achievement({
       type: 'precision_series',
@@ -34,18 +36,22 @@ describe('Exporter import/export', () => {
       points: 40,
       date: '2025-04-10',
     })
-    await storage.addAchievement(profile.userId, a1)
+    await storage.addAchievement(saved.userId, a1)
 
-    const exported = await storage.exportData(profile.userId)
-    const importedProfile = await importProfileFromJson(storage, JSON.stringify(exported))
+    // Export with new format
+    const json = await exportProfileBackupToJson(storage, saved.userId)
+
+    // Import (restore) using new format
+    const importedProfile = await importProfileBackupFromJson(storage, json, { strategy: 'new-id' })
 
     expect(importedProfile).toBeDefined()
-    expect(importedProfile.userId).not.toBe(profile.userId) // new profile created on import
+    expect(importedProfile.userId).not.toBe(saved.userId)
     expect(importedProfile.prerequisites.length).toBe(1)
     expect(importedProfile.unlockedMedals.length).toBe(0)
   })
 
-  test('invalid JSON throws descriptive error', () => {
-    expect(() => parseExportJson('{ invalid json')).toThrow(/Invalid JSON/)
+  test('invalid JSON throws descriptive error', async () => {
+    await expect(importProfileBackupFromJson(storage, '{ invalid json')).rejects.toThrow(/Invalid JSON/)
+    expect(() => parseProfileBackup('{ invalid json')).toThrow(/Invalid JSON/)
   })
 })

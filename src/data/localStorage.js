@@ -186,74 +186,7 @@ export class LocalStorageDataManager extends DataManager {
     await this.saveUserProfile(profile)
   }
 
-  /**
-   * Export profile data as JSON-compatible object
-   */
-  async exportData(userId) {
-    const profile = await this.getUserProfile(userId)
-    if (!profile) throw new Error('Profile not found')
 
-    return {
-      exportVersion: '1.0',
-      exportDate: new Date().toISOString(),
-      userProfile: {
-        displayName: profile.displayName,
-        createdDate: profile.createdDate,
-        dateOfBirth: profile.dateOfBirth,
-        features: profile.features || {},
-      },
-      achievements: profile.prerequisites || [],
-      unlockedMedals: profile.unlockedMedals || [],
-    }
-  }
-
-  /**
-   * Import profile data from JSON string
-   * Returns the saved profile
-   * - Always creates a brand-new unique userId
-   * - Normalizes achievements with ids if missing
-   */
-  async importData(jsonData) {
-    const parsed = this.parseImportedJson(jsonData)
-
-    // Basic validation of export payload
-    this.validateExportPayload(parsed)
-
-    // Generate a brand-new unique userId
-    const existing = await this.getAllProfiles()
-    const makeId = () => {
-      try {
-        // Prefer crypto.randomUUID when available (browser/jsdom)
-        if (typeof crypto !== 'undefined' && crypto.randomUUID) {
-          return `user-${crypto.randomUUID()}`
-        }
-      } catch {
-        // ignore
-      }
-      return `user-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
-    }
-    let newId = makeId()
-    while (existing.some(p => p.userId === newId)) {
-      newId = makeId()
-    }
-
-    // Normalize achievements: ensure each has an id
-    const achievements = Array.isArray(parsed.achievements) ? parsed.achievements.map(a => {
-      const id = a && a.id ? a.id : `achievement-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
-      return { ...a, id }
-    }) : []
-
-    const profile = new UserProfile({
-      userId: newId,
-      displayName: (parsed.userProfile && parsed.userProfile.displayName) || '',
-      dateOfBirth: parsed.userProfile && parsed.userProfile.dateOfBirth,
-      prerequisites: achievements,
-      unlockedMedals: Array.isArray(parsed.unlockedMedals) ? parsed.unlockedMedals : [],
-      features: (parsed.userProfile && parsed.userProfile.features) || {},
-    })
-
-    return await this.saveUserProfile(profile)
-  }
 
   /**
    * Validate profile structure per docs/02-Data-Model.md
@@ -363,42 +296,7 @@ export class LocalStorageDataManager extends DataManager {
     }
   }
 
-  /**
-   * Parse imported JSON string safely
-   */
-  parseImportedJson(jsonString) {
-    try {
-      // Accept both string and object input
-      const data = typeof jsonString === 'string' ? JSON.parse(jsonString) : jsonString
-      return data
-    } catch (error) {
-      throw new Error(`Failed to parse JSON: ${error.message}`)
-    }
-  }
 
-  /**
-   * Validate export payload shape
-   */
-  validateExportPayload(data) {
-    if (!data || typeof data !== 'object') {
-      throw new Error('Invalid export file: not an object')
-    }
-    if (!data.exportVersion) {
-      throw new Error('Invalid export file: missing exportVersion')
-    }
-    if (!data.userProfile || typeof data.userProfile !== 'object') {
-      throw new Error('Invalid export file: missing userProfile')
-    }
-    if (!data.userProfile.dateOfBirth || typeof data.userProfile.dateOfBirth !== 'string') {
-      throw new Error('Invalid export file: missing dateOfBirth')
-    }
-    if (!('achievements' in data) || !Array.isArray(data.achievements)) {
-      throw new Error('Invalid export file: missing achievements')
-    }
-    if (!('unlockedMedals' in data) || !Array.isArray(data.unlockedMedals)) {
-      throw new Error('Invalid export file: missing unlockedMedals')
-    }
-  }
 
   _isValidDob(dob) {
     if (!dob || typeof dob !== 'string') return false
@@ -451,5 +349,78 @@ export class LocalStorageDataManager extends DataManager {
     } catch {
       return false
     }
+  }
+
+  _generateUserId() {
+    try {
+      if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+        return `user-${crypto.randomUUID()}`
+      }
+    } catch {
+      // ignore
+    }
+    return `user-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
+  }
+
+  _ensureUniqueId(id) {
+    const data = this.getStorageData()
+    const base = id && typeof id === 'string' && id.trim() ? id.trim() : this._generateUserId()
+    let next = base
+    let i = 1
+    while (data.profiles.some(p => p.userId === next)) {
+      next = `${base}-${i++}`
+    }
+    return next
+  }
+
+  /**
+   * Restore a full profile from a validated backup profile object.
+   * strategy:
+   *  - 'new-id' (default): always assign a fresh unique userId
+   *  - 'overwrite': keep provided userId and overwrite existing profile with same id (or create if missing)
+   */
+  async restoreProfile(profile, { strategy = 'new-id' } = {}) {
+    if (!profile || typeof profile !== 'object') {
+      throw new Error('Invalid profile')
+    }
+
+    const now = new Date().toISOString()
+    const normalized = {
+      userId: String(profile.userId || ''),
+      displayName: String(profile.displayName || ''),
+      createdDate: profile.createdDate || now,
+      lastModified: now,
+      dateOfBirth: profile.dateOfBirth || '',
+      unlockedMedals: Array.isArray(profile.unlockedMedals) ? profile.unlockedMedals : [],
+      prerequisites: Array.isArray(profile.prerequisites) ? profile.prerequisites : [],
+      notifications: !!profile.notifications,
+      features: {
+        allowManualUnlock: !!(profile.features && profile.features.allowManualUnlock),
+        enforceCurrentYearForSustained: !!(profile.features && profile.features.enforceCurrentYearForSustained),
+      },
+    }
+
+    if (strategy === 'new-id') {
+      normalized.userId = this._ensureUniqueId(this._generateUserId())
+    } else if (strategy === 'overwrite') {
+      if (!normalized.userId) throw new Error('userId is required for overwrite')
+      // keep provided userId; overwrite if exists, or create if missing
+    } else {
+      throw new Error('Invalid restore strategy')
+    }
+
+    if (!this.validateProfile(normalized)) {
+      throw new Error('Invalid profile structure')
+    }
+
+    const data = this.getStorageData()
+    const idx = data.profiles.findIndex(p => p.userId === normalized.userId)
+    if (idx >= 0) {
+      data.profiles[idx] = normalized
+    } else {
+      data.profiles.push(normalized)
+    }
+    this.saveStorageData(data)
+    return normalized
   }
 }

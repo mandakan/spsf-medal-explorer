@@ -18,7 +18,7 @@ export default function ExportPanel({ profile }) {
 
       switch (exportFormat) {
         case 'json': {
-          data = await exportManager.toJSON(profile)
+          data = await exportManager.toProfileBackup(profile, { version: '1.0' })
           filename = `profil-${dateStr}.json`
           mime = 'application/json'
           break
@@ -101,30 +101,14 @@ export default function ExportPanel({ profile }) {
       </button>
 
       {success && (
-        <div
-          className="
-            mt-4 p-3 rounded-lg flex items-center gap-2
-            bg-green-50 text-green-800 dark:bg-green-900/30 dark:text-green-300
-            border border-green-300 dark:border-green-600
-          "
-          role="status"
-          aria-live="polite"
-        >
+        <div className="alert alert-success mt-4 flex items-center gap-2" role="status" aria-live="polite">
           <span aria-hidden="true">✓</span>
           <span>Exporten lyckades!</span>
         </div>
       )}
 
       {error && (
-        <div
-          className="
-            mt-4 p-3 rounded-lg flex items-center gap-2
-            bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-300
-            border border-red-300 dark:border-red-600
-          "
-          role="alert"
-          aria-live="assertive"
-        >
+        <div className="alert alert-error mt-4 flex items-center gap-2" role="alert" aria-live="assertive">
           <span aria-hidden="true">✕</span>
           <span>{error}</span>
         </div>

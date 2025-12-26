@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useProfile } from '../hooks/useProfile'
 import MobileBottomSheet from './MobileBottomSheet'
+import ProfileImportDialog from './ProfileImportDialog'
 
 export default function ProfileSelector({ mode = 'picker', open = false, onClose, id = 'profile-picker' }) {
   const { profiles, currentProfile, loading, createProfile, updateProfile, selectProfile, deleteProfile } =
@@ -11,6 +12,7 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
   const [editingProfile, setEditingProfile] = useState(null)
   const [newProfileName, setNewProfileName] = useState('')
   const [newDateOfBirth, setNewDateOfBirth] = useState('')
+  const [showImport, setShowImport] = useState(false)
   const isPicker = mode === 'picker'
 
   const handleSubmit = async (e) => {
@@ -69,7 +71,7 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
                       selectProfile(profile.userId)
                       onClose?.()
                     }}
-                    className="flex-1 text-left px-4 py-2 bg-bg-secondary border border-slate-200 dark:border-slate-700 rounded hover:bg-gray-100 dark:hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
+                    className="btn btn-muted flex-1 justify-start text-left"
                   >
                     {profile.displayName} (Ålder {computeAge(profile.dateOfBirth) ?? '—'})
                   </button>
@@ -81,13 +83,13 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
                       setNewDateOfBirth(profile.dateOfBirth || '')
                       setShowModal(true)
                     }}
-                    className="px-3 py-2 border border-slate-200 dark:border-slate-700 rounded hover:bg-gray-100 dark:hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
+                    className="btn btn-secondary"
                   >
                     Ändra
                   </button>
                   <button
                     onClick={() => handleDelete(profile.userId)}
-                    className="px-3 py-2 bg-red-500/10 border border-red-500/30 text-red-700 dark:text-red-300 rounded hover:bg-red-500/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-600/60"
+                    className="btn btn-danger"
                   >
                     Ta bort
                   </button>
@@ -97,23 +99,33 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
           ) : (
             <p className="text-text-secondary">Inga profiler ännu.</p>
           )}
-          <button
-            onClick={() => {
-              setModalMode('create')
-              setEditingProfile(null)
-              setNewProfileName('')
-              setNewDateOfBirth('')
-              setShowModal(true)
-            }}
-            className="mt-3 px-4 py-2 rounded bg-primary text-white hover:bg-primary-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
-          >
-            Skapa ny profil
-          </button>
+          <div className="mt-3 flex flex-col gap-2">
+            <button
+              onClick={() => {
+                setModalMode('create')
+                setEditingProfile(null)
+                setNewProfileName('')
+                setNewDateOfBirth('')
+                setShowModal(true)
+              }}
+              className="btn btn-primary min-h-[44px]"
+            >
+              Skapa ny profil
+            </button>
+            <button
+              onClick={() => setShowImport(true)}
+              className="btn btn-secondary min-h-[44px]"
+              aria-haspopup="dialog"
+              aria-controls="profile-import-dialog"
+            >
+              Importera profil
+            </button>
+          </div>
         </MobileBottomSheet>
       ) : (
         <div>
           {!currentProfile ? (
-            <div className="bg-bg-secondary border border-slate-200 dark:border-slate-700 rounded-lg p-4 mb-4">
+            <div className="bg-bg-secondary border border-border rounded-lg p-4 mb-4">
               <p className="text-text-primary mb-3">No profile selected</p>
               {profiles.length > 0 && (
                 <div className="space-y-2 mb-3">
@@ -121,7 +133,7 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
                     <div key={profile.userId} className="flex gap-2">
                       <button
                         onClick={() => selectProfile(profile.userId)}
-                        className="flex-1 text-left px-4 py-2 bg-bg-secondary border border-slate-200 dark:border-slate-700 rounded hover:bg-gray-100 dark:hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
+                        className="btn btn-muted flex-1 justify-start text-left"
                       >
                         {profile.displayName} (Age {computeAge(profile.dateOfBirth) ?? '—'})
                       </button>
@@ -133,13 +145,13 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
                           setNewDateOfBirth(profile.dateOfBirth || '')
                           setShowModal(true)
                         }}
-                        className="px-3 py-2 border border-slate-200 dark:border-slate-700 rounded hover:bg-gray-100 dark:hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
+                        className="btn btn-secondary"
                       >
                         Ändra
                       </button>
                       <button
                         onClick={() => handleDelete(profile.userId)}
-                        className="px-3 py-2 bg-red-500/10 border border-red-500/30 text-red-700 dark:text-red-300 rounded hover:bg-red-500/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-600/60"
+                        className="btn btn-danger"
                       >
                         Ta bort
                       </button>
@@ -147,21 +159,31 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
                   ))}
                 </div>
               )}
-              <button
-                onClick={() => {
-                  setModalMode('create')
-                  setEditingProfile(null)
-                  setNewProfileName('')
-                  setNewDateOfBirth('')
-                  setShowModal(true)
-                }}
-                className="px-4 py-2 rounded bg-primary text-white hover:bg-primary-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
-              >
-                Skapa ny profil
-              </button>
+              <div className="mt-3 flex flex-col gap-2">
+                <button
+                  onClick={() => {
+                    setModalMode('create')
+                    setEditingProfile(null)
+                    setNewProfileName('')
+                    setNewDateOfBirth('')
+                    setShowModal(true)
+                  }}
+                  className="btn btn-primary min-h-[44px]"
+                >
+                  Skapa ny profil
+                </button>
+                <button
+                  onClick={() => setShowImport(true)}
+                  className="btn btn-secondary min-h-[44px]"
+                  aria-haspopup="dialog"
+                  aria-controls="profile-import-dialog"
+                >
+                  Importera profil
+                </button>
+              </div>
             </div>
           ) : (
-            <div className="bg-bg-secondary border border-emerald-300 ring-1 ring-emerald-500/20 dark:border-emerald-700 dark:ring-emerald-400/30 rounded-lg p-4 mb-4">
+            <div className="bg-bg-secondary border border-border ring-1 ring-primary/20 rounded-lg p-4 mb-4">
               <p className="text-text-primary font-semibold">Profile: {currentProfile.displayName}</p>
               <p className="text-text-secondary text-sm">
                 Ålder: {computeAge(currentProfile.dateOfBirth) ?? '—'}
@@ -171,13 +193,15 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
         </div>
       )}
 
+      <ProfileImportDialog id="profile-import-dialog" open={showImport} onClose={() => setShowImport(false)} />
+
       {showModal && (
         <div className="fixed inset-0 z-[1000] bg-black/60 flex items-center justify-center p-4">
           <div
             role="dialog"
             aria-modal="true"
             aria-labelledby="create-profile-title"
-            className="w-[min(92vw,32rem)] max-h-[85vh] overflow-auto rounded-xl bg-bg-secondary border border-slate-200 dark:border-slate-700 shadow-2xl"
+            className="w-[min(92vw,32rem)] max-h-[85vh] overflow-auto rounded-xl bg-bg-secondary border border-border shadow-2xl"
           >
             <form onSubmit={handleSubmit} className="p-6 space-y-5">
               <h2 id="create-profile-title" className="text-2xl font-bold text-text-primary">
@@ -190,7 +214,7 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
                   type="text"
                   value={newProfileName}
                   onChange={(e) => setNewProfileName(e.target.value)}
-                  className="w-full px-3 py-2 rounded border border-slate-300 dark:border-slate-600 bg-bg-secondary text-text-primary placeholder:text-text-secondary/70 focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="input"
                   placeholder="Ditt namn"
                   disabled={loading}
                   required
@@ -203,7 +227,7 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
                   type="date"
                   value={newDateOfBirth}
                   onChange={(e) => setNewDateOfBirth(e.target.value)}
-                  className="w-full px-3 py-2 rounded border border-slate-300 dark:border-slate-600 bg-bg-secondary text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="input"
                   disabled={loading}
                   required
                 />
@@ -213,7 +237,7 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
               <div className="flex items-center justify-end gap-3 pt-2">
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded bg-primary text-white hover:bg-primary-hover disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
+                  className="btn btn-primary disabled:opacity-50"
                   disabled={loading}
                 >
                   {modalMode === 'edit' ? 'Spara' : 'Skapa'}
@@ -221,7 +245,7 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="px-4 py-2 rounded border border-slate-300 dark:border-slate-600 text-text-primary hover:bg-gray-100 dark:hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
+                  className="btn btn-secondary"
                   disabled={loading}
                 >
                   Avbryt

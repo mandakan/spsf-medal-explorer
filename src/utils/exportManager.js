@@ -1,6 +1,6 @@
 /**
  * Export Manager
- * - toJSON(profile)
+ * - toProfileBackup(profile)
  * - toCSV(achievements)
  * - toPDF(profile)
  * - toQRCode(shareData)
@@ -82,44 +82,6 @@ startxref
   return new TextEncoder().encode(pdfContent)
 }
 
-export async function toJSON(profile, options = {}) {
-  const {
-    includeFilters = true,
-    version = '1.0',
-  } = options
-
-  const exportObj = {
-    version,
-    exportDate: safeDateISO(),
-    profile: {
-      id: profile?.userId || profile?.id || '',
-      name: profile?.displayName || profile?.name || '',
-      createdAt: profile?.createdDate || safeDateISO(),
-    },
-    achievements: ensureArray(profile?.achievements ?? profile?.prerequisites).map(a => ({
-      id: a.id,
-      medalId: a.medalId,
-      type: a.type,
-      date: a.date || a.competitionDate || null,
-      score: a.points ?? a.score ?? null,
-      notes: a.notes ?? '',
-      createdAt: a.enteredDate || a.createdAt || safeDateISO(),
-      weaponGroup: a.weaponGroup ?? a.weapon ?? null,
-      year: a.year ?? (a.date ? new Date(a.date).getFullYear() : null),
-    })),
-    unlockedMedals: ensureArray(profile?.unlockedMedals).map(m => ({
-      medalId: m.medalId,
-      unlockedDate: m.unlockedDate || null,
-      year: m.year ?? (m.unlockedDate ? new Date(m.unlockedDate).getFullYear() : null),
-    })),
-  }
-
-  if (includeFilters && Array.isArray(profile?.filters)) {
-    exportObj.filters = profile.filters
-  }
-
-  return JSON.stringify(exportObj, null, 2)
-}
 
 export async function toCSV(achievements) {
   const rows = []
@@ -198,4 +160,27 @@ export async function toQRCode(shareData, options = {}) {
           ? btoa(unescape(encodeURIComponent(payload)))
           : '')) || ''
   return `data:text/plain;base64,${base64}`
+}
+
+export async function toProfileBackup(profile, { version = '1.0' } = {}) {
+  const payload = {
+    kind: 'profile-backup',
+    version,
+    exportedAt: safeDateISO(),
+    profile: {
+      userId: profile?.userId || '',
+      displayName: profile?.displayName || '',
+      createdDate: profile?.createdDate || safeDateISO(),
+      lastModified: profile?.lastModified || safeDateISO(),
+      dateOfBirth: profile?.dateOfBirth || '',
+      unlockedMedals: ensureArray(profile?.unlockedMedals),
+      prerequisites: ensureArray(profile?.prerequisites),
+      features: {
+        allowManualUnlock: !!profile?.features?.allowManualUnlock,
+        enforceCurrentYearForSustained: !!profile?.features?.enforceCurrentYearForSustained,
+      },
+      notifications: !!profile?.notifications,
+    },
+  }
+  return JSON.stringify(payload, null, 2)
 }

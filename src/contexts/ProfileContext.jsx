@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react'
 import { ProfileContext } from './profileContext'
 import { LocalStorageDataManager } from '../data/localStorage'
 import { UserProfile } from '../models/Profile'
+import { parseProfileBackup } from '../utils/importManager'
 export { ProfileContext } from './profileContext'
 
 const LAST_PROFILE_KEY = 'app:lastProfileId'
@@ -322,6 +323,27 @@ export function ProfileProvider({ children }) {
     [currentProfile, storage]
   )
 
+  const restoreProfileFromBackup = useCallback(
+    async (jsonOrObj, options = { strategy: 'new-id' }) => {
+      try {
+        setLoading(true)
+        const parsed = parseProfileBackup(jsonOrObj)
+        const saved = await storage.restoreProfile(parsed, options)
+        setCurrentProfile(saved)
+        setLastProfileId(saved.userId)
+        await loadProfiles()
+        setError(null)
+        return saved
+      } catch (err) {
+        setError(err.message)
+        throw err
+      } finally {
+        setLoading(false)
+      }
+    },
+    [storage, loadProfiles]
+  )
+
   const value = {
     currentProfile,
     profiles,
@@ -337,6 +359,7 @@ export function ProfileProvider({ children }) {
     unlockMedal,
     lockMedal,
     setProfileFeature,
+    restoreProfileFromBackup,
   }
 
   return <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>

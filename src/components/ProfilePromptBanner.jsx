@@ -19,7 +19,7 @@ export default function ProfilePromptBanner({ id = 'profile-picker-inline' }) {
           <button
             type="button"
             onClick={() => setOpen(true)}
-            className="px-4 py-2 rounded bg-primary text-white hover:bg-primary-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary min-h-[44px]"
+            className="btn btn-primary min-h-[44px]"
             aria-haspopup="dialog"
             aria-controls={id}
           >

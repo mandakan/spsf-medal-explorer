@@ -13,6 +13,23 @@
   --color-accent: #32b8c6;
   --color-primary-foreground: #ffffff;
 
+  /* Status tokens */
+  --color-success: #22c55e;
+  --color-success-foreground: #ffffff;
+  --color-success-subtle: #ecfdf5;
+  --color-success-border: #86efac;
+
+  --color-warning: #f59e0b;
+  --color-warning-foreground: #1f2937;
+  --color-warning-subtle: #fffbeb;
+  --color-warning-border: #fcd34d;
+
+  --color-danger: #ef4444;
+  --color-danger-hover: #dc2626;
+  --color-danger-foreground: #ffffff;
+  --color-danger-subtle: #fef2f2;
+  --color-danger-border: #fca5a5;
+
   /* Medal colors */
   --color-medal-gold: #FFD700;
   --color-medal-silver: #C0C0C0;
@@ -78,6 +95,23 @@
   --color-primary-hover: #16605a;
   --color-accent: #32b8c6;
 
+  /* Status tokens (dark) */
+  --color-success: #22c55e;
+  --color-success-foreground: #0b1f15;
+  --color-success-subtle: rgba(34, 197, 94, 0.1);
+  --color-success-border: rgba(34, 197, 94, 0.45);
+
+  --color-warning: #f59e0b;
+  --color-warning-foreground: #1f2937;
+  --color-warning-subtle: rgba(245, 158, 11, 0.12);
+  --color-warning-border: rgba(245, 158, 11, 0.45);
+
+  --color-danger: #ef4444;
+  --color-danger-hover: #dc2626;
+  --color-danger-foreground: #1f2937;
+  --color-danger-subtle: rgba(239, 68, 68, 0.12);
+  --color-danger-border: rgba(239, 68, 68, 0.45);
+
   --color-medal-gold: #FFD700;
   --color-medal-silver: #C0C0C0;
   --color-medal-bronze: #CD7F32;
@@ -120,8 +154,18 @@ body {
   .btn-primary {
     @apply bg-primary text-primary-foreground hover:bg-primary-hover;
   }
+  .btn-secondary {
+    @apply bg-bg-primary text-foreground border border-border hover:bg-bg-secondary;
+  }
   .btn-muted {
     @apply bg-background text-foreground ring-1 ring-border hover:bg-bg-secondary;
+  }
+  .btn-danger {
+    background-color: var(--color-danger);
+    color: var(--color-danger-foreground);
+  }
+  .btn-danger:hover {
+    background-color: var(--color-danger-hover);
   }
   .field-label {
     @apply block text-sm font-medium text-foreground;
@@ -137,6 +181,25 @@ body {
   }
   .input[disabled], .select[disabled], .textarea[disabled] {
     @apply opacity-100 text-muted-foreground bg-bg-secondary/70;
+  }
+
+  .alert {
+    @apply rounded-lg border p-3;
+  }
+  .alert-success {
+    background-color: var(--color-success-subtle);
+    color: var(--color-success-foreground);
+    border-color: var(--color-success-border);
+  }
+  .alert-warning {
+    background-color: var(--color-warning-subtle);
+    color: var(--color-warning-foreground);
+    border-color: var(--color-warning-border);
+  }
+  .alert-error {
+    background-color: var(--color-danger-subtle);
+    color: var(--color-danger-foreground);
+    border-color: var(--color-danger-border);
   }
 
   /* Ensures bottom-sheet content never collides with device safe area and provides
