@@ -37,6 +37,25 @@ for in_file in "$@"; do
 
   cp "$in_file" "$backup"
 
+  echo "Processing: $in_file"
+  echo " - Backup: $backup"
+
+  top_type=$(jq -r 'type' "$in_file" 2>/dev/null || echo "unknown")
+  echo " - JSON top-level type: $top_type"
+
+  if jq -e 'has("medals") and (.medals | type=="array")' "$in_file" >/dev/null 2>&1; then
+    count=$(jq -r '.medals | length' "$in_file")
+    echo " - medals[] count: $count"
+  elif jq -e 'type=="array"' "$in_file" >/dev/null 2>&1; then
+    count=$(jq -r 'length' "$in_file")
+    echo " - top-level array length: $count"
+  else
+    echo " - no medals[] array; walking entire document"
+  fi
+
+  obj_with_names=$(jq -r '[.. | objects | select((.name? | type=="string") or (.displayName? | type=="string"))] | length' "$in_file" 2>/dev/null || echo 0)
+  echo " - objects with name/displayName: $obj_with_names"
+
   jq '
     def trim: gsub("^\\s+|\\s+$"; "");
     def normalize_spaces: gsub("\\s+"; " ") | trim;
@@ -57,38 +76,63 @@ for in_file in "$@"; do
         $s | capture("^(?<base>.*?)\\s+(?<tier>(?:Guld|Silver|Brons)(?:\\s+.*)?|med\\s+.*)\\s*$")
       ) catch null;
 
+    def has_str_name: (.name? | type=="string");
+    def has_str_display: (.displayName? | type=="string");
+
     def choose_candidate:
-      ( ( .displayName? // .name? ) as $c
-        | if ($c | type) == "string" then $c else "" end );
+      if has_str_display then .displayName
+      elif has_str_name then .name
+      else ""
+      end;
 
     def update_obj:
-      (choose_candidate) as $cand
-      | (dash_parts($cand) // generic_parts($cand)) as $p
-      | if $p != null and ($p.base | length) > 0 and ($p.tier | length) > 0 then
-          ($p.base | trim) as $base
-          | ($p.tier | trim) as $tier
-          | (if ((.tierName? // "") | length) == 0 then .tierName = $tier else . end)
-          | .name = (($base + " " + $tier) | normalize_spaces)
-          | .displayName = .name
-        else
-          # No structured parts found; at minimum remove dashes if present
-          (if (.name? | type) == "string" then .name = normalize_no_dash(.name) else . end)
-          | (if (.displayName? | type) == "string" then .displayName = normalize_no_dash(.displayName) else . end)
-        end;
+      if type=="object" then
+        (choose_candidate) as $cand
+        | (dash_parts($cand) // generic_parts($cand)) as $p
+        | if $p != null and ($p.base | length) > 0 and ($p.tier | length) > 0 then
+            ($p.base | trim) as $base
+            | ($p.tier | trim) as $tier
+            | (if ((.tierName? // "") | length) == 0 then .tierName = $tier else . end)
+            | .name = (($base + " " + $tier) | normalize_spaces)
+            | .displayName = .name
+          else
+            # No structured parts found; at minimum remove dashes if present
+            (if has_str_name then .name = normalize_no_dash(.name) else . end)
+            | (if has_str_display then .displayName = normalize_no_dash(.displayName) else . end)
+          end
+      else
+        .
+      end;
 
-    # Robust recursive walk (from jq manual pattern)
+    # Robust recursive walk: recurse first, then apply f to each value
     def walk(f):
       . as $in
-      | if type == "object" then
-          (reduce keys[] as $k ({}; . + { ($k): ($in[$k] | walk(f)) }) | f)
-        elif type == "array" then
-          (map( walk(f) ) | f)
-        else
-          f
-        end;
+      | (if type == "object" then
+           reduce keys[] as $k ({}; . + { ($k): ($in[$k] | walk(f)) })
+         elif type == "array" then
+           map( walk(f) )
+         else
+           .
+         end) | f;
 
     walk(update_obj)
   ' "$in_file" > "$tmp"
+
+  if [ ! -s "$tmp" ]; then
+    echo "ERROR: Transformation produced empty output for $in_file. Leaving original in place. Backup at $backup" >&2
+    rm -f "$tmp"
+    continue
+  fi
+
+  if ! jq -e '.' "$tmp" >/dev/null 2>&1; then
+    echo "ERROR: Transformed file is invalid JSON for $in_file. Restoring backup." >&2
+    rm -f "$tmp"
+    cp "$backup" "$in_file"
+    continue
+  fi
+
+  final_count=$(jq -r 'if has("medals") and (.medals|type=="array") then .medals|length elif type=="array" then length else ([..|objects|select(has("id"))] | length) end' "$tmp" 2>/dev/null || echo "?")
+  echo " - transformed items count estimate: $final_count"
 
   mv "$tmp" "$in_file"
   echo "Updated: $in_file (backup at $backup)"
