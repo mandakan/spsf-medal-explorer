@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { MedalDatabase } from '../models/Medal'
 import { loadBestAvailableData, validatePrerequisites } from '../utils/medalDatabase'
-import { MedalContext } from './MedalContext.js'
+import { MedalContext } from './medalContext.js'
 
 /**
  * React context for medal database
