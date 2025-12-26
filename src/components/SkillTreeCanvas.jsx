@@ -554,31 +554,48 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
             />
             <div className="pointer-events-none absolute inset-0">
               {badgeData.map(badge => (
-                <span
-                  key={badge.id}
-                  role="note"
-                  aria-label={`Kräver ${badge.text}`}
-                  title={`Kräver ${badge.text}`}
-                  className={[
-                    'inline-flex items-center justify-center rounded-full border px-2 py-0.5 text-xs font-medium shadow-sm',
-                    badge.variant === 'ready'
-                      ? 'bg-primary text-white border-primary'
-                      : 'bg-primary/10 dark:bg-primary/20 text-foreground border-primary'
-                  ].join(' ')}
-                  style={{
-                    position: 'absolute',
-                    left: `${badge.left}px`,
-                    top: `${badge.top}px`,
-                    transform: 'translate3d(-50%, -50%, 0)',
-                    willChange: 'transform',
-                    width: `${badge.w}px`,
-                    height: `${badge.h}px`,
-                    whiteSpace: 'nowrap',
-                    boxShadow: '0 0 0 8px var(--color-background, #fff)'
-                  }}
-                >
-                  <span aria-hidden="true">{badge.text}</span>
-                </span>
+                <React.Fragment key={badge.id}>
+                  <span
+                    aria-hidden="true"
+                    style={{
+                      position: 'absolute',
+                      left: `${badge.left}px`,
+                      top: `${badge.top}px`,
+                      transform: 'translate3d(-50%, -50%, 0)',
+                      willChange: 'transform',
+                      width: `${badge.w}px`,
+                      height: `${badge.h}px`,
+                      borderRadius: '9999px',
+                      background: 'var(--color-background, #fff)',
+                      boxShadow: '0 0 0 3px var(--color-background, #fff)',
+                      zIndex: 0
+                    }}
+                  />
+                  <span
+                    role="note"
+                    aria-label={`Kräver ${badge.text}`}
+                    title={`Kräver ${badge.text}`}
+                    className={[
+                      'inline-flex items-center justify-center rounded-full border px-2 py-0.5 text-xs font-medium shadow-sm',
+                      badge.variant === 'ready'
+                        ? 'bg-primary text-white border-primary'
+                        : 'bg-primary/10 dark:bg-primary/20 text-foreground border-primary'
+                    ].join(' ')}
+                    style={{
+                      position: 'absolute',
+                      left: `${badge.left}px`,
+                      top: `${badge.top}px`,
+                      transform: 'translate3d(-50%, -50%, 0)',
+                      willChange: 'transform',
+                      width: `${badge.w}px`,
+                      height: `${badge.h}px`,
+                      whiteSpace: 'nowrap',
+                      zIndex: 1
+                    }}
+                  >
+                    <span aria-hidden="true">{badge.text}</span>
+                  </span>
+                </React.Fragment>
               ))}
             </div>
           </div>
@@ -706,31 +723,48 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
               />
               <div className="pointer-events-none absolute inset-0">
                 {badgeData.map(badge => (
-                  <span
-                    key={badge.id}
-                    role="note"
-                    aria-label={`Kräver ${badge.text}`}
-                    title={`Kräver ${badge.text}`}
-                    className={[
-                      'inline-flex items-center justify-center rounded-full border px-2 py-0.5 text-xs font-medium shadow-sm',
-                      badge.variant === 'ready'
-                        ? 'bg-primary text-white border-primary'
-                        : 'bg-primary/10 dark:bg-primary/20 text-foreground border-primary'
-                    ].join(' ')}
-                    style={{
-                      position: 'absolute',
-                      left: `${badge.left}px`,
-                      top: `${badge.top}px`,
-                      transform: 'translate3d(-50%, -50%, 0)',
-                      willChange: 'transform',
-                      width: `${badge.w}px`,
-                      height: `${badge.h}px`,
-                      whiteSpace: 'nowrap',
-                      boxShadow: '0 0 0 8px var(--color-background, #fff)'
-                    }}
-                  >
-                    <span aria-hidden="true">{badge.text}</span>
-                  </span>
+                  <React.Fragment key={badge.id}>
+                    <span
+                      aria-hidden="true"
+                      style={{
+                        position: 'absolute',
+                        left: `${badge.left}px`,
+                        top: `${badge.top}px`,
+                        transform: 'translate3d(-50%, -50%, 0)',
+                        willChange: 'transform',
+                        width: `${badge.w}px`,
+                        height: `${badge.h}px`,
+                        borderRadius: '9999px',
+                        background: 'var(--color-background, #fff)',
+                        boxShadow: '0 0 0 3px var(--color-background, #fff)',
+                        zIndex: 0
+                      }}
+                    />
+                    <span
+                      role="note"
+                      aria-label={`Kräver ${badge.text}`}
+                      title={`Kräver ${badge.text}`}
+                      className={[
+                        'inline-flex items-center justify-center rounded-full border px-2 py-0.5 text-xs font-medium shadow-sm',
+                        badge.variant === 'ready'
+                          ? 'bg-primary text-white border-primary'
+                          : 'bg-primary/10 dark:bg-primary/20 text-foreground border-primary'
+                      ].join(' ')}
+                      style={{
+                        position: 'absolute',
+                        left: `${badge.left}px`,
+                        top: `${badge.top}px`,
+                        transform: 'translate3d(-50%, -50%, 0)',
+                        willChange: 'transform',
+                        width: `${badge.w}px`,
+                        height: `${badge.h}px`,
+                        whiteSpace: 'nowrap',
+                        zIndex: 1
+                      }}
+                    >
+                      <span aria-hidden="true">{badge.text}</span>
+                    </span>
+                  </React.Fragment>
                 ))}
               </div>
             </div>
