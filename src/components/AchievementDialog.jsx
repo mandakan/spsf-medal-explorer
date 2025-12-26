@@ -125,7 +125,7 @@ function FormContent({
       }
       return errs
     }
-  }, [WG, DISCIPLINE_TYPES, COMP_TYPES, MEDAL_TYPES, APP_TIME_OPTIONS])
+  }, [WG, COMP_TYPES, MEDAL_TYPES, APP_TIME_OPTIONS])
 
   const onSubmit = (addAnother = false) => {
     const errs = validate(form)
