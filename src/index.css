@@ -214,6 +214,12 @@ body {
     border-color: var(--color-danger-border);
   }
 
+  .alert-info {
+    background-color: var(--color-info-subtle);
+    color: var(--color-info-foreground);
+    border-color: var(--color-info-border);
+  }
+
   /* Ensures bottom-sheet content never collides with device safe area and provides
      adequate tappable spacing per WCAG touch target guidance. */
   .safe-bottom {
