@@ -6,35 +6,65 @@ function escapeCsvCell(val) {
   return s
 }
 
-export function achievementsToCSV(achievements = []) {
-  const headers = [
-    'ID',
-    'Type',
-    'Year',
-    'Weapon Group',
-    'Points',
-    'Date',
-    'Competition Name',
-    'Medal Type',
-    'Discipline Type',
-    'Notes'
-  ]
-  const rows = achievements.map(a => ([
-    a.id,
-    a.type,
-    a.year,
-    a.weaponGroup,
-    a.points,
-    a.date || a.competitionDate || '',
-    a.competitionName || '',
-    a.medalType || '',
-    a.disciplineType || '',
-    a.notes || ''
-  ].map(escapeCsvCell).join(',')))
+const HEADERS = [
+  'id',
+  'type',
+  'year',
+  'weaponGroup',
+  'points',
+  'date',
+  'timeSeconds',
+  'hits',
+  'competitionName',
+  'competitionType',
+  'medalType',
+  'disciplineType',
+  'weapon',
+  'score',
+  'teamName',
+  'position',
+  'eventName',
+  'notes',
+  'schema_version',
+]
 
-  const csv = [headers.join(','), ...rows].join('\n')
-  return csv
+export function achievementsToCSV(achievements = [], schemaVersion = '1') {
+  const header = HEADERS.join(',')
+  const rows = (achievements || []).map(a =>
+    HEADERS.map(h => (h === 'schema_version' ? schemaVersion : (a?.[h] ?? '')))
+      .map(escapeCsvCell)
+      .join(',')
+  )
+  return [header, ...rows].join('\n')
 }
+
+export function exportCsvTemplate(schemaVersion = '1') {
+  const header = HEADERS.join(',')
+  const example = [
+    '',                 // id (leave empty for new)
+    'precision_series', // type
+    '2024',             // year
+    'A',                // weaponGroup
+    '45',               // points
+    '2024-05-20',       // date
+    '',                 // timeSeconds
+    '',                 // hits
+    '',                 // competitionName
+    '',                 // competitionType
+    '',                 // medalType
+    '',                 // disciplineType
+    '',                 // weapon
+    '',                 // score
+    '',                 // teamName
+    '',                 // position
+    '',                 // eventName
+    'Exempelrad',       // notes
+    schemaVersion,      // schema_version
+  ].map(escapeCsvCell).join(',')
+  return [header, example].join('\n')
+}
+
+export { HEADERS as ACHIEVEMENT_CSV_HEADERS }
 
 export function downloadCSV(csvString, filename = 'achievements.csv') {
   if (typeof document === 'undefined') return

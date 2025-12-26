@@ -344,6 +344,30 @@ export function ProfileProvider({ children }) {
     [storage, loadProfiles]
   )
 
+  const upsertAchievements = useCallback(
+    async (rows, options) => {
+      if (!currentProfile) throw new Error('No profile selected')
+      try {
+        setLoading(true)
+        const result = await storage.upsertAchievements(currentProfile.userId, rows, options)
+        if (!options?.dryRun) {
+          const updated = await storage.getUserProfile(currentProfile.userId)
+          setCurrentProfile(updated)
+          setLastProfileId(updated.userId)
+          await loadProfiles()
+        }
+        setError(null)
+        return result
+      } catch (err) {
+        setError(err.message)
+        throw err
+      } finally {
+        setLoading(false)
+      }
+    },
+    [currentProfile, storage, loadProfiles]
+  )
+
   const value = {
     currentProfile,
     profiles,
@@ -360,6 +384,7 @@ export function ProfileProvider({ children }) {
     lockMedal,
     setProfileFeature,
     restoreProfileFromBackup,
+    upsertAchievements,
   }
 
   return <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>
