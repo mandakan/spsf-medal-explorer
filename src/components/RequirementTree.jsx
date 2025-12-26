@@ -61,16 +61,18 @@ function countMet(children = []) {
   return { met, total }
 }
 
-function RequirementNode({ node, path = 'root', level = 0, defaultExpanded = level === 0 }) {
+function RequirementNode({ node, path = 'root', level = 0, defaultExpanded = level === 0, noBorderTop = false }) {
   const [expanded, setExpanded] = useState(defaultExpanded)
   const headerId = `${path}-group`
   const isGroup = node?.node === 'and' || node?.node === 'or'
 
   if (!node) return null
 
+  const liClass = (level > 0 || !noBorderTop) ? 'border-l border-border pl-3' : 'pl-0'
+
   if (!isGroup) {
     return (
-      <li className="border-l border-border pl-3">
+      <li className={liClass}>
         <LeafRow leaf={node.leaf || { isMet: false, description: 'Okänt krav' }} />
       </li>
     )
@@ -82,7 +84,7 @@ function RequirementNode({ node, path = 'root', level = 0, defaultExpanded = lev
   const summary = `${met}/${total} uppfyllda`
 
   return (
-    <li className="border-l border-border pl-3">
+    <li className={liClass}>
       <GroupHeader
         id={headerId}
         label={label}
@@ -111,10 +113,23 @@ function RequirementNode({ node, path = 'root', level = 0, defaultExpanded = lev
 export default function RequirementTree({ tree }) {
   const root = useMemo(() => tree || null, [tree])
   if (!root) return null
+  const isTopLevelAnd = root.node === 'and'
   return (
     <div className="bg-background border border-border rounded p-3" role="region" aria-label="Krav">
       <ul className="text-sm text-muted-foreground space-y-1">
-        <RequirementNode node={root} />
+        {isTopLevelAnd
+          ? (root.children || []).map((child, idx) => (
+              <RequirementNode
+                key={`root-${idx}`}
+                node={child}
+                path={`root-${idx}`}
+                level={0}
+                defaultExpanded
+                noBorderTop
+              />
+            ))
+          : <RequirementNode node={root} />
+        }
       </ul>
     </div>
   )
