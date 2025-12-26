@@ -1,6 +1,34 @@
 import { Medal, MedalDatabase } from '../src/models/Medal'
 import medalsData from '../src/data/medals.json'
 
+function collectRequirementLeaves(spec, acc = []) {
+  if (!spec) return acc
+  if (Array.isArray(spec)) {
+    spec.forEach(s => collectRequirementLeaves(s, acc))
+    return acc
+  }
+  if (typeof spec !== 'object') return acc
+
+  // Direct leaf
+  if (typeof spec.type === 'string') {
+    acc.push(spec)
+    return acc
+  }
+
+  // Common container
+  if (Array.isArray(spec.items)) collectRequirementLeaves(spec.items, acc)
+
+  // Keyed by type names
+  Object.entries(spec).forEach(([key, val]) => {
+    if (!val || typeof val !== 'object') return
+    if (key === 'precision_series' || key === 'application_series') {
+      acc.push({ type: key, ...val })
+    }
+  })
+
+  return acc
+}
+
 describe('Medal Database', () => {
   let medalDb
 
@@ -30,28 +58,17 @@ describe('Medal Database', () => {
 
   test('precision series requirement has correct point thresholds', () => {
     const medal = medalDb.getMedalById('pistol-mark-bronze')
-    const reqs = medal.requirements
 
-    // Support both legacy array format and new object/nested formats
-    let seriesReq = null
-    if (Array.isArray(reqs)) {
-      seriesReq = reqs.find(r => r && r.type === 'precision_series') || null
-    } else if (reqs && typeof reqs === 'object') {
-      if (reqs.precision_series && typeof reqs.precision_series === 'object') {
-        seriesReq = reqs.precision_series
-      } else if (Array.isArray(reqs.items)) {
-        seriesReq = reqs.items.find(r => r && r.type === 'precision_series') || null
-      }
-    }
+    const leaves = collectRequirementLeaves(medal.requirements)
+    const seriesReq = leaves.find(r => r && r.type === 'precision_series') || null
 
     expect(seriesReq).toBeTruthy()
 
-    // Normalize threshold structure
     const pts = seriesReq.pointThresholds || seriesReq.thresholds || {}
     const getMin = (group) => {
-      const g = pts[group] || {}
-      if (typeof g.min === 'number') return g.min
-      if (typeof g.minPoints === 'number') return g.minPoints
+      const entry = pts[group] || pts[String(group).toUpperCase()] || pts[String(group).toLowerCase()] || {}
+      if (typeof entry.min === 'number') return entry.min
+      if (typeof entry.minPoints === 'number') return entry.minPoints
       return undefined
     }
 
