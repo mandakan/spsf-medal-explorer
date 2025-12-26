@@ -18,7 +18,7 @@ export default function ExportPanel({ profile }) {
 
       switch (exportFormat) {
         case 'json': {
-          data = await exportManager.toJSON(profile)
+          data = await exportManager.toProfileBackup(profile, { version: '1.0' })
           filename = `profil-${dateStr}.json`
           mime = 'application/json'
           break
