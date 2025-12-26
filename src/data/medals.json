@@ -2507,12 +2507,6 @@
       "color": "#FFD700",
       "icon": "air-pistol-annual",
       "requirements_original": "Yearly achievement of **luftpistol Gold** requirements.",
-      "references": [
-        {
-          "medalId": "air-pistol-mark-gold",
-          "description": "Uppfyllt fordringarna för luftpistolmärket i guld"
-        }
-      ],
       "prerequisites": [
         {
           "type": "medal",
@@ -2524,7 +2518,13 @@
           "type": "sustained_achievement",
           "description": "Ånyo uppfyllt fordringarna för luftpistolmärket i guld",
           "minAchievements": 1,
-          "timeWindowYears": 1
+          "timeWindowYears": 1,
+          "references": [
+            {
+              "medalId": "air-pistol-mark-gold",
+              "description": "Uppfyllt fordringarna för luftpistolmärket i guld"
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["air-pistol-mark-annual-star-1"],
@@ -2550,7 +2550,13 @@
           "type": "sustained_achievement",
           "description": "Ånyo uppfyllt fordringarna för luftpistolmärket i guld",
           "minAchievements": 1,
-          "timeWindowYears": 1
+          "timeWindowYears": 1,
+          "references": [
+            {
+              "medalId": "air-pistol-mark-gold",
+              "description": "Uppfyllt fordringarna för luftpistolmärket i guld"
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["air-pistol-mark-annual-star-2"],
@@ -2577,7 +2583,13 @@
           "type": "sustained_achievement",
           "description": "Ånyo uppfyllt fordringarna för luftpistolmärket i guld",
           "minAchievements": 1,
-          "timeWindowYears": 1
+          "timeWindowYears": 1,
+          "references": [
+            {
+              "medalId": "air-pistol-mark-gold",
+              "description": "Uppfyllt fordringarna för luftpistolmärket i guld"
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["air-pistol-mark-annual-star-3"],
@@ -2604,7 +2616,13 @@
           "type": "sustained_achievement",
           "description": "Ånyo uppfyllt fordringarna för luftpistolmärket i guld",
           "minAchievements": 1,
-          "timeWindowYears": 1
+          "timeWindowYears": 1,
+          "references": [
+            {
+              "medalId": "air-pistol-mark-gold",
+              "description": "Uppfyllt fordringarna för luftpistolmärket i guld"
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["air-pistol-mark-annual-wreath"],
@@ -2631,7 +2649,13 @@
           "type": "sustained_achievement",
           "description": "Ånyo uppfyllt fordringarna för luftpistolmärket i guld",
           "minAchievements": 1,
-          "timeWindowYears": 1
+          "timeWindowYears": 1,
+          "references": [
+            {
+              "medalId": "air-pistol-mark-gold",
+              "description": "Uppfyllt fordringarna för luftpistolmärket i guld"
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["air-pistol-mark-annual-wreath-star-1"],
@@ -2658,7 +2682,13 @@
           "type": "sustained_achievement",
           "description": "Ånyo uppfyllt fordringarna för luftpistolmärket i guld",
           "minAchievements": 1,
-          "timeWindowYears": 1
+          "timeWindowYears": 1,
+          "references": [
+            {
+              "medalId": "air-pistol-mark-gold",
+              "description": "Uppfyllt fordringarna för luftpistolmärket i guld"
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["air-pistol-mark-annual-wreath-star-2"],
@@ -2685,7 +2715,13 @@
           "type": "sustained_achievement",
           "description": "Ånyo uppfyllt fordringarna för luftpistolmärket i guld",
           "minAchievements": 1,
-          "timeWindowYears": 1
+          "timeWindowYears": 1,
+          "references": [
+            {
+              "medalId": "air-pistol-mark-gold",
+              "description": "Uppfyllt fordringarna för luftpistolmärket i guld"
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["air-pistol-mark-annual-wreath-star-3"],
@@ -2712,7 +2748,13 @@
           "type": "sustained_achievement",
           "description": "Ånyo uppfyllt fordringarna för luftpistolmärket i guld",
           "minAchievements": 1,
-          "timeWindowYears": 1
+          "timeWindowYears": 1,
+          "references": [
+            {
+              "medalId": "air-pistol-mark-gold",
+              "description": "Uppfyllt fordringarna för luftpistolmärket i guld"
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": [],
