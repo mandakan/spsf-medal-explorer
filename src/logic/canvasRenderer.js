@@ -201,10 +201,10 @@ export function drawMedalNode(ctx, x, y, radius, medal, status, scale, forceLabe
     // No text label for under-review in canvas; using dashed review ring only for consistency with list
   }
 
-  // Label text: draw full displayName below the node with wrapping for readability
-  const name = medal?.displayName || medal?.name || medal?.tier || 'Medal'
+  // Label text: base name on first line; tierName on subsequent lines
+  const baseName = (typeof medal?.name === 'string' ? medal.name.trim() : '') || 'Medal'
   // Avoid label clutter when zoomed far out; always show when forced (hover/selected)
-  if ((forceLabel || scale >= 0.8) && name) {
+  if ((forceLabel || scale >= 0.8) && baseName) {
     ctx.fillStyle = palette.text
     ctx.textAlign = 'center'
     ctx.textBaseline = 'top'
@@ -218,7 +218,28 @@ export function drawMedalNode(ctx, x, y, radius, medal, status, scale, forceLabe
     // Wrap to a max width and line count
     const maxWidth = 180
     const maxLines = forceLabel ? 3 : (scale >= 1.3 ? 3 : 2)
-    const lines = wrapText(ctx, name, maxWidth, maxLines)
+    const tier = typeof medal?.tierName === 'string' ? medal.tierName.trim() : ''
+
+    // Ensure the base name occupies a single header line if a tier is present; otherwise it can wrap.
+    const clampOneLine = (text) => {
+      if (!text) return ''
+      if (ctx.measureText(text).width <= maxWidth) return text
+      const ellipsis = '…'
+      let t = text
+      while (t.length && ctx.measureText(t + ellipsis).width > maxWidth) {
+        t = t.slice(0, -1)
+      }
+      return t.length ? t + ellipsis : text
+    }
+
+    let lines
+    if (tier) {
+      const header = clampOneLine(baseName)
+      const restLines = wrapText(ctx, tier, maxWidth, Math.max(0, maxLines - 1))
+      lines = [header, ...restLines]
+    } else {
+      lines = wrapText(ctx, baseName, maxWidth, maxLines)
+    }
 
     const startY = y + radius + 8
 

@@ -12,6 +12,7 @@ export class Medal {
     this.tier = data.tier
     this.name = data.name
     this.displayName = data.displayName
+    this.tierName = data.tierName
     this.color = data.color
     this.icon = data.icon
     this.status = normalizeStatus(data.status)
