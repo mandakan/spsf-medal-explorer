@@ -264,7 +264,14 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   useLayoutEffect(() => {
     const el = canvasRef.current
     if (!el) return
-    // Synchronize derived overlay with external canvas transform (canvas size + base fit).
+    // Ensure canvas pixel size matches DOM before computing overlay
+    const rect = el.getBoundingClientRect()
+    const w = Math.floor(rect.width)
+    const h = Math.floor(rect.height)
+    if (w > 0 && h > 0 && (el.width !== w || el.height !== h)) {
+      el.width = w
+      el.height = h
+    }
     setBadgeData(getYearsBadgeData(el))
   }, [getYearsBadgeData, panX, panY, scale, hoveredMedal, selectedMedal, layout])
 
@@ -275,16 +282,24 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     }
   }, [layout, ensureLabelVisibilityScale])
 
-  // Redraw on window resize
+  // Redraw and recompute overlay on window resize
   useEffect(() => {
     const onResize = () => {
-      if (canvasRef.current) {
-        draw()
+      const el = canvasRef.current
+      if (!el) return
+      const rect = el.getBoundingClientRect()
+      const w = Math.floor(rect.width)
+      const h = Math.floor(rect.height)
+      if (w > 0 && h > 0 && (el.width !== w || el.height !== h)) {
+        el.width = w
+        el.height = h
       }
+      draw()
+      setBadgeData(getYearsBadgeData(el))
     }
     window.addEventListener('resize', onResize)
     return () => window.removeEventListener('resize', onResize)
-  }, [draw])
+  }, [draw, getYearsBadgeData])
 
   // Native wheel listener (passive: false) to prevent page scroll/zoom during canvas zoom gestures.
   useEffect(() => {
