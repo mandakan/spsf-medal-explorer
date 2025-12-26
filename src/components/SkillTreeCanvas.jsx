@@ -573,7 +573,8 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                     willChange: 'transform',
                     width: `${badge.w}px`,
                     height: `${badge.h}px`,
-                    whiteSpace: 'nowrap'
+                    whiteSpace: 'nowrap',
+                    boxShadow: '0 0 0 8px var(--color-background, #fff)'
                   }}
                 >
                   <span aria-hidden="true">{badge.text}</span>
@@ -724,7 +725,8 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                       willChange: 'transform',
                       width: `${badge.w}px`,
                       height: `${badge.h}px`,
-                      whiteSpace: 'nowrap'
+                      whiteSpace: 'nowrap',
+                      boxShadow: '0 0 0 8px var(--color-background, #fff)'
                     }}
                   >
                     <span aria-hidden="true">{badge.text}</span>
