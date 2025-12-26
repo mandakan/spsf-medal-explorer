@@ -26,6 +26,11 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     const medals = medalDatabase.getAllMedals()
     return generateMedalLayout(medals)
   }, [medalDatabase])
+
+  // Shared canvas/label padding constants
+  const CANVAS_PAD = 24
+  const LABEL_HALF_PX = 90           // approximate half-width of label text area
+  const LABEL_BOTTOM_PX = 56         // reserve for up to two lines of label text at bottom
   const getWorldBounds = useCallback(() => {
     if (!layout || !layout.medals?.length) return { minX: 0, minY: 0, maxX: 0, maxY: 0 }
     let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity
@@ -39,7 +44,16 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     }
     return { minX, minY, maxX, maxY }
   }, [layout])
-  const { panX, panY, scale, setScaleAbsolute, handleWheel, handlePointerDown, handlePointerMove, handlePointerUp, resetView } = usePanZoom(1, 0.5, 6, { getBounds: getWorldBounds, overscrollPx: 48, contentPaddingPx: { left: 114, top: 24, right: 24, bottom: 24 } })
+  const { panX, panY, scale, setScaleAbsolute, handleWheel, handlePointerDown, handlePointerMove, handlePointerUp, resetView } = usePanZoom(1, 0.5, 6, {
+    getBounds: getWorldBounds,
+    overscrollPx: 48,
+    contentPaddingPx: {
+      left: LABEL_HALF_PX + CANVAS_PAD,
+      top: CANVAS_PAD,
+      right: LABEL_HALF_PX + CANVAS_PAD,
+      bottom: LABEL_BOTTOM_PX + CANVAS_PAD
+    }
+  })
   const [isDragging, setIsDragging] = useState(false)
   const closeBtnRef = useRef(null)
   const prevFocusRef = useRef(null)
@@ -81,15 +95,14 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   }, [layout])
 
   // Effective transform combines the base (top-left anchored, auto-fit) with interactive pan/zoom.
-  const getEffectiveTransform = useCallback((canvas, padding = 24) => {
+  const getEffectiveTransform = useCallback((canvas, padding = CANVAS_PAD) => {
     const { baseScale, minX, minY } = computeBaseTransform(canvas, padding)
     const width = canvas?.width || 0
     const height = canvas?.height || 0
     const effScale = Math.max(0.001, baseScale * scale)
     // Compute base pan using the effective scale so the top-left stays anchored at padding
     // Include label half-width so the left-most label stays inside canvas padding.
-    const labelHalfPx = 90
-    const extraLeftWorld = labelHalfPx / effScale
+    const extraLeftWorld = LABEL_HALF_PX / effScale
     const basePanX = (padding - width / 2) / effScale - (minX - extraLeftWorld)
     const basePanY = (padding - height / 2) / effScale - minY
     const effPanX = panX + basePanX
