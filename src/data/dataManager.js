@@ -61,6 +61,16 @@ export class DataManager {
   }
 
   /**
+   * Upsert multiple achievements with options.
+   * @param {string} userId
+   * @param {Array<object>} rows
+   * @param {object} options
+   */
+  async upsertAchievements() {
+    throw new Error('Not implemented')
+  }
+
+  /**
    * Remove an achievement.
    * @param {string} userId
    * @param {string} achievementId

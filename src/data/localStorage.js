@@ -128,11 +128,120 @@ export class LocalStorageDataManager extends DataManager {
   }
 
   /**
+   * Ensure all achievements have an id (migration helper)
+   */
+  _ensureAchievementIds(profile) {
+    let changed = false
+    profile.prerequisites = Array.isArray(profile.prerequisites) ? profile.prerequisites : []
+    profile.prerequisites.forEach((a, i) => {
+      if (!a.id) {
+        a.id = `achievement-${Date.now()}-${i}-${Math.random().toString(36).slice(2, 8)}`
+        changed = true
+      }
+    })
+    return changed
+  }
+
+  /**
    * Get all achievements for user
    */
   async getAchievements(userId) {
     const profile = await this.getUserProfile(userId)
-    return profile ? profile.prerequisites || [] : []
+    if (!profile) return []
+    const changed = this._ensureAchievementIds(profile)
+    if (changed) await this.saveUserProfile(profile)
+    return profile ? (profile.prerequisites || []) : []
+  }
+
+  /**
+   * Build a conservative natural key for matching (optional)
+   */
+  buildNaturalKey(ach) {
+    const base = [ach.type, ach.year, ach.weaponGroup].map(v => String(v ?? '').trim().toLowerCase()).join('|')
+    switch (ach.type) {
+      case 'precision_series':
+        return `${base}|${String(ach.points ?? '').trim()}`
+      case 'standard_medal':
+        return `${base}|${(ach.disciplineType || '').toLowerCase()}|${(ach.medalType || '').toLowerCase()}`
+      case 'competition_result':
+        return `${base}|${(ach.competitionType || '').toLowerCase()}|${(ach.medalType || '').toLowerCase()}|${(ach.competitionName || '').toLowerCase()}`
+      case 'qualification_result':
+        return `${base}|${(ach.weapon || '').toLowerCase()}|${String(ach.score ?? '').trim()}`
+      case 'team_event':
+        return `${base}|${(ach.teamName || '').toLowerCase()}|${String(ach.position ?? '').trim()}`
+      case 'event':
+        return `${base}|${(ach.eventName || '').toLowerCase()}`
+      default:
+        return null
+    }
+  }
+
+  /**
+   * Upsert achievements with dry-run support
+   */
+  async upsertAchievements(userId, rows, { updateById = true, matchNaturalKey = false, addNew = true, dryRun = true } = {}) {
+    const profile = await this.getUserProfile(userId)
+    if (!profile) throw new Error('Profile not found')
+    this._ensureAchievementIds(profile)
+
+    const current = Array.isArray(profile.prerequisites) ? profile.prerequisites : []
+    const byId = new Map(current.map(a => [a.id, a]))
+    const byKey = new Map()
+    if (matchNaturalKey) {
+      for (const a of current) {
+        const k = this.buildNaturalKey(a)
+        if (k) byKey.set(k, a)
+      }
+    }
+
+    const next = [...current]
+    const result = { added: 0, updated: 0, skipped: 0, failed: 0, errors: [] }
+
+    for (const rec of rows || []) {
+      try {
+        if (!this.validateAchievement(rec)) {
+          result.failed++
+          result.errors.push({ record: rec, error: 'Invalid achievement structure' })
+          continue
+        }
+      } catch (e) {
+        result.failed++
+        result.errors.push({ record: rec, error: e?.message || 'Validation failed' })
+        continue
+      }
+
+      let target = null
+      if (updateById && rec.id && byId.has(rec.id)) {
+        target = byId.get(rec.id)
+      } else if (matchNaturalKey) {
+        const k = this.buildNaturalKey(rec)
+        if (k && byKey.has(k)) target = byKey.get(k)
+      }
+
+      if (target) {
+        const idx = next.findIndex(a => a.id === target.id)
+        if (idx >= 0) {
+          next[idx] = { ...rec, id: target.id }
+          result.updated++
+        }
+        continue
+      }
+
+      if (addNew) {
+        const id = rec.id && !byId.has(rec.id) ? rec.id : `achievement-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+        next.push({ ...rec, id })
+        result.added++
+      } else {
+        result.skipped++
+      }
+    }
+
+    if (!dryRun) {
+      profile.prerequisites = next
+      await this.saveUserProfile(profile)
+    }
+
+    return result
   }
 
   /**

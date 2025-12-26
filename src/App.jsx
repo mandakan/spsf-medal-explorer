@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, useLocation, useNavigate, useParams } fro
 import { MedalProvider } from './contexts/MedalContext.jsx'
 import { ProfileProvider } from './contexts/ProfileContext.jsx'
 import { CalculatorProvider } from './contexts/CalculatorContext.jsx'
+import { UndoRedoProvider } from './contexts/UndoRedoContext.jsx'
 import RootLayout from './layouts/RootLayout'
 import Home from './pages/Home'
 import SkillTree from './pages/SkillTree'
@@ -71,9 +72,11 @@ function App() {
     <MedalProvider>
       <ProfileProvider>
         <CalculatorProvider>
-          <BrowserRouter basename={base}>
-            <AppRoutes />
-          </BrowserRouter>
+          <UndoRedoProvider>
+            <BrowserRouter basename={base}>
+              <AppRoutes />
+            </BrowserRouter>
+          </UndoRedoProvider>
         </CalculatorProvider>
       </ProfileProvider>
     </MedalProvider>

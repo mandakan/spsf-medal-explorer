@@ -24,6 +24,12 @@
   --color-warning-subtle: #fffbeb;
   --color-warning-border: #fcd34d;
 
+  /* Info tokens */
+  --color-info: #0ea5e9;
+  --color-info-foreground: #0b1f2a;
+  --color-info-subtle: #e0f2fe;
+  --color-info-border: #7dd3fc;
+
   --color-danger: #ef4444;
   --color-danger-hover: #dc2626;
   --color-danger-foreground: #ffffff;
@@ -105,6 +111,12 @@
   --color-warning-foreground: #1f2937;
   --color-warning-subtle: rgba(245, 158, 11, 0.12);
   --color-warning-border: rgba(245, 158, 11, 0.45);
+
+  /* Info tokens (dark) */
+  --color-info: #0ea5e9;
+  --color-info-foreground: #0b1f2a;
+  --color-info-subtle: rgba(14, 165, 233, 0.12);
+  --color-info-border: rgba(14, 165, 233, 0.45);
 
   --color-danger: #ef4444;
   --color-danger-hover: #dc2626;
@@ -200,6 +212,12 @@ body {
     background-color: var(--color-danger-subtle);
     color: var(--color-danger-foreground);
     border-color: var(--color-danger-border);
+  }
+
+  .alert-info {
+    background-color: var(--color-info-subtle);
+    color: var(--color-info-foreground);
+    border-color: var(--color-info-border);
   }
 
   /* Ensures bottom-sheet content never collides with device safe area and provides
