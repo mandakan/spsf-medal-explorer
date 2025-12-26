@@ -199,3 +199,26 @@ export async function toQRCode(shareData, options = {}) {
           : '')) || ''
   return `data:text/plain;base64,${base64}`
 }
+
+export async function toProfileBackup(profile, { version = '1.0' } = {}) {
+  const payload = {
+    kind: 'profile-backup',
+    version,
+    exportedAt: safeDateISO(),
+    profile: {
+      userId: profile?.userId || '',
+      displayName: profile?.displayName || '',
+      createdDate: profile?.createdDate || safeDateISO(),
+      lastModified: profile?.lastModified || safeDateISO(),
+      dateOfBirth: profile?.dateOfBirth || '',
+      unlockedMedals: ensureArray(profile?.unlockedMedals),
+      prerequisites: ensureArray(profile?.prerequisites),
+      features: {
+        allowManualUnlock: !!profile?.features?.allowManualUnlock,
+        enforceCurrentYearForSustained: !!profile?.features?.enforceCurrentYearForSustained,
+      },
+      notifications: !!profile?.notifications,
+    },
+  }
+  return JSON.stringify(payload, null, 2)
+}

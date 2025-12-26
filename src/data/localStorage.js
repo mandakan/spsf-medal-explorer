@@ -452,4 +452,77 @@ export class LocalStorageDataManager extends DataManager {
       return false
     }
   }
+
+  _generateUserId() {
+    try {
+      if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+        return `user-${crypto.randomUUID()}`
+      }
+    } catch {
+      // ignore
+    }
+    return `user-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
+  }
+
+  _ensureUniqueId(id) {
+    const data = this.getStorageData()
+    const base = id && typeof id === 'string' && id.trim() ? id.trim() : this._generateUserId()
+    let next = base
+    let i = 1
+    while (data.profiles.some(p => p.userId === next)) {
+      next = `${base}-${i++}`
+    }
+    return next
+  }
+
+  /**
+   * Restore a full profile from a validated backup profile object.
+   * strategy:
+   *  - 'new-id' (default): always assign a fresh unique userId
+   *  - 'overwrite': keep provided userId and overwrite existing profile with same id (or create if missing)
+   */
+  async restoreProfile(profile, { strategy = 'new-id' } = {}) {
+    if (!profile || typeof profile !== 'object') {
+      throw new Error('Invalid profile')
+    }
+
+    const now = new Date().toISOString()
+    const normalized = {
+      userId: String(profile.userId || ''),
+      displayName: String(profile.displayName || ''),
+      createdDate: profile.createdDate || now,
+      lastModified: now,
+      dateOfBirth: profile.dateOfBirth || '',
+      unlockedMedals: Array.isArray(profile.unlockedMedals) ? profile.unlockedMedals : [],
+      prerequisites: Array.isArray(profile.prerequisites) ? profile.prerequisites : [],
+      notifications: !!profile.notifications,
+      features: {
+        allowManualUnlock: !!(profile.features && profile.features.allowManualUnlock),
+        enforceCurrentYearForSustained: !!(profile.features && profile.features.enforceCurrentYearForSustained),
+      },
+    }
+
+    if (strategy === 'new-id') {
+      normalized.userId = this._ensureUniqueId(this._generateUserId())
+    } else if (strategy === 'overwrite') {
+      if (!normalized.userId) throw new Error('userId is required for overwrite')
+      normalized.userId = this._ensureUniqueId(normalized.userId) // ensure we don’t collide with an existing different profile suffix pattern
+    } else {
+      throw new Error('Invalid restore strategy')
+    }
+
+    if (!this.validateProfile(normalized)) {
+      throw new Error('Invalid profile structure')
+    }
+
+    const data = this.getStorageData()
+    const idx = data.profiles.findIndex(p => p.userId === normalized.userId)
+    if (idx >= 0) {
+      data.profiles[idx] = normalized
+    } else {
+      data.profiles.push(normalized)
+    }
+    this.saveStorageData(data)
+    return normalized
+  }
 }

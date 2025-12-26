@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useProfile } from '../hooks/useProfile'
 import MobileBottomSheet from './MobileBottomSheet'
+import ProfileImportDialog from './ProfileImportDialog'
 
 export default function ProfileSelector({ mode = 'picker', open = false, onClose, id = 'profile-picker' }) {
   const { profiles, currentProfile, loading, createProfile, updateProfile, selectProfile, deleteProfile } =
@@ -11,6 +12,7 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
   const [editingProfile, setEditingProfile] = useState(null)
   const [newProfileName, setNewProfileName] = useState('')
   const [newDateOfBirth, setNewDateOfBirth] = useState('')
+  const [showImport, setShowImport] = useState(false)
   const isPicker = mode === 'picker'
 
   const handleSubmit = async (e) => {
@@ -109,6 +111,14 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
           >
             Skapa ny profil
           </button>
+          <button
+            onClick={() => setShowImport(true)}
+            className="mt-2 px-4 py-2 rounded border border-slate-200 dark:border-slate-700 text-text-primary hover:bg-gray-100 dark:hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
+            aria-haspopup="dialog"
+            aria-controls="profile-import-dialog"
+          >
+            Importera profil
+          </button>
         </MobileBottomSheet>
       ) : (
         <div>
@@ -159,6 +169,14 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
               >
                 Skapa ny profil
               </button>
+              <button
+                onClick={() => setShowImport(true)}
+                className="mt-2 px-4 py-2 rounded border border-slate-300 dark:border-slate-600 text-text-primary hover:bg-gray-100 dark:hover:bg-white/10 focus-outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
+                aria-haspopup="dialog"
+                aria-controls="profile-import-dialog"
+              >
+                Importera profil
+              </button>
             </div>
           ) : (
             <div className="bg-bg-secondary border border-emerald-300 ring-1 ring-emerald-500/20 dark:border-emerald-700 dark:ring-emerald-400/30 rounded-lg p-4 mb-4">
@@ -170,6 +188,8 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
           )}
         </div>
       )}
+
+      <ProfileImportDialog id="profile-import-dialog" open={showImport} onClose={() => setShowImport(false)} />
 
       {showModal && (
         <div className="fixed inset-0 z-[1000] bg-black/60 flex items-center justify-center p-4">

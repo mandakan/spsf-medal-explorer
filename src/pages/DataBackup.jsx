@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import ExportPanel from '../components/ExportPanel'
 import ImportPanel from '../components/ImportPanel'
 import ShareDialog from '../components/ShareDialog'
+import ProfileImportDialog from '../components/ProfileImportDialog'
 import * as importManager from '../utils/importManager'
 import * as exportManager from '../utils/exportManager'
 import { useProfile } from '../hooks/useProfile'
@@ -13,6 +14,7 @@ export default function DataBackup() {
   const [shareData, setShareData] = useState(null)
   const [localError, setLocalError] = useState(null)
   const [importing, setImporting] = useState(false)
+  const [importProfileOpen, setImportProfileOpen] = useState(false)
 
   const canUse = useMemo(() => !!currentProfile && !loading, [currentProfile, loading])
 
@@ -60,7 +62,7 @@ export default function DataBackup() {
   const openShare = async () => {
     try {
       setLocalError(null)
-      const json = await exportManager.toJSON(currentProfile, { includeFilters: true, version: '1.0' })
+      const json = await exportManager.toProfileBackup(currentProfile, { version: '1.0' })
       setShareData(json)
       setShareOpen(true)
     } catch (e) {
@@ -127,6 +129,21 @@ export default function DataBackup() {
               Dela via QR-kod
             </button>
           </div>
+
+          <div className="card p-4 md:col-span-2">
+            <h2 className="text-lg font-semibold text-foreground mb-3">Importera profil (backup)</h2>
+            <p className="text-sm text-muted-foreground mb-4">
+              Återställ en hel profil från en JSON-backup. Du kan skapa en ny profil eller ersätta en profil med samma ID.
+            </p>
+            <button
+              onClick={() => setImportProfileOpen(true)}
+              className="btn btn-secondary min-h-[44px]"
+              aria-haspopup="dialog"
+              aria-controls="profile-import-dialog"
+            >
+              Importera profil
+            </button>
+          </div>
         </div>
       )}
 
@@ -134,6 +151,12 @@ export default function DataBackup() {
         open={shareOpen}
         onClose={() => setShareOpen(false)}
         shareData={shareData}
+      />
+
+      <ProfileImportDialog
+        id="profile-import-dialog"
+        open={importProfileOpen}
+        onClose={() => setImportProfileOpen(false)}
       />
     </div>
   )

@@ -1,0 +1,141 @@
+import React, { useState } from 'react'
+import { useProfile } from '../hooks/useProfile'
+
+export default function ProfileImportDialog({
+  id = 'profile-import-dialog',
+  open,
+  onClose,
+}) {
+  const { restoreProfileFromBackup } = useProfile()
+  const [importText, setImportText] = useState('')
+  const [strategy, setStrategy] = useState('new-id')
+  const [error, setError] = useState(null)
+  const [busy, setBusy] = useState(false)
+
+  if (!open) return null
+
+  const onFileChange = (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = () => setImportText(String(reader.result || ''))
+    reader.readAsText(file)
+  }
+
+  const onSubmit = async (e) => {
+    e.preventDefault()
+    try {
+      setBusy(true)
+      setError(null)
+      if (!importText.trim()) {
+        setError('Klistra in JSON eller välj en fil.')
+        return
+      }
+      await restoreProfileFromBackup(importText, { strategy })
+      setImportText('')
+      onClose?.()
+    } catch (err) {
+      setError(err.message || 'Import misslyckades')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-[1000] bg-black/60 flex items-center justify-center p-4">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={`${id}-title`}
+        id={id}
+        className="w-[min(92vw,32rem)] max-h-[85vh] overflow-auto rounded-xl bg-bg-secondary border border-slate-200 dark:border-slate-700 shadow-2xl"
+      >
+        <form onSubmit={onSubmit} className="p-6 space-y-5">
+          <h2 id={`${id}-title`} className="text-2xl font-bold text-text-primary">
+            Importera profil (backup)
+          </h2>
+
+          {error && (
+            <div
+              className="p-3 rounded-lg bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-300 border border-red-300 dark:border-red-600"
+              role="alert"
+              aria-live="assertive"
+            >
+              {error}
+            </div>
+          )}
+
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-text-secondary" htmlFor={`${id}-file`}>Välj fil</label>
+            <input
+              id={`${id}-file`}
+              type="file"
+              accept=".json,application/json"
+              onChange={onFileChange}
+              className="block w-full text-sm text-text-primary file:mr-3 file:py-2 file:px-3 file:rounded file:border-0 file:bg-primary file:text-white hover:file:bg-primary-hover"
+              disabled={busy}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-text-secondary" htmlFor={`${id}-textarea`}>Eller klistra in JSON</label>
+            <textarea
+              id={`${id}-textarea`}
+              value={importText}
+              onChange={(e) => setImportText(e.target.value)}
+              className="w-full min-h-[8rem] px-3 py-2 rounded border border-slate-300 dark:border-slate-600 bg-bg-secondary text-text-primary placeholder:text-text-secondary/70 focus:outline-none focus:ring-2 focus:ring-primary"
+              placeholder='{"kind":"profile-backup","version":"1.0","profile":{...}}'
+              disabled={busy}
+            />
+          </div>
+
+          <fieldset className="space-y-2">
+            <legend className="block text-sm font-medium text-text-secondary">Metod</legend>
+            <div className="flex flex-col gap-2">
+              <label className="inline-flex items-center gap-2">
+                <input
+                  type="radio"
+                  name={`${id}-strategy`}
+                  value="new-id"
+                  checked={strategy === 'new-id'}
+                  onChange={() => setStrategy('new-id')}
+                  disabled={busy}
+                />
+                <span>Skapa ny profil</span>
+              </label>
+              <label className="inline-flex items-center gap-2">
+                <input
+                  type="radio"
+                  name={`${id}-strategy`}
+                  value="overwrite"
+                  checked={strategy === 'overwrite'}
+                  onChange={() => setStrategy('overwrite')}
+                  disabled={busy}
+                />
+                <span>Ersätt profil med samma ID</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <div className="flex items-center justify-end gap-3 pt-2">
+            <button
+              type="submit"
+              className="px-4 py-2 rounded bg-primary text-white hover:bg-primary-hover disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary min-h-[44px]"
+              disabled={busy}
+            >
+              Importera profil
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 rounded border border-slate-300 dark:border-slate-600 text-text-primary hover:bg-gray-100 dark:hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary min-h-[44px]"
+              disabled={busy}
+            >
+              Avbryt
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
+}
