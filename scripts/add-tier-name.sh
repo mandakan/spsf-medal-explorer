@@ -2,13 +2,18 @@
 set -euo pipefail
 
 # add-tier-name.sh
-# For each provided JSON file, split the "name" field into:
-# - name: part before the first dash ( -, – or — ), trimmed
-# - tierName: part after the first dash, trimmed (added only if absent/empty)
+# Normalize medal naming across mixed formats.
+# - Extract base and tier from either displayName or name.
+#   • If a dash ( -, – or — ) is present, split on the first dash.
+#   • Otherwise, try Swedish star patterns like:
+#     "(Guld|Silver|Brons)? med (en|två|tre) stjärna/stjärnor" as a trailing tier phrase.
+# - Write:
+#   • tierName: set if missing/empty.
+#   • name: base + " " + tierName (no dash), trimmed.
+#   • displayName: same as name (no dash).
+# - If no structured split found, at least remove dashes from textual fields (name/displayName).
 # Operates on:
-# - { "medals": [ ... ] }
-# - [ ... ]
-# - single medal object
+# - Any JSON shape; walks recursively and only updates objects that have string name/displayName.
 # Creates a timestamped backup: <file>.bak.<epoch>
 
 if ! command -v jq >/dev/null 2>&1; then
@@ -32,41 +37,54 @@ for in_file in "$@"; do
 
   cp "$in_file" "$backup"
 
-  # jq program:
-  # - capture base and tier using the first dash occurrence (supports -, – or —)
-  # - trim whitespace around both parts
-  # - only set .tierName if it is missing or empty
   jq '
-    def split_name:
-      (.name // "") as $n
-      | if ($n | type) == "string" then
-          (try ($n | capture("^(?<base>.*?)\\s*[-–—]\\s*(?<tier>.*?)\\s*$")) catch null)
+    def trim: gsub("^\\s+|\\s+$"; "");
+    def normalize_spaces: gsub("\\s+"; " ") | trim;
+    def normalize_no_dash($s):
+      ($s // "") | gsub("\\s*[-–—]\\s*"; " ") | normalize_spaces;
+
+    # Split on first dash into base/tier
+    def dash_parts($s):
+      try ($s | capture("^(?<base>.*?)\\s*[-–—]\\s*(?<tier>.*?)\\s*$")) catch null;
+
+    # Try Swedish star/tier suffix: "(Guld|Silver|Brons)? med (en|två|tre) stjärna/stjärnor"
+    # Captures the whole suffix (including optional color) as tier.
+    def star_parts($s):
+      try ($s | capture("^(?<base>.*?)\\s+(?<tier>(?:(?:Guld|Silver|Brons)\\s+)?med\\s+(?:en|två|tre)\\s+stjärnor?)\\s*$")) catch null;
+
+    def choose_candidate:
+      ( ( .displayName? // .name? ) as $c
+        | if ($c|type) == "string" then $c else "" end );
+
+    def update_obj:
+      (choose_candidate) as $cand
+      | (dash_parts($cand)) as $d
+      | (if $d == null then star_parts($cand) else null end) as $s
+      | ($d // $s) as $p
+      | if $p != null and ($p.base | length) > 0 and ($p.tier | length) > 0 then
+          ($p.base | trim) as $base
+          | ($p.tier | trim) as $tier
+          | (if ((.tierName? // "") | length) == 0 then .tierName = $tier else . end)
+          | .name = (($base + " " + $tier) | normalize_spaces)
+          | .displayName = .name
         else
-          null
+          # No structured parts found; at minimum remove dashes if present
+          (if (.name? | type) == "string" then .name = normalize_no_dash(.name) else . end)
+          | (if (.displayName? | type) == "string" then .displayName = normalize_no_dash(.displayName) else . end)
         end;
 
-    def update_medal:
-      (split_name) as $parts
-      | if $parts == null then
+    def walk_all(f):
+      def w:
+        if type == "object" then
+          (f | with_entries(.value |= ( . | w )))
+        elif type == "array" then
+          map( . | w )
+        else
           .
-        else
-          ($parts.base | gsub("^\\s+|\\s+$"; "")) as $base
-          | ($parts.tier | gsub("^\\s+|\\s+$"; "")) as $tier
-          | if ($base | length) > 0 and ($tier | length) > 0 then
-              .name = $base
-              | (if ((.tierName? // "") | length) == 0 then .tierName = $tier else . end)
-            else
-              .
-            end
         end;
+      w;
 
-    if (has("medals") and (.medals | type == "array")) then
-      .medals |= map(update_medal)
-    elif (type == "array") then
-      map(update_medal)
-    else
-      update_medal
-    end
+    . | walk_all(update_obj)
   ' "$in_file" > "$tmp"
 
   mv "$tmp" "$in_file"
