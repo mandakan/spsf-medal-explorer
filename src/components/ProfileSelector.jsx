@@ -99,26 +99,28 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
           ) : (
             <p className="text-text-secondary">Inga profiler ännu.</p>
           )}
-          <button
-            onClick={() => {
-              setModalMode('create')
-              setEditingProfile(null)
-              setNewProfileName('')
-              setNewDateOfBirth('')
-              setShowModal(true)
-            }}
-            className="mt-3 btn btn-primary"
-          >
-            Skapa ny profil
-          </button>
-          <button
-            onClick={() => setShowImport(true)}
-            className="mt-2 btn btn-secondary"
-            aria-haspopup="dialog"
-            aria-controls="profile-import-dialog"
-          >
-            Importera profil
-          </button>
+          <div className="mt-3 flex flex-col gap-2">
+            <button
+              onClick={() => {
+                setModalMode('create')
+                setEditingProfile(null)
+                setNewProfileName('')
+                setNewDateOfBirth('')
+                setShowModal(true)
+              }}
+              className="btn btn-primary min-h-[44px]"
+            >
+              Skapa ny profil
+            </button>
+            <button
+              onClick={() => setShowImport(true)}
+              className="btn btn-secondary min-h-[44px]"
+              aria-haspopup="dialog"
+              aria-controls="profile-import-dialog"
+            >
+              Importera profil
+            </button>
+          </div>
         </MobileBottomSheet>
       ) : (
         <div>
@@ -157,26 +159,28 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
                   ))}
                 </div>
               )}
-              <button
-                onClick={() => {
-                  setModalMode('create')
-                  setEditingProfile(null)
-                  setNewProfileName('')
-                  setNewDateOfBirth('')
-                  setShowModal(true)
-                }}
-                className="btn btn-primary"
-              >
-                Skapa ny profil
-              </button>
-              <button
-                onClick={() => setShowImport(true)}
-                className="mt-2 btn btn-secondary"
-                aria-haspopup="dialog"
-                aria-controls="profile-import-dialog"
-              >
-                Importera profil
-              </button>
+              <div className="mt-3 flex flex-col gap-2">
+                <button
+                  onClick={() => {
+                    setModalMode('create')
+                    setEditingProfile(null)
+                    setNewProfileName('')
+                    setNewDateOfBirth('')
+                    setShowModal(true)
+                  }}
+                  className="btn btn-primary min-h-[44px]"
+                >
+                  Skapa ny profil
+                </button>
+                <button
+                  onClick={() => setShowImport(true)}
+                  className="btn btn-secondary min-h-[44px]"
+                  aria-haspopup="dialog"
+                  aria-controls="profile-import-dialog"
+                >
+                  Importera profil
+                </button>
+              </div>
             </div>
           ) : (
             <div className="bg-bg-secondary border border-border ring-1 ring-primary/20 rounded-lg p-4 mb-4">
