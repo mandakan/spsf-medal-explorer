@@ -39,7 +39,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     }
     return { minX, minY, maxX, maxY }
   }, [layout])
-  const { panX, panY, scale, setScaleAbsolute, handleWheel, handlePointerDown, handlePointerMove, handlePointerUp, resetView } = usePanZoom(1, 0.5, 6, { getBounds: getWorldBounds, overscrollPx: 48 })
+  const { panX, panY, scale, setScaleAbsolute, handleWheel, handlePointerDown, handlePointerMove, handlePointerUp, resetView } = usePanZoom(1, 0.5, 6, { getBounds: getWorldBounds, overscrollPx: 48, contentPaddingPx: { left: 114, top: 24, right: 24, bottom: 24 } })
   const [isDragging, setIsDragging] = useState(false)
   const closeBtnRef = useRef(null)
   const prevFocusRef = useRef(null)
@@ -454,7 +454,9 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
 
   const handleCanvasPointerUp = (e) => {
     setIsDragging(false)
-    handlePointerUp(e)
+    const el = canvasRef.current
+    const { effScale } = el ? getEffectiveTransform(el) : { effScale: scaleRef.current }
+    handlePointerUp(e, effScale)
     setHoveredMedal(null)
   }
 

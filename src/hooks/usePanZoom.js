@@ -4,7 +4,7 @@ export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3, opts 
   const [panX, setPanX] = useState(0)
   const [panY, setPanY] = useState(0)
   const [scale, setScale] = useState(initialScale)
-  const { getBounds = null, overscrollPx = 48 } = opts
+  const { getBounds = null, overscrollPx = 48, contentPaddingPx = { left: 0, top: 0, right: 0, bottom: 0 } } = opts
 
   const dragStartRef = useRef(null)
   const pointersRef = useRef(new Map()) // pointerId -> { x, y }
@@ -48,12 +48,21 @@ export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3, opts 
   const computePanLimits = useCallback((s, rect = lastRectRef.current) => {
     if (!opts || !getBounds || !rect?.width) return null
     const b = getBounds()
-    const halfW = rect.width / (2 * Math.max(0.001, s))
-    const halfH = rect.height / (2 * Math.max(0.001, s))
-    let minX = -b.maxX + halfW
-    let maxX = -b.minX - halfW
-    let minY = -b.maxY + halfH
-    let maxY = -b.minY - halfH
+    const sEff = Math.max(0.001, s)
+    const halfW = rect.width / (2 * sEff)
+    const halfH = rect.height / (2 * sEff)
+    const padL = (contentPaddingPx?.left || 0) / sEff
+    const padR = (contentPaddingPx?.right || 0) / sEff
+    const padT = (contentPaddingPx?.top || 0) / sEff
+    const padB = (contentPaddingPx?.bottom || 0) / sEff
+    const minWorldX = b.minX - padL
+    const maxWorldX = b.maxX + padR
+    const minWorldY = b.minY - padT
+    const maxWorldY = b.maxY + padB
+    let minX = -maxWorldX + halfW
+    let maxX = -minWorldX - halfW
+    let minY = -maxWorldY + halfH
+    let maxY = -minWorldY - halfH
     // If content is smaller than viewport, lock to center on that axis
     if (minX > maxX) { const mid = (minX + maxX) / 2; minX = maxX = mid }
     if (minY > maxY) { const mid = (minY + maxY) / 2; minY = maxY = mid }
@@ -137,7 +146,7 @@ export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3, opts 
     const corrY = dy * (1 / eff1 - 1 / eff0)
 
     setScale(s1)
-    setPan(panX + corrX, panY + corrY, s1, false, rect)
+    setPan(panX + corrX, panY + corrY, eff1, false, rect)
   }, [scale, minScale, maxScale, stopMomentum, updateRectFromEvent, setPan, panX, panY])
 
   const handlePointerDown = useCallback((e) => {
@@ -206,7 +215,7 @@ export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3, opts 
       const corrY = dyLocal * (1 / eff1 - 1 / eff0)
 
       setScale(next)
-      setPan(panX + corrX, panY + corrY, next, false, rect)
+      setPan(panX + corrX, panY + corrY, eff1, false, rect)
       // Clear velocity during pinch
       inertiaRef.current.vx = 0
       inertiaRef.current.vy = 0
@@ -238,7 +247,7 @@ export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3, opts 
     }
   }, [scale, minScale, maxScale, stopMomentum, setPan, updateRectFromEvent, panX, panY])
 
-  const handlePointerUp = useCallback((e) => {
+  const handlePointerUp = useCallback((e, effectiveScale) => {
     pointersRef.current.delete(e.pointerId)
     if (pointersRef.current.size < 1) {
       // Single-finger drag ended
@@ -248,7 +257,7 @@ export function usePanZoom(initialScale = 1, minScale = 0.5, maxScale = 3, opts 
         startMomentum(v.vx, v.vy)
       } else {
         // Snap back to hard bounds if no momentum starts
-        const currScale = scaleRef.current || scale
+        const currScale = Math.max(0.001, effectiveScale ?? (scaleRef.current || scale))
         const [sx, sy] = applyClamp(panRef.current.x, panRef.current.y, currScale, true)
         setPan(sx, sy, currScale, true)
       }
