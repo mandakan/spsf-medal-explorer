@@ -594,30 +594,119 @@ export class MedalCalculator {
     return Array.from(years).sort((a, b) => b - a)
   }
 
+  /**
+   * Compute age at the end of a given calendar year (Dec 31).
+   * Returns null if dateOfBirth is missing or invalid.
+   */
+  getAgeAtYear(year) {
+    const dobStr = this.profile?.dateOfBirth
+    if (!dobStr) return null
+    const dob = new Date(dobStr)
+    if (Number.isNaN(dob.getTime())) return null
+    const refDate = new Date(year, 11, 31)
+    let age = refDate.getFullYear() - dob.getFullYear()
+    const monthDiff = refDate.getMonth() - dob.getMonth()
+    const beforeBirthday = monthDiff < 0 || (monthDiff === 0 && refDate.getDate() < dob.getDate())
+    if (beforeBirthday) age -= 1
+    return age
+  }
+
+  /**
+   * Resolve sustained references based on DSL:
+   * - Array of refs (strings or { medalId }) => normalized array
+   * - Object with { when: [{ if: { age: {...} }, refs: [...] }], otherwise: [...] }
+   *     Evaluate first matching rule (by age at endYear); else use otherwise.
+   * - If no references selected, fall back to same-type prerequisite inference.
+   */
+  resolveSustainedReferences(req, parentMedal, endYear) {
+    const refsConfig = req?.references ?? parentMedal?.references
+    const normalizeRefs = (arr) =>
+      (arr || [])
+        .map(r => (typeof r === 'string' ? { medalId: r } : r))
+        .filter(r => r && r.medalId)
+
+    if (Array.isArray(refsConfig)) {
+      const out = normalizeRefs(refsConfig)
+      if (out.length === 0) {
+        throw new Error('sustained_achievement.references must list at least one medalId')
+      }
+      return out
+    }
+
+    if (refsConfig && typeof refsConfig === 'object') {
+      const whenRules = Array.isArray(refsConfig.when) ? refsConfig.when : null
+      let selected = null
+
+      if (whenRules) {
+        const age = this.getAgeAtYear(endYear)
+        for (const rule of whenRules) {
+          if (!rule || typeof rule !== 'object') continue
+          const cond = rule.if || {}
+          let match = true
+
+          if (cond && Object.prototype.hasOwnProperty.call(cond, 'age')) {
+            const ag = cond.age || {}
+            if (age == null) {
+              match = false
+            } else {
+              if (ag.gte != null && !(age >= ag.gte)) match = false
+              if (ag.gt != null && !(age > ag.gt)) match = false
+              if (ag.lte != null && !(age <= ag.lte)) match = false
+              if (ag.lt != null && !(age < ag.lt)) match = false
+              if (ag.eq != null && !(age === ag.eq)) match = false
+            }
+          } else {
+            match = false
+          }
+
+          if (match) {
+            selected = rule.refs
+            break
+          }
+        }
+      }
+
+      if (!selected && refsConfig.otherwise) {
+        selected = refsConfig.otherwise
+      }
+
+      if (selected) {
+        const out = normalizeRefs(selected)
+        if (out.length === 0) {
+          throw new Error('sustained_achievement.references rule must provide at least one medalId')
+        }
+        return out
+      }
+      // fall through to same-type inference
+    } else if (refsConfig != null) {
+      throw new Error('Invalid sustained_achievement.references: expected array or object')
+    }
+
+    // Fallback: infer from same-type prerequisite chain
+    const inferredIds = this.getSameTypePrereqMedalIds(parentMedal)
+    return inferredIds.map(id => ({ medalId: id }))
+  }
+
   checkSustainedAchievementRequirement(req, index, parentMedal, opts = {}) {
     const minYears = req.yearsOfAchievement ?? 3
 
-    // References: prefer explicit (on req or medal); else infer from same-type prerequisite chain
-    const explicitRefs = (req.references || parentMedal?.references || [])
-      .map(r => (typeof r === 'string' ? { medalId: r } : r))
-      .filter(r => r && r.medalId)
-    const sameTypePrereqs = this.getSameTypePrereqMedalIds(parentMedal)
-    const inferredRefs = explicitRefs.length ? [] : sameTypePrereqs.map(id => ({ medalId: id }))
-    const effectiveReferences = explicitRefs.length ? explicitRefs : inferredRefs
-
-    // Earliest counting year must be after previous same-type medal unlock
-    const earliestCountingYear = this.getEarliestCountingYearForMedal(parentMedal)
     const featureEnforce = this.profile?.features?.enforceCurrentYearForSustained === true
     // If feature is ON, always use the real current year (ignore opts.endYear)
     const currentYear = featureEnforce
       ? new Date().getFullYear()
       : ((opts && typeof opts.endYear === 'number') ? opts.endYear : new Date().getFullYear())
 
+    // Resolve which referenced medals to use (supports conditional references by age)
+    const effectiveReferences = this.resolveSustainedReferences(req, parentMedal, currentYear)
+
+    // Earliest counting year must be after previous same-type medal unlock
+    const earliestCountingYear = this.getEarliestCountingYearForMedal(parentMedal)
+
     // By default, when using references, the current year must be included
     let requireCurrent =
       req.mustIncludeCurrentYear === true ||
       parentMedal?.mustIncludeCurrentYear === true ||
-      effectiveReferences.length > 0
+      (effectiveReferences && effectiveReferences.length > 0)
     // Feature override: force requiring the real current year
     if (featureEnforce) requireCurrent = true
 

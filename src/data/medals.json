@@ -266,7 +266,6 @@
       "color": "#FFD700",
       "icon": "medal-gold",
       "requirements_original": "1. att i 3 precisionsserier mot Pistoltavla 25 m precision 25 m avstånd, 5 skott\n5 minuters skjuttid ha uppnått i varje serie minst:\n\n| Märkesvalör | Grupp A | Grupp B | Grupp C |\n| - | - | - | - |\n| Brons | 32 | 33 | 34 |\n| Silver | 38 | 39 | 40 |\n| Guld | 43 | 45 | 46 |\n\n2. att i 3 tillämpningsserier\nantingen\n- mot B 100 figur, 50 m av stånd, 6 skott, utgångsställning stående 45°\n- eller mot 1/6 rak eller cirkelmål C 30, 25 m av stånd, 6 skott utgångsställning stående 45°\n\nha erhållit i varje serie:\n\n| Märkesvalör | Antal träff | Skjuttid |\n| - | - | - |\n| Brons | 5 | 60 sek |\n| Silver | 6 | 40 sek |\n| Guld | 6 | A och R 17 sek, B och C 15 sek |\n- eller erövrat minst en standardmedalj i fältskjutning.\n\nFör erhållande av pistolskyttemärke i guld kan serierna under 1 och 2 ovan ersättas med följande prov: att två gånger ha i en skjutomgång, omfattande 3 serier mot pistoltavla, avstånd 25 m, 5 skott, tid för första serien 2,5 min., för andra serien 20 sek. och för tredje serien 10 sek. uppfyllt följande fordringar:\n\n|Vapengrupp|Poäng sammanlagt i en skjutomgång|\n|-|-|\n|A ocr R|121|\n|B|127|\n|C|130|\n\nDe 3 serierna i en skjutomgång skjuts i följd med marke ring mellan serierna.\nSkjutställning stående utan stödhand.",
-      "references": [],
       "prerequisites": [
         {
           "type": "medal",
@@ -635,8 +634,14 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under 3 år uppnått kraven för Elitmärket i guld",
-          "yearsOfAchievement": 3
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för elitmärket i guld.",
+          "yearsOfAchievement": 3,
+          "references": [
+            {
+              "medalId": "elite-mark-gold",
+              "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för elitmärket i guld."
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["elite-mark-gold-wreath-star-1"],
@@ -663,8 +668,14 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under 3 år uppnått kraven för Elitmärket i guld",
-          "yearsOfAchievement": 3
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för elitmärket i guld.",
+          "yearsOfAchievement": 3,
+          "references": [
+            {
+              "medalId": "elite-mark-gold",
+              "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för elitmärket i guld."
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["elite-mark-gold-wreath-star-2"],
@@ -691,8 +702,14 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under 3 år uppnått kraven för Elitmärket i guld",
-          "yearsOfAchievement": 3
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för elitmärket i guld.",
+          "yearsOfAchievement": 3,
+          "references": [
+            {
+              "medalId": "elite-mark-gold",
+              "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för elitmärket i guld."
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["elite-mark-gold-wreath-star-3"],
@@ -719,8 +736,14 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under 3 år uppnått kraven för Elitmärket i guld",
-          "yearsOfAchievement": 3
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för elitmärket i guld.",
+          "yearsOfAchievement": 3,
+          "references": [
+            {
+              "medalId": "elite-mark-gold",
+              "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för elitmärket i guld."
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": [],
@@ -867,7 +890,7 @@
     },
     {
       "id": "field-mark-gold-star-1",
-      "status": "under_review",
+      "status": "reviewed",
       "type": "field_mark",
       "tier": "star_1",
       "name": "Fältskyttemärket",
@@ -885,7 +908,13 @@
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för fältskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "yearsOfAchievement": 3,
+          "references": [
+            {
+              "medalId": "field-mark-gold",
+              "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för fältskyttemärket i guld."
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["field-mark-gold-star-2"],
@@ -895,7 +924,7 @@
     },
     {
       "id": "field-mark-gold-star-2",
-      "status": "under_review",
+      "status": "reviewed",
       "type": "field_mark",
       "tier": "star_2",
       "name": "Fältskyttemärket",
@@ -912,7 +941,13 @@
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för fältskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "yearsOfAchievement": 3,
+          "references": [
+            {
+              "medalId": "field-mark-gold",
+              "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för fältskyttemärket i guld."
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["field-mark-gold-star-3"],
@@ -922,7 +957,7 @@
     },
     {
       "id": "field-mark-gold-star-3",
-      "status": "under_review",
+      "status": "reviewed",
       "type": "field_mark",
       "tier": "star_3",
       "name": "Fältskyttemärket",
@@ -939,7 +974,13 @@
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för fältskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "yearsOfAchievement": 3,
+          "references": [
+            {
+              "medalId": "field-mark-gold",
+              "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för fältskyttemärket i guld."
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["field-mark-gold-wreath"],
@@ -949,7 +990,7 @@
     },
     {
       "id": "field-mark-gold-wreath",
-      "status": "under_review",
+      "status": "reviewed",
       "type": "field_mark",
       "tier": "gold_wreath",
       "name": "Fältskyttemärket",
@@ -966,7 +1007,13 @@
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för fältskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "yearsOfAchievement": 3,
+          "references": [
+            {
+              "medalId": "field-mark-gold",
+              "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för fältskyttemärket i guld."
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["field-mark-gold-wreath-star-1"],
@@ -976,7 +1023,7 @@
     },
     {
       "id": "field-mark-gold-wreath-star-1",
-      "status": "under_review",
+      "status": "reviewed",
       "type": "field_mark",
       "tier": "gold_wreath_star_1",
       "name": "Fältskyttemärket",
@@ -993,7 +1040,13 @@
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för fältskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "yearsOfAchievement": 3,
+          "references": [
+            {
+              "medalId": "field-mark-gold",
+              "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för fältskyttemärket i guld."
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["field-mark-gold-wreath-star-2"],
@@ -1003,7 +1056,7 @@
     },
     {
       "id": "field-mark-gold-wreath-star-2",
-      "status": "under_review",
+      "status": "reviewed",
       "type": "field_mark",
       "tier": "gold_wreath_star_2",
       "name": "Fältskyttemärket",
@@ -1020,7 +1073,13 @@
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för fältskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "yearsOfAchievement": 3,
+          "references": [
+            {
+              "medalId": "field-mark-gold",
+              "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för fältskyttemärket i guld."
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["field-mark-gold-wreath-star-3"],
@@ -1030,7 +1089,7 @@
     },
     {
       "id": "field-mark-gold-wreath-star-3",
-      "status": "under_review",
+      "status": "reviewed",
       "type": "field_mark",
       "tier": "gold_wreath_star_3",
       "name": "Fältskyttemärket",
@@ -1047,7 +1106,13 @@
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för fältskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "yearsOfAchievement": 3,
+          "references": [
+            {
+              "medalId": "field-mark-gold",
+              "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för fältskyttemärket i guld."
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": [],
@@ -2366,6 +2431,7 @@
     },
     {
       "id": "air-pistol-mark-bronze",
+      "status": "reviewed",
       "type": "air_pistol_mark",
       "tier": "bronze",
       "name": "Luftpistolmärket",
@@ -2389,6 +2455,7 @@
     },
     {
       "id": "air-pistol-mark-silver",
+      "status": "reviewed",
       "type": "air_pistol_mark",
       "tier": "silver",
       "name": "Luftpistolmärket",
@@ -2412,6 +2479,7 @@
     },
     {
       "id": "air-pistol-mark-gold",
+      "status": "reviewed",
       "type": "air_pistol_mark",
       "tier": "gold",
       "name": "Luftpistolmärket",
@@ -2435,6 +2503,7 @@
     },
     {
       "id": "air-pistol-mark-annual",
+      "status": "reviewed",
       "type": "air_pistol_mark",
       "tier": "annual",
       "name": "Årtalsmärke luftpistol",
@@ -2442,12 +2511,6 @@
       "color": "#FFD700",
       "icon": "air-pistol-annual",
       "requirements_original": "Yearly achievement of **luftpistol Gold** requirements.",
-      "references": [
-        {
-          "medalId": "air-pistol-mark-gold",
-          "description": "Uppfyllt fordringarna för luftpistolmärket i guld"
-        }
-      ],
       "prerequisites": [
         {
           "type": "medal",
@@ -2459,7 +2522,13 @@
           "type": "sustained_achievement",
           "description": "Ånyo uppfyllt fordringarna för luftpistolmärket i guld",
           "minAchievements": 1,
-          "timeWindowYears": 1
+          "timeWindowYears": 1,
+          "references": [
+            {
+              "medalId": "air-pistol-mark-gold",
+              "description": "Uppfyllt fordringarna för luftpistolmärket i guld"
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["air-pistol-mark-annual-star-1"],
@@ -2468,6 +2537,7 @@
     },
     {
       "id": "air-pistol-mark-annual-star-1",
+      "status": "reviewed",
       "type": "air_pistol_mark",
       "tier": "annual_star_1",
       "name": "Årtalsmärke luftpistol",
@@ -2485,7 +2555,13 @@
           "type": "sustained_achievement",
           "description": "Ånyo uppfyllt fordringarna för luftpistolmärket i guld",
           "minAchievements": 1,
-          "timeWindowYears": 1
+          "timeWindowYears": 1,
+          "references": [
+            {
+              "medalId": "air-pistol-mark-gold",
+              "description": "Uppfyllt fordringarna för luftpistolmärket i guld"
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["air-pistol-mark-annual-star-2"],
@@ -2495,6 +2571,7 @@
     },
     {
       "id": "air-pistol-mark-annual-star-2",
+      "status": "reviewed",
       "type": "air_pistol_mark",
       "tier": "annual_star_2",
       "name": "Årtalsmärke luftpistol",
@@ -2512,7 +2589,13 @@
           "type": "sustained_achievement",
           "description": "Ånyo uppfyllt fordringarna för luftpistolmärket i guld",
           "minAchievements": 1,
-          "timeWindowYears": 1
+          "timeWindowYears": 1,
+          "references": [
+            {
+              "medalId": "air-pistol-mark-gold",
+              "description": "Uppfyllt fordringarna för luftpistolmärket i guld"
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["air-pistol-mark-annual-star-3"],
@@ -2522,6 +2605,7 @@
     },
     {
       "id": "air-pistol-mark-annual-star-3",
+      "status": "reviewed",
       "type": "air_pistol_mark",
       "tier": "annual_star_3",
       "name": "Årtalsmärke luftpistol",
@@ -2539,7 +2623,13 @@
           "type": "sustained_achievement",
           "description": "Ånyo uppfyllt fordringarna för luftpistolmärket i guld",
           "minAchievements": 1,
-          "timeWindowYears": 1
+          "timeWindowYears": 1,
+          "references": [
+            {
+              "medalId": "air-pistol-mark-gold",
+              "description": "Uppfyllt fordringarna för luftpistolmärket i guld"
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["air-pistol-mark-annual-wreath"],
@@ -2549,6 +2639,7 @@
     },
     {
       "id": "air-pistol-mark-annual-wreath",
+      "status": "reviewed",
       "type": "air_pistol_mark",
       "tier": "annual_wreath",
       "name": "Årtalsmärke luftpistol",
@@ -2566,7 +2657,13 @@
           "type": "sustained_achievement",
           "description": "Ånyo uppfyllt fordringarna för luftpistolmärket i guld",
           "minAchievements": 1,
-          "timeWindowYears": 1
+          "timeWindowYears": 1,
+          "references": [
+            {
+              "medalId": "air-pistol-mark-gold",
+              "description": "Uppfyllt fordringarna för luftpistolmärket i guld"
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["air-pistol-mark-annual-wreath-star-1"],
@@ -2576,6 +2673,7 @@
     },
     {
       "id": "air-pistol-mark-annual-wreath-star-1",
+      "status": "reviewed",
       "type": "air_pistol_mark",
       "tier": "annual_wreath_star_1",
       "name": "Årtalsmärke luftpistol",
@@ -2593,7 +2691,13 @@
           "type": "sustained_achievement",
           "description": "Ånyo uppfyllt fordringarna för luftpistolmärket i guld",
           "minAchievements": 1,
-          "timeWindowYears": 1
+          "timeWindowYears": 1,
+          "references": [
+            {
+              "medalId": "air-pistol-mark-gold",
+              "description": "Uppfyllt fordringarna för luftpistolmärket i guld"
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["air-pistol-mark-annual-wreath-star-2"],
@@ -2603,6 +2707,7 @@
     },
     {
       "id": "air-pistol-mark-annual-wreath-star-2",
+      "status": "reviewed",
       "type": "air_pistol_mark",
       "tier": "annual_wreath_star_2",
       "name": "Årtalsmärke luftpistol",
@@ -2620,7 +2725,13 @@
           "type": "sustained_achievement",
           "description": "Ånyo uppfyllt fordringarna för luftpistolmärket i guld",
           "minAchievements": 1,
-          "timeWindowYears": 1
+          "timeWindowYears": 1,
+          "references": [
+            {
+              "medalId": "air-pistol-mark-gold",
+              "description": "Uppfyllt fordringarna för luftpistolmärket i guld"
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["air-pistol-mark-annual-wreath-star-3"],
@@ -2630,6 +2741,7 @@
     },
     {
       "id": "air-pistol-mark-annual-wreath-star-3",
+      "status": "reviewed",
       "type": "air_pistol_mark",
       "tier": "annual_wreath_star_3",
       "name": "Årtalsmärke luftpistol",
@@ -2647,7 +2759,13 @@
           "type": "sustained_achievement",
           "description": "Ånyo uppfyllt fordringarna för luftpistolmärket i guld",
           "minAchievements": 1,
-          "timeWindowYears": 1
+          "timeWindowYears": 1,
+          "references": [
+            {
+              "medalId": "air-pistol-mark-gold",
+              "description": "Uppfyllt fordringarna för luftpistolmärket i guld"
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": [],
@@ -2665,12 +2783,6 @@
       "color": "#FFD700",
       "icon": "lower-annual-star-1",
       "requirements_original": "Innehavare av guldmärke som under tre år, oavsett om i följd eller ej, ånyo uppfylltfordringarna för pistolskyttemärket i guld.",
-      "references": [
-        {
-          "medalId": "pistol-mark-gold",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld."
-        }
-      ],
       "prerequisites": [
         {
           "type": "medal",
@@ -2680,8 +2792,20 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+          "yearsOfAchievement": 3,
+          "references": {
+            "when": [
+              {
+                "if": { "age": { "gte": 66 } },
+                "refs": [{ "medalId": "pistol-mark-silver" }]
+              },
+              {
+                "if": { "age": { "lt": 65 } },
+                "refs": [{ "medalId": "pistol-mark-gold" }]
+              }
+            ]
+          }
         }
       ],
       "unlocksFollowingMedals": ["lower-annual-mark-star-2"],
@@ -2699,12 +2823,6 @@
       "color": "#FFD700",
       "icon": "lower-annual-star-2",
       "requirements_original": "Innehavare av lägre årtalsmärket med en stjärnor som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
-      "references": [
-        {
-          "medalId": "pistol-mark-gold",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld."
-        }
-      ],
       "prerequisites": [
         {
           "type": "medal",
@@ -2714,8 +2832,20 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+          "yearsOfAchievement": 3,
+          "references": {
+            "when": [
+              {
+                "if": { "age": { "gte": 66 } },
+                "refs": [{ "medalId": "pistol-mark-silver" }]
+              },
+              {
+                "if": { "age": { "lt": 65 } },
+                "refs": [{ "medalId": "pistol-mark-gold" }]
+              }
+            ]
+          }
         }
       ],
       "unlocksFollowingMedals": ["lower-annual-mark-star-3"],
@@ -2733,12 +2863,6 @@
       "color": "#FFD700",
       "icon": "lower-annual-star-3",
       "requirements_original": "Innehavare av lägre årtalsmärket med två stjärnor som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
-      "references": [
-        {
-          "medalId": "pistol-mark-gold",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld."
-        }
-      ],
       "prerequisites": [
         {
           "type": "medal",
@@ -2748,8 +2872,20 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+          "yearsOfAchievement": 3,
+          "references": {
+            "when": [
+              {
+                "if": { "age": { "gte": 66 } },
+                "refs": [{ "medalId": "pistol-mark-silver" }]
+              },
+              {
+                "if": { "age": { "lt": 65 } },
+                "refs": [{ "medalId": "pistol-mark-gold" }]
+              }
+            ]
+          }
         }
       ],
       "unlocksFollowingMedals": ["higher-annual-mark-bronze"],
@@ -2767,12 +2903,6 @@
       "color": "#CD7F32",
       "icon": "higher-annual-bronze",
       "requirements_original": "Innehavare av lägre årtalsmärket med tre stjärnor som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
-      "references": [
-        {
-          "medalId": "pistol-mark-gold",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld."
-        }
-      ],
       "prerequisites": [
         {
           "type": "medal",
@@ -2782,8 +2912,20 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+          "yearsOfAchievement": 3,
+          "references": {
+            "when": [
+              {
+                "if": { "age": { "gte": 66 } },
+                "refs": [{ "medalId": "pistol-mark-silver" }]
+              },
+              {
+                "if": { "age": { "lt": 65 } },
+                "refs": [{ "medalId": "pistol-mark-gold" }]
+              }
+            ]
+          }
         }
       ],
       "unlocksFollowingMedals": ["higher-annual-mark-silver"],
@@ -2801,12 +2943,6 @@
       "color": "#C0C0C0",
       "icon": "higher-annual-silver",
       "requirements_original": "Innehavare av högre årtalsmärket i brons som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
-      "references": [
-        {
-          "medalId": "pistol-mark-gold",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld."
-        }
-      ],
       "prerequisites": [
         {
           "type": "medal",
@@ -2816,8 +2952,20 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+          "yearsOfAchievement": 3,
+          "references": {
+            "when": [
+              {
+                "if": { "age": { "gte": 66 } },
+                "refs": [{ "medalId": "pistol-mark-silver" }]
+              },
+              {
+                "if": { "age": { "lt": 65 } },
+                "refs": [{ "medalId": "pistol-mark-gold" }]
+              }
+            ]
+          }
         }
       ],
       "unlocksFollowingMedals": ["higher-annual-mark-gold"],
@@ -2835,12 +2983,6 @@
       "color": "#FFD700",
       "icon": "higher-annual-gold",
       "requirements_original": "Innehavare av högre årtalsmärket i silver som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
-      "references": [
-        {
-          "medalId": "pistol-mark-gold",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld."
-        }
-      ],
       "prerequisites": [
         {
           "type": "medal",
@@ -2850,8 +2992,20 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+          "yearsOfAchievement": 3,
+          "references": {
+            "when": [
+              {
+                "if": { "age": { "gte": 66 } },
+                "refs": [{ "medalId": "pistol-mark-silver" }]
+              },
+              {
+                "if": { "age": { "lt": 65 } },
+                "refs": [{ "medalId": "pistol-mark-gold" }]
+              }
+            ]
+          }
         }
       ],
       "unlocksFollowingMedals": ["higher-annual-mark-gold-star-1"],
@@ -2869,12 +3023,6 @@
       "color": "#FFD700",
       "icon": "higher-annual-gold-star-1",
       "requirements_original": "Innehavare av högre årtalsmärket i guld som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
-      "references": [
-        {
-          "medalId": "pistol-mark-gold",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld."
-        }
-      ],
       "prerequisites": [
         {
           "type": "medal",
@@ -2884,8 +3032,20 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+          "yearsOfAchievement": 3,
+          "references": {
+            "when": [
+              {
+                "if": { "age": { "gte": 66 } },
+                "refs": [{ "medalId": "pistol-mark-silver" }]
+              },
+              {
+                "if": { "age": { "lt": 65 } },
+                "refs": [{ "medalId": "pistol-mark-gold" }]
+              }
+            ]
+          }
         }
       ],
       "unlocksFollowingMedals": ["higher-annual-mark-gold-star-2"],
@@ -2903,12 +3063,6 @@
       "color": "#FFD700",
       "icon": "higher-annual-gold-star-2",
       "requirements_original": "Innehavare av högre årtalsmärket i guld med en stjärna som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
-      "references": [
-        {
-          "medalId": "pistol-mark-gold",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld."
-        }
-      ],
       "prerequisites": [
         {
           "type": "medal",
@@ -2918,8 +3072,20 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+          "yearsOfAchievement": 3,
+          "references": {
+            "when": [
+              {
+                "if": { "age": { "gte": 66 } },
+                "refs": [{ "medalId": "pistol-mark-silver" }]
+              },
+              {
+                "if": { "age": { "lt": 65 } },
+                "refs": [{ "medalId": "pistol-mark-gold" }]
+              }
+            ]
+          }
         }
       ],
       "unlocksFollowingMedals": ["higher-annual-mark-gold-star-3"],
@@ -2937,12 +3103,6 @@
       "color": "#FFD700",
       "icon": "higher-annual-gold-star-3",
       "requirements_original": "Innehavare av högre årtalsmärket i guld med två stjärnor som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
-      "references": [
-        {
-          "medalId": "pistol-mark-gold",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld."
-        }
-      ],
       "prerequisites": [
         {
           "type": "medal",
@@ -2952,8 +3112,20 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+          "yearsOfAchievement": 3,
+          "references": {
+            "when": [
+              {
+                "if": { "age": { "gte": 66 } },
+                "refs": [{ "medalId": "pistol-mark-silver" }]
+              },
+              {
+                "if": { "age": { "lt": 65 } },
+                "refs": [{ "medalId": "pistol-mark-gold" }]
+              }
+            ]
+          }
         }
       ],
       "unlocksFollowingMedals": ["higher-annual-mark-gold-wreath"],
@@ -2971,12 +3143,6 @@
       "color": "#FFD700",
       "icon": "higher-annual-gold-wreath",
       "requirements_original": "Innehavare av högre årtalsmärket i guld med tre stjärnor som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
-      "references": [
-        {
-          "medalId": "pistol-mark-gold",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld."
-        }
-      ],
       "prerequisites": [
         {
           "type": "medal",
@@ -2986,8 +3152,20 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+          "yearsOfAchievement": 3,
+          "references": {
+            "when": [
+              {
+                "if": { "age": { "gte": 66 } },
+                "refs": [{ "medalId": "pistol-mark-silver" }]
+              },
+              {
+                "if": { "age": { "lt": 65 } },
+                "refs": [{ "medalId": "pistol-mark-gold" }]
+              }
+            ]
+          }
         }
       ],
       "unlocksFollowingMedals": ["higher-annual-mark-gold-wreath-star-1"],
@@ -3005,12 +3183,6 @@
       "color": "#FFD700",
       "icon": "higher-annual-gold-wreath-star-1",
       "requirements_original": "Innehavare av högre årtalsmärket med krans som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
-      "references": [
-        {
-          "medalId": "pistol-mark-gold",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld."
-        }
-      ],
       "prerequisites": [
         {
           "type": "medal",
@@ -3020,8 +3192,20 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+          "yearsOfAchievement": 3,
+          "references": {
+            "when": [
+              {
+                "if": { "age": { "gte": 66 } },
+                "refs": [{ "medalId": "pistol-mark-silver" }]
+              },
+              {
+                "if": { "age": { "lt": 65 } },
+                "refs": [{ "medalId": "pistol-mark-gold" }]
+              }
+            ]
+          }
         }
       ],
       "unlocksFollowingMedals": ["higher-annual-mark-gold-wreath-star-2"],
@@ -3039,12 +3223,6 @@
       "color": "#FFD700",
       "icon": "higher-annual-gold-wreath-star-2",
       "requirements_original": "Innehavare av högre årtalsmärket med krans och en stjärna som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
-      "references": [
-        {
-          "medalId": "pistol-mark-gold",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld."
-        }
-      ],
       "prerequisites": [
         {
           "type": "medal",
@@ -3054,8 +3232,20 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+          "yearsOfAchievement": 3,
+          "references": {
+            "when": [
+              {
+                "if": { "age": { "gte": 66 } },
+                "refs": [{ "medalId": "pistol-mark-silver" }]
+              },
+              {
+                "if": { "age": { "lt": 65 } },
+                "refs": [{ "medalId": "pistol-mark-gold" }]
+              }
+            ]
+          }
         }
       ],
       "unlocksFollowingMedals": ["higher-annual-mark-gold-wreath-star-3"],
@@ -3073,12 +3263,6 @@
       "color": "#FFD700",
       "icon": "higher-annual-gold-wreath-star-3",
       "requirements_original": "Innehavare av högre årtalsmärket med krans och två stjärnor som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
-      "references": [
-        {
-          "medalId": "pistol-mark-gold",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld."
-        }
-      ],
       "prerequisites": [
         {
           "type": "medal",
@@ -3088,8 +3272,20 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+          "yearsOfAchievement": 3,
+          "references": {
+            "when": [
+              {
+                "if": { "age": { "gte": 66 } },
+                "refs": [{ "medalId": "pistol-mark-silver" }]
+              },
+              {
+                "if": { "age": { "lt": 65 } },
+                "refs": [{ "medalId": "pistol-mark-gold" }]
+              }
+            ]
+          }
         }
       ],
       "unlocksFollowingMedals": ["higher-annual-mark-gold-enamel-wreath"],
@@ -3107,12 +3303,6 @@
       "color": "#FFD700",
       "icon": "higher-annual-gold-enamel-wreath",
       "requirements_original": "Innehavare av högre årtalsmärket med krans och tre stjärnor som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
-      "references": [
-        {
-          "medalId": "pistol-mark-gold",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld."
-        }
-      ],
       "prerequisites": [
         {
           "type": "medal",
@@ -3122,8 +3312,20 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+          "yearsOfAchievement": 3,
+          "references": {
+            "when": [
+              {
+                "if": { "age": { "gte": 66 } },
+                "refs": [{ "medalId": "pistol-mark-silver" }]
+              },
+              {
+                "if": { "age": { "lt": 65 } },
+                "refs": [{ "medalId": "pistol-mark-gold" }]
+              }
+            ]
+          }
         }
       ],
       "unlocksFollowingMedals": [
@@ -3143,12 +3345,6 @@
       "color": "#FFD700",
       "icon": "higher-annual-gold-enamel-wreath-star-1",
       "requirements_original": "Innehavare av högre årtalsmärket med emaljerad krans som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
-      "references": [
-        {
-          "medalId": "pistol-mark-gold",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld."
-        }
-      ],
       "prerequisites": [
         {
           "type": "medal",
@@ -3158,8 +3354,20 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+          "yearsOfAchievement": 3,
+          "references": {
+            "when": [
+              {
+                "if": { "age": { "gte": 66 } },
+                "refs": [{ "medalId": "pistol-mark-silver" }]
+              },
+              {
+                "if": { "age": { "lt": 65 } },
+                "refs": [{ "medalId": "pistol-mark-gold" }]
+              }
+            ]
+          }
         }
       ],
       "unlocksFollowingMedals": [
@@ -3179,12 +3387,6 @@
       "color": "#FFD700",
       "icon": "higher-annual-gold-enamel-wreath-star-2",
       "requirements_original": "Innehavare av högre årtalsmärket med emaljerad krans och en stjärna som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
-      "references": [
-        {
-          "medalId": "pistol-mark-gold",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld."
-        }
-      ],
       "prerequisites": [
         {
           "type": "medal",
@@ -3194,8 +3396,20 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+          "yearsOfAchievement": 3,
+          "references": {
+            "when": [
+              {
+                "if": { "age": { "gte": 66 } },
+                "refs": [{ "medalId": "pistol-mark-silver" }]
+              },
+              {
+                "if": { "age": { "lt": 65 } },
+                "refs": [{ "medalId": "pistol-mark-gold" }]
+              }
+            ]
+          }
         }
       ],
       "unlocksFollowingMedals": [
@@ -3215,12 +3429,6 @@
       "color": "#FFD700",
       "icon": "higher-annual-gold-enamel-wreath-star-3",
       "requirements_original": "Innehavare av högre årtalsmärket med emaljerad krans och två stjärnor som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
-      "references": [
-        {
-          "medalId": "pistol-mark-gold",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld."
-        }
-      ],
       "prerequisites": [
         {
           "type": "medal",
@@ -3230,8 +3438,20 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+          "yearsOfAchievement": 3,
+          "references": {
+            "when": [
+              {
+                "if": { "age": { "gte": 66 } },
+                "refs": [{ "medalId": "pistol-mark-silver" }]
+              },
+              {
+                "if": { "age": { "lt": 65 } },
+                "refs": [{ "medalId": "pistol-mark-gold" }]
+              }
+            ]
+          }
         }
       ],
       "unlocksFollowingMedals": [],
