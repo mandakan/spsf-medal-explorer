@@ -48,7 +48,7 @@ export default function ProfileImportDialog({
         aria-modal="true"
         aria-labelledby={`${id}-title`}
         id={id}
-        className="w-[min(92vw,32rem)] max-h-[85vh] overflow-auto rounded-xl bg-bg-secondary border border-slate-200 dark:border-slate-700 shadow-2xl"
+        className="w-[min(92vw,32rem)] max-h-[85vh] overflow-auto rounded-xl bg-bg-secondary border border-border shadow-2xl"
       >
         <form onSubmit={onSubmit} className="p-6 space-y-5">
           <h2 id={`${id}-title`} className="text-2xl font-bold text-text-primary">
@@ -56,11 +56,7 @@ export default function ProfileImportDialog({
           </h2>
 
           {error && (
-            <div
-              className="p-3 rounded-lg bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-300 border border-red-300 dark:border-red-600"
-              role="alert"
-              aria-live="assertive"
-            >
+            <div className="alert alert-error" role="alert" aria-live="assertive">
               {error}
             </div>
           )}
@@ -83,7 +79,7 @@ export default function ProfileImportDialog({
               id={`${id}-textarea`}
               value={importText}
               onChange={(e) => setImportText(e.target.value)}
-              className="w-full min-h-[8rem] px-3 py-2 rounded border border-slate-300 dark:border-slate-600 bg-bg-secondary text-text-primary placeholder:text-text-secondary/70 focus:outline-none focus:ring-2 focus:ring-primary"
+              className="textarea min-h-[8rem]"
               placeholder='{"kind":"profile-backup","version":"1.0","profile":{...}}'
               disabled={busy}
             />
@@ -120,7 +116,7 @@ export default function ProfileImportDialog({
           <div className="flex items-center justify-end gap-3 pt-2">
             <button
               type="submit"
-              className="px-4 py-2 rounded bg-primary text-white hover:bg-primary-hover disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary min-h-[44px]"
+              className="btn btn-primary min-h-[44px] disabled:opacity-50"
               disabled={busy}
             >
               Importera profil
@@ -128,7 +124,7 @@ export default function ProfileImportDialog({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded border border-slate-300 dark:border-slate-600 text-text-primary hover:bg-gray-100 dark:hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary min-h-[44px]"
+              className="btn btn-secondary min-h-[44px]"
               disabled={busy}
             >
               Avbryt

@@ -75,15 +75,7 @@ export default function DataBackup() {
       <h1 className="section-title mb-4">Data &amp; Backup</h1>
 
       {(error || localError) && (
-        <div
-          className="
-            mb-4 p-3 rounded-lg
-            bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-300
-            border border-red-300 dark:border-red-600
-          "
-          role="alert"
-          aria-live="assertive"
-        >
+        <div className="alert alert-error mb-4" role="alert" aria-live="assertive">
           {error || localError}
         </div>
       )}
@@ -106,15 +98,7 @@ export default function DataBackup() {
           <div className="card p-4">
             <ImportPanel onImport={handleImport} />
             {importing && (
-              <div
-                className="
-                  mt-3 p-2 rounded
-                  bg-amber-50 text-amber-900 dark:bg-amber-900/30 dark:text-amber-300
-                  border border-amber-300 dark:border-amber-600
-                "
-                role="status"
-                aria-live="polite"
-              >
+              <div className="alert alert-warning mt-3" role="status" aria-live="polite">
                 Importerar...
               </div>
             )}
