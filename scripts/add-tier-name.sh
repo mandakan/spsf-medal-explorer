@@ -47,20 +47,23 @@ for in_file in "$@"; do
     def dash_parts($s):
       try ($s | capture("^(?<base>.*?)\\s*[-–—]\\s*(?<tier>.*?)\\s*$")) catch null;
 
-    # Try Swedish star/tier suffix: "(Guld|Silver|Brons)? med (en|två|tre) stjärna/stjärnor"
-    # Captures the whole suffix (including optional color) as tier.
-    def star_parts($s):
-      try ($s | capture("^(?<base>.*?)\\s+(?<tier>(?:(?:Guld|Silver|Brons)\\s+)?med\\s+(?:en|två|tre)\\s+stjärnor?)\\s*$")) catch null;
+    # Generic Swedish suffix: capture trailing tier-like phrase.
+    # Accepts:
+    #   - Colors: Guld|Silver|Brons (optionally followed by more words)
+    #   - Any "med ..." phrase (e.g., "med en/två/tre stjärna/stjärnor", "med krans/kvistar",
+    #     "med blå emalj", "med emaljerad krans ...", etc.)
+    def generic_parts($s):
+      try (
+        $s | capture("^(?<base>.*?)\\s+(?<tier>(?:Guld|Silver|Brons)(?:\\s+.*)?|med\\s+.*)\\s*$")
+      ) catch null;
 
     def choose_candidate:
       ( ( .displayName? // .name? ) as $c
-        | if ($c|type) == "string" then $c else "" end );
+        | if ($c | type) == "string" then $c else "" end );
 
     def update_obj:
       (choose_candidate) as $cand
-      | (dash_parts($cand)) as $d
-      | (if $d == null then star_parts($cand) else null end) as $s
-      | ($d // $s) as $p
+      | (dash_parts($cand) // generic_parts($cand)) as $p
       | if $p != null and ($p.base | length) > 0 and ($p.tier | length) > 0 then
           ($p.base | trim) as $base
           | ($p.tier | trim) as $tier
@@ -73,18 +76,18 @@ for in_file in "$@"; do
           | (if (.displayName? | type) == "string" then .displayName = normalize_no_dash(.displayName) else . end)
         end;
 
-    def walk_all(f):
-      def w:
-        if type == "object" then
-          (f | with_entries(.value |= ( . | w )))
+    # Robust recursive walk (from jq manual pattern)
+    def walk(f):
+      . as $in
+      | if type == "object" then
+          (reduce keys[] as $k ({}; . + { ($k): ($in[$k] | walk(f)) }) | f)
         elif type == "array" then
-          map( . | w )
+          (map( walk(f) ) | f)
         else
-          .
+          f
         end;
-      w;
 
-    . | walk_all(update_obj)
+    walk(update_obj)
   ' "$in_file" > "$tmp"
 
   mv "$tmp" "$in_file"
