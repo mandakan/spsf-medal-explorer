@@ -11,7 +11,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   const canvasRef = useRef(null)
   const { medalDatabase } = useMedalDatabase()
   const statuses = useAllMedalStatuses()
-  const { panX, panY, scale, setScaleAbsolute, handleWheel, handlePointerDown, handlePointerMove, handlePointerUp, resetView } = usePanZoom(1, 0.5, 6)
+  
   const { render } = useCanvasRenderer()
   
   const [selectedMedal, setSelectedMedal] = useState(null)
@@ -26,6 +26,20 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     const medals = medalDatabase.getAllMedals()
     return generateMedalLayout(medals)
   }, [medalDatabase])
+  const getWorldBounds = useCallback(() => {
+    if (!layout || !layout.medals?.length) return { minX: 0, minY: 0, maxX: 0, maxY: 0 }
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity
+    for (let i = 0; i < layout.medals.length; i++) {
+      const m = layout.medals[i]
+      const r = m.radius || 20
+      if (m.x - r < minX) minX = m.x - r
+      if (m.y - r < minY) minY = m.y - r
+      if (m.x + r > maxX) maxX = m.x + r
+      if (m.y + r > maxY) maxY = m.y + r
+    }
+    return { minX, minY, maxX, maxY }
+  }, [layout])
+  const { panX, panY, scale, setScaleAbsolute, handleWheel, handlePointerDown, handlePointerMove, handlePointerUp, resetView } = usePanZoom(1, 0.5, 6, { getBounds: getWorldBounds, overscrollPx: 48 })
   const [isDragging, setIsDragging] = useState(false)
   const closeBtnRef = useRef(null)
   const prevFocusRef = useRef(null)
