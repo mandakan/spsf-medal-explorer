@@ -705,8 +705,6 @@ export class MedalCalculator {
   checkStandardMedalRequirement(req, index, opts = {}) {
     const achievements = (this.profile.prerequisites || []).filter(a => a.type === 'standard_medal')
 
-    console.log(req)
-    console.log(achievements)
     let list = achievements
     if (req.disciplineType) {
       list = list.filter(a => a.disciplineType === req.disciplineType)
@@ -714,8 +712,7 @@ export class MedalCalculator {
     if (req.medalTier) {
       list = list.filter(a => a.medalType === req.medalTier)
     }
-    console.log('post filter:')
-console.log(list)
+
     const endYear = (opts && typeof opts.endYear === 'number') ? opts.endYear : null
     if (typeof req.timeWindowYears === 'number' && req.timeWindowYears > 0) {
       const finalYear = endYear != null ? endYear : new Date().getFullYear()
