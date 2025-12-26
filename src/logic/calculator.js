@@ -245,42 +245,48 @@ export class MedalCalculator {
   }
 
   checkRequirements(medal, opts = {}) {
-    if (!medal.requirements || medal.requirements.length === 0) {
-      return { allMet: true, items: [], unlockYear: null }
+    const spec = medal.requirements
+    // No requirements => trivially met
+    if (!spec || (Array.isArray(spec) && spec.length === 0)) {
+      return { allMet: true, items: [], unlockYear: null, tree: { node: 'and', isMet: true, children: [] } }
     }
 
-    const items = []
+    const root = this.normalizeRequirementSpec(spec)
+    const evalAt = (endYear) => this.evaluateReqNode(root, medal, { ...opts, endYear })
 
-    medal.requirements.forEach((req, idx) => {
-      if (req.type === 'precision_series') {
-        items.push(this.checkPrecisionSeriesRequirement(req, idx, opts))
-      } else if (req.type === 'sustained_achievement') {
-        items.push(this.checkSustainedAchievementRequirement(req, idx, medal, opts))
-      } else if (req.type === 'championship_competition') {
-        items.push(this.checkChampionshipRequirement(req, idx, opts))
-      } else if (req.type === 'application_series') {
-        items.push(this.checkApplicationSeriesRequirement(req, idx, opts))
-      } else {
-        items.push({
-          type: req.type,
-          index: idx,
-          isMet: false,
-          reason: 'unsupported_requirement_type',
-          description: req.description
-        })
+    // If caller provides a concrete endYear, evaluate the whole expression for that year
+    if (typeof opts.endYear === 'number') {
+      const tree = evalAt(opts.endYear)
+      const allMet = !!tree.isMet
+      return {
+        allMet,
+        items: this.flattenLeaves(tree),
+        unlockYear: allMet ? opts.endYear : null,
+        tree
       }
-    })
+    }
 
-    const years = items.filter(i => i.isMet && i.windowYear != null).map(i => i.windowYear)
-    const uniqueYears = Array.from(new Set(years))
-    const yearConflict = uniqueYears.length > 1
-    const unlockYear = uniqueYears.length === 1 ? uniqueYears[0] : null
+    // Otherwise, scan candidate years (newest first) and pick the first that satisfies the expression
+    const candidates = this.getCandidateYearsForTree()
+    for (const y of candidates) {
+      const tree = evalAt(y)
+      if (tree.isMet) {
+        return {
+          allMet: true,
+          items: this.flattenLeaves(tree),
+          unlockYear: y,
+          tree
+        }
+      }
+    }
 
+    // Not achievable in any candidate year; return evaluated tree without endYear for progress/debug
+    const tree = this.evaluateReqNode(root, medal, opts)
     return {
-      allMet: items.every(item => item.isMet) && !yearConflict,
-      items,
-      unlockYear,
-      ...(yearConflict ? { yearConflict: { years: uniqueYears } } : {})
+      allMet: false,
+      items: this.flattenLeaves(tree),
+      unlockYear: null,
+      tree
     }
   }
 
@@ -497,6 +503,92 @@ export class MedalCalculator {
       acc[key].push(item)
       return acc
     }, {})
+  }
+
+  // Normalize requirement spec into a boolean expression tree (AST)
+  // - Arrays become implicit AND
+  // - { and: [...] } and { or: [...] } become operator nodes
+  // - Any other object is treated as a leaf requirement with a type
+  normalizeRequirementSpec(spec) {
+    if (Array.isArray(spec)) {
+      return { op: 'and', children: spec.map(s => this.normalizeRequirementSpec(s)) }
+    }
+    if (spec && typeof spec === 'object') {
+      if (Array.isArray(spec.and)) {
+        return { op: 'and', children: spec.and.map(s => this.normalizeRequirementSpec(s)) }
+      }
+      if (Array.isArray(spec.or)) {
+        return { op: 'or', children: spec.or.map(s => this.normalizeRequirementSpec(s)) }
+      }
+      return { op: 'leaf', req: spec }
+    }
+    return { op: 'leaf', req: {} }
+  }
+
+  // Evaluate a requirement node for a specific endYear (calendar semantics)
+  evaluateReqNode(node, medal, opts = {}) {
+    if (!node) return { node: 'leaf', isMet: false, leaf: { type: 'unknown', index: -1, isMet: false } }
+
+    if (node.op === 'and') {
+      const children = node.children?.map(ch => this.evaluateReqNode(ch, medal, opts)) || []
+      const isMet = children.every(r => r.isMet)
+      return { node: 'and', isMet, children }
+    }
+
+    if (node.op === 'or') {
+      const children = node.children?.map(ch => this.evaluateReqNode(ch, medal, opts)) || []
+      const isMet = children.some(r => r.isMet)
+      return { node: 'or', isMet, children }
+    }
+
+    // Leaf requirement
+    const req = node.req || {}
+    let leaf
+    switch (req.type) {
+      case 'precision_series':
+        leaf = this.checkPrecisionSeriesRequirement(req, -1, opts)
+        break
+      case 'application_series':
+        leaf = this.checkApplicationSeriesRequirement(req, -1, opts)
+        break
+      case 'sustained_achievement':
+        leaf = this.checkSustainedAchievementRequirement(req, -1, medal, opts)
+        break
+      case 'championship_competition':
+        leaf = this.checkChampionshipRequirement(req, -1, opts)
+        break
+      default:
+        leaf = {
+          type: req.type,
+          index: -1,
+          isMet: false,
+          reason: 'unsupported_requirement_type',
+          description: req.description
+        }
+        break
+    }
+    return { node: 'leaf', isMet: !!leaf.isMet, leaf }
+  }
+
+  // Collect all leaf results from an evaluated tree (for UI/progress)
+  flattenLeaves(resultNode, out = []) {
+    if (!resultNode) return out
+    if (resultNode.node === 'leaf') {
+      out.push(resultNode.leaf)
+      return out
+    }
+    for (const ch of resultNode.children || []) {
+      this.flattenLeaves(ch, out)
+    }
+    return out
+  }
+
+  // Candidate end years to try when no specific endYear is provided
+  getCandidateYearsForTree() {
+    const years = new Set(this.getAllAchievementYears())
+    const current = new Date().getFullYear()
+    years.add(current)
+    return Array.from(years).sort((a, b) => b - a)
   }
 
   checkSustainedAchievementRequirement(req, index, parentMedal, opts = {}) {
