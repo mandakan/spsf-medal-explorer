@@ -113,7 +113,7 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
           </button>
           <button
             onClick={() => setShowImport(true)}
-            className="mt-2 px-4 py-2 rounded border border-slate-200 dark:border-slate-700 text-text-primary hover:bg-gray-100 dark:hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
+            className="mt-2 btn btn-secondary"
             aria-haspopup="dialog"
             aria-controls="profile-import-dialog"
           >
