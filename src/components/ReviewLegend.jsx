@@ -56,17 +56,17 @@ export default function ReviewLegend({ className = '', id, variant = 'list' }) {
       id={id}
       className={['inline-flex items-center gap-3 text-xs text-muted-foreground', className].join(' ')}
     >
-      {/* Under granskning: badge med ikon (violett, streckad kant) */}
-      <span className="legend-badge legend--review" aria-label="Under granskning">
-        <Icon name="CircleDashed" className="w-3 h-3" aria-hidden="true" />
-        <span>Under granskning</span>
+      {/* Under granskning: färgprick + label (matchar radindikatorn) */}
+      <span className="inline-flex items-center gap-2" aria-hidden="true">
+        <span className="legend-dot" style={{ backgroundColor: 'var(--color-review)' }} />
       </span>
+      <span>Under granskning</span>
 
-      {/* Platshållare: badge med ikon (neutral, prickad kant) */}
-      <span className="legend-badge legend--placeholder ml-2" aria-label="Platshållare">
-        <Icon name="Circle" className="w-3 h-3" aria-hidden="true" />
-        <span>Platshållare</span>
+      {/* Platshållare: färgprick + label (matchar radindikatorn) */}
+      <span className="inline-flex items-center gap-2 ml-4" aria-hidden="true">
+        <span className="legend-dot" style={{ backgroundColor: 'var(--color-placeholder)' }} />
       </span>
+      <span>Platshållare</span>
 
       {/* Användarstatusar (kompakt dot + label) */}
       <span className="inline-flex items-center gap-2 ml-4" aria-hidden="true">
