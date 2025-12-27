@@ -2124,10 +2124,12 @@
       "displayName": "Märke i Nationell Helmatch Silver",
       "color": "#C0C0C0",
       "icon": "national-full-silver",
+      "requirements_original": "Skjutningen som utförs med av Förbundet godkända vapen, skall ske dels mot pistoltavla, dels mot snabbskjutningstavla samt mot fältfigurtavla enligt följande grunder nämligen:\n\nSammanlagt resultat av\n- fyra 5-skottsserier mot pistoltavla enligt bestämmelserna i SHB. Provserie tillåten.\n- fyra 5-skottsserier mot snabbskjutningstavla enligt bestämmelserna i SHB. Provserie tillåten.\n- fyra 5-skottsserier mot fältfigurtavla, avstånd 25 meter, utgångsställning 45°. Tid för respektive serie är 18, 16, 14 och 12 sek. i nämnd ordning. Skytten väljer själv i vilken ordning målen skall beskjutas. Provserie är inte tillåten.\n\nProv för märke i Nationell helmatch får endast avläggas av den, som under föregående kalenderår uppfyllt fordringarna för pistolskyttemärke i brons.\n\nMärket i Nationell helmatch förekommer i valörerna brons, silver och guld, samt i guld med en, två och tre stjärnor.\n\nMärkesprov får avläggas vid såväl träning som riks-, landsdels-, nationella och kretstävlingar i Nationell helmatch.\n\nEndast ett märke kan under året erövras och märke av högre valör endast av den, som förut löst märke av lägre valör.\n\nFör erhållande av märke i Nationell helmatch krävs att skytten vid två olika tillfällen under samma kalenderår uppfyller kraven för respektive märke, enligt följande:\n\n|Märke|A|B|C|\n|-|-|-|-|\n|Brons|365|380|390|\n|Silver|435|450|460|\n|Guld|500|520|530|\n",
       "prerequisites": [
         {
           "type": "medal",
-          "medalId": "national-match-mark-bronze"
+          "medalId": "national-match-mark-bronze",
+          "yearOffset": 1
         }
       ],
       "requirements": [
@@ -2163,10 +2165,12 @@
       "displayName": "Märke i Nationell Helmatch Guld",
       "color": "#FFD700",
       "icon": "national-full-gold",
+      "requirements_original": "Skjutningen som utförs med av Förbundet godkända vapen, skall ske dels mot pistoltavla, dels mot snabbskjutningstavla samt mot fältfigurtavla enligt följande grunder nämligen:\n\nSammanlagt resultat av\n- fyra 5-skottsserier mot pistoltavla enligt bestämmelserna i SHB. Provserie tillåten.\n- fyra 5-skottsserier mot snabbskjutningstavla enligt bestämmelserna i SHB. Provserie tillåten.\n- fyra 5-skottsserier mot fältfigurtavla, avstånd 25 meter, utgångsställning 45°. Tid för respektive serie är 18, 16, 14 och 12 sek. i nämnd ordning. Skytten väljer själv i vilken ordning målen skall beskjutas. Provserie är inte tillåten.\n\nProv för märke i Nationell helmatch får endast avläggas av den, som under föregående kalenderår uppfyllt fordringarna för pistolskyttemärke i brons.\n\nMärket i Nationell helmatch förekommer i valörerna brons, silver och guld, samt i guld med en, två och tre stjärnor.\n\nMärkesprov får avläggas vid såväl träning som riks-, landsdels-, nationella och kretstävlingar i Nationell helmatch.\n\nEndast ett märke kan under året erövras och märke av högre valör endast av den, som förut löst märke av lägre valör.\n\nFör erhållande av märke i Nationell helmatch krävs att skytten vid två olika tillfällen under samma kalenderår uppfyller kraven för respektive märke, enligt följande:\n\n|Märke|A|B|C|\n|-|-|-|-|\n|Brons|365|380|390|\n|Silver|435|450|460|\n|Guld|500|520|530|\n",
       "prerequisites": [
         {
           "type": "medal",
-          "medalId": "national-match-mark-silver"
+          "medalId": "national-match-mark-silver",
+          "yearOffset": 1
         }
       ],
       "requirements": [
