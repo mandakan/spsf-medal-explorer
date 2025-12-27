@@ -80,7 +80,7 @@ export function ProfileProvider({ children }) {
 
 
   const startExplorerMode = useCallback(() => {
-    try { window.localStorage.setItem(ONBOARDING_KEY, 'guest') } catch {}
+    try { window.localStorage.setItem(ONBOARDING_KEY, 'guest') } catch (e) { void e }
     setCurrentProfile(createGuestProfile())
   }, [])
 
@@ -109,7 +109,7 @@ export function ProfileProvider({ children }) {
             try {
               const choice = window.localStorage.getItem(ONBOARDING_KEY)
               if (choice === 'guest') selected = createGuestProfile()
-            } catch {}
+            } catch (e) { void e }
           }
         }
 
@@ -176,7 +176,7 @@ export function ProfileProvider({ children }) {
   useEffect(() => {
     if (!hydrated) return
     if (currentProfile && !currentProfile.isGuest) {
-      try { window.localStorage.removeItem(ONBOARDING_KEY) } catch {}
+      try { window.localStorage.removeItem(ONBOARDING_KEY) } catch (e) { void e }
     }
   }, [currentProfile, hydrated])
 
