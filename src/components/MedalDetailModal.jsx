@@ -13,6 +13,7 @@ import Disclaimer from './Disclaimer'
 import { LINKS } from '../config/links'
 import RequirementTree from './RequirementTree'
 import { StatusPill } from './StatusPill'
+import StatusIcon from './StatusIcon'
 
 export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) {
   const { medalDatabase } = useMedalDatabase()
@@ -342,16 +343,18 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
                 {medal.displayName}
                 {isPlaceholder ? (
                   <span
-                    className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-900 border border-indigo-300 dark:bg-indigo-900/30 dark:text-indigo-200 dark:border-indigo-700"
+                    className="ml-2 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-900 border border-indigo-300 dark:bg-indigo-900/30 dark:text-indigo-200 dark:border-indigo-700"
                     aria-label="Status: plats­hållare"
                   >
+                    <StatusIcon status="placeholder" className="w-3.5 h-3.5" colorVar="--color-placeholder" />
                     Plats­hållare
                   </span>
                 ) : underReview && (
                   <span
-                    className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-900 border border-amber-300 dark:bg-amber-900/40 dark:text-amber-200 dark:border-amber-700"
+                    className="ml-2 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-900 border border-amber-300 dark:bg-amber-900/40 dark:text-amber-200 dark:border-amber-700"
                     aria-label="Status för regler: under granskning"
                   >
+                    <StatusIcon status="review" className="w-3.5 h-3.5" colorVar="--color-review" />
                     Under granskning
                   </span>
                 )}
@@ -384,7 +387,19 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
             </div>
             {!isPlaceholder && (
               <div className="mb-4">
-                <StatusPill status={status?.status || 'locked'} />
+                <div className="inline-flex items-center gap-2">
+                  <StatusIcon
+                    status={status?.status || 'locked'}
+                    className="w-4 h-4"
+                    colorVar={{
+                      locked: '--color-status-locked',
+                      available: '--color-status-available',
+                      eligible: '--color-status-eligible',
+                      unlocked: '--color-status-unlocked'
+                    }[status?.status || 'locked']}
+                  />
+                  <StatusPill status={status?.status || 'locked'} />
+                </div>
               </div>
             )}
             {isPlaceholder && (

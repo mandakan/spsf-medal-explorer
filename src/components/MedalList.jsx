@@ -1,4 +1,5 @@
 import React, { useMemo, useCallback, useRef, useEffect, useState } from 'react'
+import StatusIcon from './StatusIcon'
 
 function MedalIcon({ iconUrl, alt, unlocked }) {
   const [loaded, setLoaded] = useState(false)
@@ -78,14 +79,14 @@ function Row({ data, index, style }) {
 
           {isPlaceholder && (
             <span className="inline-flex items-center gap-1 text-xs text-placeholder" title="Plats­hållare" aria-label="Plats­hållare">
-              <span className="inline-block w-2 h-2 rounded-full bg-placeholder" aria-hidden="true"></span>
+              <StatusIcon status="placeholder" className="w-3.5 h-3.5" colorVar="--color-placeholder" />
               <span className="sr-only">Plats­hållare</span>
             </span>
           )}
 
           {!isPlaceholder && underReview && (
             <span className="inline-flex items-center gap-1 text-xs text-review" title="Under granskning" aria-label="Under granskning">
-              <span className="inline-block w-2 h-2 rounded-full bg-review" aria-hidden="true"></span>
+              <StatusIcon status="review" className="w-3.5 h-3.5" colorVar="--color-review" />
               <span className="sr-only">Under granskning</span>
             </span>
           )}

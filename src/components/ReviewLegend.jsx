@@ -1,4 +1,5 @@
 import React from 'react'
+import StatusIcon from './StatusIcon'
 
 export default function ReviewLegend({ className = '', id, variant = 'list' }) {
   if (variant === 'canvas') {
@@ -8,40 +9,32 @@ export default function ReviewLegend({ className = '', id, variant = 'list' }) {
         className={['flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-muted-foreground w-full min-w-0', className].join(' ')}
       >
         <span className="inline-flex items-center gap-2 whitespace-nowrap">
-          <span
-            className="inline-block w-3 h-3 rounded-full border-2 border-dashed"
-            style={{ borderColor: 'var(--color-review)' }}
-            aria-hidden="true"
-          />
+          <StatusIcon status="review" colorVar="--color-review" />
           <span>Under granskning</span>
         </span>
 
         <span className="inline-flex items-center gap-2 whitespace-nowrap">
-          <span
-            className="inline-block w-3 h-3 rounded-full border-2 border-dotted"
-            style={{ borderColor: 'var(--color-placeholder)' }}
-            aria-hidden="true"
-          />
+          <StatusIcon status="placeholder" colorVar="--color-placeholder" />
           <span>Platshållare</span>
         </span>
 
         <span className="inline-flex items-center gap-2 whitespace-nowrap">
-          <span className="legend-dot" style={{ backgroundColor: 'var(--color-status-locked)' }} aria-hidden="true" />
+          <StatusIcon status="locked" colorVar="--color-status-locked" />
           <span>Låst</span>
         </span>
 
         <span className="inline-flex items-center gap-2 whitespace-nowrap">
-          <span className="legend-dot" style={{ backgroundColor: 'var(--color-status-available)' }} aria-hidden="true" />
+          <StatusIcon status="available" colorVar="--color-status-available" />
           <span>Tillgänglig</span>
         </span>
 
         <span className="inline-flex items-center gap-2 whitespace-nowrap">
-          <span className="legend-dot" style={{ backgroundColor: 'var(--color-status-eligible)' }} aria-hidden="true" />
+          <StatusIcon status="eligible" colorVar="--color-status-eligible" />
           <span>Kvalificerad</span>
         </span>
 
         <span className="inline-flex items-center gap-2 whitespace-nowrap">
-          <span className="legend-dot" style={{ backgroundColor: 'var(--color-status-unlocked)' }} aria-hidden="true" />
+          <StatusIcon status="unlocked" colorVar="--color-status-unlocked" />
           <span>Upplåst</span>
         </span>
       </div>
@@ -55,32 +48,32 @@ export default function ReviewLegend({ className = '', id, variant = 'list' }) {
       className={['flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-muted-foreground w-full min-w-0', className].join(' ')}
     >
       <span className="inline-flex items-center gap-2 whitespace-nowrap">
-        <span className="legend-dot" style={{ backgroundColor: 'var(--color-review)' }} aria-hidden="true" />
+        <StatusIcon status="review" colorVar="--color-review" />
         <span>Under granskning</span>
       </span>
 
       <span className="inline-flex items-center gap-2 whitespace-nowrap">
-        <span className="legend-dot" style={{ backgroundColor: 'var(--color-placeholder)' }} aria-hidden="true" />
+        <StatusIcon status="placeholder" colorVar="--color-placeholder" />
         <span>Platshållare</span>
       </span>
 
       <span className="inline-flex items-center gap-2 whitespace-nowrap">
-        <span className="legend-dot" style={{ backgroundColor: 'var(--color-status-locked)' }} aria-hidden="true" />
+        <StatusIcon status="locked" colorVar="--color-status-locked" />
         <span>Låst</span>
       </span>
 
       <span className="inline-flex items-center gap-2 whitespace-nowrap">
-        <span className="legend-dot" style={{ backgroundColor: 'var(--color-status-available)' }} aria-hidden="true" />
+        <StatusIcon status="available" colorVar="--color-status-available" />
         <span>Tillgänglig</span>
       </span>
 
       <span className="inline-flex items-center gap-2 whitespace-nowrap">
-        <span className="legend-dot" style={{ backgroundColor: 'var(--color-status-eligible)' }} aria-hidden="true" />
+        <StatusIcon status="eligible" colorVar="--color-status-eligible" />
         <span>Kvalificerad</span>
       </span>
 
       <span className="inline-flex items-center gap-2 whitespace-nowrap">
-        <span className="legend-dot" style={{ backgroundColor: 'var(--color-status-unlocked)' }} aria-hidden="true" />
+        <StatusIcon status="unlocked" colorVar="--color-status-unlocked" />
         <span>Upplåst</span>
       </span>
     </div>
