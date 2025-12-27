@@ -146,4 +146,4 @@ Basic workflow
 
 ## License
 
-MIT (or update to your preferred license)
+MIT
