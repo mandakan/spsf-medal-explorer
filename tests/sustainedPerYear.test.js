@@ -120,7 +120,7 @@ describe('MedalCalculator sustained_achievement with perYear', () => {
     const calc = new MedalCalculator(db, profile)
 
     const res = calc.evaluateMedal('annual-3-of-6')
-    expect(res.status).toBe('achievable')
+    expect(res.status).toBe('eligible')
 
     // Inspect sustained leaf progress: expect exactly 3 years counted
     const medal = db.getMedalById('annual-3-of-6')
@@ -187,7 +187,7 @@ describe('MedalCalculator sustained_achievement with perYear', () => {
     const res = calc.evaluateMedal('annual-1-of-any')
 
     // Should be locked because the only way to pass would require reusing pre-ECY data
-    expect(res.status).toBe('locked')
+    expect(res.status).toBe('available')
 
     // Also confirm the leaf shows not met
     const medal = db.getMedalById('annual-1-of-any')
@@ -250,7 +250,7 @@ describe('MedalCalculator sustained_achievement with perYear', () => {
     // With mustIncludeCurrentYear true, but no current year data => locked
     const calc1 = new MedalCalculator(db, { ...baseProfile, features: { enforceCurrentYearForSustained: false } })
     const res1 = calc1.evaluateMedal('annual-require-current')
-    expect(res1.status).toBe('locked')
+    expect(res1.status).toBe('available')
 
     // With feature override on (even if mustIncludeCurrentYear were false), still locked
     const sustained2 = {
@@ -263,7 +263,7 @@ describe('MedalCalculator sustained_achievement with perYear', () => {
     const db2 = makeDb([lowerAnnual, sustained2])
     const calc2 = new MedalCalculator(db2, { ...baseProfile, features: { enforceCurrentYearForSustained: true } })
     const res2 = calc2.evaluateMedal('annual-feature-require-current')
-    expect(res2.status).toBe('locked')
+    expect(res2.status).toBe('available')
   })
 
   test('custom_criterion leaf works inside perYear', () => {
@@ -303,6 +303,6 @@ describe('MedalCalculator sustained_achievement with perYear', () => {
 
     const calc = new MedalCalculator(db, profile)
     const res = calc.evaluateMedal('custom-per-year')
-    expect(res.status).toBe('achievable')
+    expect(res.status).toBe('eligible')
   })
 })

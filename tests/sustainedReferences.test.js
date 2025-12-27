@@ -210,7 +210,7 @@ describe('MedalCalculator sustained achievements (references)', () => {
     const calc = new MedalCalculator(db, profile)
     const res = calc.evaluateMedal('lower-annual-mark-star-1')
 
-    expect(res.status).toBe('achievable')
+    expect(res.status).toBe('eligible')
     const sustained = res.details.items.find(i => i.type === 'sustained_achievement')
     expect(sustained).toBeTruthy()
     expect(sustained.isMet).toBe(true)
@@ -248,7 +248,7 @@ describe('MedalCalculator sustained achievements (references)', () => {
     const calc = new MedalCalculator(db, profile)
     const res = calc.evaluateMedal('lower-annual-mark-star-1')
 
-    expect(res.status).toBe('achievable')
+    expect(res.status).toBe('eligible')
     const sustained = res.details.items.find(i => i.type === 'sustained_achievement')
     expect(sustained).toBeTruthy()
     expect(sustained.isMet).toBe(true)
@@ -291,7 +291,7 @@ describe('MedalCalculator sustained achievements (references)', () => {
     const calc = new MedalCalculator(db, profile)
     const res = calc.evaluateMedal('pistol-annual-3-of-6')
 
-    expect(res.status).toBe('achievable')
+    expect(res.status).toBe('eligible')
     const sustained = res.details.items.find(i => i.type === 'sustained_achievement')
     expect(sustained).toBeTruthy()
     expect(sustained.isMet).toBe(true)
@@ -331,7 +331,7 @@ describe('MedalCalculator sustained achievements (references)', () => {
     const calc = new MedalCalculator(db, profile)
     const res = calc.evaluateMedal('other-annual')
 
-    expect(res.status).toBe('achievable')
+    expect(res.status).toBe('eligible')
     const sustained = res.details.items.find(i => i.type === 'sustained_achievement')
     expect(sustained).toBeTruthy()
     expect(sustained.isMet).toBe(true)
@@ -365,7 +365,7 @@ describe('MedalCalculator sustained achievements (references)', () => {
     const calc = new MedalCalculator(db, profile)
     const res = calc.evaluateMedal('dual-ref-annual')
 
-    expect(res.status).toBe('locked')
+    expect(res.status).toBe('available')
     expect(res.reason).toBe('requirements_not_met')
     const sustained = res.details.items.find(i => i.type === 'sustained_achievement')
     expect(sustained).toBeTruthy()

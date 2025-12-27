@@ -79,7 +79,7 @@ describe('MedalCalculator', () => {
     ]
 
     const result = calculator.evaluateMedal('pistol-mark-bronze')
-    expect(result.status).toBe('achievable')
+    expect(result.status).toBe('eligible')
   })
 
   test('marks silver as locked when bronze not unlocked', () => {
