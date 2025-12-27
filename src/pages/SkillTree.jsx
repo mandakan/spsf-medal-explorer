@@ -15,7 +15,6 @@ export default function SkillTree() {
       return {
         key,
         label: s.label,
-        icon: s.icon,
         count: Array.isArray(statuses?.[key]) ? statuses[key].length : 0,
       }
     })
@@ -71,7 +70,7 @@ export default function SkillTree() {
           aria-labelledby="tab-stats"
           className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4"
         >
-          {statusCards.map(({ key, label, icon, count }) => (
+          {statusCards.map(({ key, label, count }) => (
             <div key={key} className="card p-6">
               <p
                 className="text-sm font-semibold inline-flex items-center gap-2"
