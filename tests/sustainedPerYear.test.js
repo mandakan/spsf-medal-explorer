@@ -294,31 +294,15 @@ describe('MedalCalculator sustained_achievement with perYear', () => {
 
     const db = makeDb([sustained])
 
-    // No achievements needed; perYear uses custom rule and candidate years include current year
+    // Ensure targetYear is included among candidate years by adding a dummy achievement at targetYear
     const profile = {
       userId: 'u4',
       unlockedMedals: [],
-      prerequisites: [] // empty; getAllAchievementYears() => [], but perYear considers current year too
+      prerequisites: [precisionSeries(targetYear, 0)]
     }
 
     const calc = new MedalCalculator(db, profile)
     const res = calc.evaluateMedal('custom-per-year')
-    // Achievable only if the window including targetYear is considered; since timeWindowYears set,
-    // per-year branch chooses best end, and as long as targetYear is within [end-2..end],
-    // there exists some endYear that counts it. getAllAchievementYears() is empty, but perYear
-    // logic evaluates over allYears which starts from [] and pushes current year only; however,
-    // the custom criterion is evaluated for per-year endYear = each candidate 'y' from allYears.
-    // To ensure targetYear is considered, include it using a dummy achievement year.
-    // Add a quick guard here: if not achievable, re-run with a dummy achievement at targetYear.
-    if (res.status !== 'achievable') {
-      const calc2 = new MedalCalculator(db, {
-        ...profile,
-        prerequisites: [precisionSeries(targetYear, 0)]
-      })
-      const res2 = calc2.evaluateMedal('custom-per-year')
-      expect(res2.status).toBe('achievable')
-    } else {
-      expect(res.status).toBe('achievable')
-    }
+    expect(res.status).toBe('achievable')
   })
 })
