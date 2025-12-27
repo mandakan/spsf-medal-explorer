@@ -796,13 +796,17 @@ export class MedalCalculator {
         }
       }
 
+      const uiEndYear = met ? (windowYear ?? currentYear) : currentYear
+      const perYearUiTree = this.evaluateReqNode(perYearRoot, parentMedal, { ...opts, endYear: uiEndYear, ...extra })
       return {
         type: 'sustained_achievement',
         index,
         isMet: met,
         progress,
         description: req.description,
-        windowYear
+        windowYear,
+        subtree: perYearUiTree,
+        subtreeYear: uiEndYear
       }
     }
 
