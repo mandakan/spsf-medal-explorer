@@ -2869,13 +2869,13 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-
+          "description": "Under tre år, oavsett om i följd eller ej, uppfyllt något av kraven nedan",
           "yearsOfAchievement": 3,
           "perYear": {
             "or": [
               {
                 "type": "sustained_reference",
-                "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+                "description": "Ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
                 "references": {
                   "when": [
                     {
@@ -3009,13 +3009,13 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-
+          "description": "Under tre år, oavsett om i följd eller ej, uppfyllt något av kraven nedan",
           "yearsOfAchievement": 3,
           "perYear": {
             "or": [
               {
                 "type": "sustained_reference",
-                "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+                "description": "Ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
                 "references": {
                   "when": [
                     {
@@ -3149,13 +3149,13 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-
+          "description": "Under tre år, oavsett om i följd eller ej, uppfyllt något av kraven nedan",
           "yearsOfAchievement": 3,
           "perYear": {
             "or": [
               {
                 "type": "sustained_reference",
-                "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+                "description": "Ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
                 "references": {
                   "when": [
                     {
@@ -3289,13 +3289,13 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-
+          "description": "Under tre år, oavsett om i följd eller ej, uppfyllt något av kraven nedan",
           "yearsOfAchievement": 3,
           "perYear": {
             "or": [
               {
                 "type": "sustained_reference",
-                "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+                "description": "Ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
                 "references": {
                   "when": [
                     {
@@ -3429,13 +3429,13 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-
+          "description": "Under tre år, oavsett om i följd eller ej, uppfyllt något av kraven nedan",
           "yearsOfAchievement": 3,
           "perYear": {
             "or": [
               {
                 "type": "sustained_reference",
-                "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+                "description": "Ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
                 "references": {
                   "when": [
                     {
@@ -3569,13 +3569,13 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-
+          "description": "Under tre år, oavsett om i följd eller ej, uppfyllt något av kraven nedan",
           "yearsOfAchievement": 3,
           "perYear": {
             "or": [
               {
                 "type": "sustained_reference",
-                "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+                "description": "Ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
                 "references": {
                   "when": [
                     {
@@ -3709,13 +3709,13 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-
+          "description": "Under tre år, oavsett om i följd eller ej, uppfyllt något av kraven nedan",
           "yearsOfAchievement": 3,
           "perYear": {
             "or": [
               {
                 "type": "sustained_reference",
-                "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+                "description": "Ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
                 "references": {
                   "when": [
                     {
@@ -3849,13 +3849,13 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-
+          "description": "Under tre år, oavsett om i följd eller ej, uppfyllt något av kraven nedan",
           "yearsOfAchievement": 3,
           "perYear": {
             "or": [
               {
                 "type": "sustained_reference",
-                "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+                "description": "Ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
                 "references": {
                   "when": [
                     {
@@ -3989,13 +3989,13 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-
+          "description": "Under tre år, oavsett om i följd eller ej, uppfyllt något av kraven nedan",
           "yearsOfAchievement": 3,
           "perYear": {
             "or": [
               {
                 "type": "sustained_reference",
-                "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+                "description": "Ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
                 "references": {
                   "when": [
                     {
@@ -4129,13 +4129,13 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-
+          "description": "Under tre år, oavsett om i följd eller ej, uppfyllt något av kraven nedan",
           "yearsOfAchievement": 3,
           "perYear": {
             "or": [
               {
                 "type": "sustained_reference",
-                "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+                "description": "Ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
                 "references": {
                   "when": [
                     {
@@ -4269,13 +4269,13 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-
+          "description": "Under tre år, oavsett om i följd eller ej, uppfyllt något av kraven nedan",
           "yearsOfAchievement": 3,
           "perYear": {
             "or": [
               {
                 "type": "sustained_reference",
-                "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+                "description": "Ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
                 "references": {
                   "when": [
                     {
@@ -4409,13 +4409,13 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-
+          "description": "Under tre år, oavsett om i följd eller ej, uppfyllt något av kraven nedan",
           "yearsOfAchievement": 3,
           "perYear": {
             "or": [
               {
                 "type": "sustained_reference",
-                "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+                "description": "Ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
                 "references": {
                   "when": [
                     {
@@ -4549,13 +4549,13 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-
+          "description": "Under tre år, oavsett om i följd eller ej, uppfyllt något av kraven nedan",
           "yearsOfAchievement": 3,
           "perYear": {
             "or": [
               {
                 "type": "sustained_reference",
-                "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+                "description": "Ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
                 "references": {
                   "when": [
                     {
@@ -4689,13 +4689,13 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-
+          "description": "Under tre år, oavsett om i följd eller ej, uppfyllt något av kraven nedan",
           "yearsOfAchievement": 3,
           "perYear": {
             "or": [
               {
                 "type": "sustained_reference",
-                "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+                "description": "Ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
                 "references": {
                   "when": [
                     {
@@ -4831,13 +4831,13 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-
+          "description": "Under tre år, oavsett om i följd eller ej, uppfyllt något av kraven nedan",
           "yearsOfAchievement": 3,
           "perYear": {
             "or": [
               {
                 "type": "sustained_reference",
-                "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+                "description": "Ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
                 "references": {
                   "when": [
                     {
@@ -4973,13 +4973,13 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-
+          "description": "Under tre år, oavsett om i följd eller ej, uppfyllt något av kraven nedan",
           "yearsOfAchievement": 3,
           "perYear": {
             "or": [
               {
                 "type": "sustained_reference",
-                "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+                "description": "Ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
                 "references": {
                   "when": [
                     {
@@ -5115,13 +5115,13 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-
+          "description": "Under tre år, oavsett om i följd eller ej, uppfyllt något av kraven nedan",
           "yearsOfAchievement": 3,
           "perYear": {
             "or": [
               {
                 "type": "sustained_reference",
-                "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+                "description": "Ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
                 "references": {
                   "when": [
                     {

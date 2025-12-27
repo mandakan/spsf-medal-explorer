@@ -71,21 +71,60 @@ function RequirementNode({ node, path = 'root', level = 0, defaultExpanded = lev
 
   const liClass = (level > 0 || !noBorderTop) ? 'border-l border-border pl-3' : 'pl-0'
 
+  // Flatten single-child boolean groups to avoid redundant containers
+  if (isGroup) {
+    const children = node.children || []
+    if (children.length === 1) {
+      return (
+        <RequirementNode
+          node={children[0]}
+          path={path}
+          level={level}
+          defaultExpanded={defaultExpanded}
+          noBorderTop={noBorderTop}
+        />
+      )
+    }
+  }
+
   if (!isGroup) {
     const leaf = node.leaf || { isMet: false, description: 'Okänt krav' }
     if (leaf.subtree) {
       const headerIdLeaf = `${path}-leaf`
       const st = leaf.subtree
-      let summary = null
-      if (st && (st.node === 'and' || st.node === 'or') && Array.isArray(st.children)) {
-        const { met: metCount, total } = countMet(st.children)
-        summary = `${metCount}/${total} uppfyllda`
+      const isBoolGroup = st && (st.node === 'and' || st.node === 'or')
+      const hasChildren = Array.isArray(st?.children)
+      const singleChild = isBoolGroup && hasChildren && st.children.length === 1
+
+      // Flatten when not a boolean group or when only a single child exists
+      if (!isBoolGroup || singleChild) {
+        return (
+          <li className={liClass}>
+            <RequirementNode
+              node={leaf.subtree}
+              path={`${path}-sub`}
+              level={level}
+              defaultExpanded={level < 1}
+              noBorderTop
+            />
+          </li>
+        )
       }
+
+      let summary = null
+      const operatorLabel = st.node === 'and' ? 'Alla följande' : 'Minst en av följande'
+      const labelText = leaf.description || operatorLabel
+      if (hasChildren) {
+        const { met: metCount, total } = countMet(st.children)
+        const progressText = `${metCount}/${total} uppfyllda`
+        summary = leaf.description ? `${operatorLabel} • ${progressText}` : progressText
+      }
+
       return (
         <li className={liClass}>
           <GroupHeader
             id={headerIdLeaf}
-            label={leaf.description || 'Krav'}
+            label={labelText}
             met={!!leaf.isMet}
             summary={summary}
             expanded={expanded}
@@ -93,12 +132,15 @@ function RequirementNode({ node, path = 'root', level = 0, defaultExpanded = lev
           />
           {expanded && (
             <ul id={headerIdLeaf} role="group" className="ml-2">
-              <RequirementNode
-                node={leaf.subtree}
-                path={`${path}-sub`}
-                level={level + 1}
-                defaultExpanded={level < 1}
-              />
+              {(Array.isArray(st.children) ? st.children : []).map((child, idx) => (
+                <RequirementNode
+                  key={`${path}-sub-${idx}`}
+                  node={child}
+                  path={`${path}-sub-${idx}`}
+                  level={level + 1}
+                  defaultExpanded={level < 1}
+                />
+              ))}
             </ul>
           )}
         </li>
@@ -144,14 +186,24 @@ function RequirementNode({ node, path = 'root', level = 0, defaultExpanded = lev
 }
 
 export default function RequirementTree({ tree }) {
-  const root = useMemo(() => tree || null, [tree])
-  if (!root) return null
-  const isTopLevelAnd = root.node === 'and'
+  // Compute flattened root via hook first; avoid calling hooks conditionally
+  const flattenedRoot = useMemo(() => {
+    let n = tree || null
+    while (n && (n.node === 'and' || n.node === 'or') && Array.isArray(n.children) && n.children.length === 1) {
+      n = n.children[0]
+    }
+    return n
+  }, [tree])
+
+  if (!flattenedRoot) return null
+
+  const isTopLevelAnd = flattenedRoot.node === 'and'
+
   return (
     <div className="bg-background border border-border rounded p-3" role="region" aria-label="Krav">
       <ul className="text-sm text-muted-foreground space-y-1">
         {isTopLevelAnd
-          ? (root.children || []).map((child, idx) => (
+          ? (flattenedRoot.children || []).map((child, idx) => (
               <RequirementNode
                 key={`root-${idx}`}
                 node={child}
@@ -161,7 +213,7 @@ export default function RequirementTree({ tree }) {
                 noBorderTop
               />
             ))
-          : <RequirementNode node={root} />
+          : <RequirementNode node={flattenedRoot} />
         }
       </ul>
     </div>
