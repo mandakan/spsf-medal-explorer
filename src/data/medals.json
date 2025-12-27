@@ -2075,7 +2075,7 @@
     },
     {
       "id": "national-match-mark-bronze",
-      "status": "under_review",
+      "status": "reviewed",
       "type": "national_full_match_mark",
       "tier": "bronze",
       "name": "Märke i Nationell Helmatch",
@@ -2117,7 +2117,7 @@
     },
     {
       "id": "national-match-mark-silver",
-      "status": "under_review",
+      "status": "reviewed",
       "type": "national_full_match_mark",
       "tier": "silver",
       "name": "Märke i Nationell Helmatch",
@@ -2158,7 +2158,7 @@
     },
     {
       "id": "national-match-mark-gold",
-      "status": "under_review",
+      "status": "reviewed",
       "type": "national_full_match_mark",
       "tier": "gold",
       "name": "Märke i Nationell Helmatch",
@@ -2199,7 +2199,7 @@
     },
     {
       "id": "national-match-mark-gold-star-1",
-      "status": "under_review",
+      "status": "reviewed",
       "type": "national_full_match_mark",
       "tier": "star_1",
       "name": "Märke i Nationell Helmatch",
@@ -2226,7 +2226,7 @@
     },
     {
       "id": "national-match-mark-gold-star-2",
-      "status": "under_review",
+      "status": "reviewed",
       "type": "national_full_match_mark",
       "tier": "star_2",
       "name": "Märke i Nationell Helmatch",
@@ -2253,7 +2253,7 @@
     },
     {
       "id": "national-match-mark-gold-star-3",
-      "status": "under_review",
+      "status": "reviewed",
       "type": "national_full_match_mark",
       "tier": "star_3",
       "name": "Märke i Nationell Helmatch",
