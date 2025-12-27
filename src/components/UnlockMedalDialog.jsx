@@ -50,6 +50,60 @@ export default function UnlockMedalDialog({ medal, open, onClose }) {
 
 
 
+  const computeDefaultYear = useCallback(() => {
+    if (!calculator || !medal) return ''
+    // If sustained requires current year, prefer it
+    if (enforceSustainedCurrent && hasSustainedReq) {
+      if (!allowManual) {
+        if (eligibleYears?.includes(nowYear)) return nowYear
+      } else {
+        return nowYear
+      }
+    }
+
+    if (!allowManual) {
+      if (!eligibleYears || eligibleYears.length === 0) return ''
+      return Math.min(...eligibleYears)
+    }
+
+    // Manual mode: compute earliest valid year that satisfies rules and prerequisites
+    const minRuleYear = (() => {
+      const vals = []
+      if (typeof earliestCountingYear === 'number') vals.push(earliestCountingYear)
+      if (typeof minimalSustainedYear === 'number') vals.push(minimalSustainedYear)
+      return vals.length ? Math.max(...vals) : null
+    })()
+
+    const start = Math.max(
+      Number.isFinite(birthYear) ? birthYear : -Infinity,
+      Number.isFinite(minRuleYear) ? minRuleYear : -Infinity
+    )
+    const firstCandidate = Number.isFinite(start) ? start : nowYear
+
+    for (let y = firstCandidate; y <= nowYear; y++) {
+      try {
+        const res = calculator.checkPrerequisites(medal, y)
+        if (res?.allMet) return y
+      } catch {
+        // ignore and continue
+      }
+    }
+
+    if (enforceSustainedCurrent && hasSustainedReq) return nowYear
+    return ''
+  }, [
+    allowManual,
+    calculator,
+    medal,
+    eligibleYears,
+    earliestCountingYear,
+    minimalSustainedYear,
+    birthYear,
+    nowYear,
+    enforceSustainedCurrent,
+    hasSustainedReq,
+  ])
+
   const suggestedYear = useMemo(() => {
     if (!open) return ''
     const y = computeDefaultYear()
@@ -107,60 +161,6 @@ export default function UnlockMedalDialog({ medal, open, onClose }) {
   }, [allowManual, calculator, medal, selectedYear])
 
   const canUnlock = allowManual ? (yearIsValid && prereqsMet) : (eligibleYears.length > 0 && selectedYear !== '')
-
-  const computeDefaultYear = useCallback(() => {
-    if (!calculator || !medal) return ''
-    // If sustained requires current year, prefer it
-    if (enforceSustainedCurrent && hasSustainedReq) {
-      if (!allowManual) {
-        if (eligibleYears?.includes(nowYear)) return nowYear
-      } else {
-        return nowYear
-      }
-    }
-
-    if (!allowManual) {
-      if (!eligibleYears || eligibleYears.length === 0) return ''
-      return Math.min(...eligibleYears)
-    }
-
-    // Manual mode: compute earliest valid year that satisfies rules and prerequisites
-    const minRuleYear = (() => {
-      const vals = []
-      if (typeof earliestCountingYear === 'number') vals.push(earliestCountingYear)
-      if (typeof minimalSustainedYear === 'number') vals.push(minimalSustainedYear)
-      return vals.length ? Math.max(...vals) : null
-    })()
-
-    const start = Math.max(
-      Number.isFinite(birthYear) ? birthYear : -Infinity,
-      Number.isFinite(minRuleYear) ? minRuleYear : -Infinity
-    )
-    const firstCandidate = Number.isFinite(start) ? start : nowYear
-
-    for (let y = firstCandidate; y <= nowYear; y++) {
-      try {
-        const res = calculator.checkPrerequisites(medal, y)
-        if (res?.allMet) return y
-      } catch {
-        // ignore and continue
-      }
-    }
-
-    if (enforceSustainedCurrent && hasSustainedReq) return nowYear
-    return ''
-  }, [
-    allowManual,
-    calculator,
-    medal,
-    eligibleYears,
-    earliestCountingYear,
-    minimalSustainedYear,
-    birthYear,
-    nowYear,
-    enforceSustainedCurrent,
-    hasSustainedReq,
-  ])
 
 
   const doUnlock = async () => {
