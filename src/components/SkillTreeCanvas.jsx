@@ -5,6 +5,7 @@ import { usePanZoom } from '../hooks/usePanZoom'
 import { useCanvasRenderer } from '../hooks/useCanvasRenderer'
 import { generateMedalLayout } from '../logic/canvasLayout'
 import { exportCanvasToPNG } from '../utils/canvasExport'
+import { clearThemeCache } from '../logic/canvasRenderer'
 import { useNavigate, useLocation } from 'react-router-dom'
 
 export default function SkillTreeCanvas({ legendDescribedById }) {
@@ -406,6 +407,45 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
       })
     }
   }, [isFullscreen, draw])
+
+  // Theme changes: redraw canvas and recompute overlay; also clear renderer theme cache
+  useEffect(() => {
+    const schedule = () => {
+      requestAnimationFrame(() => {
+        clearThemeCache()
+        const el = canvasRef.current
+        if (!el) return
+        draw()
+        setBadgeData(getYearsBadgeData(el))
+      })
+    }
+
+    // System theme toggle
+    const mql = typeof window !== 'undefined' && window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null
+    if (mql && typeof mql.addEventListener === 'function') {
+      mql.addEventListener('change', schedule)
+    }
+
+    // App theme toggle via .dark on <html>
+    const observer = new MutationObserver((mutations) => {
+      for (const m of mutations) {
+        if (m.type === 'attributes' && m.attributeName === 'class') {
+          schedule()
+          break
+        }
+      }
+    })
+    if (typeof document !== 'undefined' && document.documentElement) {
+      observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+    }
+
+    return () => {
+      if (mql && typeof mql.removeEventListener === 'function') {
+        mql.removeEventListener('change', schedule)
+      }
+      observer.disconnect()
+    }
+  }, [draw, getYearsBadgeData])
 
   // Keyboard pan shortcuts (scope to focused canvas for WCAG 2.1/2.2)
   const handleCanvasKeyDown = useCallback((e) => {

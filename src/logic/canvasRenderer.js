@@ -4,8 +4,9 @@
  */
 import { Medal } from '../models/Medal.js'
 
-// Cache for measured Tailwind class colors to avoid reflow per call
+– Cache for measured Tailwind class colors to avoid reflow per call
 const classColorCache = new Map()
+export function clearThemeCache() { classColorCache.clear() }
 function getClassColor(className, property = 'color') {
   if (classColorCache.has(`${property}:${className}`)) {
     return classColorCache.get(`${property}:${className}`)
