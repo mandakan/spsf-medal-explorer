@@ -14,6 +14,7 @@ import MedalDetailModal from '../components/MedalDetailModal'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import ProfilePromptBanner from '../components/ProfilePromptBanner'
 import ReviewLegend from '../components/ReviewLegend'
+import ProfileSelector from '../components/ProfileSelector'
 import { useProfile } from '../hooks/useProfile'
 
 export default function MedalsList() {
@@ -34,6 +35,7 @@ export default function MedalsList() {
       return !currentProfile
     }
   })
+  const [showSaveProgress, setShowSaveProgress] = useState(false)
 
   // Responsive, mobile-first list height (~70vh with a sensible minimum)
   const [listHeight, setListHeight] = useState(600)
@@ -190,10 +192,7 @@ export default function MedalsList() {
                 <button
                   type="button"
                   className="btn btn-primary min-h-[44px]"
-                  onClick={async () => {
-                    const name = window.prompt('Ange namn för att spara framsteg', '')
-                    if (name && name.trim()) await convertGuestToSaved(name.trim())
-                  }}
+                  onClick={() => setShowSaveProgress(true)}
                 >
                   Spara framsteg
                 </button>
@@ -346,6 +345,14 @@ export default function MedalsList() {
           onClose={() => navigate('/medals')}
         />
       )}
+      <ProfileSelector
+        id="save-progress-picker"
+        mode="picker"
+        open={showSaveProgress}
+        onClose={() => setShowSaveProgress(false)}
+        forceCreate
+        convertGuest
+      />
     </div>
   )
 }

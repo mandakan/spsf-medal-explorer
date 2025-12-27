@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useProfile } from '../hooks/useProfile'
 import MobileBottomSheet from './MobileBottomSheet'
 import ProfileImportDialog from './ProfileImportDialog'
 
-export default function ProfileSelector({ mode = 'picker', open = false, onClose, id = 'profile-picker' }) {
-  const { profiles, currentProfile, loading, createProfile, updateProfile, selectProfile, deleteProfile } =
+export default function ProfileSelector({ mode = 'picker', open = false, onClose, id = 'profile-picker', forceCreate = false, convertGuest = false }) {
+  const { profiles, currentProfile, loading, createProfile, updateProfile, selectProfile, deleteProfile, convertGuestToSaved } =
     useProfile()
 
   const [showModal, setShowModal] = useState(false)
@@ -14,6 +14,15 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
   const [newDateOfBirth, setNewDateOfBirth] = useState('')
   const [showImport, setShowImport] = useState(false)
   const isPicker = mode === 'picker'
+
+  // Auto-open the create modal when invoked from "Save progress" flows
+  useEffect(() => {
+    if (isPicker && open && forceCreate) {
+      setModalMode('create')
+      setEditingProfile(null)
+      setShowModal(true)
+    }
+  }, [isPicker, open, forceCreate])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -26,6 +35,8 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
           displayName: newProfileName.trim(),
           dateOfBirth: newDateOfBirth,
         })
+      } else if (convertGuest && currentProfile?.isGuest) {
+        await convertGuestToSaved(newProfileName.trim(), newDateOfBirth)
       } else {
         await createProfile(newProfileName.trim(), newDateOfBirth)
       }
@@ -33,6 +44,7 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
       setNewDateOfBirth('')
       setEditingProfile(null)
       setShowModal(false)
+      onClose?.()
     } catch (err) {
       console.error('Misslyckades spara profil:', err)
     }
@@ -240,7 +252,7 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
                   className="btn btn-primary disabled:opacity-50"
                   disabled={loading}
                 >
-                  {modalMode === 'edit' ? 'Spara' : 'Skapa'}
+                  {modalMode === 'edit' ? 'Spara' : (convertGuest && currentProfile?.isGuest ? 'Spara framsteg' : 'Skapa')}
                 </button>
                 <button
                   type="button"

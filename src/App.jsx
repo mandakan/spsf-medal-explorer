@@ -13,10 +13,12 @@ import DataBackup from './pages/DataBackup'
 import About from './pages/About'
 import MedalDetailModal from './components/MedalDetailModal'
 import { useProfile } from './hooks/useProfile'
+import ProfileSelector from './components/ProfileSelector'
 
 function RequireSavedProfile({ children }) {
-  const { currentProfile, convertGuestToSaved } = useProfile()
+  const { currentProfile } = useProfile()
   const navigate = useNavigate()
+  const [showSaveProgress, setShowSaveProgress] = React.useState(false)
 
   if (currentProfile && !currentProfile.isGuest) {
     return children
@@ -34,13 +36,7 @@ function RequireSavedProfile({ children }) {
             <button
               type="button"
               className="btn btn-primary min-h-[44px]"
-              onClick={async () => {
-                const name = window.prompt('Ange namn för att spara framsteg', '')
-                if (name && name.trim()) {
-                  await convertGuestToSaved(name.trim())
-                  navigate(0)
-                }
-              }}
+              onClick={() => setShowSaveProgress(true)}
             >
               Spara framsteg
             </button>
@@ -54,6 +50,14 @@ function RequireSavedProfile({ children }) {
           </button>
         </div>
       </div>
+      <ProfileSelector
+        id="save-progress-picker-guard"
+        mode="picker"
+        open={showSaveProgress}
+        onClose={() => setShowSaveProgress(false)}
+        forceCreate
+        convertGuest
+      />
     </div>
   )
 }

@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import SkillTreeCanvas from '../components/SkillTreeCanvas'
 import { useAllMedalStatuses } from '../hooks/useMedalCalculator'
 import ProfilePromptBanner from '../components/ProfilePromptBanner'
+import { useProfile } from '../hooks/useProfile'
+import ProfileSelector from '../components/ProfileSelector'
 import { STATUS_ORDER, getStatusProps } from '../config/statuses'
 import StatusIcon from '../components/StatusIcon'
 import { getStatusColorVar } from '../config/statusColors'
@@ -20,9 +22,44 @@ export default function SkillTree() {
     })
   ), [statuses])
 
+  const { currentProfile, resetCurrentProfileData } = useProfile()
+  const isGuest = Boolean(currentProfile?.isGuest)
+  const [showSaveProgress, setShowSaveProgress] = useState(false)
+
   return (
     <div className="space-y-6">
-      <ProfilePromptBanner id="profile-picker-skill-tree" />
+      {isGuest ? (
+        <div className="card p-4" role="status" aria-live="polite">
+          <div className="flex items-start gap-3">
+            <div aria-hidden="true" className="text-xl leading-none">🧭</div>
+            <div className="flex-1">
+              <p className="mb-2">Gästläge: framsteg sparas tillfälligt.</p>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  className="btn btn-primary min-h-[44px]"
+                  onClick={() => setShowSaveProgress(true)}
+                >
+                  Spara framsteg
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-secondary min-h-[44px]"
+                  onClick={async () => {
+                    if (window.confirm('Återställa alla märken och förkunskaper? Detta går inte att ångra.')) {
+                      await resetCurrentProfileData()
+                    }
+                  }}
+                >
+                  Återställ alla
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <ProfilePromptBanner id="profile-picker-skill-tree" />
+      )}
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-3xl font-bold text-text-primary mb-1 sm:mb-0">Trädvy</h1>
         <div
@@ -84,6 +121,14 @@ export default function SkillTree() {
           ))}
         </div>
       )}
+      <ProfileSelector
+        id="save-progress-picker-skilltree"
+        mode="picker"
+        open={showSaveProgress}
+        onClose={() => setShowSaveProgress(false)}
+        forceCreate
+        convertGuest
+      />
     </div>
   )
 }
