@@ -132,12 +132,15 @@ function RequirementNode({ node, path = 'root', level = 0, defaultExpanded = lev
           />
           {expanded && (
             <ul id={headerIdLeaf} role="group" className="ml-2">
-              <RequirementNode
-                node={leaf.subtree}
-                path={`${path}-sub`}
-                level={level + 1}
-                defaultExpanded={level < 1}
-              />
+              {(Array.isArray(st.children) ? st.children : []).map((child, idx) => (
+                <RequirementNode
+                  key={`${path}-sub-${idx}`}
+                  node={child}
+                  path={`${path}-sub-${idx}`}
+                  level={level + 1}
+                  defaultExpanded={level < 1}
+                />
+              ))}
             </ul>
           )}
         </li>
