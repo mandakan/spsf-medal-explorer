@@ -8,7 +8,7 @@ import { MedalContext, defaultMedalContextValue } from '../contexts/medalContext
 export function useMedalDatabase() {
   const context = useContext(MedalContext)
   
-  const isProd = typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 'production'
+  const isProd = globalThis.process?.env?.NODE_ENV === 'production'
   if (context === defaultMedalContextValue && isProd) {
     throw new Error('useMedalDatabase must be used within MedalProvider')
   }
