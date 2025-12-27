@@ -2,17 +2,10 @@ import React, { useState } from 'react'
 import SkillTreeCanvas from '../components/SkillTreeCanvas'
 import { useAllMedalStatuses } from '../hooks/useMedalCalculator'
 import ProfilePromptBanner from '../components/ProfilePromptBanner'
-import { useMedalDatabase } from '../hooks/useMedalDatabase'
-import ReviewLegend from '../components/ReviewLegend'
 
 export default function SkillTree() {
   const [viewMode, setViewMode] = useState('canvas') // 'canvas' or 'stats'
   const statuses = useAllMedalStatuses()
-  const { medalDatabase } = useMedalDatabase()
-  const hasUnderReview = React.useMemo(() => {
-    const all = medalDatabase?.getAllMedals?.() || []
-    return all.some(m => m && m.reviewed !== true)
-  }, [medalDatabase])
 
   return (
     <div className="space-y-6">
@@ -55,12 +48,7 @@ export default function SkillTree() {
 
       {viewMode === 'canvas' ? (
         <div role="tabpanel" id="panel-canvas" aria-labelledby="tab-canvas">
-          <SkillTreeCanvas legendDescribedById={hasUnderReview ? 'tree-review-legend' : undefined} />
-          {hasUnderReview && (
-            <div className="mt-2 text-xs text-muted-foreground">
-              <ReviewLegend id="tree-review-legend" />
-            </div>
-          )}
+          <SkillTreeCanvas />
         </div>
       ) : (
         <div
@@ -80,9 +68,9 @@ export default function SkillTree() {
           </div>
 
           <div className="card p-6">
-            <h3 className="section-title mb-2">Uppnåeliga</h3>
+            <h3 className="section-title mb-2">Kvalificerade</h3>
             <p className="text-3xl font-bold text-foreground">
-              {statuses.achievable.length}
+              {statuses.eligible.length}
             </p>
             <p className="text-sm text-muted-foreground mt-2">
               Märken du kan låsa upp
