@@ -3,6 +3,9 @@
  * Colors are resolved from global theme (CSS vars/Tailwind), with safe fallbacks.
  */
 import { Medal } from '../models/Medal.js'
+import { STATUS_COLOR_VARS } from '../config/statusColors.js'
+
+ const LABEL_FONT_PX = 14
 
 // Cache for measured Tailwind class colors to avoid reflow per call
 const classColorCache = new Map()
@@ -54,22 +57,20 @@ export function getThemeColors(canvas) {
   // Try CSS vars first, then Tailwind utility class computed values, then hex fallback.
   const palette = {
     unlocked:
-      (styles && readVar(styles, ['--color-medal-unlocked'])) ||
-      getClassColor('text-medal-gold') ||
-      '#FFD700',
+      (styles && readVar(styles, [STATUS_COLOR_VARS.unlocked])) ||
+      '#22C55E',
     achievable:
       (styles && readVar(styles, ['--color-success', '--color-achievable'])) ||
       getClassColor('text-emerald-400') ||
       '#20C997',
     available:
-      (styles && readVar(styles, ['--color-status-available'])) ||
+      (styles && readVar(styles, [STATUS_COLOR_VARS.available])) ||
       '#0EA5E9',
     eligible:
-      (styles && readVar(styles, ['--color-status-eligible'])) ||
+      (styles && readVar(styles, [STATUS_COLOR_VARS.eligible])) ||
       '#F59E0B',
     locked:
-      (styles && readVar(styles, ['--color-muted-foreground', '--color-locked'])) ||
-      getClassColor('text-slate-400') ||
+      (styles && readVar(styles, [STATUS_COLOR_VARS.locked])) ||
       '#6C757D',
     text:
       (styles && readVar(styles, ['--color-text-primary', '--color-foreground'])) ||
@@ -90,13 +91,11 @@ export function getThemeColors(canvas) {
       getClassColor('text-blue-500') ||
       '#3B82F6',
     review:
-      (styles && readVar(styles, ['--color-review'])) ||
-      getClassColor('text-amber-500') ||
-      '#F59E0B',
+      (styles && readVar(styles, [STATUS_COLOR_VARS.review])) ||
+      '#8B5CF6',
     placeholder:
-      (styles && readVar(styles, ['--color-placeholder'])) ||
-      getClassColor('text-indigo-400') ||
-      '#6366F1',
+      (styles && readVar(styles, [STATUS_COLOR_VARS.placeholder])) ||
+      '#94A3B8',
   }
   return palette
 }
@@ -138,16 +137,6 @@ function wrapText(ctx, text, maxWidth, maxLines = 3, ellipsis = '…') {
   }
   if (line) lines.push(line)
   return lines.slice(0, maxLines)
-}
-
-export const COLORS = {
-  unlocked: '#FFD700',
-  achievable: '#20C997',
-  locked: '#6C757D',
-  text: '#111827',
-  connection: '#94A3B8',
-  border: '#5e5240',
-  accent: '#3B82F6',
 }
 
 export function drawMedalNode(ctx, x, y, radius, medal, status, scale, forceLabel = false) {
@@ -217,7 +206,7 @@ export function drawMedalNode(ctx, x, y, radius, medal, status, scale, forceLabe
     ctx.textBaseline = 'top'
 
     // Accessible, consistent size regardless of zoom
-    const fontPx = 12
+    const fontPx = LABEL_FONT_PX
     const lineHeight = Math.round(fontPx * 1.3)
     const fontFamily = getFontFamily(ctx.canvas)
     ctx.font = `${fontPx}px ${fontFamily}`

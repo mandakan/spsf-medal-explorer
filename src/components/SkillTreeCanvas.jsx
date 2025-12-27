@@ -31,7 +31,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
 
   // Shared canvas/label padding constants
   const CANVAS_PAD = 24
-  const LABEL_HALF_PX = 90           // approximate half-width of label text area
+  const LABEL_HALF_PX = 80           // approximate half-width of label text area
   const LABEL_BOTTOM_PX = 56         // reserve for up to two lines of label text at bottom
   const getWorldBounds = useCallback(() => {
     if (!layout || !layout.medals?.length) return { minX: 0, minY: 0, maxX: 0, maxY: 0 }
@@ -46,7 +46,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     }
     return { minX, minY, maxX, maxY }
   }, [layout])
-  const { panX, panY, scale, setScaleAbsolute, handleWheel, handlePointerDown, handlePointerMove, handlePointerUp, resetView } = usePanZoom(1, 0.5, 6, {
+  const { panX, panY, scale, setScaleAbsolute, handleWheel, handlePointerDown, handlePointerMove, handlePointerUp, resetView } = usePanZoom(6, 0.5, 12, {
     getBounds: getWorldBounds,
     overscrollPx: 48,
     contentPaddingPx: {
@@ -685,11 +685,11 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
         )}
       </div>
 
-      <div className="text-xs text-muted-foreground" role="note" id={legendId}>
+      <div className="text-xs text-muted-foreground overflow-x-hidden" role="note" id={legendId}>
         <ReviewLegend variant="canvas" />
       </div>
       <div className="text-sm text-muted-foreground">
-        <p id="skilltree-help">💡 Dra för att panorera • Nyp för att zooma • Klicka på märken för detaljer • ⌨️ Piltangenter för att panorera</p>
+        <p id="skilltree-help">💡 Dra för att panorera • Nyp för att zooma • Klicka på märken för detaljer</p>
       </div>
       <div className="sm:hidden">
         <button
@@ -797,7 +797,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
           </div>
 
           {showLegendFs && (
-            <div className="px-3 pt-3 sm:px-4" role="note" id={fsLegendId}>
+            <div className="px-3 pt-3 sm:px-4 overflow-x-hidden" role="note" id={fsLegendId}>
               <ReviewLegend variant="canvas" />
             </div>
           )}
@@ -871,7 +871,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
           </div>
 
           <p id="skilltree-help-fs" className="sr-only">
-            💡 Dra för att panorera • Nyp för att zooma • Klicka på märken för detaljer • ⌨️ Piltangenter för att panorera
+            💡 Dra för att panorera • Nyp för att zooma • Klicka på märken för detaljer
           </p>
 
           {/* Modal is route-driven while in fullscreen */}
