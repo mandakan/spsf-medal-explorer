@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect, useCallback } from 'react'
+import React, { useMemo, useState, useCallback } from 'react'
 import MobileBottomSheet from './MobileBottomSheet'
 import { useMedalCalculator } from '../hooks/useMedalCalculator'
 import { useProfile } from '../hooks/useProfile'
@@ -47,8 +47,17 @@ export default function UnlockMedalDialog({ medal, open, onClose }) {
   const enforceSustainedCurrent = !!currentProfile?.features?.enforceCurrentYearForSustained
   const hasSustainedReq = Array.isArray(medal?.requirements) && medal.requirements.some(r => r?.type === 'sustained_achievement')
 
+
+  const suggestedYear = useMemo(() => {
+    if (!open) return ''
+    const y = computeDefaultYear()
+    return (y !== '' && Number.isFinite(y)) ? y : ''
+  }, [open, computeDefaultYear])
+
+  const manualYearValue = allowManual ? (year === '' ? suggestedYear : year) : null
+
   const selectedYear = allowManual
-    ? (year === '' ? '' : Number(year))
+    ? ((manualYearValue === '' ? '' : Number(manualYearValue)))
     : (eligibleYears.length <= 1 ? (eligibleYears[0] ?? '') : (year || (eligibleYears[0] ?? '')))
 
   const yearOutOfBounds =
@@ -151,15 +160,6 @@ export default function UnlockMedalDialog({ medal, open, onClose }) {
     hasSustainedReq,
   ])
 
-  useEffect(() => {
-    if (!open) return
-    if (year === '' || !Number.isFinite(year)) {
-      const y = computeDefaultYear()
-      if (y !== '' && Number.isFinite(y)) {
-        setYear(y)
-      }
-    }
-  }, [open, computeDefaultYear, year])
 
   const doUnlock = async () => {
     if (!canUnlock) return
@@ -202,7 +202,7 @@ export default function UnlockMedalDialog({ medal, open, onClose }) {
               min={birthYear ?? undefined}
               max={nowYear}
               list="eligible-years"
-              value={year}
+              value={manualYearValue}
               onChange={(e) => {
                 const v = e.target.value
                 setYear(v === '' ? '' : Number(v))

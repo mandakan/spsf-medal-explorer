@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useProfile } from '../hooks/useProfile'
 import MobileBottomSheet from './MobileBottomSheet'
 import ProfileImportDialog from './ProfileImportDialog'
@@ -15,21 +15,17 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
   const [showImport, setShowImport] = useState(false)
   const isPicker = mode === 'picker'
 
-  // Auto-open the create modal when invoked from "Save progress" flows
-  useEffect(() => {
-    if (isPicker && open && forceCreate) {
-      setModalMode('create')
-      setEditingProfile(null)
-      setShowModal(true)
-    }
-  }, [isPicker, open, forceCreate])
+  // Derive "force create" open state without mutating in effects (avoids cascading renders)
+  const forceCreateOpen = isPicker && open && forceCreate
+  const effectiveModalMode = forceCreateOpen ? 'create' : modalMode
+  const effectiveEditingProfile = forceCreateOpen ? null : editingProfile
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!newProfileName.trim() || !newDateOfBirth) return
 
     try {
-      if (modalMode === 'edit' && editingProfile) {
+      if (effectiveModalMode === 'edit' && effectiveEditingProfile) {
         await updateProfile({
           ...editingProfile,
           displayName: newProfileName.trim(),
@@ -207,7 +203,7 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
 
       <ProfileImportDialog id="profile-import-dialog" open={showImport} onClose={() => setShowImport(false)} />
 
-      {showModal && (
+      {(forceCreateOpen || showModal) && (
         <div className="fixed inset-0 z-[1000] bg-black/60 flex items-center justify-center p-4">
           <div
             role="dialog"
@@ -217,14 +213,14 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
           >
             <form onSubmit={handleSubmit} className="p-6 space-y-5">
               <h2 id="create-profile-title" className="text-2xl font-bold text-text-primary">
-                {modalMode === 'edit' ? 'Ändra profil' : 'Skapa ny profil'}
+                {effectiveModalMode === 'edit' ? 'Ändra profil' : 'Skapa ny profil'}
               </h2>
 
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-text-secondary">Profile Name</label>
                 <input
                   type="text"
-                  value={newProfileName}
+                  value={forceCreateOpen ? '' : newProfileName}
                   onChange={(e) => setNewProfileName(e.target.value)}
                   className="input"
                   placeholder="Ditt namn"
@@ -237,7 +233,7 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
                 <label className="block text-sm font-medium text-text-secondary">Födelsedatum</label>
                 <input
                   type="date"
-                  value={newDateOfBirth}
+                  value={forceCreateOpen ? '' : newDateOfBirth}
                   onChange={(e) => setNewDateOfBirth(e.target.value)}
                   className="input"
                   disabled={loading}
@@ -252,7 +248,7 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
                   className="btn btn-primary disabled:opacity-50"
                   disabled={loading}
                 >
-                  {modalMode === 'edit' ? 'Spara' : (convertGuest && currentProfile?.isGuest ? 'Spara framsteg' : 'Skapa')}
+                  {effectiveModalMode === 'edit' ? 'Spara' : (convertGuest && currentProfile?.isGuest ? 'Spara framsteg' : 'Skapa')}
                 </button>
                 <button
                   type="button"
