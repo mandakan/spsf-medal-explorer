@@ -13,6 +13,24 @@ export default function ReviewLegend({ className = '', id }) {
         <span className="inline-block w-2 h-2 rounded-full bg-indigo-400"></span>
       </span>
       <span>Plats­hållare</span>
+
+      {/* User status legend */}
+      <span className="inline-flex items-center gap-2 ml-4" aria-hidden="true">
+        <span className="inline-block w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--color-status-locked)' }}></span>
+      </span>
+      <span>Låst</span>
+      <span className="inline-flex items-center gap-2 ml-4" aria-hidden="true">
+        <span className="inline-block w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--color-status-available)' }}></span>
+      </span>
+      <span>Tillgänglig</span>
+      <span className="inline-flex items-center gap-2 ml-4" aria-hidden="true">
+        <span className="inline-block w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--color-status-eligible)' }}></span>
+      </span>
+      <span>Kvalificerad</span>
+      <span className="inline-flex items-center gap-2 ml-4" aria-hidden="true">
+        <span className="inline-block w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--color-status-unlocked)' }}></span>
+      </span>
+      <span>Upplåst</span>
     </span>
   )
 }

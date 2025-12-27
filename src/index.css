@@ -65,6 +65,27 @@
   --color-bg-secondary: var(--color-surface);
   --color-text-primary: var(--color-foreground);
   --color-text-secondary: var(--color-muted);
+
+  /* Medal/user status tokens (light) */
+  --color-status-locked: #6C757D;
+  --color-status-locked-foreground: #1F2937;
+  --color-status-locked-subtle: #F1F3F5;
+  --color-status-locked-border: #DDE2E5;
+
+  --color-status-available: #0EA5E9;
+  --color-status-available-foreground: #0B1F2A;
+  --color-status-available-subtle: #E0F2FE;
+  --color-status-available-border: #7DD3FC;
+
+  --color-status-eligible: #F59E0B;
+  --color-status-eligible-foreground: #1F2937;
+  --color-status-eligible-subtle: #FFFBEB;
+  --color-status-eligible-border: #FCD34D;
+
+  --color-status-unlocked: #22C55E;
+  --color-status-unlocked-foreground: #0B1F15;
+  --color-status-unlocked-subtle: #ECFDF5;
+  --color-status-unlocked-border: #86EFAC;
 }
 
 @layer utilities {
@@ -75,6 +96,29 @@
   .text-placeholder { color: var(--color-placeholder); }
   .bg-placeholder { background-color: var(--color-placeholder); }
   .border-placeholder { border-color: var(--color-placeholder); }
+
+  /* Reusable status badge utilities */
+  .status-badge { @apply inline-flex items-center gap-2 rounded-full border px-2.5 py-1 text-sm leading-none; }
+  .status--locked {
+    color: var(--color-status-locked);
+    background-color: var(--color-status-locked-subtle);
+    border-color: var(--color-status-locked-border);
+  }
+  .status--available {
+    color: var(--color-status-available);
+    background-color: var(--color-status-available-subtle);
+    border-color: var(--color-status-available-border);
+  }
+  .status--eligible {
+    color: var(--color-status-eligible);
+    background-color: var(--color-status-eligible-subtle);
+    border-color: var(--color-status-eligible-border);
+  }
+  .status--unlocked {
+    color: var(--color-status-unlocked);
+    background-color: var(--color-status-unlocked-subtle);
+    border-color: var(--color-status-unlocked-border);
+  }
 }
 
 /* Dark mode: runtime variable overrides on the root element. */
@@ -89,6 +133,27 @@
   --color-bg-secondary: var(--color-surface);
   --color-text-primary: var(--color-foreground);
   --color-text-secondary: var(--color-muted);
+
+  /* Medal/user status tokens (dark) */
+  --color-status-locked: #94A3B8;
+  --color-status-locked-foreground: #E5E7EB;
+  --color-status-locked-subtle: rgba(148, 163, 184, 0.12);
+  --color-status-locked-border: rgba(148, 163, 184, 0.45);
+
+  --color-status-available: #38BDF8;
+  --color-status-available-foreground: #E0F2FE;
+  --color-status-available-subtle: rgba(56, 189, 248, 0.12);
+  --color-status-available-border: rgba(56, 189, 248, 0.45);
+
+  --color-status-eligible: #F59E0B;
+  --color-status-eligible-foreground: #FFE9B5;
+  --color-status-eligible-subtle: rgba(245, 158, 11, 0.12);
+  --color-status-eligible-border: rgba(245, 158, 11, 0.45);
+
+  --color-status-unlocked: #22C55E;
+  --color-status-unlocked-foreground: #D1FAE5;
+  --color-status-unlocked-subtle: rgba(34, 197, 94, 0.12);
+  --color-status-unlocked-border: rgba(34, 197, 94, 0.45);
 }
 
 .dark {

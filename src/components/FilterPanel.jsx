@@ -58,9 +58,10 @@ export default function FilterPanel({
               className="select"
             >
               <option value="">Alla</option>
-              <option value="unlocked">Upplåsta</option>
-              <option value="achievable">Uppnåeliga</option>
-              <option value="locked">Låsta</option>
+              <option value="unlocked">Upplåst</option>
+              <option value="eligible">Kvalificerad</option>
+              <option value="available">Tillgänglig</option>
+              <option value="locked">Låst</option>
             </select>
           </div>
 
