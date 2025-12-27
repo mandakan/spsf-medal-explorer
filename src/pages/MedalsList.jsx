@@ -162,7 +162,7 @@ export default function MedalsList() {
               type="button"
               className="btn btn-secondary min-h-[44px]"
               onClick={() => {
-                try { window.localStorage.setItem('app:onboardingChoice', 'guest') } catch {}
+                try { window.localStorage.setItem('app:onboardingChoice', 'guest') } catch { /* ignore unavailable storage */ }
                 startExplorerMode()
                 setShowOnboarding(false)
               }}
@@ -173,7 +173,7 @@ export default function MedalsList() {
               type="button"
               className="btn btn-primary min-h-[44px]"
               onClick={() => {
-                try { window.localStorage.setItem('app:onboardingChoice', 'saved') } catch {}
+                try { window.localStorage.setItem('app:onboardingChoice', 'saved') } catch { /* ignore unavailable storage */ }
                 setShowOnboarding(false)
               }}
             >
