@@ -42,7 +42,8 @@ function LeafRow({ leaf }) {
   const progressText = leaf.progress && Number.isFinite(leaf.progress.current) && Number.isFinite(leaf.progress.required)
     ? `${leaf.progress.current}/${leaf.progress.required}`
     : null
-  const yearText = leaf.windowYear != null ? `• År ${leaf.windowYear}` : null
+  const yearValue = leaf.windowYear != null ? leaf.windowYear : (leaf.subtreeYear != null ? leaf.subtreeYear : null)
+  const yearText = yearValue != null ? `• År ${yearValue}` : null
 
   return (
     <div className="px-2 py-1 flex items-baseline gap-2">
@@ -71,9 +72,41 @@ function RequirementNode({ node, path = 'root', level = 0, defaultExpanded = lev
   const liClass = (level > 0 || !noBorderTop) ? 'border-l border-border pl-3' : 'pl-0'
 
   if (!isGroup) {
+    const leaf = node.leaf || { isMet: false, description: 'Okänt krav' }
+    if (leaf.subtree) {
+      const headerIdLeaf = `${path}-leaf`
+      const st = leaf.subtree
+      let summary = null
+      if (st && (st.node === 'and' || st.node === 'or') && Array.isArray(st.children)) {
+        const { met: metCount, total } = countMet(st.children)
+        summary = `${metCount}/${total} uppfyllda`
+      }
+      return (
+        <li className={liClass}>
+          <GroupHeader
+            id={headerIdLeaf}
+            label={leaf.description || 'Krav'}
+            met={!!leaf.isMet}
+            summary={summary}
+            expanded={expanded}
+            onToggle={() => setExpanded(e => !e)}
+          />
+          {expanded && (
+            <ul id={headerIdLeaf} role="group" className="ml-2">
+              <RequirementNode
+                node={leaf.subtree}
+                path={`${path}-sub`}
+                level={level + 1}
+                defaultExpanded={level < 1}
+              />
+            </ul>
+          )}
+        </li>
+      )
+    }
     return (
       <li className={liClass}>
-        <LeafRow leaf={node.leaf || { isMet: false, description: 'Okänt krav' }} />
+        <LeafRow leaf={leaf} />
       </li>
     )
   }
