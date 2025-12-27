@@ -45,8 +45,8 @@ export function useCanvasRenderer() {
 
       const status =
         statuses.unlocked.find(s => s.medalId === medal.id) ||
-        statuses.achievable.find(s => s.medalId === medal.id) ||
-        statuses.locked.find(s => s.medalId === medal.id) ||
+        statuses.eligible.find(s => s.medalId === medal.id) ||
+        statuses.available.find(s => s.medalId === medal.id) ||
         { status: 'locked' }
 
       if (selectedMedal === medal.id) {

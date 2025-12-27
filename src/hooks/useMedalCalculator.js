@@ -40,7 +40,7 @@ export function useAllMedalStatuses() {
   const calculator = useMedalCalculator()
 
   return useMemo(() => {
-    if (!calculator) return { unlocked: [], achievable: [], locked: [] }
+    if (!calculator) return { unlocked: [], eligible: [], available: [], locked: [] }
     return calculator.evaluateAllMedals()
   }, [calculator])
 }
