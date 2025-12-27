@@ -27,7 +27,7 @@ function RequireSavedProfile({ children }) {
 
   return (
     <div className="p-6">
-      <div className="card p-6 max-w-xl mx-auto" role="region" aria-labelledby="profile-required-heading">
+      <div className="card p-6 w-full max-w-xl mx-auto" role="region" aria-labelledby="profile-required-heading">
         <h2 id="profile-required-heading" className="section-title mb-2">Profil krävs för att fortsätta</h2>
         <div className="text-sm text-muted-foreground space-y-3 mb-4">
           <p>För att använda Inställningar och import/export behöver du en sparad profil.</p>
