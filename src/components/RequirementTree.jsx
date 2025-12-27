@@ -186,17 +186,16 @@ function RequirementNode({ node, path = 'root', level = 0, defaultExpanded = lev
 }
 
 export default function RequirementTree({ tree }) {
-  const root = useMemo(() => tree || null, [tree])
-  if (!root) return null
-
-  // Flatten root while it is a boolean group with a single child
+  // Compute flattened root via hook first; avoid calling hooks conditionally
   const flattenedRoot = useMemo(() => {
-    let n = root
+    let n = tree || null
     while (n && (n.node === 'and' || n.node === 'or') && Array.isArray(n.children) && n.children.length === 1) {
       n = n.children[0]
     }
     return n
-  }, [root])
+  }, [tree])
+
+  if (!flattenedRoot) return null
 
   const isTopLevelAnd = flattenedRoot.node === 'and'
 
