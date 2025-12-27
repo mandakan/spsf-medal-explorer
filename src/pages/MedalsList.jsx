@@ -14,7 +14,7 @@ import MedalDetailModal from '../components/MedalDetailModal'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import ProfilePromptBanner from '../components/ProfilePromptBanner'
 import ReviewLegend from '../components/ReviewLegend'
-import ProfileSelector from '../components/ProfileSelector'
+import GuestModeBanner from '../components/GuestModeBanner'
 import { useProfile } from '../hooks/useProfile'
 
 export default function MedalsList() {
@@ -26,7 +26,7 @@ export default function MedalsList() {
   const [showFilters, setShowFilters] = useState(false)
   const searchInputRef = useRef(null)
   const [searchParams, setSearchParams] = useSearchParams()
-  const { currentProfile, startExplorerMode, convertGuestToSaved, resetCurrentProfileData } = useProfile()
+  const { currentProfile, startExplorerMode } = useProfile()
   const isGuest = Boolean(currentProfile?.isGuest)
   const [showOnboarding, setShowOnboarding] = useState(() => {
     try {
@@ -35,7 +35,6 @@ export default function MedalsList() {
       return !currentProfile
     }
   })
-  const [showSaveProgress, setShowSaveProgress] = useState(false)
 
   // Responsive, mobile-first list height (~70vh with a sensible minimum)
   const [listHeight, setListHeight] = useState(600)
@@ -183,34 +182,7 @@ export default function MedalsList() {
           </div>
         </div>
       ) : isGuest ? (
-        <div className="card p-4" role="status" aria-live="polite">
-          <div className="flex items-start gap-3">
-            <div aria-hidden="true" className="text-xl leading-none">🧭</div>
-            <div className="flex-1">
-              <p className="mb-2">Gästläge: framsteg sparas tillfälligt.</p>
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  className="btn btn-primary min-h-[44px]"
-                  onClick={() => setShowSaveProgress(true)}
-                >
-                  Spara framsteg
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-secondary min-h-[44px]"
-                  onClick={async () => {
-                    if (window.confirm('Återställa alla märken och förkunskaper? Detta går inte att ångra.')) {
-                      await resetCurrentProfileData()
-                    }
-                  }}
-                >
-                  Återställ alla
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <GuestModeBanner idPrefix="medals-list" />
       ) : (
         <ProfilePromptBanner id="profile-picker-medals-list" />
       )}
@@ -345,14 +317,6 @@ export default function MedalsList() {
           onClose={() => navigate('/medals')}
         />
       )}
-      <ProfileSelector
-        id="save-progress-picker"
-        mode="picker"
-        open={showSaveProgress}
-        onClose={() => setShowSaveProgress(false)}
-        forceCreate
-        convertGuest
-      />
     </div>
   )
 }
