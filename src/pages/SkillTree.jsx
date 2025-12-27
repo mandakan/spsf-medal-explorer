@@ -3,7 +3,8 @@ import SkillTreeCanvas from '../components/SkillTreeCanvas'
 import { useAllMedalStatuses } from '../hooks/useMedalCalculator'
 import ProfilePromptBanner from '../components/ProfilePromptBanner'
 import { STATUS_ORDER, getStatusProps } from '../config/statuses'
-import Icon from '../components/Icon'
+import StatusIcon from '../components/StatusIcon'
+import { getStatusColorVar } from '../config/statusColors'
 
 export default function SkillTree() {
   const [viewMode, setViewMode] = useState('canvas') // 'canvas' or 'stats'
@@ -72,8 +73,11 @@ export default function SkillTree() {
         >
           {statusCards.map(({ key, label, icon, count }) => (
             <div key={key} className="card p-6">
-              <p className="text-sm text-muted-foreground font-semibold inline-flex items-center gap-2">
-                <Icon name={icon} className="w-4 h-4" aria-hidden="true" />
+              <p
+                className="text-sm font-semibold inline-flex items-center gap-2"
+                style={{ color: `var(${getStatusColorVar(key)})` }}
+              >
+                <StatusIcon status={key} className="w-4 h-4" />
                 <span>{label}</span>
               </p>
               <p className="text-3xl font-bold text-foreground">{count}</p>
