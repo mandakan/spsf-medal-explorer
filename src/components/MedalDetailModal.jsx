@@ -12,6 +12,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import Disclaimer from './Disclaimer'
 import { LINKS } from '../config/links'
 import RequirementTree from './RequirementTree'
+import { StatusPill } from './StatusPill'
 
 export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) {
   const { medalDatabase } = useMedalDatabase()
@@ -37,7 +38,8 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
     if (!statuses) return null
     return (
       statuses.unlocked.find(s => s.medalId === medalId) ||
-      statuses.achievable.find(s => s.medalId === medalId) ||
+      statuses.eligible.find(s => s.medalId === medalId) ||
+      statuses.available.find(s => s.medalId === medalId) ||
       statuses.locked.find(s => s.medalId === medalId) ||
       null
     )
@@ -209,11 +211,7 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
 
   if (!medal) return null
 
-  const statusLabel = {
-    unlocked: '🏆 Upplåst',
-    achievable: '🎯 Uppnåelig',
-    locked: '🔒 Låst'
-  }[status?.status] || '🔒 Locked'
+  // Status text and icon are rendered via StatusPill
 
   const mdComponents = {
     ul: (props) => <ul className="list-disc pl-5 my-2 space-y-1" {...props} />,
@@ -299,7 +297,7 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
   }
 
 
-  const statusClass = 'bg-bg-secondary text-foreground ring-1 ring-border'
+  // StatusPill handles status styling
 
   return (
     <div
@@ -386,15 +384,7 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
             </div>
             {!isPlaceholder && (
               <div className="mb-4">
-                <span
-                  className={[
-                    'inline-block px-3 py-1 rounded-full text-sm font-semibold',
-                    'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900',
-                    statusClass
-                  ].join(' ')}
-                >
-                  {statusLabel}
-                </span>
+                <StatusPill status={status?.status || 'locked'} />
               </div>
             )}
             {isPlaceholder && (
@@ -678,7 +668,7 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
               </div>
             )}
 
-            {currentProfile && !isPlaceholder && (status?.status === 'achievable' || (allowManual && status?.status !== 'unlocked')) && (
+            {currentProfile && !isPlaceholder && (status?.status === 'eligible' || (allowManual && status?.status !== 'unlocked')) && (
               <div className="flex-1 flex flex-col gap-2">
                 <button
                   type="button"

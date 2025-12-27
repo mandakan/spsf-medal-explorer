@@ -158,7 +158,9 @@ export default function MedalsList() {
             {hasUnderReview && (
               <>
                 {' · '}
-                <ReviewLegend />
+                <span className="hidden lg:inline" role="note" aria-label="Teckenförklaring">
+                  <ReviewLegend />
+                </span>
               </>
             )}
           </div>
@@ -257,6 +259,12 @@ export default function MedalsList() {
           )}
         </div>
       </div>
+
+      {hasUnderReview && (
+        <div className="mt-4 lg:hidden" role="note" aria-label="Teckenförklaring">
+          <ReviewLegend />
+        </div>
+      )}
 
       {selectedMedalId && (
         <MedalDetailModal

@@ -42,23 +42,30 @@ export default function QuickFilterChips({
       <ChipButton
         active={status === 'unlocked'}
         onClick={() => onToggle('status', 'unlocked')}
-        ariaLabel="Filtrera på Upplåsta"
+        ariaLabel="Filtrera på Upplåst"
       >
-        Upplåsta
+        Upplåst
       </ChipButton>
       <ChipButton
-        active={status === 'achievable'}
-        onClick={() => onToggle('status', 'achievable')}
-        ariaLabel="Filtrera på Uppnåeliga"
+        active={status === 'eligible'}
+        onClick={() => onToggle('status', 'eligible')}
+        ariaLabel="Filtrera på Kvalificerad"
       >
-        Uppnåeliga
+        Kvalificerad
+      </ChipButton>
+      <ChipButton
+        active={status === 'available'}
+        onClick={() => onToggle('status', 'available')}
+        ariaLabel="Filtrera på Tillgänglig"
+      >
+        Tillgänglig
       </ChipButton>
       <ChipButton
         active={status === 'locked'}
         onClick={() => onToggle('status', 'locked')}
-        ariaLabel="Filtrera på Låsta"
+        ariaLabel="Filtrera på Låst"
       >
-        Låsta
+        Låst
       </ChipButton>
 
       <span className="mx-2 h-5 w-px bg-border shrink-0" aria-hidden="true" />

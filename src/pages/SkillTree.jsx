@@ -2,17 +2,23 @@ import React, { useState } from 'react'
 import SkillTreeCanvas from '../components/SkillTreeCanvas'
 import { useAllMedalStatuses } from '../hooks/useMedalCalculator'
 import ProfilePromptBanner from '../components/ProfilePromptBanner'
-import { useMedalDatabase } from '../hooks/useMedalDatabase'
-import ReviewLegend from '../components/ReviewLegend'
+import { STATUS_ORDER, getStatusProps } from '../config/statuses'
+import Icon from '../components/Icon'
 
 export default function SkillTree() {
   const [viewMode, setViewMode] = useState('canvas') // 'canvas' or 'stats'
   const statuses = useAllMedalStatuses()
-  const { medalDatabase } = useMedalDatabase()
-  const hasUnderReview = React.useMemo(() => {
-    const all = medalDatabase?.getAllMedals?.() || []
-    return all.some(m => m && m.reviewed !== true)
-  }, [medalDatabase])
+  const statusCards = React.useMemo(() => (
+    STATUS_ORDER.map(key => {
+      const s = getStatusProps(key)
+      return {
+        key,
+        label: s.label,
+        icon: s.icon,
+        count: Array.isArray(statuses?.[key]) ? statuses[key].length : 0,
+      }
+    })
+  ), [statuses])
 
   return (
     <div className="space-y-6">
@@ -55,49 +61,24 @@ export default function SkillTree() {
 
       {viewMode === 'canvas' ? (
         <div role="tabpanel" id="panel-canvas" aria-labelledby="tab-canvas">
-          <SkillTreeCanvas legendDescribedById={hasUnderReview ? 'tree-review-legend' : undefined} />
-          {hasUnderReview && (
-            <div className="mt-2 text-xs text-muted-foreground">
-              <ReviewLegend id="tree-review-legend" />
-            </div>
-          )}
+          <SkillTreeCanvas />
         </div>
       ) : (
         <div
           role="tabpanel"
           id="panel-stats"
           aria-labelledby="tab-stats"
-          className="grid grid-cols-1 sm:grid-cols-3 gap-4"
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4"
         >
-          <div className="card p-6">
-            <h3 className="section-title mb-2">Upplåsta</h3>
-            <p className="text-3xl font-bold text-foreground">
-              {statuses.unlocked.length}
-            </p>
-            <p className="text-sm text-muted-foreground mt-2">
-              Märken du redan låst upp
-            </p>
-          </div>
-
-          <div className="card p-6">
-            <h3 className="section-title mb-2">Uppnåeliga</h3>
-            <p className="text-3xl font-bold text-foreground">
-              {statuses.achievable.length}
-            </p>
-            <p className="text-sm text-muted-foreground mt-2">
-              Märken du kan låsa upp
-            </p>
-          </div>
-
-          <div className="card p-6">
-            <h3 className="section-title mb-2">Låsta</h3>
-            <p className="text-3xl font-bold text-foreground">
-              {statuses.locked.length}
-            </p>
-            <p className="text-sm text-muted-foreground mt-2">
-              Framtida mål att arbeta mot
-            </p>
-          </div>
+          {statusCards.map(({ key, label, icon, count }) => (
+            <div key={key} className="card p-6">
+              <p className="text-sm text-muted-foreground font-semibold inline-flex items-center gap-2">
+                <Icon name={icon} className="w-4 h-4" aria-hidden="true" />
+                <span>{label}</span>
+              </p>
+              <p className="text-3xl font-bold text-foreground">{count}</p>
+            </div>
+          ))}
         </div>
       )}
     </div>

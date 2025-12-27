@@ -72,7 +72,7 @@ export class MedalCalculator {
     if (!reqsCheck.allMet) {
       return {
         medalId,
-        status: 'locked',
+        status: 'available',
         reason: 'requirements_not_met',
         details: reqsCheck
       }
@@ -91,8 +91,8 @@ export class MedalCalculator {
 
     return {
       medalId,
-      status: 'achievable',
-      achievableYear: reqsCheck.unlockYear ?? null,
+      status: 'eligible',
+      eligibleYear: reqsCheck.unlockYear ?? null,
       details: { ...reqsCheck, prerequisites: prereqsCheck }
     }
   }
@@ -981,11 +981,7 @@ export class MedalCalculator {
 
   evaluateAllMedals() {
     const allMedals = this.medals.getAllMedals()
-    const results = {
-      unlocked: [],
-      achievable: [],
-      locked: []
-    }
+    const results = { unlocked: [], eligible: [], available: [], locked: [] }
 
     allMedals.forEach(medal => {
       const result = this.evaluateMedal(medal.id)
@@ -1003,7 +999,7 @@ export class MedalCalculator {
     for (const y of candidates) {
       try {
         const res = this.evaluateMedal(medalId, { endYear: y })
-        if (res && res.status === 'achievable') {
+        if (res && res.status === 'eligible') {
           eligible.push(y)
         }
       } catch {

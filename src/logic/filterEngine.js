@@ -1,7 +1,8 @@
 export function getMedalStatus(medalId, statuses) {
   if (!statuses) return 'locked'
   if (statuses.unlocked?.some(s => s.medalId === medalId)) return 'unlocked'
-  if (statuses.achievable?.some(s => s.medalId === medalId)) return 'achievable'
+  if (statuses.eligible?.some(s => s.medalId === medalId)) return 'eligible'
+  if (statuses.available?.some(s => s.medalId === medalId)) return 'available'
   return 'locked'
 }
 
@@ -56,7 +57,7 @@ export function sortMedals(medals, sortBy = 'name', statuses) {
       return arr.sort((a, b) => (tierOrder[a.tier] ?? 99) - (tierOrder[b.tier] ?? 99))
     }
     case 'status': {
-      const order = { unlocked: 0, achievable: 1, locked: 2 }
+      const order = { unlocked: 0, eligible: 1, available: 2, locked: 3 }
       return arr.sort((a, b) => {
         const sa = order[getMedalStatus(a.id, statuses)] ?? 99
         const sb = order[getMedalStatus(b.id, statuses)] ?? 99

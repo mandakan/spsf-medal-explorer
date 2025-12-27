@@ -7,6 +7,7 @@ import { generateMedalLayout } from '../logic/canvasLayout'
 import { exportCanvasToPNG } from '../utils/canvasExport'
 import { clearThemeCache } from '../logic/canvasRenderer'
 import { useNavigate, useLocation } from 'react-router-dom'
+import ReviewLegend from './ReviewLegend'
 
 export default function SkillTreeCanvas({ legendDescribedById }) {
   const canvasRef = useRef(null)
@@ -65,6 +66,9 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
 
   // Fullscreen floating menu state and refs
   const [menuOpen, setMenuOpen] = useState(false)
+  const [showLegendFs, setShowLegendFs] = useState(true)
+  const legendId = legendDescribedById || 'skilltree-legend'
+  const fsLegendId = showLegendFs ? 'skilltree-legend-fs' : null
   const menuButtonRef = useRef(null)
   const menuRef = useRef(null)
 
@@ -610,14 +614,14 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
         </div>
       </div>
 
-      <div className="card overflow-hidden overscroll-contain mt-2" role="region" aria-label="Trädvy canvas" aria-describedby={legendDescribedById ? 'skilltree-help ' + legendDescribedById : 'skilltree-help'}>
+      <div className="card overflow-hidden overscroll-contain mt-2" role="region" aria-label="Trädvy canvas" aria-describedby={['skilltree-help', legendId].filter(Boolean).join(' ')}>
         {!isFullscreen && (
           <div className="relative">
             <canvas
               ref={setCanvasRef}
               role="img"
               aria-label="Interaktiv träd-vy-canvas"
-              aria-describedby={legendDescribedById}
+              aria-describedby={['skilltree-help', legendId].filter(Boolean).join(' ')}
               aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown"
               tabIndex={0}
               onKeyDown={handleCanvasKeyDown}
@@ -681,6 +685,9 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
         )}
       </div>
 
+      <div className="text-xs text-muted-foreground" role="note" id={legendId}>
+        <ReviewLegend variant="canvas" />
+      </div>
       <div className="text-sm text-muted-foreground">
         <p id="skilltree-help">💡 Dra för att panorera • Nyp för att zooma • Klicka på märken för detaljer • ⌨️ Piltangenter för att panorera</p>
       </div>
@@ -769,6 +776,15 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                 <button
                   role="menuitem"
                   type="button"
+                  onClick={() => { setMenuOpen(false); setShowLegendFs(v => !v) }}
+                  aria-pressed={showLegendFs}
+                  className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                >
+                  {showLegendFs ? 'Dölj teckenförklaring' : 'Visa teckenförklaring'}
+                </button>
+                <button
+                  role="menuitem"
+                  type="button"
                   ref={closeBtnRef}
                   onClick={() => { setMenuOpen(false); navigate(-1) }}
                   className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
@@ -780,13 +796,18 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
             </div>
           </div>
 
+          {showLegendFs && (
+            <div className="px-3 pt-3 sm:px-4" role="note" id={fsLegendId}>
+              <ReviewLegend variant="canvas" />
+            </div>
+          )}
           <div className="flex-1">
             <div className="relative h-full">
               <canvas
                 ref={setCanvasRef}
                 role="img"
                 aria-label="Interaktiv träd-vy-canvas"
-                aria-describedby={legendDescribedById ? 'skilltree-help-fs ' + legendDescribedById : 'skilltree-help-fs'}
+                aria-describedby={['skilltree-help-fs', fsLegendId, legendDescribedById].filter(Boolean).join(' ')}
                 aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown"
                 tabIndex={0}
                 onKeyDown={handleCanvasKeyDown}

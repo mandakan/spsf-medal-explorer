@@ -61,6 +61,12 @@ export function getThemeColors(canvas) {
       (styles && readVar(styles, ['--color-success', '--color-achievable'])) ||
       getClassColor('text-emerald-400') ||
       '#20C997',
+    available:
+      (styles && readVar(styles, ['--color-status-available'])) ||
+      '#0EA5E9',
+    eligible:
+      (styles && readVar(styles, ['--color-status-eligible'])) ||
+      '#F59E0B',
     locked:
       (styles && readVar(styles, ['--color-muted-foreground', '--color-locked'])) ||
       getClassColor('text-slate-400') ||
