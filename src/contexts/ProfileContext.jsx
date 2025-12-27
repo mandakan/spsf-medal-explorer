@@ -44,7 +44,8 @@ function createGuestProfile() {
   return new UserProfile({
     userId: 'guest',
     displayName: 'Gästläge',
-    dateOfBirth: '',
+    // Use a stable local date so getFullYear() is 1975 in all timezones
+    dateOfBirth: '1975-01-02',
     unlockedMedals: [],
     prerequisites: [],
     features: { allowManualUnlock: true, enforceCurrentYearForSustained: false },
