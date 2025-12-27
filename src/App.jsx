@@ -12,6 +12,51 @@ import Settings from './pages/Settings'
 import DataBackup from './pages/DataBackup'
 import About from './pages/About'
 import MedalDetailModal from './components/MedalDetailModal'
+import { useProfile } from './hooks/useProfile'
+
+function RequireSavedProfile({ children }) {
+  const { currentProfile, convertGuestToSaved } = useProfile()
+  const navigate = useNavigate()
+
+  if (currentProfile && !currentProfile.isGuest) {
+    return children
+  }
+
+  return (
+    <div className="p-6">
+      <div className="card p-6 max-w-xl mx-auto">
+        <h2 className="section-title mb-2">Endast för sparade profiler</h2>
+        <p className="text-sm text-muted-foreground mb-4">
+          Inställningar och datahantering är inte tillgängligt i Gästläge.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {currentProfile?.isGuest && (
+            <button
+              type="button"
+              className="btn btn-primary min-h-[44px]"
+              onClick={async () => {
+                const name = window.prompt('Ange namn för att spara framsteg', '')
+                if (name && name.trim()) {
+                  await convertGuestToSaved(name.trim())
+                  navigate(0)
+                }
+              }}
+            >
+              Spara framsteg
+            </button>
+          )}
+          <button
+            type="button"
+            className="btn btn-secondary min-h-[44px]"
+            onClick={() => navigate('/medals')}
+          >
+            Tillbaka till märken
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 function MedalDetailOverlay() {
   const { id } = useParams()
@@ -41,8 +86,22 @@ function AppRoutes() {
           <Route path="skill-tree/fullscreen" element={<SkillTree />} />
           <Route path="medals" element={<MedalsList />} />
           <Route path="medals/:id" element={<MedalsList />} />
-          <Route path="settings" element={<Settings />} />
-          <Route path="data" element={<DataBackup />} />
+          <Route
+            path="settings"
+            element={
+              <RequireSavedProfile>
+                <Settings />
+              </RequireSavedProfile>
+            }
+          />
+          <Route
+            path="data"
+            element={
+              <RequireSavedProfile>
+                <DataBackup />
+              </RequireSavedProfile>
+            }
+          />
           <Route path="about" element={<About />} />
         </Route>
       </Routes>

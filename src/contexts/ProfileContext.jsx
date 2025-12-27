@@ -40,6 +40,18 @@ function getProfileOverrideFromURL() {
   }
 }
 
+function createGuestProfile() {
+  return new UserProfile({
+    userId: 'guest',
+    displayName: 'Gästläge',
+    dateOfBirth: '',
+    unlockedMedals: [],
+    prerequisites: [],
+    features: { allowManualUnlock: true, enforceCurrentYearForSustained: false },
+    isGuest: true,
+  })
+}
+
 
 export function ProfileProvider({ children }) {
   const [storage] = useState(() => new LocalStorageDataManager())
@@ -67,6 +79,24 @@ export function ProfileProvider({ children }) {
     loadProfiles()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const startExplorerMode = useCallback(() => {
+    setCurrentProfile(createGuestProfile())
+  }, [])
+
+  // Auto-start Explorer if user previously chose it
+  React.useEffect(() => {
+    if (loading) return
+    if (currentProfile) return
+    try {
+      const choice = window.localStorage.getItem('app:onboardingChoice')
+      if (choice === 'guest') {
+        setCurrentProfile(createGuestProfile())
+      }
+    } catch {
+      // ignore storage read errors
+    }
+  }, [loading, currentProfile])
 
 
   const createProfile = useCallback(
@@ -179,6 +209,14 @@ export function ProfileProvider({ children }) {
   const addAchievement = useCallback(
     async (achievement) => {
       if (!currentProfile) throw new Error('No profile selected')
+      if (currentProfile.isGuest) {
+        setCurrentProfile(p => ({
+          ...p,
+          prerequisites: [...(p?.prerequisites || []), achievement],
+          lastModified: new Date().toISOString(),
+        }))
+        return achievement
+      }
       try {
         setLoading(true)
         const saved = await storage.addAchievement(currentProfile.userId, achievement)
@@ -200,6 +238,15 @@ export function ProfileProvider({ children }) {
     async (updatedAchievement) => {
       if (!currentProfile) throw new Error('No profile selected')
       if (!updatedAchievement?.id) throw new Error('Achievement id is required')
+      if (currentProfile.isGuest) {
+        setCurrentProfile(p => {
+          const list = Array.isArray(p?.prerequisites) ? [...p.prerequisites] : []
+          const idx = list.findIndex(a => a.id === updatedAchievement.id)
+          if (idx !== -1) list[idx] = { ...list[idx], ...updatedAchievement }
+          return { ...p, prerequisites: list, lastModified: new Date().toISOString() }
+        })
+        return updatedAchievement
+      }
       try {
         setLoading(true)
         const profile = await storage.getUserProfile(currentProfile.userId)
@@ -225,6 +272,14 @@ export function ProfileProvider({ children }) {
     async (achievementId) => {
       if (!currentProfile) throw new Error('No profile selected')
       if (!achievementId) throw new Error('Achievement id is required')
+      if (currentProfile.isGuest) {
+        setCurrentProfile(p => ({
+          ...p,
+          prerequisites: (p?.prerequisites || []).filter(a => a.id !== achievementId),
+          lastModified: new Date().toISOString(),
+        }))
+        return true
+      }
       try {
         setLoading(true)
         const profile = await storage.getUserProfile(currentProfile.userId)
@@ -247,6 +302,24 @@ export function ProfileProvider({ children }) {
     async (medalId, unlockedDate) => {
       if (!currentProfile) throw new Error('No profile selected')
       if (!medalId) throw new Error('medalId is required')
+      if (currentProfile.isGuest) {
+        setCurrentProfile(p => {
+          const list = Array.isArray(p?.unlockedMedals) ? [...p.unlockedMedals] : []
+          if (list.some(m => m.medalId === medalId)) {
+            return p
+          }
+          const entry = {
+            medalId,
+            unlockedDate: unlockedDate || new Date().toISOString().slice(0, 10),
+          }
+          return {
+            ...p,
+            unlockedMedals: [...list, entry],
+            lastModified: new Date().toISOString(),
+          }
+        })
+        return true
+      }
       try {
         setLoading(true)
         const profile = await storage.getUserProfile(currentProfile.userId)
@@ -277,6 +350,14 @@ export function ProfileProvider({ children }) {
     async (medalId) => {
       if (!currentProfile) throw new Error('No profile selected')
       if (!medalId) throw new Error('medalId is required')
+      if (currentProfile.isGuest) {
+        setCurrentProfile(p => ({
+          ...p,
+          unlockedMedals: (p?.unlockedMedals || []).filter(m => m.medalId !== medalId),
+          lastModified: new Date().toISOString(),
+        }))
+        return true
+      }
       try {
         setLoading(true)
         const profile = await storage.getUserProfile(currentProfile.userId)
@@ -304,6 +385,15 @@ export function ProfileProvider({ children }) {
     async (name, value) => {
       if (!currentProfile) throw new Error('No profile selected')
       if (!name) throw new Error('Feature name is required')
+      if (currentProfile.isGuest) {
+        setCurrentProfile(p => ({
+          ...p,
+          features: { ...(p?.features || {}), [name]: !!value },
+          lastModified: new Date().toISOString(),
+        }))
+        setError(null)
+        return currentProfile
+      }
       try {
         setLoading(true)
         const profile = await storage.getUserProfile(currentProfile.userId)
@@ -347,6 +437,17 @@ export function ProfileProvider({ children }) {
   const upsertAchievements = useCallback(
     async (rows, options) => {
       if (!currentProfile) throw new Error('No profile selected')
+      if (currentProfile.isGuest) {
+        if (!options?.dryRun) {
+          setCurrentProfile(p => ({
+            ...p,
+            prerequisites: Array.isArray(p?.prerequisites) ? [...rows] : [...rows],
+            lastModified: new Date().toISOString(),
+          }))
+        }
+        setError(null)
+        return { added: rows?.length || 0, updated: 0, duplicates: 0 }
+      }
       try {
         setLoading(true)
         const result = await storage.upsertAchievements(currentProfile.userId, rows, options)
@@ -368,6 +469,46 @@ export function ProfileProvider({ children }) {
     [currentProfile, storage, loadProfiles]
   )
 
+  const convertGuestToSaved = useCallback(
+    async (displayName, dateOfBirth = '') => {
+      if (!currentProfile?.isGuest) return null
+      const saved = new UserProfile({
+        ...currentProfile,
+        userId: undefined,
+        displayName: displayName || 'Profil',
+        dateOfBirth,
+        isGuest: false,
+      })
+      const persisted = await storage.saveUserProfile(saved)
+      setCurrentProfile(persisted)
+      setLastProfileId(persisted.userId)
+      await loadProfiles()
+      return persisted
+    },
+    [currentProfile, storage, loadProfiles]
+  )
+
+  const resetCurrentProfileData = useCallback(
+    async () => {
+      if (!currentProfile) return false
+      const cleared = {
+        ...currentProfile,
+        unlockedMedals: [],
+        prerequisites: [],
+        lastModified: new Date().toISOString(),
+      }
+      if (currentProfile.isGuest) {
+        setCurrentProfile(cleared)
+        return true
+      }
+      const saved = await storage.saveUserProfile(cleared)
+      setCurrentProfile(saved)
+      await loadProfiles()
+      return true
+    },
+    [currentProfile, storage, loadProfiles]
+  )
+
   const value = {
     currentProfile,
     profiles,
@@ -385,6 +526,9 @@ export function ProfileProvider({ children }) {
     setProfileFeature,
     restoreProfileFromBackup,
     upsertAchievements,
+    startExplorerMode,
+    convertGuestToSaved,
+    resetCurrentProfileData,
   }
 
   return <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>
