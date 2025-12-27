@@ -1315,7 +1315,7 @@
       "requirements": [
         {
           "type": "cumulative_competition_score",
-          "description": "3 competitions with combined points",
+          "description": "Uppnått poängkrav för brons i precisionsskjutning vid riks-, nationella, landsdels- och kretstävlingar",
           "minCompetitions": 3,
           "timeWindowYears": 1,
           "pointThresholds": {
@@ -1356,6 +1356,7 @@
       "requirements": [
         {
           "type": "cumulative_competition_score",
+          "description": "Uppnått poängkrav för silver i precisionsskjutning vid riks-, nationella, landsdels- och kretstävlingar",
           "minCompetitions": 3,
           "timeWindowYears": 1,
           "pointThresholds": {
@@ -1396,6 +1397,7 @@
       "requirements": [
         {
           "type": "cumulative_competition_score",
+          "description": "Uppnått poängkrav för guld i precisionsskjutning vid riks-, nationella, landsdels- och kretstävlingar",
           "minCompetitions": 3,
           "timeWindowYears": 1,
           "pointThresholds": {
