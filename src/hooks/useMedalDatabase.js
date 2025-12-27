@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { MedalContext } from '../contexts/medalContext'
+import { MedalContext, defaultMedalContextValue } from '../contexts/medalContext'
 
 /**
  * Custom hook to access medal database
@@ -8,7 +8,7 @@ import { MedalContext } from '../contexts/medalContext'
 export function useMedalDatabase() {
   const context = useContext(MedalContext)
   
-  if (!context) {
+  if (context === defaultMedalContextValue && import.meta.env.PROD) {
     throw new Error('useMedalDatabase must be used within MedalProvider')
   }
   
