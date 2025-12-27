@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import SkillTreeCanvas from '../components/SkillTreeCanvas'
 import { useAllMedalStatuses } from '../hooks/useMedalCalculator'
 import ProfilePromptBanner from '../components/ProfilePromptBanner'
@@ -24,20 +24,12 @@ export default function SkillTree() {
 
   const { currentProfile, startExplorerMode, hydrated } = useProfile()
   const isGuest = Boolean(currentProfile?.isGuest)
-  const [showOnboarding, setShowOnboarding] = useState(false)
-
-  useEffect(() => {
-    if (!hydrated) return
-    try {
-      const choice = window.localStorage.getItem('app:onboardingChoice')
-      setShowOnboarding(!currentProfile && !choice)
-    } catch {
-      setShowOnboarding(!currentProfile)
-    }
-  }, [hydrated, currentProfile])
-
-
-  const isProfileLoading = !hydrated
+  const [dismissedOnboarding, setDismissedOnboarding] = useState(false)
+  const isProfileLoading = !hydrated || typeof currentProfile === 'undefined'
+  const hasOnboardingChoice = (() => {
+    try { return window.localStorage.getItem('app:onboardingChoice') } catch { return null }
+  })()
+  const showOnboarding = !isProfileLoading && !currentProfile && !hasOnboardingChoice && !dismissedOnboarding
 
   if (isProfileLoading) {
     return null
@@ -58,7 +50,6 @@ export default function SkillTree() {
               onClick={() => {
                 try { window.localStorage.setItem('app:onboardingChoice', 'guest') } catch { /* ignore unavailable storage */ }
                 startExplorerMode()
-                setShowOnboarding(false)
               }}
             >
               Utforska utan att spara (Gästläge)
@@ -68,7 +59,7 @@ export default function SkillTree() {
               className="btn btn-primary min-h-[44px]"
               onClick={() => {
                 try { window.localStorage.setItem('app:onboardingChoice', 'saved') } catch { /* ignore unavailable storage */ }
-                setShowOnboarding(false)
+                setDismissedOnboarding(true)
               }}
             >
               Skapa profil
