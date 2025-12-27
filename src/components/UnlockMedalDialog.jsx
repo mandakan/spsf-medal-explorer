@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useState, useCallback } from 'react'
 import MobileBottomSheet from './MobileBottomSheet'
 import { useMedalCalculator } from '../hooks/useMedalCalculator'
 import { useProfile } from '../hooks/useProfile'
@@ -47,8 +47,73 @@ export default function UnlockMedalDialog({ medal, open, onClose }) {
   const enforceSustainedCurrent = !!currentProfile?.features?.enforceCurrentYearForSustained
   const hasSustainedReq = Array.isArray(medal?.requirements) && medal.requirements.some(r => r?.type === 'sustained_achievement')
 
+
+
+
+  const computeDefaultYear = useCallback(() => {
+    if (!calculator || !medal) return ''
+    // If sustained requires current year, prefer it
+    if (enforceSustainedCurrent && hasSustainedReq) {
+      if (!allowManual) {
+        if (eligibleYears?.includes(nowYear)) return nowYear
+      } else {
+        return nowYear
+      }
+    }
+
+    if (!allowManual) {
+      if (!eligibleYears || eligibleYears.length === 0) return ''
+      return Math.min(...eligibleYears)
+    }
+
+    // Manual mode: compute earliest valid year that satisfies rules and prerequisites
+    const minRuleYear = (() => {
+      const vals = []
+      if (typeof earliestCountingYear === 'number') vals.push(earliestCountingYear)
+      if (typeof minimalSustainedYear === 'number') vals.push(minimalSustainedYear)
+      return vals.length ? Math.max(...vals) : null
+    })()
+
+    const start = Math.max(
+      Number.isFinite(birthYear) ? birthYear : -Infinity,
+      Number.isFinite(minRuleYear) ? minRuleYear : -Infinity
+    )
+    const firstCandidate = Number.isFinite(start) ? start : nowYear
+
+    for (let y = firstCandidate; y <= nowYear; y++) {
+      try {
+        const res = calculator.checkPrerequisites(medal, y)
+        if (res?.allMet) return y
+      } catch {
+        // ignore and continue
+      }
+    }
+
+    if (enforceSustainedCurrent && hasSustainedReq) return nowYear
+    return ''
+  }, [
+    allowManual,
+    calculator,
+    medal,
+    eligibleYears,
+    earliestCountingYear,
+    minimalSustainedYear,
+    birthYear,
+    nowYear,
+    enforceSustainedCurrent,
+    hasSustainedReq,
+  ])
+
+  const suggestedYear = useMemo(() => {
+    if (!open) return ''
+    const y = computeDefaultYear()
+    return (y !== '' && Number.isFinite(y)) ? y : ''
+  }, [open, computeDefaultYear])
+
+  const manualYearValue = allowManual ? (year === '' ? suggestedYear : year) : null
+
   const selectedYear = allowManual
-    ? (year === '' ? '' : Number(year))
+    ? ((manualYearValue === '' ? '' : Number(manualYearValue)))
     : (eligibleYears.length <= 1 ? (eligibleYears[0] ?? '') : (year || (eligibleYears[0] ?? '')))
 
   const yearOutOfBounds =
@@ -97,6 +162,7 @@ export default function UnlockMedalDialog({ medal, open, onClose }) {
 
   const canUnlock = allowManual ? (yearIsValid && prereqsMet) : (eligibleYears.length > 0 && selectedYear !== '')
 
+
   const doUnlock = async () => {
     if (!canUnlock) return
     const y = allowManual ? selectedYear : Number(selectedYear)
@@ -138,7 +204,7 @@ export default function UnlockMedalDialog({ medal, open, onClose }) {
               min={birthYear ?? undefined}
               max={nowYear}
               list="eligible-years"
-              value={year}
+              value={manualYearValue}
               onChange={(e) => {
                 const v = e.target.value
                 setYear(v === '' ? '' : Number(v))

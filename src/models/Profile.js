@@ -15,6 +15,7 @@ export class UserProfile {
       enforceCurrentYearForSustained: false,
       ...(data.features || {}),
     }
+    this.isGuest = Boolean(data.isGuest)
   }
 
   /**

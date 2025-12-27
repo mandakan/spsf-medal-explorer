@@ -12,6 +12,8 @@ import Settings from './pages/Settings'
 import DataBackup from './pages/DataBackup'
 import About from './pages/About'
 import MedalDetailModal from './components/MedalDetailModal'
+import RequireSavedProfile from './components/RequireSavedProfile'
+
 
 function MedalDetailOverlay() {
   const { id } = useParams()
@@ -41,8 +43,22 @@ function AppRoutes() {
           <Route path="skill-tree/fullscreen" element={<SkillTree />} />
           <Route path="medals" element={<MedalsList />} />
           <Route path="medals/:id" element={<MedalsList />} />
-          <Route path="settings" element={<Settings />} />
-          <Route path="data" element={<DataBackup />} />
+          <Route
+            path="settings"
+            element={
+              <RequireSavedProfile>
+                <Settings />
+              </RequireSavedProfile>
+            }
+          />
+          <Route
+            path="data"
+            element={
+              <RequireSavedProfile>
+                <DataBackup />
+              </RequireSavedProfile>
+            }
+          />
           <Route path="about" element={<About />} />
         </Route>
       </Routes>
