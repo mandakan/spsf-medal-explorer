@@ -26,15 +26,14 @@ export default function MedalsList() {
   const [showFilters, setShowFilters] = useState(false)
   const searchInputRef = useRef(null)
   const [searchParams, setSearchParams] = useSearchParams()
-  const { currentProfile, startExplorerMode } = useProfile()
+  const { currentProfile, startExplorerMode, hydrated } = useProfile()
   const isGuest = Boolean(currentProfile?.isGuest)
-  const [showOnboarding, setShowOnboarding] = useState(() => {
-    try {
-      return !currentProfile && !window.localStorage.getItem('app:onboardingChoice')
-    } catch {
-      return !currentProfile
-    }
-  })
+  const [dismissedOnboarding, setDismissedOnboarding] = useState(false)
+  const isProfileLoading = !hydrated || typeof currentProfile === 'undefined'
+  const hasOnboardingChoice = (() => {
+    try { return window.localStorage.getItem('app:onboardingChoice') } catch { return null }
+  })()
+  const showOnboarding = !isProfileLoading && !currentProfile && !hasOnboardingChoice && !dismissedOnboarding
 
   // Responsive, mobile-first list height (~70vh with a sensible minimum)
   const [listHeight, setListHeight] = useState(600)
@@ -145,6 +144,9 @@ export default function MedalsList() {
 
   const hasUnderReview = useMemo(() => finalResults.some(m => m.reviewed !== true), [finalResults])
 
+  if (isProfileLoading) {
+    return null
+  }
   if (!medalDatabase) {
     return <div className="text-muted-foreground">Laddar märken...</div>
   }
@@ -164,7 +166,6 @@ export default function MedalsList() {
               onClick={() => {
                 try { window.localStorage.setItem('app:onboardingChoice', 'guest') } catch { /* ignore unavailable storage */ }
                 startExplorerMode()
-                setShowOnboarding(false)
               }}
             >
               Utforska utan att spara (Gästläge)
@@ -174,7 +175,7 @@ export default function MedalsList() {
               className="btn btn-primary min-h-[44px]"
               onClick={() => {
                 try { window.localStorage.setItem('app:onboardingChoice', 'saved') } catch { /* ignore unavailable storage */ }
-                setShowOnboarding(false)
+                setDismissedOnboarding(true)
               }}
             >
               Skapa profil

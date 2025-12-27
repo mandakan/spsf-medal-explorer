@@ -22,15 +22,18 @@ export default function SkillTree() {
     })
   ), [statuses])
 
-  const { currentProfile, startExplorerMode } = useProfile()
+  const { currentProfile, startExplorerMode, hydrated } = useProfile()
   const isGuest = Boolean(currentProfile?.isGuest)
-  const [showOnboarding, setShowOnboarding] = useState(() => {
-    try {
-      return !currentProfile && !window.localStorage.getItem('app:onboardingChoice')
-    } catch {
-      return !currentProfile
-    }
-  })
+  const [dismissedOnboarding, setDismissedOnboarding] = useState(false)
+  const isProfileLoading = !hydrated || typeof currentProfile === 'undefined'
+  const hasOnboardingChoice = (() => {
+    try { return window.localStorage.getItem('app:onboardingChoice') } catch { return null }
+  })()
+  const showOnboarding = !isProfileLoading && !currentProfile && !hasOnboardingChoice && !dismissedOnboarding
+
+  if (isProfileLoading) {
+    return null
+  }
 
   return (
     <div className="space-y-6">
@@ -47,7 +50,6 @@ export default function SkillTree() {
               onClick={() => {
                 try { window.localStorage.setItem('app:onboardingChoice', 'guest') } catch { /* ignore unavailable storage */ }
                 startExplorerMode()
-                setShowOnboarding(false)
               }}
             >
               Utforska utan att spara (Gästläge)
@@ -57,7 +59,7 @@ export default function SkillTree() {
               className="btn btn-primary min-h-[44px]"
               onClick={() => {
                 try { window.localStorage.setItem('app:onboardingChoice', 'saved') } catch { /* ignore unavailable storage */ }
-                setShowOnboarding(false)
+                setDismissedOnboarding(true)
               }}
             >
               Skapa profil
