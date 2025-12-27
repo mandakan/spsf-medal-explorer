@@ -46,7 +46,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     }
     return { minX, minY, maxX, maxY }
   }, [layout])
-  const { panX, panY, scale, setScaleAbsolute, handleWheel, handlePointerDown, handlePointerMove, handlePointerUp, resetView } = usePanZoom(1, 0.5, 6, {
+  const { panX, panY, scale, setScaleAbsolute, handleWheel, handlePointerDown, handlePointerMove, handlePointerUp, resetView } = usePanZoom(1, 0.5, 12, {
     getBounds: getWorldBounds,
     overscrollPx: 48,
     contentPaddingPx: {
@@ -689,7 +689,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
         <ReviewLegend variant="canvas" />
       </div>
       <div className="text-sm text-muted-foreground">
-        <p id="skilltree-help">💡 Dra för att panorera • Nyp för att zooma • Klicka på märken för detaljer • ⌨️ Piltangenter för att panorera</p>
+        <p id="skilltree-help">💡 Dra för att panorera • Nyp för att zooma • Klicka på märken för detaljer</p>
       </div>
       <div className="sm:hidden">
         <button
@@ -871,7 +871,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
           </div>
 
           <p id="skilltree-help-fs" className="sr-only">
-            💡 Dra för att panorera • Nyp för att zooma • Klicka på märken för detaljer • ⌨️ Piltangenter för att panorera
+            💡 Dra för att panorera • Nyp för att zooma • Klicka på märken för detaljer
           </p>
 
           {/* Modal is route-driven while in fullscreen */}
