@@ -22,13 +22,50 @@ export default function SkillTree() {
     })
   ), [statuses])
 
-  const { currentProfile, resetCurrentProfileData } = useProfile()
+  const { currentProfile, startExplorerMode, resetCurrentProfileData } = useProfile()
   const isGuest = Boolean(currentProfile?.isGuest)
+  const [showOnboarding, setShowOnboarding] = useState(() => {
+    try {
+      return !currentProfile && !window.localStorage.getItem('app:onboardingChoice')
+    } catch {
+      return !currentProfile
+    }
+  })
   const [showSaveProgress, setShowSaveProgress] = useState(false)
 
   return (
     <div className="space-y-6">
-      {isGuest ? (
+      {showOnboarding ? (
+        <div className="card p-4" role="dialog" aria-modal="true" aria-labelledby="onboarding-title-skill">
+          <h2 id="onboarding-title-skill" className="section-title mb-2">Hur vill du börja?</h2>
+          <p className="text-sm text-muted-foreground mb-3">
+            Utforska märken direkt eller skapa en profil för att spara ditt arbete.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              className="btn btn-secondary min-h-[44px]"
+              onClick={() => {
+                try { window.localStorage.setItem('app:onboardingChoice', 'guest') } catch {}
+                startExplorerMode()
+                setShowOnboarding(false)
+              }}
+            >
+              Utforska utan att spara (Gästläge)
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary min-h-[44px]"
+              onClick={() => {
+                try { window.localStorage.setItem('app:onboardingChoice', 'saved') } catch {}
+                setShowOnboarding(false)
+              }}
+            >
+              Skapa profil
+            </button>
+          </div>
+        </div>
+      ) : isGuest ? (
         <div className="card p-4" role="status" aria-live="polite">
           <div className="flex items-start gap-3">
             <div aria-hidden="true" className="text-xl leading-none">🧭</div>
