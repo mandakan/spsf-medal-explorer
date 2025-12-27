@@ -15,10 +15,10 @@ export function MedalProvider({ children }) {
 
   useEffect(() => {
     let cancelled = false
-    async function init() {
+    async function init(overrideData) {
       setLoading(true)
       try {
-        const data = await loadBestAvailableData()
+        const data = overrideData ?? (await loadBestAvailableData())
         const validation = validatePrerequisites(data)
         if (!validation.ok) {
           console.warn('Medal dataset validation errors:', validation.errors)
@@ -38,6 +38,19 @@ export function MedalProvider({ children }) {
       }
     }
     init()
+
+    // Hot Module Replacement: rebuild database when data or loader changes during dev
+    if (import.meta.hot) {
+      import.meta.hot.accept('../data/medals.json', (mod) => {
+        if (!cancelled) {
+          init(mod?.default)
+        }
+      })
+      import.meta.hot.accept('../utils/medalDatabase', () => {
+        if (!cancelled) init()
+      })
+    }
+
     return () => { cancelled = true }
   }, [])
 

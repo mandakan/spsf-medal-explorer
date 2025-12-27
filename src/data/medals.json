@@ -145,7 +145,7 @@
           "type": "medal",
           "medalId": "pistol-mark-bronze",
           "yearOffset": 1,
-          "description": "Pistolskyttemärket i brons (föregående år eller tidigare)"
+          "description": "Uppfyllt kraven för pistolskyttemärket i brons föregående år"
         }
       ],
       "requirements": [
@@ -765,7 +765,8 @@
         {
           "type": "medal",
           "medalId": "pistol-mark-bronze",
-          "description": "Pistolskyttemärket i brons"
+          "description": "Uppfyllt kraven för pistolskyttemärket i brons under föregående år",
+          "yearOffset": 1
         },
         {
           "type": "age_requirement",
@@ -1314,7 +1315,7 @@
       "requirements": [
         {
           "type": "cumulative_competition_score",
-          "description": "3 competitions with combined points",
+          "description": "Uppnått poängkrav för brons i precisionsskjutning vid riks-, nationella, landsdels- och kretstävlingar",
           "minCompetitions": 3,
           "timeWindowYears": 1,
           "pointThresholds": {
@@ -1355,6 +1356,7 @@
       "requirements": [
         {
           "type": "cumulative_competition_score",
+          "description": "Uppnått poängkrav för silver i precisionsskjutning vid riks-, nationella, landsdels- och kretstävlingar",
           "minCompetitions": 3,
           "timeWindowYears": 1,
           "pointThresholds": {
@@ -1395,6 +1397,7 @@
       "requirements": [
         {
           "type": "cumulative_competition_score",
+          "description": "Uppnått poängkrav för guld i precisionsskjutning vid riks-, nationella, landsdels- och kretstävlingar",
           "minCompetitions": 3,
           "timeWindowYears": 1,
           "pointThresholds": {
@@ -1525,7 +1528,9 @@
       "prerequisites": [
         {
           "type": "medal",
-          "medalId": "pistol-mark-bronze"
+          "medalId": "pistol-mark-bronze",
+          "yearOffset": 1,
+          "description": "Uppfyllt kraven för pistolskyttemärket i brons föregående år"
         }
       ],
       "requirements": [
@@ -1801,7 +1806,9 @@
       "prerequisites": [
         {
           "type": "medal",
-          "medalId": "pistol-mark-bronze"
+          "medalId": "pistol-mark-bronze",
+          "yearOffset": 1,
+          "description": "Uppfyllt kraven för pistolskyttemärket i brons föregående år"
         }
       ],
       "requirements": [
@@ -2068,22 +2075,26 @@
     },
     {
       "id": "national-match-mark-bronze",
+      "status": "under_review",
       "type": "national_full_match_mark",
       "tier": "bronze",
       "name": "Märke i Nationell Helmatch",
       "displayName": "Märke i Nationell Helmatch Brons",
       "color": "#CD7F32",
       "icon": "national-full-bronze",
+      "requirements_original": "Skjutningen som utförs med av Förbundet godkända vapen, skall ske dels mot pistoltavla, dels mot snabbskjutningstavla samt mot fältfigurtavla enligt följande grunder nämligen:\n\nSammanlagt resultat av\n- fyra 5-skottsserier mot pistoltavla enligt bestämmelserna i SHB. Provserie tillåten.\n- fyra 5-skottsserier mot snabbskjutningstavla enligt bestämmelserna i SHB. Provserie tillåten.\n- fyra 5-skottsserier mot fältfigurtavla, avstånd 25 meter, utgångsställning 45°. Tid för respektive serie är 18, 16, 14 och 12 sek. i nämnd ordning. Skytten väljer själv i vilken ordning målen skall beskjutas. Provserie är inte tillåten.\n\nProv för märke i Nationell helmatch får endast avläggas av den, som under föregående kalenderår uppfyllt fordringarna för pistolskyttemärke i brons.\n\nMärket i Nationell helmatch förekommer i valörerna brons, silver och guld, samt i guld med en, två och tre stjärnor.\n\nMärkesprov får avläggas vid såväl träning som riks-, landsdels-, nationella och kretstävlingar i Nationell helmatch.\n\nEndast ett märke kan under året erövras och märke av högre valör endast av den, som förut löst märke av lägre valör.\n\nFör erhållande av märke i Nationell helmatch krävs att skytten vid två olika tillfällen under samma kalenderår uppfyller kraven för respektive märke, enligt följande:\n\n|Märke|A|B|C|\n|-|-|-|-|\n|Brons|365|380|390|\n|Silver|435|450|460|\n|Guld|500|520|530|\n",
       "prerequisites": [
         {
           "type": "medal",
-          "medalId": "pistol-mark-bronze"
+          "medalId": "pistol-mark-bronze",
+          "yearOffset": 1,
+          "description": "Uppfyllt kraven för pistolskyttemärket i brons föregående år"
         }
       ],
       "requirements": [
         {
           "type": "full_match_competition",
-          "description": "Full match with precision, speed, and field components",
+          "description": "Uppnått poängkrav för brons i nationell helmatch vid såväl träning som riks-, nationella, landsdels- och kretstävlingar",
           "minCompetitions": 2,
           "timeWindowYears": 1,
           "pointThresholds": {
@@ -2106,6 +2117,7 @@
     },
     {
       "id": "national-match-mark-silver",
+      "status": "under_review",
       "type": "national_full_match_mark",
       "tier": "silver",
       "name": "Märke i Nationell Helmatch",
@@ -2121,7 +2133,7 @@
       "requirements": [
         {
           "type": "full_match_competition",
-          "description": "Full match with precision, speed, and field components",
+          "description": "Uppnått poängkrav för silver i nationell helmatch vid såväl träning som riks-, nationella, landsdels- och kretstävlingar",
           "minCompetitions": 2,
           "timeWindowYears": 1,
           "pointThresholds": {
@@ -2144,6 +2156,7 @@
     },
     {
       "id": "national-match-mark-gold",
+      "status": "under_review",
       "type": "national_full_match_mark",
       "tier": "gold",
       "name": "Märke i Nationell Helmatch",
@@ -2159,7 +2172,7 @@
       "requirements": [
         {
           "type": "full_match_competition",
-          "description": "Full match with precision, speed, and field components",
+          "description": "Uppnått poängkrav för guld i nationell helmatch vid såväl träning som riks-, nationella, landsdels- och kretstävlingar",
           "minCompetitions": 2,
           "timeWindowYears": 1,
           "pointThresholds": {
@@ -2182,6 +2195,7 @@
     },
     {
       "id": "national-match-mark-gold-star-1",
+      "status": "under_review",
       "type": "national_full_match_mark",
       "tier": "star_1",
       "name": "Märke i Nationell Helmatch",
@@ -2208,6 +2222,7 @@
     },
     {
       "id": "national-match-mark-gold-star-2",
+      "status": "under_review",
       "type": "national_full_match_mark",
       "tier": "star_2",
       "name": "Märke i Nationell Helmatch",
@@ -2234,6 +2249,7 @@
     },
     {
       "id": "national-match-mark-gold-star-3",
+      "status": "under_review",
       "type": "national_full_match_mark",
       "tier": "star_3",
       "name": "Märke i Nationell Helmatch",
@@ -2260,22 +2276,26 @@
     },
     {
       "id": "military-match-mark-bronze",
+      "status": "reviewed",
       "type": "military_fast_match_mark",
       "tier": "bronze",
       "name": "Militär Snabbmatchmärket",
       "displayName": "Militär Snabbmatchmärket Brons",
       "color": "#CD7F32",
       "icon": "military-fast-bronze",
+      "requirements_original": "Prov för Militär Snabbmatchmärke får endast avläggas av den, som under föregående kalenderår uppfyllt fordringarna för pistolskyttemärke i brons.\n\nMilitär Snabbmatchmärket förekommer i valörerna brons, silver och guld, samt i guldmed en, två och tre stjärnor.\n\nMärkesprov får avläggas vid riks-, landsdels-, nationella och kretstävlingar i Militär Snabbmatch.\n\nEndast ett märke kan under året erövras och märke av högre valör endast av den, som förut löst märke av lägre valör.\n\nFör erhållande av Militär Snabbmatchmärket krävs att skytten vid tre olika tävlingar under samma kalenderår uppfyller kraven för respektive märke, enligt följande:\n\n|Märke|A|B|C|R|\n|-|-|-|-|-|\n|Brons|377|391|404|388|\n|Silver|454|472|481|467|\n|Guld|515|543|550|532|\n",
       "prerequisites": [
         {
           "type": "medal",
-          "medalId": "pistol-mark-bronze"
+          "medalId": "pistol-mark-bronze",
+          "yearOffset": 1,
+          "description": "Uppfyllt kraven för pistolskyttemärket i brons föregående år"
         }
       ],
       "requirements": [
         {
           "type": "military_fast_match",
-          "description": "Militär snabbmatch at district, regional, national or riks competitions",
+          "description": "Uppnått poängkrav för brons i militär snabbmatch vid riks-, nationella, landsdels- och kretstävlingar",
           "minCompetitions": 3,
           "timeWindowYears": 1,
           "pointThresholds": {
@@ -2301,12 +2321,14 @@
     },
     {
       "id": "military-match-mark-silver",
+      "status": "reviewed",
       "type": "military_fast_match_mark",
       "tier": "silver",
       "name": "Militär Snabbmatchmärket",
       "displayName": "Militär Snabbmatchmärket Silver",
       "color": "#C0C0C0",
       "icon": "military-fast-silver",
+      "requirements_original": "Prov för Militär Snabbmatchmärke får endast avläggas av den, som under föregående kalenderår uppfyllt fordringarna för pistolskyttemärke i brons.\n\nMilitär Snabbmatchmärket förekommer i valörerna brons, silver och guld, samt i guldmed en, två och tre stjärnor.\n\nMärkesprov får avläggas vid riks-, landsdels-, nationella och kretstävlingar i Militär Snabbmatch.\n\nEndast ett märke kan under året erövras och märke av högre valör endast av den, som förut löst märke av lägre valör.\n\nFör erhållande av Militär Snabbmatchmärket krävs att skytten vid tre olika tävlingar under samma kalenderår uppfyller kraven för respektive märke, enligt följande:\n\n|Märke|A|B|C|R|\n|-|-|-|-|-|\n|Brons|377|391|404|388|\n|Silver|454|472|481|467|\n|Guld|515|543|550|532|\n",
       "prerequisites": [
         {
           "type": "medal",
@@ -2316,7 +2338,7 @@
       "requirements": [
         {
           "type": "military_fast_match",
-          "description": "Militär snabbmatch at district, regional, national or riks competitions",
+          "description": "Uppnått poängkrav för silver i militär snabbmatch vid riks-, nationella, landsdels- och kretstävlingar",
           "minCompetitions": 3,
           "timeWindowYears": 1,
           "pointThresholds": {
@@ -2342,12 +2364,14 @@
     },
     {
       "id": "military-match-mark-gold",
+      "status": "reviewed",
       "type": "military_fast_match_mark",
       "tier": "gold",
       "name": "Militär Snabbmatchmärket",
       "displayName": "Militär Snabbmatchmärket Guld",
       "color": "#FFD700",
       "icon": "military-fast-gold",
+      "requirements_original": "Prov för Militär Snabbmatchmärke får endast avläggas av den, som under föregående kalenderår uppfyllt fordringarna för pistolskyttemärke i brons.\n\nMilitär Snabbmatchmärket förekommer i valörerna brons, silver och guld, samt i guldmed en, två och tre stjärnor.\n\nMärkesprov får avläggas vid riks-, landsdels-, nationella och kretstävlingar i Militär Snabbmatch.\n\nEndast ett märke kan under året erövras och märke av högre valör endast av den, som förut löst märke av lägre valör.\n\nFör erhållande av Militär Snabbmatchmärket krävs att skytten vid tre olika tävlingar under samma kalenderår uppfyller kraven för respektive märke, enligt följande:\n\n|Märke|A|B|C|R|\n|-|-|-|-|-|\n|Brons|377|391|404|388|\n|Silver|454|472|481|467|\n|Guld|515|543|550|532|\n",
       "prerequisites": [
         {
           "type": "medal",
@@ -2357,7 +2381,7 @@
       "requirements": [
         {
           "type": "military_fast_match",
-          "description": "Militär snabbmatch at district, regional, national or riks competitions",
+          "description": "Uppnått poängkrav för guld i militär snabbmatch vid riks-, nationella, landsdels- och kretstävlingar",
           "minCompetitions": 3,
           "timeWindowYears": 1,
           "pointThresholds": {
@@ -2383,6 +2407,7 @@
     },
     {
       "id": "military-match-mark-gold-star-1",
+      "status": "reviewed",
       "type": "military_fast_match_mark",
       "tier": "star_1",
       "name": "Militär Snabbmatchmärket",
@@ -2398,7 +2423,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för märke i nationell helmatch i guld.",
+          "description": "Innehavare av Militär Snabbmatchmärket i guld som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för Militär Snabbmatchmärket i guld.",
           "yearsOfAchievement": 3
         }
       ],
@@ -2409,6 +2434,7 @@
     },
     {
       "id": "military-match-mark-gold-star-2",
+      "status": "reviewed",
       "type": "military_fast_match_mark",
       "tier": "star_2",
       "name": "Militär Snabbmatchmärket",
@@ -2424,7 +2450,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för märke i nationell helmatch i guld.",
+          "description": "Innehavare av Militär Snabbmatchmärket i guld med en stjärna som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för Militär Snabbmatchmärket i guld.",
           "yearsOfAchievement": 3
         }
       ],
@@ -2435,6 +2461,7 @@
     },
     {
       "id": "military-match-mark-gold-star-3",
+      "status": "reviewed",
       "type": "military_fast_match_mark",
       "tier": "star_3",
       "name": "Militär Snabbmatchmärket",
@@ -2450,7 +2477,7 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för märke i nationell helmatch i guld.",
+          "description": "Innehavare av Militär Snabbmatchmärket i guld med två stjärnor som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för Militär Snabbmatchmärket i guld.",
           "yearsOfAchievement": 3
         }
       ],
