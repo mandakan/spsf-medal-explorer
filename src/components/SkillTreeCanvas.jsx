@@ -685,7 +685,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
         )}
       </div>
 
-      <div className="text-xs text-muted-foreground" role="note" id={legendId}>
+      <div className="text-xs text-muted-foreground overflow-x-hidden" role="note" id={legendId}>
         <ReviewLegend variant="canvas" />
       </div>
       <div className="text-sm text-muted-foreground">
@@ -797,7 +797,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
           </div>
 
           {showLegendFs && (
-            <div className="px-3 pt-3 sm:px-4" role="note" id={fsLegendId}>
+            <div className="px-3 pt-3 sm:px-4 overflow-x-hidden" role="note" id={fsLegendId}>
               <ReviewLegend variant="canvas" />
             </div>
           )}

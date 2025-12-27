@@ -1,93 +1,88 @@
 import React from 'react'
-import Icon from './Icon'
 
 export default function ReviewLegend({ className = '', id, variant = 'list' }) {
   if (variant === 'canvas') {
     return (
-      <span
+      <div
         id={id}
-        className={['inline-flex items-center gap-3 text-xs text-muted-foreground', className].join(' ')}
+        className={['flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-muted-foreground w-full min-w-0', className].join(' ')}
       >
-        {/* Under granskning: endast kontur (violett, streckad) */}
-        <span className="inline-flex items-center gap-2" aria-hidden="true">
+        <span className="inline-flex items-center gap-2 whitespace-nowrap">
           <span
             className="inline-block w-3 h-3 rounded-full border-2 border-dashed"
             style={{ borderColor: 'var(--color-review)' }}
+            aria-hidden="true"
           />
+          <span>Under granskning</span>
         </span>
-        <span>Under granskning</span>
 
-        {/* Platshållare: endast kontur (neutral, prickad) */}
-        <span className="inline-flex items-center gap-2 ml-4" aria-hidden="true">
+        <span className="inline-flex items-center gap-2 whitespace-nowrap">
           <span
             className="inline-block w-3 h-3 rounded-full border-2 border-dotted"
             style={{ borderColor: 'var(--color-placeholder)' }}
+            aria-hidden="true"
           />
+          <span>Platshållare</span>
         </span>
-        <span>Platshållare</span>
 
-        {/* Användarstatusar (fyllda prickar) */}
-        <span className="inline-flex items-center gap-2 ml-4" aria-hidden="true">
-          <span className="legend-dot" style={{ backgroundColor: 'var(--color-status-locked)' }} />
+        <span className="inline-flex items-center gap-2 whitespace-nowrap">
+          <span className="legend-dot" style={{ backgroundColor: 'var(--color-status-locked)' }} aria-hidden="true" />
+          <span>Låst</span>
         </span>
-        <span>Låst</span>
 
-        <span className="inline-flex items-center gap-2 ml-4" aria-hidden="true">
-          <span className="legend-dot" style={{ backgroundColor: 'var(--color-status-available)' }} />
+        <span className="inline-flex items-center gap-2 whitespace-nowrap">
+          <span className="legend-dot" style={{ backgroundColor: 'var(--color-status-available)' }} aria-hidden="true" />
+          <span>Tillgänglig</span>
         </span>
-        <span>Tillgänglig</span>
 
-        <span className="inline-flex items-center gap-2 ml-4" aria-hidden="true">
-          <span className="legend-dot" style={{ backgroundColor: 'var(--color-status-eligible)' }} />
+        <span className="inline-flex items-center gap-2 whitespace-nowrap">
+          <span className="legend-dot" style={{ backgroundColor: 'var(--color-status-eligible)' }} aria-hidden="true" />
+          <span>Kvalificerad</span>
         </span>
-        <span>Kvalificerad</span>
 
-        <span className="inline-flex items-center gap-2 ml-4" aria-hidden="true">
-          <span className="legend-dot" style={{ backgroundColor: 'var(--color-status-unlocked)' }} />
+        <span className="inline-flex items-center gap-2 whitespace-nowrap">
+          <span className="legend-dot" style={{ backgroundColor: 'var(--color-status-unlocked)' }} aria-hidden="true" />
+          <span>Upplåst</span>
         </span>
-        <span>Upplåst</span>
-      </span>
+      </div>
     )
   }
 
   // variant === 'list'
   return (
-    <span
+    <div
       id={id}
-      className={['inline-flex items-center gap-3 text-xs text-muted-foreground', className].join(' ')}
+      className={['flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-muted-foreground w-full min-w-0', className].join(' ')}
     >
-      {/* Under granskning: färgprick + label (matchar radindikatorn) */}
-      <span className="inline-flex items-center gap-2" aria-hidden="true">
-        <span className="legend-dot" style={{ backgroundColor: 'var(--color-review)' }} />
+      <span className="inline-flex items-center gap-2 whitespace-nowrap">
+        <span className="legend-dot" style={{ backgroundColor: 'var(--color-review)' }} aria-hidden="true" />
+        <span>Under granskning</span>
       </span>
-      <span>Under granskning</span>
 
-      {/* Platshållare: färgprick + label (matchar radindikatorn) */}
-      <span className="inline-flex items-center gap-2 ml-4" aria-hidden="true">
-        <span className="legend-dot" style={{ backgroundColor: 'var(--color-placeholder)' }} />
+      <span className="inline-flex items-center gap-2 whitespace-nowrap">
+        <span className="legend-dot" style={{ backgroundColor: 'var(--color-placeholder)' }} aria-hidden="true" />
+        <span>Platshållare</span>
       </span>
-      <span>Platshållare</span>
 
-      {/* Användarstatusar (kompakt dot + label) */}
-      <span className="inline-flex items-center gap-2 ml-4" aria-hidden="true">
-        <span className="legend-dot" style={{ backgroundColor: 'var(--color-status-locked)' }} />
+      <span className="inline-flex items-center gap-2 whitespace-nowrap">
+        <span className="legend-dot" style={{ backgroundColor: 'var(--color-status-locked)' }} aria-hidden="true" />
+        <span>Låst</span>
       </span>
-      <span>Låst</span>
 
-      <span className="inline-flex items-center gap-2 ml-4" aria-hidden="true">
-        <span className="legend-dot" style={{ backgroundColor: 'var(--color-status-available)' }} />
+      <span className="inline-flex items-center gap-2 whitespace-nowrap">
+        <span className="legend-dot" style={{ backgroundColor: 'var(--color-status-available)' }} aria-hidden="true" />
+        <span>Tillgänglig</span>
       </span>
-      <span>Tillgänglig</span>
 
-      <span className="inline-flex items-center gap-2 ml-4" aria-hidden="true">
-        <span className="legend-dot" style={{ backgroundColor: 'var(--color-status-eligible)' }} />
+      <span className="inline-flex items-center gap-2 whitespace-nowrap">
+        <span className="legend-dot" style={{ backgroundColor: 'var(--color-status-eligible)' }} aria-hidden="true" />
+        <span>Kvalificerad</span>
       </span>
-      <span>Kvalificerad</span>
 
-      <span className="inline-flex items-center gap-2 ml-4" aria-hidden="true">
-        <span className="legend-dot" style={{ backgroundColor: 'var(--color-status-unlocked)' }} />
+      <span className="inline-flex items-center gap-2 whitespace-nowrap">
+        <span className="legend-dot" style={{ backgroundColor: 'var(--color-status-unlocked)' }} aria-hidden="true" />
+        <span>Upplåst</span>
       </span>
-      <span>Upplåst</span>
-    </span>
+    </div>
   )
 }
