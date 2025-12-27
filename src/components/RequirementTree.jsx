@@ -76,16 +76,37 @@ function RequirementNode({ node, path = 'root', level = 0, defaultExpanded = lev
     if (leaf.subtree) {
       const headerIdLeaf = `${path}-leaf`
       const st = leaf.subtree
+      const isBoolGroup = st && (st.node === 'and' || st.node === 'or')
+      const hasChildren = Array.isArray(st?.children)
+      const singleChild = isBoolGroup && hasChildren && st.children.length === 1
+
+      // Flatten when not a boolean group or when only a single child exists
+      if (!isBoolGroup || singleChild) {
+        return (
+          <li className={liClass}>
+            <RequirementNode
+              node={leaf.subtree}
+              path={`${path}-sub`}
+              level={level}
+              defaultExpanded={level < 1}
+              noBorderTop
+            />
+          </li>
+        )
+      }
+
       let summary = null
-      if (st && (st.node === 'and' || st.node === 'or') && Array.isArray(st.children)) {
+      const labelText = st.node === 'and' ? 'Alla följande' : 'Minst en av följande'
+      if (hasChildren) {
         const { met: metCount, total } = countMet(st.children)
         summary = `${metCount}/${total} uppfyllda`
       }
+
       return (
         <li className={liClass}>
           <GroupHeader
             id={headerIdLeaf}
-            label={leaf.description || 'Krav'}
+            label={labelText}
             met={!!leaf.isMet}
             summary={summary}
             expanded={expanded}
