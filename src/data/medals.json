@@ -145,7 +145,7 @@
           "type": "medal",
           "medalId": "pistol-mark-bronze",
           "yearOffset": 1,
-          "description": "Pistolskyttemärket i brons (föregående år eller tidigare)"
+          "description": "Uppfyllt kraven för pistolskyttemärket i brons föregående år"
         }
       ],
       "requirements": [
@@ -1526,7 +1526,9 @@
       "prerequisites": [
         {
           "type": "medal",
-          "medalId": "pistol-mark-bronze"
+          "medalId": "pistol-mark-bronze",
+          "yearOffset": 1,
+          "description": "Uppfyllt kraven för pistolskyttemärket i brons föregående år"
         }
       ],
       "requirements": [
@@ -1802,7 +1804,9 @@
       "prerequisites": [
         {
           "type": "medal",
-          "medalId": "pistol-mark-bronze"
+          "medalId": "pistol-mark-bronze",
+          "yearOffset": 1,
+          "description": "Uppfyllt kraven för pistolskyttemärket i brons föregående år"
         }
       ],
       "requirements": [
@@ -2069,22 +2073,26 @@
     },
     {
       "id": "national-match-mark-bronze",
+      "status": "under_review",
       "type": "national_full_match_mark",
       "tier": "bronze",
       "name": "Märke i Nationell Helmatch",
       "displayName": "Märke i Nationell Helmatch Brons",
       "color": "#CD7F32",
       "icon": "national-full-bronze",
+      "requirements_original": "Skjutningen som utförs med av Förbundet godkända vapen, skall ske dels mot pistoltavla, dels mot snabbskjutningstavla samt mot fältfigurtavla enligt följande grunder nämligen:\n\nSammanlagt resultat av\n- fyra 5-skottsserier mot pistoltavla enligt bestämmelserna i SHB. Provserie tillåten.\n- fyra 5-skottsserier mot snabbskjutningstavla enligt bestämmelserna i SHB. Provserie tillåten.\n- fyra 5-skottsserier mot fältfigurtavla, avstånd 25 meter, utgångsställning 45°. Tid för respektive serie är 18, 16, 14 och 12 sek. i nämnd ordning. Skytten väljer själv i vilken ordning målen skall beskjutas. Provserie är inte tillåten.\n\nProv för märke i Nationell helmatch får endast avläggas av den, som under föregående kalenderår uppfyllt fordringarna för pistolskyttemärke i brons.\n\nMärket i Nationell helmatch förekommer i valörerna brons, silver och guld, samt i guld med en, två och tre stjärnor.\n\nMärkesprov får avläggas vid såväl träning som riks-, landsdels-, nationella och kretstävlingar i Nationell helmatch.\n\nEndast ett märke kan under året erövras och märke av högre valör endast av den, som förut löst märke av lägre valör.\n\nFör erhållande av märke i Nationell helmatch krävs att skytten vid två olika tillfällen under samma kalenderår uppfyller kraven för respektive märke, enligt följande:\n\n|Märke|A|B|C|\n|-|-|-|-|\n|Brons|365|380|390|\n|Silver|435|450|460|\n|Guld|500|520|530|\n",
       "prerequisites": [
         {
           "type": "medal",
-          "medalId": "pistol-mark-bronze"
+          "medalId": "pistol-mark-bronze",
+          "yearOffset": 1,
+          "description": "Uppfyllt kraven för pistolskyttemärket i brons föregående år"
         }
       ],
       "requirements": [
         {
           "type": "full_match_competition",
-          "description": "Full match with precision, speed, and field components",
+          "description": "Uppnått poängkrav för brons i nationell helmatch vid såväl träning som riks-, nationella, landsdels- och kretstävlingar",
           "minCompetitions": 2,
           "timeWindowYears": 1,
           "pointThresholds": {
@@ -2107,6 +2115,7 @@
     },
     {
       "id": "national-match-mark-silver",
+      "status": "under_review",
       "type": "national_full_match_mark",
       "tier": "silver",
       "name": "Märke i Nationell Helmatch",
@@ -2122,7 +2131,7 @@
       "requirements": [
         {
           "type": "full_match_competition",
-          "description": "Full match with precision, speed, and field components",
+          "description": "Uppnått poängkrav för silver i nationell helmatch vid såväl träning som riks-, nationella, landsdels- och kretstävlingar",
           "minCompetitions": 2,
           "timeWindowYears": 1,
           "pointThresholds": {
@@ -2145,6 +2154,7 @@
     },
     {
       "id": "national-match-mark-gold",
+      "status": "under_review",
       "type": "national_full_match_mark",
       "tier": "gold",
       "name": "Märke i Nationell Helmatch",
@@ -2160,7 +2170,7 @@
       "requirements": [
         {
           "type": "full_match_competition",
-          "description": "Full match with precision, speed, and field components",
+          "description": "Uppnått poängkrav för guld i nationell helmatch vid såväl träning som riks-, nationella, landsdels- och kretstävlingar",
           "minCompetitions": 2,
           "timeWindowYears": 1,
           "pointThresholds": {
@@ -2183,6 +2193,7 @@
     },
     {
       "id": "national-match-mark-gold-star-1",
+      "status": "under_review",
       "type": "national_full_match_mark",
       "tier": "star_1",
       "name": "Märke i Nationell Helmatch",
@@ -2209,6 +2220,7 @@
     },
     {
       "id": "national-match-mark-gold-star-2",
+      "status": "under_review",
       "type": "national_full_match_mark",
       "tier": "star_2",
       "name": "Märke i Nationell Helmatch",
@@ -2235,6 +2247,7 @@
     },
     {
       "id": "national-match-mark-gold-star-3",
+      "status": "under_review",
       "type": "national_full_match_mark",
       "tier": "star_3",
       "name": "Märke i Nationell Helmatch",
@@ -2273,7 +2286,8 @@
         {
           "type": "medal",
           "medalId": "pistol-mark-bronze",
-          "yearOffset": 1
+          "yearOffset": 1,
+          "description": "Uppfyllt kraven för pistolskyttemärket i brons föregående år"
         }
       ],
       "requirements": [
