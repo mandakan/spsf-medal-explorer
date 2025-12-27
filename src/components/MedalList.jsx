@@ -79,14 +79,14 @@ function Row({ data, index, style }) {
 
           {isPlaceholder && (
             <span className="inline-flex items-center gap-1 text-xs text-placeholder" title="Plats­hållare" aria-label="Plats­hållare">
-              <StatusIcon status="placeholder" className="w-3.5 h-3.5" colorVar="--color-placeholder" />
+              <StatusIcon status="placeholder" className="w-3.5 h-3.5" />
               <span className="sr-only">Plats­hållare</span>
             </span>
           )}
 
           {!isPlaceholder && underReview && (
             <span className="inline-flex items-center gap-1 text-xs text-review" title="Under granskning" aria-label="Under granskning">
-              <StatusIcon status="review" className="w-3.5 h-3.5" colorVar="--color-review" />
+              <StatusIcon status="review" className="w-3.5 h-3.5" />
               <span className="sr-only">Under granskning</span>
             </span>
           )}

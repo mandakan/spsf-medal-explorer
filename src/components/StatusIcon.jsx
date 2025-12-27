@@ -1,5 +1,6 @@
 import React from 'react'
 import Icon from './Icon'
+import { getStatusColorVar } from '../config/statusColors.js'
 
 const ICON_FOR_STATUS = {
   review: 'Search',
@@ -10,8 +11,9 @@ const ICON_FOR_STATUS = {
   unlocked: 'Trophy',
 }
 
-export default function StatusIcon({ status, className = 'w-4 h-4', colorVar }) {
+export default function StatusIcon({ status, className = 'w-4 h-4' }) {
   const name = ICON_FOR_STATUS[status] || 'Circle'
+  const colorVar = getStatusColorVar(status)
   return (
     <Icon
       name={name}
