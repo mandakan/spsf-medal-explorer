@@ -48,6 +48,8 @@ export default function UnlockMedalDialog({ medal, open, onClose }) {
   const hasSustainedReq = Array.isArray(medal?.requirements) && medal.requirements.some(r => r?.type === 'sustained_achievement')
 
 
+
+
   const suggestedYear = useMemo(() => {
     if (!open) return ''
     const y = computeDefaultYear()
