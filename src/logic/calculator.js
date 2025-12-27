@@ -1,10 +1,17 @@
 /**
  * Evaluates medal status based on user achievements
  */
+const CUSTOM_CRITERIA = new Map()
 export class MedalCalculator {
   constructor(medalDatabase, userProfile) {
     this.medals = medalDatabase
     this.profile = userProfile || { unlockedMedals: [], prerequisites: [] }
+  }
+
+  static registerCustomCriterion(name, fn) {
+    if (typeof name !== 'string' || !name) throw new Error('custom_criterion name must be a non-empty string')
+    if (typeof fn !== 'function') throw new Error('custom_criterion handler must be a function')
+    CUSTOM_CRITERIA.set(name, fn)
   }
 
   /**
@@ -235,12 +242,12 @@ export class MedalCalculator {
     return Array.from(years).sort((x, y) => x - y)
   }
 
-  requirementsMetInYear(medalIdOrMedal, year) {
+  requirementsMetInYear(medalIdOrMedal, year, extraOpts = {}) {
     const m = typeof medalIdOrMedal === 'string'
       ? this.medals.getMedalById(medalIdOrMedal)
       : medalIdOrMedal
     if (!m) return false
-    const res = this.checkRequirements(m, { endYear: year })
+    const res = this.checkRequirements(m, { ...extraOpts, endYear: year })
     return res.allMet
   }
 
@@ -300,7 +307,8 @@ export class MedalCalculator {
       if (tw === 1) {
         achievements = all.filter(a => a.year === opts.endYear)
       } else if (typeof tw === 'number' && tw > 1) {
-        const start = opts.endYear - tw + 1
+        const start0 = opts.endYear - tw + 1
+        const start = Math.max(start0, Number.isFinite(opts.minStartYear) ? opts.minStartYear : start0)
         achievements = all.filter(a => (a.year ?? 0) >= start && (a.year ?? 0) <= opts.endYear)
       } else {
         achievements = all.filter(a => a.year === opts.endYear)
@@ -409,7 +417,8 @@ export class MedalCalculator {
       if (tw === 1) {
         achievements = all.filter(a => a.year === opts.endYear)
       } else if (typeof tw === 'number' && tw > 1) {
-        const start = opts.endYear - tw + 1
+        const start0 = opts.endYear - tw + 1
+        const start = Math.max(start0, Number.isFinite(opts.minStartYear) ? opts.minStartYear : start0)
         achievements = all.filter(a => (a.year ?? 0) >= start && (a.year ?? 0) <= opts.endYear)
       } else {
         achievements = all.filter(a => a.year === opts.endYear)
@@ -560,6 +569,12 @@ export class MedalCalculator {
       case 'standard_medal':
         leaf = this.checkStandardMedalRequirement(req, -1, opts)
         break
+      case 'sustained_reference':
+        leaf = this.checkSustainedReferenceRequirement(req, -1, medal, opts)
+        break
+      case 'custom_criterion':
+        leaf = this.checkCustomCriterionRequirement(req, -1, opts)
+        break
       default:
         leaf = {
           type: req.type,
@@ -687,6 +702,33 @@ export class MedalCalculator {
     return inferredIds.map(id => ({ medalId: id }))
   }
 
+  checkSustainedReferenceRequirement(req, index, parentMedal, opts = {}) {
+    const y = opts && typeof opts.endYear === 'number' ? opts.endYear : null
+    if (y == null) {
+      return {
+        type: 'sustained_reference',
+        index,
+        isMet: false,
+        description: req.description,
+        windowYear: null,
+        reason: 'end_year_required'
+      }
+    }
+    const refs = this.resolveSustainedReferences(req, parentMedal, y)
+    if (!Array.isArray(refs) || refs.length === 0) {
+      throw new Error('sustained_reference.references must resolve to at least one medalId')
+    }
+    const extra = Number.isFinite(opts.minStartYear) ? { minStartYear: opts.minStartYear } : {}
+    const ok = refs.every(ref => this.requirementsMetInYear(ref.medalId, y, extra))
+    return {
+      type: 'sustained_reference',
+      index,
+      isMet: ok,
+      description: req.description,
+      windowYear: ok ? y : null
+    }
+  }
+
   checkSustainedAchievementRequirement(req, index, parentMedal, opts = {}) {
     const minYears = req.yearsOfAchievement ?? 3
 
@@ -695,6 +737,74 @@ export class MedalCalculator {
     const currentYear = featureEnforce
       ? new Date().getFullYear()
       : ((opts && typeof opts.endYear === 'number') ? opts.endYear : new Date().getFullYear())
+
+    // Per-year requirement evaluation branch (clean DSL)
+    if (req && req.perYear) {
+      const earliestCountingYear = this.getEarliestCountingYearForMedal(parentMedal)
+      let requireCurrent = req.mustIncludeCurrentYear === true
+      if (featureEnforce) requireCurrent = true
+
+      // Candidate years: all achievement years plus current year
+      let allYears = this.getAllAchievementYears()
+      if (!allYears.includes(currentYear)) allYears.push(currentYear)
+      allYears = allYears.sort((a, b) => a - b)
+
+      if (typeof earliestCountingYear === 'number') {
+        allYears = allYears.filter(y => y >= earliestCountingYear)
+      }
+      if (requireCurrent) {
+        allYears = allYears.filter(y => y <= currentYear)
+      }
+
+      const perYearRoot = this.normalizeRequirementSpec(req.perYear)
+      const extra = typeof earliestCountingYear === 'number' ? { minStartYear: earliestCountingYear } : {}
+      const qualifyingYears = allYears.filter(y => {
+        const tree = this.evaluateReqNode(perYearRoot, parentMedal, { ...opts, endYear: y, ...extra })
+        return !!tree.isMet
+      })
+      const qualifyingYearsSet = new Set(qualifyingYears)
+
+      let progress, met, windowYear = null
+      if (typeof req.timeWindowYears === 'number' && req.timeWindowYears > 0) {
+        let endYears = allYears
+        if (requireCurrent && allYears.includes(currentYear)) {
+          endYears = [currentYear]
+        }
+
+        let bestEndYear = null
+        let bestCount = 0
+        for (const endYear of endYears) {
+          const startYear = endYear - req.timeWindowYears + 1
+          let count = 0
+          for (let y = startYear; y <= endYear; y++) {
+            if (qualifyingYearsSet.has(y)) count++
+          }
+          if (count > bestCount) {
+            bestCount = count
+            bestEndYear = endYear
+          }
+        }
+        progress = { current: bestCount, required: req.yearsOfAchievement ?? 1 }
+        met = bestCount >= (req.yearsOfAchievement ?? 1)
+        windowYear = met ? bestEndYear : null
+      } else {
+        const total = qualifyingYearsSet.size
+        progress = { current: total, required: req.yearsOfAchievement ?? 1 }
+        met = total >= (req.yearsOfAchievement ?? 1)
+        if (met && requireCurrent && !qualifyingYearsSet.has(currentYear)) {
+          met = false
+        }
+      }
+
+      return {
+        type: 'sustained_achievement',
+        index,
+        isMet: met,
+        progress,
+        description: req.description,
+        windowYear
+      }
+    }
 
     // Resolve which referenced medals to use (supports conditional references by age)
     const effectiveReferences = this.resolveSustainedReferences(req, parentMedal, currentYear)
@@ -730,7 +840,7 @@ export class MedalCalculator {
     // Build qualifying year set
     let qualifyingYearsSet
     if (effectiveReferences.length > 0) {
-      const qualifies = (y) => effectiveReferences.every(ref => this.requirementsMetInYear(ref.medalId, y))
+      const qualifies = (y) => effectiveReferences.every(ref => this.requirementsMetInYear(ref.medalId, y, typeof earliestCountingYear === 'number' ? { minStartYear: earliestCountingYear } : {}))
       qualifyingYearsSet = new Set(allYears.filter(qualifies))
     } else {
       // Threshold mode (legacy path)
@@ -791,6 +901,45 @@ export class MedalCalculator {
     }
   }
 
+  checkCustomCriterionRequirement(req, index, opts = {}) {
+    const endYear = opts && typeof opts.endYear === 'number' ? opts.endYear : null
+    const fn = CUSTOM_CRITERIA.get(req.name)
+    if (!fn) {
+      return {
+        type: 'custom_criterion',
+        index,
+        isMet: false,
+        description: req.description,
+        reason: 'unknown_custom_criterion'
+      }
+    }
+    try {
+      const result = fn({
+        profile: this.profile,
+        medalsDb: this.medals,
+        endYear,
+        minStartYear: Number.isFinite(opts.minStartYear) ? opts.minStartYear : undefined,
+        params: req.params ?? {}
+      })
+      const ok = !!(result && (typeof result === 'object' ? result.isMet : result))
+      return {
+        type: 'custom_criterion',
+        index,
+        isMet: ok,
+        description: req.description,
+        windowYear: ok && endYear != null ? endYear : null
+      }
+    } catch (e) {
+      return {
+        type: 'custom_criterion',
+        index,
+        isMet: false,
+        description: req.description,
+        error: e?.message
+      }
+    }
+  }
+
   checkStandardMedalRequirement(req, index, opts = {}) {
     const achievements = (this.profile.prerequisites || []).filter(a => a.type === 'standard_medal')
 
@@ -805,7 +954,8 @@ export class MedalCalculator {
     const endYear = (opts && typeof opts.endYear === 'number') ? opts.endYear : null
     if (typeof req.timeWindowYears === 'number' && req.timeWindowYears > 0) {
       const finalYear = endYear != null ? endYear : new Date().getFullYear()
-      const windowStart = finalYear - req.timeWindowYears + 1
+      const start0 = finalYear - req.timeWindowYears + 1
+      const windowStart = Math.max(start0, Number.isFinite(opts.minStartYear) ? opts.minStartYear : start0)
       list = list.filter(a => (a.year ?? 0) >= windowStart && (a.year ?? 0) <= finalYear)
     } else if (endYear != null) {
       list = list.filter(a => a.year === endYear)
