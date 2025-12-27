@@ -3009,33 +3009,117 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+
           "yearsOfAchievement": 3,
-          "references": {
-            "when": [
+          "perYear": {
+            "or": [
               {
-                "if": {
-                  "age": {
-                    "gte": 66
+                "type": "sustained_reference",
+                "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+                "references": {
+                  "when": [
+                    {
+                      "if": {
+                        "age": {
+                          "gte": 66
+                        }
+                      },
+                      "refs": [
+                        {
+                          "medalId": "pistol-mark-silver"
+                        }
+                      ]
+                    },
+                    {
+                      "if": {
+                        "age": {
+                          "lt": 65
+                        }
+                      },
+                      "refs": [
+                        {
+                          "medalId": "pistol-mark-gold"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "cumulative_competition_score",
+                "disciplineType": "ppc",
+                "description": "Tillräckliga tävlingsresultat i PPC",
+                "minCompetitions": 3,
+                "timeWindowYears": 1,
+                "pointThreshold": {
+                  "R1500": {
+                    "min": 1290
+                  },
+                  "P1500": {
+                    "min": 1290
+                  },
+                  "Dist pistol": {
+                    "min": 500
+                  },
+                  "Dist revolver": {
+                    "min": 500
+                  },
+                  "Open": {
+                    "min": 560
+                  },
+                  "SSA": {
+                    "min": 440
+                  },
+                  "SR4\"": {
+                    "min": 440
+                  },
+                  "SR 2,75\"": {
+                    "min": 440
                   }
-                },
-                "refs": [
+                }
+              },
+              {
+                "type": "custom",
+                "description": "Guldfordringar med magnumvapen"
+              },
+              {
+                "type": "sustained_reference",
+                "description": "Uppfyllt fordringarna för Precisionsskyttemärket i guld",
+                "references": [
                   {
-                    "medalId": "pistol-mark-silver"
+                    "medalId": "precision-mark-gold"
                   }
                 ]
               },
               {
-                "if": {
-                  "age": {
-                    "lt": 65
-                  }
-                },
-                "refs": [
+                "type": "sustained_reference",
+                "description": "Uppfyllt fordringarna för Fältskyttemärket i guld",
+                "references": [
                   {
-                    "medalId": "pistol-mark-gold"
+                    "medalId": "field-mark-gold"
                   }
                 ]
+              },
+              {
+                "type": "cumulative_competition_score",
+                "disciplineType": "military_fast_match",
+                "description": "Tillräckliga tävlingsresultat i Militär Snabbmatch",
+                "minCompetitions": 3,
+                "timeWindowYears": 1,
+                "pointThreshold": {
+                  "A": {
+                    "min": 500
+                  },
+                  "B": {
+                    "min": 520
+                  },
+                  "C": {
+                    "min": 540
+                  },
+                  "R": {
+                    "min": 520
+                  }
+                }
               }
             ]
           }
@@ -3065,33 +3149,117 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+
           "yearsOfAchievement": 3,
-          "references": {
-            "when": [
+          "perYear": {
+            "or": [
               {
-                "if": {
-                  "age": {
-                    "gte": 66
+                "type": "sustained_reference",
+                "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+                "references": {
+                  "when": [
+                    {
+                      "if": {
+                        "age": {
+                          "gte": 66
+                        }
+                      },
+                      "refs": [
+                        {
+                          "medalId": "pistol-mark-silver"
+                        }
+                      ]
+                    },
+                    {
+                      "if": {
+                        "age": {
+                          "lt": 65
+                        }
+                      },
+                      "refs": [
+                        {
+                          "medalId": "pistol-mark-gold"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "cumulative_competition_score",
+                "disciplineType": "ppc",
+                "description": "Tillräckliga tävlingsresultat i PPC",
+                "minCompetitions": 3,
+                "timeWindowYears": 1,
+                "pointThreshold": {
+                  "R1500": {
+                    "min": 1290
+                  },
+                  "P1500": {
+                    "min": 1290
+                  },
+                  "Dist pistol": {
+                    "min": 500
+                  },
+                  "Dist revolver": {
+                    "min": 500
+                  },
+                  "Open": {
+                    "min": 560
+                  },
+                  "SSA": {
+                    "min": 440
+                  },
+                  "SR4\"": {
+                    "min": 440
+                  },
+                  "SR 2,75\"": {
+                    "min": 440
                   }
-                },
-                "refs": [
+                }
+              },
+              {
+                "type": "custom",
+                "description": "Guldfordringar med magnumvapen"
+              },
+              {
+                "type": "sustained_reference",
+                "description": "Uppfyllt fordringarna för Precisionsskyttemärket i guld",
+                "references": [
                   {
-                    "medalId": "pistol-mark-silver"
+                    "medalId": "precision-mark-gold"
                   }
                 ]
               },
               {
-                "if": {
-                  "age": {
-                    "lt": 65
-                  }
-                },
-                "refs": [
+                "type": "sustained_reference",
+                "description": "Uppfyllt fordringarna för Fältskyttemärket i guld",
+                "references": [
                   {
-                    "medalId": "pistol-mark-gold"
+                    "medalId": "field-mark-gold"
                   }
                 ]
+              },
+              {
+                "type": "cumulative_competition_score",
+                "disciplineType": "military_fast_match",
+                "description": "Tillräckliga tävlingsresultat i Militär Snabbmatch",
+                "minCompetitions": 3,
+                "timeWindowYears": 1,
+                "pointThreshold": {
+                  "A": {
+                    "min": 500
+                  },
+                  "B": {
+                    "min": 520
+                  },
+                  "C": {
+                    "min": 540
+                  },
+                  "R": {
+                    "min": 520
+                  }
+                }
               }
             ]
           }
@@ -3121,33 +3289,117 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+
           "yearsOfAchievement": 3,
-          "references": {
-            "when": [
+          "perYear": {
+            "or": [
               {
-                "if": {
-                  "age": {
-                    "gte": 66
+                "type": "sustained_reference",
+                "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+                "references": {
+                  "when": [
+                    {
+                      "if": {
+                        "age": {
+                          "gte": 66
+                        }
+                      },
+                      "refs": [
+                        {
+                          "medalId": "pistol-mark-silver"
+                        }
+                      ]
+                    },
+                    {
+                      "if": {
+                        "age": {
+                          "lt": 65
+                        }
+                      },
+                      "refs": [
+                        {
+                          "medalId": "pistol-mark-gold"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "cumulative_competition_score",
+                "disciplineType": "ppc",
+                "description": "Tillräckliga tävlingsresultat i PPC",
+                "minCompetitions": 3,
+                "timeWindowYears": 1,
+                "pointThreshold": {
+                  "R1500": {
+                    "min": 1290
+                  },
+                  "P1500": {
+                    "min": 1290
+                  },
+                  "Dist pistol": {
+                    "min": 500
+                  },
+                  "Dist revolver": {
+                    "min": 500
+                  },
+                  "Open": {
+                    "min": 560
+                  },
+                  "SSA": {
+                    "min": 440
+                  },
+                  "SR4\"": {
+                    "min": 440
+                  },
+                  "SR 2,75\"": {
+                    "min": 440
                   }
-                },
-                "refs": [
+                }
+              },
+              {
+                "type": "custom",
+                "description": "Guldfordringar med magnumvapen"
+              },
+              {
+                "type": "sustained_reference",
+                "description": "Uppfyllt fordringarna för Precisionsskyttemärket i guld",
+                "references": [
                   {
-                    "medalId": "pistol-mark-silver"
+                    "medalId": "precision-mark-gold"
                   }
                 ]
               },
               {
-                "if": {
-                  "age": {
-                    "lt": 65
-                  }
-                },
-                "refs": [
+                "type": "sustained_reference",
+                "description": "Uppfyllt fordringarna för Fältskyttemärket i guld",
+                "references": [
                   {
-                    "medalId": "pistol-mark-gold"
+                    "medalId": "field-mark-gold"
                   }
                 ]
+              },
+              {
+                "type": "cumulative_competition_score",
+                "disciplineType": "military_fast_match",
+                "description": "Tillräckliga tävlingsresultat i Militär Snabbmatch",
+                "minCompetitions": 3,
+                "timeWindowYears": 1,
+                "pointThreshold": {
+                  "A": {
+                    "min": 500
+                  },
+                  "B": {
+                    "min": 520
+                  },
+                  "C": {
+                    "min": 540
+                  },
+                  "R": {
+                    "min": 520
+                  }
+                }
               }
             ]
           }
@@ -3177,33 +3429,117 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+
           "yearsOfAchievement": 3,
-          "references": {
-            "when": [
+          "perYear": {
+            "or": [
               {
-                "if": {
-                  "age": {
-                    "gte": 66
+                "type": "sustained_reference",
+                "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+                "references": {
+                  "when": [
+                    {
+                      "if": {
+                        "age": {
+                          "gte": 66
+                        }
+                      },
+                      "refs": [
+                        {
+                          "medalId": "pistol-mark-silver"
+                        }
+                      ]
+                    },
+                    {
+                      "if": {
+                        "age": {
+                          "lt": 65
+                        }
+                      },
+                      "refs": [
+                        {
+                          "medalId": "pistol-mark-gold"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "cumulative_competition_score",
+                "disciplineType": "ppc",
+                "description": "Tillräckliga tävlingsresultat i PPC",
+                "minCompetitions": 3,
+                "timeWindowYears": 1,
+                "pointThreshold": {
+                  "R1500": {
+                    "min": 1290
+                  },
+                  "P1500": {
+                    "min": 1290
+                  },
+                  "Dist pistol": {
+                    "min": 500
+                  },
+                  "Dist revolver": {
+                    "min": 500
+                  },
+                  "Open": {
+                    "min": 560
+                  },
+                  "SSA": {
+                    "min": 440
+                  },
+                  "SR4\"": {
+                    "min": 440
+                  },
+                  "SR 2,75\"": {
+                    "min": 440
                   }
-                },
-                "refs": [
+                }
+              },
+              {
+                "type": "custom",
+                "description": "Guldfordringar med magnumvapen"
+              },
+              {
+                "type": "sustained_reference",
+                "description": "Uppfyllt fordringarna för Precisionsskyttemärket i guld",
+                "references": [
                   {
-                    "medalId": "pistol-mark-silver"
+                    "medalId": "precision-mark-gold"
                   }
                 ]
               },
               {
-                "if": {
-                  "age": {
-                    "lt": 65
-                  }
-                },
-                "refs": [
+                "type": "sustained_reference",
+                "description": "Uppfyllt fordringarna för Fältskyttemärket i guld",
+                "references": [
                   {
-                    "medalId": "pistol-mark-gold"
+                    "medalId": "field-mark-gold"
                   }
                 ]
+              },
+              {
+                "type": "cumulative_competition_score",
+                "disciplineType": "military_fast_match",
+                "description": "Tillräckliga tävlingsresultat i Militär Snabbmatch",
+                "minCompetitions": 3,
+                "timeWindowYears": 1,
+                "pointThreshold": {
+                  "A": {
+                    "min": 500
+                  },
+                  "B": {
+                    "min": 520
+                  },
+                  "C": {
+                    "min": 540
+                  },
+                  "R": {
+                    "min": 520
+                  }
+                }
               }
             ]
           }
@@ -3233,33 +3569,117 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+
           "yearsOfAchievement": 3,
-          "references": {
-            "when": [
+          "perYear": {
+            "or": [
               {
-                "if": {
-                  "age": {
-                    "gte": 66
+                "type": "sustained_reference",
+                "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+                "references": {
+                  "when": [
+                    {
+                      "if": {
+                        "age": {
+                          "gte": 66
+                        }
+                      },
+                      "refs": [
+                        {
+                          "medalId": "pistol-mark-silver"
+                        }
+                      ]
+                    },
+                    {
+                      "if": {
+                        "age": {
+                          "lt": 65
+                        }
+                      },
+                      "refs": [
+                        {
+                          "medalId": "pistol-mark-gold"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "cumulative_competition_score",
+                "disciplineType": "ppc",
+                "description": "Tillräckliga tävlingsresultat i PPC",
+                "minCompetitions": 3,
+                "timeWindowYears": 1,
+                "pointThreshold": {
+                  "R1500": {
+                    "min": 1290
+                  },
+                  "P1500": {
+                    "min": 1290
+                  },
+                  "Dist pistol": {
+                    "min": 500
+                  },
+                  "Dist revolver": {
+                    "min": 500
+                  },
+                  "Open": {
+                    "min": 560
+                  },
+                  "SSA": {
+                    "min": 440
+                  },
+                  "SR4\"": {
+                    "min": 440
+                  },
+                  "SR 2,75\"": {
+                    "min": 440
                   }
-                },
-                "refs": [
+                }
+              },
+              {
+                "type": "custom",
+                "description": "Guldfordringar med magnumvapen"
+              },
+              {
+                "type": "sustained_reference",
+                "description": "Uppfyllt fordringarna för Precisionsskyttemärket i guld",
+                "references": [
                   {
-                    "medalId": "pistol-mark-silver"
+                    "medalId": "precision-mark-gold"
                   }
                 ]
               },
               {
-                "if": {
-                  "age": {
-                    "lt": 65
-                  }
-                },
-                "refs": [
+                "type": "sustained_reference",
+                "description": "Uppfyllt fordringarna för Fältskyttemärket i guld",
+                "references": [
                   {
-                    "medalId": "pistol-mark-gold"
+                    "medalId": "field-mark-gold"
                   }
                 ]
+              },
+              {
+                "type": "cumulative_competition_score",
+                "disciplineType": "military_fast_match",
+                "description": "Tillräckliga tävlingsresultat i Militär Snabbmatch",
+                "minCompetitions": 3,
+                "timeWindowYears": 1,
+                "pointThreshold": {
+                  "A": {
+                    "min": 500
+                  },
+                  "B": {
+                    "min": 520
+                  },
+                  "C": {
+                    "min": 540
+                  },
+                  "R": {
+                    "min": 520
+                  }
+                }
               }
             ]
           }
@@ -3289,33 +3709,117 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+
           "yearsOfAchievement": 3,
-          "references": {
-            "when": [
+          "perYear": {
+            "or": [
               {
-                "if": {
-                  "age": {
-                    "gte": 66
+                "type": "sustained_reference",
+                "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+                "references": {
+                  "when": [
+                    {
+                      "if": {
+                        "age": {
+                          "gte": 66
+                        }
+                      },
+                      "refs": [
+                        {
+                          "medalId": "pistol-mark-silver"
+                        }
+                      ]
+                    },
+                    {
+                      "if": {
+                        "age": {
+                          "lt": 65
+                        }
+                      },
+                      "refs": [
+                        {
+                          "medalId": "pistol-mark-gold"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "cumulative_competition_score",
+                "disciplineType": "ppc",
+                "description": "Tillräckliga tävlingsresultat i PPC",
+                "minCompetitions": 3,
+                "timeWindowYears": 1,
+                "pointThreshold": {
+                  "R1500": {
+                    "min": 1290
+                  },
+                  "P1500": {
+                    "min": 1290
+                  },
+                  "Dist pistol": {
+                    "min": 500
+                  },
+                  "Dist revolver": {
+                    "min": 500
+                  },
+                  "Open": {
+                    "min": 560
+                  },
+                  "SSA": {
+                    "min": 440
+                  },
+                  "SR4\"": {
+                    "min": 440
+                  },
+                  "SR 2,75\"": {
+                    "min": 440
                   }
-                },
-                "refs": [
+                }
+              },
+              {
+                "type": "custom",
+                "description": "Guldfordringar med magnumvapen"
+              },
+              {
+                "type": "sustained_reference",
+                "description": "Uppfyllt fordringarna för Precisionsskyttemärket i guld",
+                "references": [
                   {
-                    "medalId": "pistol-mark-silver"
+                    "medalId": "precision-mark-gold"
                   }
                 ]
               },
               {
-                "if": {
-                  "age": {
-                    "lt": 65
-                  }
-                },
-                "refs": [
+                "type": "sustained_reference",
+                "description": "Uppfyllt fordringarna för Fältskyttemärket i guld",
+                "references": [
                   {
-                    "medalId": "pistol-mark-gold"
+                    "medalId": "field-mark-gold"
                   }
                 ]
+              },
+              {
+                "type": "cumulative_competition_score",
+                "disciplineType": "military_fast_match",
+                "description": "Tillräckliga tävlingsresultat i Militär Snabbmatch",
+                "minCompetitions": 3,
+                "timeWindowYears": 1,
+                "pointThreshold": {
+                  "A": {
+                    "min": 500
+                  },
+                  "B": {
+                    "min": 520
+                  },
+                  "C": {
+                    "min": 540
+                  },
+                  "R": {
+                    "min": 520
+                  }
+                }
               }
             ]
           }
@@ -3345,33 +3849,117 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+
           "yearsOfAchievement": 3,
-          "references": {
-            "when": [
+          "perYear": {
+            "or": [
               {
-                "if": {
-                  "age": {
-                    "gte": 66
+                "type": "sustained_reference",
+                "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+                "references": {
+                  "when": [
+                    {
+                      "if": {
+                        "age": {
+                          "gte": 66
+                        }
+                      },
+                      "refs": [
+                        {
+                          "medalId": "pistol-mark-silver"
+                        }
+                      ]
+                    },
+                    {
+                      "if": {
+                        "age": {
+                          "lt": 65
+                        }
+                      },
+                      "refs": [
+                        {
+                          "medalId": "pistol-mark-gold"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "cumulative_competition_score",
+                "disciplineType": "ppc",
+                "description": "Tillräckliga tävlingsresultat i PPC",
+                "minCompetitions": 3,
+                "timeWindowYears": 1,
+                "pointThreshold": {
+                  "R1500": {
+                    "min": 1290
+                  },
+                  "P1500": {
+                    "min": 1290
+                  },
+                  "Dist pistol": {
+                    "min": 500
+                  },
+                  "Dist revolver": {
+                    "min": 500
+                  },
+                  "Open": {
+                    "min": 560
+                  },
+                  "SSA": {
+                    "min": 440
+                  },
+                  "SR4\"": {
+                    "min": 440
+                  },
+                  "SR 2,75\"": {
+                    "min": 440
                   }
-                },
-                "refs": [
+                }
+              },
+              {
+                "type": "custom",
+                "description": "Guldfordringar med magnumvapen"
+              },
+              {
+                "type": "sustained_reference",
+                "description": "Uppfyllt fordringarna för Precisionsskyttemärket i guld",
+                "references": [
                   {
-                    "medalId": "pistol-mark-silver"
+                    "medalId": "precision-mark-gold"
                   }
                 ]
               },
               {
-                "if": {
-                  "age": {
-                    "lt": 65
-                  }
-                },
-                "refs": [
+                "type": "sustained_reference",
+                "description": "Uppfyllt fordringarna för Fältskyttemärket i guld",
+                "references": [
                   {
-                    "medalId": "pistol-mark-gold"
+                    "medalId": "field-mark-gold"
                   }
                 ]
+              },
+              {
+                "type": "cumulative_competition_score",
+                "disciplineType": "military_fast_match",
+                "description": "Tillräckliga tävlingsresultat i Militär Snabbmatch",
+                "minCompetitions": 3,
+                "timeWindowYears": 1,
+                "pointThreshold": {
+                  "A": {
+                    "min": 500
+                  },
+                  "B": {
+                    "min": 520
+                  },
+                  "C": {
+                    "min": 540
+                  },
+                  "R": {
+                    "min": 520
+                  }
+                }
               }
             ]
           }
@@ -3401,33 +3989,117 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+
           "yearsOfAchievement": 3,
-          "references": {
-            "when": [
+          "perYear": {
+            "or": [
               {
-                "if": {
-                  "age": {
-                    "gte": 66
+                "type": "sustained_reference",
+                "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+                "references": {
+                  "when": [
+                    {
+                      "if": {
+                        "age": {
+                          "gte": 66
+                        }
+                      },
+                      "refs": [
+                        {
+                          "medalId": "pistol-mark-silver"
+                        }
+                      ]
+                    },
+                    {
+                      "if": {
+                        "age": {
+                          "lt": 65
+                        }
+                      },
+                      "refs": [
+                        {
+                          "medalId": "pistol-mark-gold"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "cumulative_competition_score",
+                "disciplineType": "ppc",
+                "description": "Tillräckliga tävlingsresultat i PPC",
+                "minCompetitions": 3,
+                "timeWindowYears": 1,
+                "pointThreshold": {
+                  "R1500": {
+                    "min": 1290
+                  },
+                  "P1500": {
+                    "min": 1290
+                  },
+                  "Dist pistol": {
+                    "min": 500
+                  },
+                  "Dist revolver": {
+                    "min": 500
+                  },
+                  "Open": {
+                    "min": 560
+                  },
+                  "SSA": {
+                    "min": 440
+                  },
+                  "SR4\"": {
+                    "min": 440
+                  },
+                  "SR 2,75\"": {
+                    "min": 440
                   }
-                },
-                "refs": [
+                }
+              },
+              {
+                "type": "custom",
+                "description": "Guldfordringar med magnumvapen"
+              },
+              {
+                "type": "sustained_reference",
+                "description": "Uppfyllt fordringarna för Precisionsskyttemärket i guld",
+                "references": [
                   {
-                    "medalId": "pistol-mark-silver"
+                    "medalId": "precision-mark-gold"
                   }
                 ]
               },
               {
-                "if": {
-                  "age": {
-                    "lt": 65
-                  }
-                },
-                "refs": [
+                "type": "sustained_reference",
+                "description": "Uppfyllt fordringarna för Fältskyttemärket i guld",
+                "references": [
                   {
-                    "medalId": "pistol-mark-gold"
+                    "medalId": "field-mark-gold"
                   }
                 ]
+              },
+              {
+                "type": "cumulative_competition_score",
+                "disciplineType": "military_fast_match",
+                "description": "Tillräckliga tävlingsresultat i Militär Snabbmatch",
+                "minCompetitions": 3,
+                "timeWindowYears": 1,
+                "pointThreshold": {
+                  "A": {
+                    "min": 500
+                  },
+                  "B": {
+                    "min": 520
+                  },
+                  "C": {
+                    "min": 540
+                  },
+                  "R": {
+                    "min": 520
+                  }
+                }
               }
             ]
           }
@@ -3457,33 +4129,117 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+
           "yearsOfAchievement": 3,
-          "references": {
-            "when": [
+          "perYear": {
+            "or": [
               {
-                "if": {
-                  "age": {
-                    "gte": 66
+                "type": "sustained_reference",
+                "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+                "references": {
+                  "when": [
+                    {
+                      "if": {
+                        "age": {
+                          "gte": 66
+                        }
+                      },
+                      "refs": [
+                        {
+                          "medalId": "pistol-mark-silver"
+                        }
+                      ]
+                    },
+                    {
+                      "if": {
+                        "age": {
+                          "lt": 65
+                        }
+                      },
+                      "refs": [
+                        {
+                          "medalId": "pistol-mark-gold"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "cumulative_competition_score",
+                "disciplineType": "ppc",
+                "description": "Tillräckliga tävlingsresultat i PPC",
+                "minCompetitions": 3,
+                "timeWindowYears": 1,
+                "pointThreshold": {
+                  "R1500": {
+                    "min": 1290
+                  },
+                  "P1500": {
+                    "min": 1290
+                  },
+                  "Dist pistol": {
+                    "min": 500
+                  },
+                  "Dist revolver": {
+                    "min": 500
+                  },
+                  "Open": {
+                    "min": 560
+                  },
+                  "SSA": {
+                    "min": 440
+                  },
+                  "SR4\"": {
+                    "min": 440
+                  },
+                  "SR 2,75\"": {
+                    "min": 440
                   }
-                },
-                "refs": [
+                }
+              },
+              {
+                "type": "custom",
+                "description": "Guldfordringar med magnumvapen"
+              },
+              {
+                "type": "sustained_reference",
+                "description": "Uppfyllt fordringarna för Precisionsskyttemärket i guld",
+                "references": [
                   {
-                    "medalId": "pistol-mark-silver"
+                    "medalId": "precision-mark-gold"
                   }
                 ]
               },
               {
-                "if": {
-                  "age": {
-                    "lt": 65
-                  }
-                },
-                "refs": [
+                "type": "sustained_reference",
+                "description": "Uppfyllt fordringarna för Fältskyttemärket i guld",
+                "references": [
                   {
-                    "medalId": "pistol-mark-gold"
+                    "medalId": "field-mark-gold"
                   }
                 ]
+              },
+              {
+                "type": "cumulative_competition_score",
+                "disciplineType": "military_fast_match",
+                "description": "Tillräckliga tävlingsresultat i Militär Snabbmatch",
+                "minCompetitions": 3,
+                "timeWindowYears": 1,
+                "pointThreshold": {
+                  "A": {
+                    "min": 500
+                  },
+                  "B": {
+                    "min": 520
+                  },
+                  "C": {
+                    "min": 540
+                  },
+                  "R": {
+                    "min": 520
+                  }
+                }
               }
             ]
           }
@@ -3513,33 +4269,117 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+
           "yearsOfAchievement": 3,
-          "references": {
-            "when": [
+          "perYear": {
+            "or": [
               {
-                "if": {
-                  "age": {
-                    "gte": 66
+                "type": "sustained_reference",
+                "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+                "references": {
+                  "when": [
+                    {
+                      "if": {
+                        "age": {
+                          "gte": 66
+                        }
+                      },
+                      "refs": [
+                        {
+                          "medalId": "pistol-mark-silver"
+                        }
+                      ]
+                    },
+                    {
+                      "if": {
+                        "age": {
+                          "lt": 65
+                        }
+                      },
+                      "refs": [
+                        {
+                          "medalId": "pistol-mark-gold"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "cumulative_competition_score",
+                "disciplineType": "ppc",
+                "description": "Tillräckliga tävlingsresultat i PPC",
+                "minCompetitions": 3,
+                "timeWindowYears": 1,
+                "pointThreshold": {
+                  "R1500": {
+                    "min": 1290
+                  },
+                  "P1500": {
+                    "min": 1290
+                  },
+                  "Dist pistol": {
+                    "min": 500
+                  },
+                  "Dist revolver": {
+                    "min": 500
+                  },
+                  "Open": {
+                    "min": 560
+                  },
+                  "SSA": {
+                    "min": 440
+                  },
+                  "SR4\"": {
+                    "min": 440
+                  },
+                  "SR 2,75\"": {
+                    "min": 440
                   }
-                },
-                "refs": [
+                }
+              },
+              {
+                "type": "custom",
+                "description": "Guldfordringar med magnumvapen"
+              },
+              {
+                "type": "sustained_reference",
+                "description": "Uppfyllt fordringarna för Precisionsskyttemärket i guld",
+                "references": [
                   {
-                    "medalId": "pistol-mark-silver"
+                    "medalId": "precision-mark-gold"
                   }
                 ]
               },
               {
-                "if": {
-                  "age": {
-                    "lt": 65
-                  }
-                },
-                "refs": [
+                "type": "sustained_reference",
+                "description": "Uppfyllt fordringarna för Fältskyttemärket i guld",
+                "references": [
                   {
-                    "medalId": "pistol-mark-gold"
+                    "medalId": "field-mark-gold"
                   }
                 ]
+              },
+              {
+                "type": "cumulative_competition_score",
+                "disciplineType": "military_fast_match",
+                "description": "Tillräckliga tävlingsresultat i Militär Snabbmatch",
+                "minCompetitions": 3,
+                "timeWindowYears": 1,
+                "pointThreshold": {
+                  "A": {
+                    "min": 500
+                  },
+                  "B": {
+                    "min": 520
+                  },
+                  "C": {
+                    "min": 540
+                  },
+                  "R": {
+                    "min": 520
+                  }
+                }
               }
             ]
           }
@@ -3569,33 +4409,117 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+
           "yearsOfAchievement": 3,
-          "references": {
-            "when": [
+          "perYear": {
+            "or": [
               {
-                "if": {
-                  "age": {
-                    "gte": 66
+                "type": "sustained_reference",
+                "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+                "references": {
+                  "when": [
+                    {
+                      "if": {
+                        "age": {
+                          "gte": 66
+                        }
+                      },
+                      "refs": [
+                        {
+                          "medalId": "pistol-mark-silver"
+                        }
+                      ]
+                    },
+                    {
+                      "if": {
+                        "age": {
+                          "lt": 65
+                        }
+                      },
+                      "refs": [
+                        {
+                          "medalId": "pistol-mark-gold"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "cumulative_competition_score",
+                "disciplineType": "ppc",
+                "description": "Tillräckliga tävlingsresultat i PPC",
+                "minCompetitions": 3,
+                "timeWindowYears": 1,
+                "pointThreshold": {
+                  "R1500": {
+                    "min": 1290
+                  },
+                  "P1500": {
+                    "min": 1290
+                  },
+                  "Dist pistol": {
+                    "min": 500
+                  },
+                  "Dist revolver": {
+                    "min": 500
+                  },
+                  "Open": {
+                    "min": 560
+                  },
+                  "SSA": {
+                    "min": 440
+                  },
+                  "SR4\"": {
+                    "min": 440
+                  },
+                  "SR 2,75\"": {
+                    "min": 440
                   }
-                },
-                "refs": [
+                }
+              },
+              {
+                "type": "custom",
+                "description": "Guldfordringar med magnumvapen"
+              },
+              {
+                "type": "sustained_reference",
+                "description": "Uppfyllt fordringarna för Precisionsskyttemärket i guld",
+                "references": [
                   {
-                    "medalId": "pistol-mark-silver"
+                    "medalId": "precision-mark-gold"
                   }
                 ]
               },
               {
-                "if": {
-                  "age": {
-                    "lt": 65
-                  }
-                },
-                "refs": [
+                "type": "sustained_reference",
+                "description": "Uppfyllt fordringarna för Fältskyttemärket i guld",
+                "references": [
                   {
-                    "medalId": "pistol-mark-gold"
+                    "medalId": "field-mark-gold"
                   }
                 ]
+              },
+              {
+                "type": "cumulative_competition_score",
+                "disciplineType": "military_fast_match",
+                "description": "Tillräckliga tävlingsresultat i Militär Snabbmatch",
+                "minCompetitions": 3,
+                "timeWindowYears": 1,
+                "pointThreshold": {
+                  "A": {
+                    "min": 500
+                  },
+                  "B": {
+                    "min": 520
+                  },
+                  "C": {
+                    "min": 540
+                  },
+                  "R": {
+                    "min": 520
+                  }
+                }
               }
             ]
           }
@@ -3625,33 +4549,117 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+
           "yearsOfAchievement": 3,
-          "references": {
-            "when": [
+          "perYear": {
+            "or": [
               {
-                "if": {
-                  "age": {
-                    "gte": 66
+                "type": "sustained_reference",
+                "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+                "references": {
+                  "when": [
+                    {
+                      "if": {
+                        "age": {
+                          "gte": 66
+                        }
+                      },
+                      "refs": [
+                        {
+                          "medalId": "pistol-mark-silver"
+                        }
+                      ]
+                    },
+                    {
+                      "if": {
+                        "age": {
+                          "lt": 65
+                        }
+                      },
+                      "refs": [
+                        {
+                          "medalId": "pistol-mark-gold"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "cumulative_competition_score",
+                "disciplineType": "ppc",
+                "description": "Tillräckliga tävlingsresultat i PPC",
+                "minCompetitions": 3,
+                "timeWindowYears": 1,
+                "pointThreshold": {
+                  "R1500": {
+                    "min": 1290
+                  },
+                  "P1500": {
+                    "min": 1290
+                  },
+                  "Dist pistol": {
+                    "min": 500
+                  },
+                  "Dist revolver": {
+                    "min": 500
+                  },
+                  "Open": {
+                    "min": 560
+                  },
+                  "SSA": {
+                    "min": 440
+                  },
+                  "SR4\"": {
+                    "min": 440
+                  },
+                  "SR 2,75\"": {
+                    "min": 440
                   }
-                },
-                "refs": [
+                }
+              },
+              {
+                "type": "custom",
+                "description": "Guldfordringar med magnumvapen"
+              },
+              {
+                "type": "sustained_reference",
+                "description": "Uppfyllt fordringarna för Precisionsskyttemärket i guld",
+                "references": [
                   {
-                    "medalId": "pistol-mark-silver"
+                    "medalId": "precision-mark-gold"
                   }
                 ]
               },
               {
-                "if": {
-                  "age": {
-                    "lt": 65
-                  }
-                },
-                "refs": [
+                "type": "sustained_reference",
+                "description": "Uppfyllt fordringarna för Fältskyttemärket i guld",
+                "references": [
                   {
-                    "medalId": "pistol-mark-gold"
+                    "medalId": "field-mark-gold"
                   }
                 ]
+              },
+              {
+                "type": "cumulative_competition_score",
+                "disciplineType": "military_fast_match",
+                "description": "Tillräckliga tävlingsresultat i Militär Snabbmatch",
+                "minCompetitions": 3,
+                "timeWindowYears": 1,
+                "pointThreshold": {
+                  "A": {
+                    "min": 500
+                  },
+                  "B": {
+                    "min": 520
+                  },
+                  "C": {
+                    "min": 540
+                  },
+                  "R": {
+                    "min": 520
+                  }
+                }
               }
             ]
           }
@@ -3681,33 +4689,117 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+
           "yearsOfAchievement": 3,
-          "references": {
-            "when": [
+          "perYear": {
+            "or": [
               {
-                "if": {
-                  "age": {
-                    "gte": 66
+                "type": "sustained_reference",
+                "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+                "references": {
+                  "when": [
+                    {
+                      "if": {
+                        "age": {
+                          "gte": 66
+                        }
+                      },
+                      "refs": [
+                        {
+                          "medalId": "pistol-mark-silver"
+                        }
+                      ]
+                    },
+                    {
+                      "if": {
+                        "age": {
+                          "lt": 65
+                        }
+                      },
+                      "refs": [
+                        {
+                          "medalId": "pistol-mark-gold"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "cumulative_competition_score",
+                "disciplineType": "ppc",
+                "description": "Tillräckliga tävlingsresultat i PPC",
+                "minCompetitions": 3,
+                "timeWindowYears": 1,
+                "pointThreshold": {
+                  "R1500": {
+                    "min": 1290
+                  },
+                  "P1500": {
+                    "min": 1290
+                  },
+                  "Dist pistol": {
+                    "min": 500
+                  },
+                  "Dist revolver": {
+                    "min": 500
+                  },
+                  "Open": {
+                    "min": 560
+                  },
+                  "SSA": {
+                    "min": 440
+                  },
+                  "SR4\"": {
+                    "min": 440
+                  },
+                  "SR 2,75\"": {
+                    "min": 440
                   }
-                },
-                "refs": [
+                }
+              },
+              {
+                "type": "custom",
+                "description": "Guldfordringar med magnumvapen"
+              },
+              {
+                "type": "sustained_reference",
+                "description": "Uppfyllt fordringarna för Precisionsskyttemärket i guld",
+                "references": [
                   {
-                    "medalId": "pistol-mark-silver"
+                    "medalId": "precision-mark-gold"
                   }
                 ]
               },
               {
-                "if": {
-                  "age": {
-                    "lt": 65
-                  }
-                },
-                "refs": [
+                "type": "sustained_reference",
+                "description": "Uppfyllt fordringarna för Fältskyttemärket i guld",
+                "references": [
                   {
-                    "medalId": "pistol-mark-gold"
+                    "medalId": "field-mark-gold"
                   }
                 ]
+              },
+              {
+                "type": "cumulative_competition_score",
+                "disciplineType": "military_fast_match",
+                "description": "Tillräckliga tävlingsresultat i Militär Snabbmatch",
+                "minCompetitions": 3,
+                "timeWindowYears": 1,
+                "pointThreshold": {
+                  "A": {
+                    "min": 500
+                  },
+                  "B": {
+                    "min": 520
+                  },
+                  "C": {
+                    "min": 540
+                  },
+                  "R": {
+                    "min": 520
+                  }
+                }
               }
             ]
           }
@@ -3739,33 +4831,117 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+
           "yearsOfAchievement": 3,
-          "references": {
-            "when": [
+          "perYear": {
+            "or": [
               {
-                "if": {
-                  "age": {
-                    "gte": 66
+                "type": "sustained_reference",
+                "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+                "references": {
+                  "when": [
+                    {
+                      "if": {
+                        "age": {
+                          "gte": 66
+                        }
+                      },
+                      "refs": [
+                        {
+                          "medalId": "pistol-mark-silver"
+                        }
+                      ]
+                    },
+                    {
+                      "if": {
+                        "age": {
+                          "lt": 65
+                        }
+                      },
+                      "refs": [
+                        {
+                          "medalId": "pistol-mark-gold"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "cumulative_competition_score",
+                "disciplineType": "ppc",
+                "description": "Tillräckliga tävlingsresultat i PPC",
+                "minCompetitions": 3,
+                "timeWindowYears": 1,
+                "pointThreshold": {
+                  "R1500": {
+                    "min": 1290
+                  },
+                  "P1500": {
+                    "min": 1290
+                  },
+                  "Dist pistol": {
+                    "min": 500
+                  },
+                  "Dist revolver": {
+                    "min": 500
+                  },
+                  "Open": {
+                    "min": 560
+                  },
+                  "SSA": {
+                    "min": 440
+                  },
+                  "SR4\"": {
+                    "min": 440
+                  },
+                  "SR 2,75\"": {
+                    "min": 440
                   }
-                },
-                "refs": [
+                }
+              },
+              {
+                "type": "custom",
+                "description": "Guldfordringar med magnumvapen"
+              },
+              {
+                "type": "sustained_reference",
+                "description": "Uppfyllt fordringarna för Precisionsskyttemärket i guld",
+                "references": [
                   {
-                    "medalId": "pistol-mark-silver"
+                    "medalId": "precision-mark-gold"
                   }
                 ]
               },
               {
-                "if": {
-                  "age": {
-                    "lt": 65
-                  }
-                },
-                "refs": [
+                "type": "sustained_reference",
+                "description": "Uppfyllt fordringarna för Fältskyttemärket i guld",
+                "references": [
                   {
-                    "medalId": "pistol-mark-gold"
+                    "medalId": "field-mark-gold"
                   }
                 ]
+              },
+              {
+                "type": "cumulative_competition_score",
+                "disciplineType": "military_fast_match",
+                "description": "Tillräckliga tävlingsresultat i Militär Snabbmatch",
+                "minCompetitions": 3,
+                "timeWindowYears": 1,
+                "pointThreshold": {
+                  "A": {
+                    "min": 500
+                  },
+                  "B": {
+                    "min": 520
+                  },
+                  "C": {
+                    "min": 540
+                  },
+                  "R": {
+                    "min": 520
+                  }
+                }
               }
             ]
           }
@@ -3797,33 +4973,117 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+
           "yearsOfAchievement": 3,
-          "references": {
-            "when": [
+          "perYear": {
+            "or": [
               {
-                "if": {
-                  "age": {
-                    "gte": 66
+                "type": "sustained_reference",
+                "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+                "references": {
+                  "when": [
+                    {
+                      "if": {
+                        "age": {
+                          "gte": 66
+                        }
+                      },
+                      "refs": [
+                        {
+                          "medalId": "pistol-mark-silver"
+                        }
+                      ]
+                    },
+                    {
+                      "if": {
+                        "age": {
+                          "lt": 65
+                        }
+                      },
+                      "refs": [
+                        {
+                          "medalId": "pistol-mark-gold"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "cumulative_competition_score",
+                "disciplineType": "ppc",
+                "description": "Tillräckliga tävlingsresultat i PPC",
+                "minCompetitions": 3,
+                "timeWindowYears": 1,
+                "pointThreshold": {
+                  "R1500": {
+                    "min": 1290
+                  },
+                  "P1500": {
+                    "min": 1290
+                  },
+                  "Dist pistol": {
+                    "min": 500
+                  },
+                  "Dist revolver": {
+                    "min": 500
+                  },
+                  "Open": {
+                    "min": 560
+                  },
+                  "SSA": {
+                    "min": 440
+                  },
+                  "SR4\"": {
+                    "min": 440
+                  },
+                  "SR 2,75\"": {
+                    "min": 440
                   }
-                },
-                "refs": [
+                }
+              },
+              {
+                "type": "custom",
+                "description": "Guldfordringar med magnumvapen"
+              },
+              {
+                "type": "sustained_reference",
+                "description": "Uppfyllt fordringarna för Precisionsskyttemärket i guld",
+                "references": [
                   {
-                    "medalId": "pistol-mark-silver"
+                    "medalId": "precision-mark-gold"
                   }
                 ]
               },
               {
-                "if": {
-                  "age": {
-                    "lt": 65
-                  }
-                },
-                "refs": [
+                "type": "sustained_reference",
+                "description": "Uppfyllt fordringarna för Fältskyttemärket i guld",
+                "references": [
                   {
-                    "medalId": "pistol-mark-gold"
+                    "medalId": "field-mark-gold"
                   }
                 ]
+              },
+              {
+                "type": "cumulative_competition_score",
+                "disciplineType": "military_fast_match",
+                "description": "Tillräckliga tävlingsresultat i Militär Snabbmatch",
+                "minCompetitions": 3,
+                "timeWindowYears": 1,
+                "pointThreshold": {
+                  "A": {
+                    "min": 500
+                  },
+                  "B": {
+                    "min": 520
+                  },
+                  "C": {
+                    "min": 540
+                  },
+                  "R": {
+                    "min": 520
+                  }
+                }
               }
             ]
           }
@@ -3855,33 +5115,117 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+
           "yearsOfAchievement": 3,
-          "references": {
-            "when": [
+          "perYear": {
+            "or": [
               {
-                "if": {
-                  "age": {
-                    "gte": 66
+                "type": "sustained_reference",
+                "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
+                "references": {
+                  "when": [
+                    {
+                      "if": {
+                        "age": {
+                          "gte": 66
+                        }
+                      },
+                      "refs": [
+                        {
+                          "medalId": "pistol-mark-silver"
+                        }
+                      ]
+                    },
+                    {
+                      "if": {
+                        "age": {
+                          "lt": 65
+                        }
+                      },
+                      "refs": [
+                        {
+                          "medalId": "pistol-mark-gold"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "cumulative_competition_score",
+                "disciplineType": "ppc",
+                "description": "Tillräckliga tävlingsresultat i PPC",
+                "minCompetitions": 3,
+                "timeWindowYears": 1,
+                "pointThreshold": {
+                  "R1500": {
+                    "min": 1290
+                  },
+                  "P1500": {
+                    "min": 1290
+                  },
+                  "Dist pistol": {
+                    "min": 500
+                  },
+                  "Dist revolver": {
+                    "min": 500
+                  },
+                  "Open": {
+                    "min": 560
+                  },
+                  "SSA": {
+                    "min": 440
+                  },
+                  "SR4\"": {
+                    "min": 440
+                  },
+                  "SR 2,75\"": {
+                    "min": 440
                   }
-                },
-                "refs": [
+                }
+              },
+              {
+                "type": "custom",
+                "description": "Guldfordringar med magnumvapen"
+              },
+              {
+                "type": "sustained_reference",
+                "description": "Uppfyllt fordringarna för Precisionsskyttemärket i guld",
+                "references": [
                   {
-                    "medalId": "pistol-mark-silver"
+                    "medalId": "precision-mark-gold"
                   }
                 ]
               },
               {
-                "if": {
-                  "age": {
-                    "lt": 65
-                  }
-                },
-                "refs": [
+                "type": "sustained_reference",
+                "description": "Uppfyllt fordringarna för Fältskyttemärket i guld",
+                "references": [
                   {
-                    "medalId": "pistol-mark-gold"
+                    "medalId": "field-mark-gold"
                   }
                 ]
+              },
+              {
+                "type": "cumulative_competition_score",
+                "disciplineType": "military_fast_match",
+                "description": "Tillräckliga tävlingsresultat i Militär Snabbmatch",
+                "minCompetitions": 3,
+                "timeWindowYears": 1,
+                "pointThreshold": {
+                  "A": {
+                    "min": 500
+                  },
+                  "B": {
+                    "min": 520
+                  },
+                  "C": {
+                    "min": 540
+                  },
+                  "R": {
+                    "min": 520
+                  }
+                }
               }
             ]
           }
