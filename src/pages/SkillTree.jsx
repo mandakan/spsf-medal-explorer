@@ -22,26 +22,22 @@ export default function SkillTree() {
     })
   ), [statuses])
 
-  const { currentProfile, startExplorerMode } = useProfile()
+  const { currentProfile, startExplorerMode, hydrated } = useProfile()
   const isGuest = Boolean(currentProfile?.isGuest)
   const [showOnboarding, setShowOnboarding] = useState(false)
 
   useEffect(() => {
+    if (!hydrated) return
     try {
       const choice = window.localStorage.getItem('app:onboardingChoice')
       setShowOnboarding(!currentProfile && !choice)
     } catch {
       setShowOnboarding(!currentProfile)
     }
-  }, [currentProfile])
+  }, [hydrated, currentProfile])
 
-  useEffect(() => {
-    if (currentProfile && !currentProfile.isGuest) {
-      try { window.localStorage.removeItem('app:onboardingChoice') } catch { /* ignore unavailable storage */ }
-    }
-  }, [currentProfile])
 
-  const isProfileLoading = typeof currentProfile === 'undefined'
+  const isProfileLoading = !hydrated
 
   if (isProfileLoading) {
     return null

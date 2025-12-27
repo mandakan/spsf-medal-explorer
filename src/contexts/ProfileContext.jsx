@@ -1,9 +1,11 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { ProfileContext } from './profileContext'
 import { LocalStorageDataManager } from '../data/localStorage'
 import { UserProfile } from '../models/Profile'
 import { parseProfileBackup } from '../utils/importManager'
 export { ProfileContext } from './profileContext'
+
+const ONBOARDING_KEY = 'app:onboardingChoice'
 
 const LAST_PROFILE_KEY = 'app:lastProfileId'
 
@@ -56,10 +58,11 @@ function createGuestProfile() {
 
 export function ProfileProvider({ children }) {
   const [storage] = useState(() => new LocalStorageDataManager())
-  const [currentProfile, setCurrentProfile] = useState(null)
+  const [currentProfile, setCurrentProfile] = useState(undefined)
   const [profiles, setProfiles] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [hydrated, setHydrated] = useState(false)
 
   const loadProfiles = useCallback(async () => {
     try {
@@ -75,29 +78,57 @@ export function ProfileProvider({ children }) {
     }
   }, [storage])
 
-  // Load all profiles on mount
-  React.useEffect(() => {
-    loadProfiles()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   const startExplorerMode = useCallback(() => {
+    try { window.localStorage.setItem(ONBOARDING_KEY, 'guest') } catch {}
     setCurrentProfile(createGuestProfile())
   }, [])
 
-  // Auto-start Explorer if user previously chose it
-  React.useEffect(() => {
-    if (loading) return
-    if (currentProfile) return
-    try {
-      const choice = window.localStorage.getItem('app:onboardingChoice')
-      if (choice === 'guest') {
-        setCurrentProfile(createGuestProfile())
+  // Bootstrap: load profiles, decide initial profile, then mark hydrated
+  useEffect(() => {
+    let cancelled = false
+    ;(async () => {
+      try {
+        setLoading(true)
+        const allProfiles = await storage.getAllProfiles()
+        if (cancelled) return
+        setProfiles(allProfiles)
+
+        let selected = null
+        const overrideId = getProfileOverrideFromURL()
+        if (overrideId && allProfiles.some(p => p.userId === overrideId)) {
+          selected = allProfiles.find(p => p.userId === overrideId) || null
+          setLastProfileId(overrideId)
+        } else {
+          const lastId = getLastProfileId()
+          if (lastId && allProfiles.some(p => p.userId === lastId)) {
+            selected = allProfiles.find(p => p.userId === lastId) || null
+          } else if (allProfiles.length > 0) {
+            selected = [...allProfiles].sort((a, b) => new Date(b.lastModified) - new Date(a.lastModified))[0]
+          } else {
+            try {
+              const choice = window.localStorage.getItem(ONBOARDING_KEY)
+              if (choice === 'guest') selected = createGuestProfile()
+            } catch {}
+          }
+        }
+
+        setCurrentProfile(selected ?? null)
+        setError(null)
+      } catch (err) {
+        if (!cancelled) {
+          setError(err.message)
+          console.error('Failed to bootstrap profiles:', err)
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false)
+          setHydrated(true)
+        }
       }
-    } catch {
-      // ignore storage read errors
-    }
-  }, [loading, currentProfile])
+    })()
+    return () => { let _ = (cancelled = true) }
+  }, [storage])
 
 
   const createProfile = useCallback(
@@ -141,32 +172,13 @@ export function ProfileProvider({ children }) {
     [storage]
   )
 
-  // Auto-select most recently used profile (or URL override) once profiles are loaded
-  React.useEffect(() => {
-    if (loading) return
-    if (currentProfile) return
-    if (!profiles || profiles.length === 0) return
-
-    // URL override takes precedence: ?profile=<userId>
-    const overrideId = getProfileOverrideFromURL()
-    if (overrideId && profiles.some(p => p.userId === overrideId)) {
-      selectProfile(overrideId)
-      setLastProfileId(overrideId)
-      return
+  // Clear onboarding guest choice when a non-guest profile is active
+  useEffect(() => {
+    if (!hydrated) return
+    if (currentProfile && !currentProfile.isGuest) {
+      try { window.localStorage.removeItem(ONBOARDING_KEY) } catch {}
     }
-
-    // Restore last used profile from localStorage
-    const lastId = getLastProfileId()
-    if (lastId && profiles.some(p => p.userId === lastId)) {
-      selectProfile(lastId)
-      return
-    }
-    if (lastId) setLastProfileId(null)
-
-    // Fallback: pick most recently modified profile
-    const picked = [...profiles].sort((a, b) => new Date(b.lastModified) - new Date(a.lastModified))[0]
-    if (picked) selectProfile(picked.userId)
-  }, [profiles, currentProfile, loading, selectProfile])
+  }, [currentProfile, hydrated])
 
   const updateProfile = useCallback(
     async (profile) => {
@@ -514,6 +526,7 @@ export function ProfileProvider({ children }) {
     currentProfile,
     profiles,
     loading,
+    hydrated,
     error,
     createProfile,
     selectProfile,
