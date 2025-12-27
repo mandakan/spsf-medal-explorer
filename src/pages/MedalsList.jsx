@@ -28,13 +28,24 @@ export default function MedalsList() {
   const [searchParams, setSearchParams] = useSearchParams()
   const { currentProfile, startExplorerMode } = useProfile()
   const isGuest = Boolean(currentProfile?.isGuest)
-  const [showOnboarding, setShowOnboarding] = useState(() => {
+  const [showOnboarding, setShowOnboarding] = useState(false)
+
+  useEffect(() => {
     try {
-      return !currentProfile && !window.localStorage.getItem('app:onboardingChoice')
+      const choice = window.localStorage.getItem('app:onboardingChoice')
+      setShowOnboarding(!currentProfile && !choice)
     } catch {
-      return !currentProfile
+      setShowOnboarding(!currentProfile)
     }
-  })
+  }, [currentProfile])
+
+  useEffect(() => {
+    if (currentProfile && !currentProfile.isGuest) {
+      try { window.localStorage.removeItem('app:onboardingChoice') } catch { /* ignore unavailable storage */ }
+    }
+  }, [currentProfile])
+
+  const isProfileLoading = typeof currentProfile === 'undefined'
 
   // Responsive, mobile-first list height (~70vh with a sensible minimum)
   const [listHeight, setListHeight] = useState(600)
@@ -145,6 +156,9 @@ export default function MedalsList() {
 
   const hasUnderReview = useMemo(() => finalResults.some(m => m.reviewed !== true), [finalResults])
 
+  if (isProfileLoading) {
+    return null
+  }
   if (!medalDatabase) {
     return <div className="text-muted-foreground">Laddar märken...</div>
   }

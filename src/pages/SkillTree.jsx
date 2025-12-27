@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import SkillTreeCanvas from '../components/SkillTreeCanvas'
 import { useAllMedalStatuses } from '../hooks/useMedalCalculator'
 import ProfilePromptBanner from '../components/ProfilePromptBanner'
@@ -24,13 +24,28 @@ export default function SkillTree() {
 
   const { currentProfile, startExplorerMode } = useProfile()
   const isGuest = Boolean(currentProfile?.isGuest)
-  const [showOnboarding, setShowOnboarding] = useState(() => {
+  const [showOnboarding, setShowOnboarding] = useState(false)
+
+  useEffect(() => {
     try {
-      return !currentProfile && !window.localStorage.getItem('app:onboardingChoice')
+      const choice = window.localStorage.getItem('app:onboardingChoice')
+      setShowOnboarding(!currentProfile && !choice)
     } catch {
-      return !currentProfile
+      setShowOnboarding(!currentProfile)
     }
-  })
+  }, [currentProfile])
+
+  useEffect(() => {
+    if (currentProfile && !currentProfile.isGuest) {
+      try { window.localStorage.removeItem('app:onboardingChoice') } catch { /* ignore unavailable storage */ }
+    }
+  }, [currentProfile])
+
+  const isProfileLoading = typeof currentProfile === 'undefined'
+
+  if (isProfileLoading) {
+    return null
+  }
 
   return (
     <div className="space-y-6">
