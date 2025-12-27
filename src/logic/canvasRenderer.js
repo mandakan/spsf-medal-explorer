@@ -5,6 +5,8 @@
 import { Medal } from '../models/Medal.js'
 import { STATUS_COLOR_VARS } from '../config/statusColors.js'
 
+ const LABEL_FONT_PX = 14
+
 // Cache for measured Tailwind class colors to avoid reflow per call
 const classColorCache = new Map()
 export function clearThemeCache() { classColorCache.clear() }
@@ -137,16 +139,6 @@ function wrapText(ctx, text, maxWidth, maxLines = 3, ellipsis = '…') {
   return lines.slice(0, maxLines)
 }
 
-export const COLORS = {
-  unlocked: '#FFD700',
-  achievable: '#20C997',
-  locked: '#6C757D',
-  text: '#111827',
-  connection: '#94A3B8',
-  border: '#5e5240',
-  accent: '#3B82F6',
-}
-
 export function drawMedalNode(ctx, x, y, radius, medal, status, scale, forceLabel = false) {
   if (!(medal instanceof Medal)) {
     if (!medal || typeof medal !== 'object') {
@@ -214,7 +206,7 @@ export function drawMedalNode(ctx, x, y, radius, medal, status, scale, forceLabe
     ctx.textBaseline = 'top'
 
     // Accessible, consistent size regardless of zoom
-    const fontPx = 12
+    const fontPx = LABEL_FONT_PX
     const lineHeight = Math.round(fontPx * 1.3)
     const fontFamily = getFontFamily(ctx.canvas)
     ctx.font = `${fontPx}px ${fontFamily}`
