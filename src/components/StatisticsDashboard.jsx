@@ -1,6 +1,9 @@
 import React, { useMemo } from 'react'
 import { useProfile } from '../hooks/useProfile'
 import { calculateAchievementStats } from '../logic/achievementAnalytics'
+import { useAllMedalStatuses } from '../hooks/useMedalCalculator'
+import { STATUS_ORDER, getStatusProps } from '../config/statuses'
+import Icon from './Icon'
 
 export default function StatisticsDashboard() {
   const { currentProfile } = useProfile()
@@ -11,6 +14,20 @@ export default function StatisticsDashboard() {
     }
     return calculateAchievementStats(currentProfile.prerequisites)
   }, [currentProfile])
+
+  const medalStatuses = useAllMedalStatuses()
+
+  const statusCards = useMemo(() => {
+    return STATUS_ORDER.map(key => {
+      const s = getStatusProps(key)
+      return {
+        key,
+        label: s.label,
+        icon: s.icon,
+        count: Array.isArray(medalStatuses?.[key]) ? medalStatuses[key].length : 0,
+      }
+    })
+  }, [medalStatuses])
 
   if (!currentProfile) {
     return null
@@ -39,6 +56,16 @@ export default function StatisticsDashboard() {
         <p className="text-sm text-muted-foreground font-semibold">Aktiva År</p>
         <p className="text-3xl font-bold text-foreground">{stats.yearsActive}</p>
       </div>
+
+      {statusCards.map(({ key, label, icon, count }) => (
+        <div key={key} className="card p-4">
+          <p className="text-sm text-muted-foreground font-semibold inline-flex items-center gap-2">
+            <Icon name={icon} className="w-4 h-4" aria-hidden="true" />
+            <span>{label}</span>
+          </p>
+          <p className="text-3xl font-bold text-foreground">{count}</p>
+        </div>
+      ))}
     </div>
   )
 }
