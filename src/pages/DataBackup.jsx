@@ -100,30 +100,11 @@ export default function DataBackup() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="card p-4">
+          <div className="card md:row-span-2 p-4">
             <ExportPanel profile={currentProfile} />
           </div>
 
           <div className="card p-4">
-            <ImportPanel onImport={handleImport} />
-            {importing && (
-              <div className="alert alert-warning mt-3" role="status" aria-live="polite">
-                Importerar...
-              </div>
-            )}
-          </div>
-
-          <div className="card p-4 md:col-span-2">
-            <h2 className="text-lg font-semibold text-foreground mb-3">Share</h2>
-            <p className="text-sm text-muted-foreground mb-4">
-              Skapa en QR-kod som innehåller profilen för att dela eller göra backup.
-            </p>
-            <button onClick={openShare} className="btn btn-primary min-h-[44px]" aria-label="Open share dialog">
-              Dela via QR-kod
-            </button>
-          </div>
-
-          <div className="card p-4 md:col-span-2">
             <h2 className="text-lg font-semibold text-foreground mb-3">Importera profil (backup)</h2>
             <p className="text-sm text-muted-foreground mb-4">
               Återställ en hel profil från en JSON-backup. Du kan skapa en ny profil eller ersätta en profil med samma ID.
@@ -135,6 +116,16 @@ export default function DataBackup() {
               aria-controls="profile-import-dialog"
             >
               Importera profil
+            </button>
+          </div>
+
+          <div className="card p-4">
+            <h2 className="text-lg font-semibold text-foreground mb-3">Share</h2>
+            <p className="text-sm text-muted-foreground mb-4">
+              Skapa en QR-kod som innehåller profilen för att dela eller göra backup.
+            </p>
+            <button onClick={openShare} className="btn btn-primary min-h-[44px]" aria-label="Open share dialog">
+              Dela via QR-kod
             </button>
           </div>
 
