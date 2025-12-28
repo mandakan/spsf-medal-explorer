@@ -26,7 +26,8 @@ function loadLocalOverrides() {
 }
 
 function detectEnv() {
-  if (typeof import.meta !== 'undefined' && import.meta.env?.MODE) return import.meta.env.MODE
+  const hostname = (typeof window !== 'undefined' && window.location && window.location.hostname) ? window.location.hostname : ''
+  if (hostname === 'localhost' || hostname === '127.0.0.1') return 'development'
   return 'production'
 }
 
