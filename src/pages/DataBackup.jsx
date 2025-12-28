@@ -1,10 +1,8 @@
 import React, { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import ExportPanel from '../components/ExportPanel'
-import ImportPanel from '../components/ImportPanel'
 import ShareDialog from '../components/ShareDialog'
 import ProfileImportDialog from '../components/ProfileImportDialog'
-import * as importManager from '../utils/importManager'
 import * as exportManager from '../utils/exportManager'
 import { useProfile } from '../hooks/useProfile'
 import FeatureGate from '../components/FeatureGate.jsx'
@@ -15,52 +13,11 @@ export default function DataBackup() {
   const [shareOpen, setShareOpen] = useState(false)
   const [shareData, setShareData] = useState(null)
   const [localError, setLocalError] = useState(null)
-  const [importing, setImporting] = useState(false)
   const [importProfileOpen, setImportProfileOpen] = useState(false)
 
 
   const canUse = useMemo(() => !!currentProfile && !loading, [currentProfile, loading])
 
-  const handleImport = async (incomingList) => {
-    if (!currentProfile) {
-      setLocalError('Ingen profil vald')
-      return
-    }
-    try {
-      setImporting(true)
-      setLocalError(null)
-
-      const existing = Array.isArray(currentProfile.prerequisites) ? currentProfile.prerequisites : []
-
-      const keyOf = (a) => `${a?.type}|${a?.medalId || ''}|${a?.date || ''}|${a?.points ?? ''}`
-      const existingKeys = new Set(existing.map(keyOf))
-
-      const prepared = (incomingList || []).map((a, i) => {
-        const isNew = !existingKeys.has(keyOf(a))
-        if (isNew && !a.id) {
-          return {
-            ...a,
-            id: `imp-${Date.now()}-${i}`,
-            source: a.source || 'imported',
-            enteredDate: a.enteredDate || new Date().toISOString(),
-          }
-        }
-        return a
-      })
-
-      const merged = importManager.resolveConflicts(existing, prepared)
-      const nextProfile = {
-        ...currentProfile,
-        prerequisites: merged,
-        lastModified: new Date().toISOString(),
-      }
-      await updateProfile(nextProfile)
-    } catch (e) {
-      setLocalError(e.message || 'Import misslyckades')
-    } finally {
-      setImporting(false)
-    }
-  }
 
   const openShare = async () => {
     try {
