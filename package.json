@@ -9,6 +9,8 @@
     "lint": "eslint .",
     "lint-fix": "eslint . --fix",
     "preview": "vite preview",
+    "build:local": "node scripts/build-local.mjs",
+    "preview:local": "npm run build:local && vite preview",
     "test": "jest",
     "test:coverage": "jest --coverage",
     "test:watch": "jest --watch",
