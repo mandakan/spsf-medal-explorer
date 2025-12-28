@@ -54,9 +54,9 @@ export default function DevPreviewOverlay({ feature, children, variant = 'auto' 
         <>
           {/* Light scrim to convey disabled/preview state, blocks interaction */}
           <div className="absolute inset-0 z-10 bg-black/30 backdrop-blur-[1.5px]" aria-hidden="true" />
-          {/* Compact badge anchored within the gated area */}
-          <div className="absolute left-1/2 -translate-x-1/2 bottom-2 sm:left-2 sm:translate-x-0 z-20">
-            <div className="inline-flex max-w-[calc(100%-1rem)] items-center gap-2 rounded-full border border-border bg-bg-secondary/95 px-3 py-1.5 shadow-md text-foreground">
+          {/* Centered compact badge within the gated area */}
+          <div className="absolute inset-0 z-20 grid place-items-center">
+            <div className="inline-flex max-w-[min(92vw,calc(100%-1rem))] items-center gap-2 rounded-full border border-border bg-bg-secondary/95 px-3 py-1.5 shadow-md text-foreground">
               <Icon name="FlaskConical" className="w-4 h-4" aria-hidden="true" style={{ color: 'var(--color-info)' }} />
               <span className="font-semibold">Förhandsvisning</span>
             </div>
