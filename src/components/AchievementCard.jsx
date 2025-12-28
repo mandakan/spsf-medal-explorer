@@ -31,6 +31,7 @@ export default function AchievementCard({ achievement }) {
     competitionType: a.competitionType,
     medalType: a.medalType,
     disciplineType: a.disciplineType,
+    ppcClass: a.ppcClass,
     competitionName: a.competitionName,
     weapon: a.weapon,
     score: a.score,
@@ -74,6 +75,8 @@ export default function AchievementCard({ achievement }) {
           score: row.score === '' ? undefined : Number(row.score ?? 0),
           competitionName: row.competitionName || '',
           competitionType: row.competitionType || '',
+          disciplineType: row.disciplineType || '',
+          ppcClass: row.ppcClass || '',
           medalType: row.medalType || '',
         }
       case 'qualification_result':
@@ -115,6 +118,7 @@ export default function AchievementCard({ achievement }) {
       hits: '',
       competitionType: '',
       disciplineType: '',
+      ppcClass: '',
       medalType: '',
       competitionName: '',
       weapon: '',

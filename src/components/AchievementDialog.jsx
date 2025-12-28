@@ -21,6 +21,8 @@ export default function AchievementDialog({
     { value: 17, label: '17, Guld A/R' },
     { value: 15, label: '15, Guld B/C' },
   ],
+  COMP_DISCIPLINE_TYPES = ['national_whole_match', 'military_fast_match', 'ppc'],
+  PPC_CLASS_SUGGESTIONS = ['R1500', 'P1500', 'Open', 'SSA', 'SR 4"', 'SR 2,75"', 'Dist pistol', 'Dist revolver'],
 }) {
   // Remount the form content when dialog opens or initialRow changes to avoid setState in effects
   const resetKey = useMemo(
@@ -50,6 +52,8 @@ export default function AchievementDialog({
             COMP_TYPES={COMP_TYPES}
             MEDAL_TYPES={MEDAL_TYPES}
             APP_TIME_OPTIONS={APP_TIME_OPTIONS}
+            COMP_DISCIPLINE_TYPES={COMP_DISCIPLINE_TYPES}
+            PPC_CLASS_SUGGESTIONS={PPC_CLASS_SUGGESTIONS}
           />
         </FeatureGate>
       ) : null}
@@ -68,6 +72,8 @@ function FormContent({
   COMP_TYPES,
   MEDAL_TYPES,
   APP_TIME_OPTIONS,
+  COMP_DISCIPLINE_TYPES,
+  PPC_CLASS_SUGGESTIONS,
 }) {
   const [form, setForm] = useState(() => initialRow || {})
   const [errors, setErrors] = useState({})
@@ -119,8 +125,13 @@ function FormContent({
         case 'competition_result': {
           const ct = String(row.competitionType || '').toLowerCase()
           const mt = String(row.medalType || '').toLowerCase()
+          const dt = String(row.disciplineType || '').toLowerCase()
+          const sc = Number(row.score)
           if (!COMP_TYPES.includes(ct)) errs.push('Välj giltig tävlingstyp')
           if (!MEDAL_TYPES.includes(mt)) errs.push('Välj giltig märkestyp')
+          if (!COMP_DISCIPLINE_TYPES.includes(dt)) errs.push('Välj giltig gren')
+          if (!Number.isFinite(sc)) errs.push('Poäng måste vara ett tal')
+          if (dt === 'ppc' && !String(row.ppcClass || '').trim()) errs.push('Välj PPC-klass')
           break
         }
         default:
@@ -151,6 +162,7 @@ function FormContent({
         competitionType: '',
         medalType: '',
         disciplineType: '',
+        ppcClass: '',
         competitionName: '',
         weapon: '',
         score: '',
@@ -314,7 +326,7 @@ function FormContent({
       )}
 
       {form.type === 'competition_result' && (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-3">
           <div>
             <label htmlFor="br-ctype" className="field-label mb-2">Tävlingstyp</label>
             <select
@@ -327,6 +339,49 @@ function FormContent({
               {COMP_TYPES.map(o => <option key={o} value={o}>{o}</option>)}
             </select>
           </div>
+
+          <div>
+            <label htmlFor="br-disc" className="field-label mb-2">Gren</label>
+            <select
+              id="br-disc"
+              className="select py-3"
+              value={form.disciplineType ?? ''}
+              onChange={(e) => setField('disciplineType', e.target.value)}
+            >
+              <option value="">Välj gren…</option>
+              {COMP_DISCIPLINE_TYPES.map(o => <option key={o} value={o}>{o}</option>)}
+            </select>
+          </div>
+
+          {String(form.disciplineType || '') === 'ppc' && (
+            <div>
+              <label htmlFor="br-ppc" className="field-label mb-2">PPC-klass</label>
+              <input
+                id="br-ppc"
+                type="text"
+                className="input py-3"
+                list="ppc-classes"
+                value={form.ppcClass ?? ''}
+                onChange={(e) => setField('ppcClass', e.target.value)}
+                placeholder="t.ex. R1500"
+              />
+              <datalist id="ppc-classes">
+                {PPC_CLASS_SUGGESTIONS.map(opt => <option key={opt} value={opt} />)}
+              </datalist>
+            </div>
+          )}
+
+          <div>
+            <label htmlFor="br-score" className="field-label mb-2">Poäng</label>
+            <input
+              id="br-score"
+              type="number"
+              className="input py-3"
+              value={form.score ?? ''}
+              onChange={(e) => setField('score', e.target.value)}
+            />
+          </div>
+
           <div>
             <label htmlFor="br-mtype" className="field-label mb-2">Märke</label>
             <select
@@ -339,7 +394,8 @@ function FormContent({
               {MEDAL_TYPES.map(o => <option key={o} value={o}>{o}</option>)}
             </select>
           </div>
-          <div>
+
+          <div className="md:col-span-2">
             <label htmlFor="br-cname" className="field-label mb-2">Namn (valfritt)</label>
             <input
               id="br-cname"

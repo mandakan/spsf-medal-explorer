@@ -8,6 +8,8 @@ import FeatureGate from './FeatureGate'
 const WG = ['A', 'B', 'C', 'R']
 const COMP_TYPES = ['national', 'regional/landsdels', 'crewmate/krets', 'championship']
 const DISCIPLINE_TYPES = ['field', 'precision', 'military_fast']
+const COMP_DISCIPLINE_TYPES = ['national_whole_match', 'military_fast_match', 'ppc']
+const PPC_CLASS_SUGGESTIONS = ['R1500', 'P1500', 'Open', 'SSA', 'SR 4"', 'SR 2,75"', 'Dist pistol', 'Dist revolver']
 const MEDAL_TYPES = ['bronze', 'silver', 'gold']
 const APP_TIME_OPTIONS = [
   { value: 60, label: '60, Brons' },
@@ -30,6 +32,7 @@ const newRow = () => ({
   competitionName: '',
   weapon: '',
   score: '',
+  ppcClass: '',
   teamName: '',
   position: '',
   participants: '',
@@ -134,8 +137,13 @@ export default function BatchAchievementForm() {
         case 'competition_result': {
           const ct = String(row.competitionType || '').toLowerCase()
           const mt = String(row.medalType || '').toLowerCase()
+          const dt = String(row.disciplineType || '').toLowerCase()
+          const sc = Number(row.score)
           if (!COMP_TYPES.includes(ct)) errs.push('Välj giltig tävlingstyp')
           if (!MEDAL_TYPES.includes(mt)) errs.push('Välj giltig märkestyp')
+          if (!COMP_DISCIPLINE_TYPES.includes(dt)) errs.push('Välj giltig gren')
+          if (!Number.isFinite(sc)) errs.push('Poäng måste vara ett tal')
+          if (dt === 'ppc' && !String(row.ppcClass || '').trim()) errs.push('Välj PPC-klass')
           break
         }
         case 'standard_medal':
@@ -420,6 +428,50 @@ export default function BatchAchievementForm() {
                             <option key={opt} value={opt}>{opt}</option>
                           ))}
                         </select>
+
+                        <select
+                          value={row.disciplineType}
+                          onChange={(e) => handleRowChange(index, 'disciplineType', e.target.value)}
+                          className="select w-44"
+                          disabled={submitting}
+                          aria-label={`Gren för rad ${index + 1}`}
+                        >
+                          <option value="">Välj gren…</option>
+                          {COMP_DISCIPLINE_TYPES.map(opt => (
+                            <option key={opt} value={opt}>{opt}</option>
+                          ))}
+                        </select>
+
+                        {String(row.disciplineType || '') === 'ppc' && (
+                          <>
+                            <input
+                              type="text"
+                              value={row.ppcClass}
+                              onChange={(e) => handleRowChange(index, 'ppcClass', e.target.value)}
+                              className="input w-36"
+                              list={`ppc-classes-row-${index}`}
+                              placeholder="PPC-klass"
+                              disabled={submitting}
+                              aria-label={`PPC-klass för rad ${index + 1}`}
+                            />
+                            <datalist id={`ppc-classes-row-${index}`}>
+                              {PPC_CLASS_SUGGESTIONS.map(opt => (
+                                <option key={opt} value={opt} />
+                              ))}
+                            </datalist>
+                          </>
+                        )}
+
+                        <input
+                          type="number"
+                          value={row.score}
+                          onChange={(e) => handleRowChange(index, 'score', e.target.value)}
+                          className="input w-28"
+                          placeholder="Poäng"
+                          disabled={submitting}
+                          aria-label={`Poäng för rad ${index + 1}`}
+                        />
+
                         <select
                           value={row.medalType}
                           onChange={(e) => handleRowChange(index, 'medalType', e.target.value)}
@@ -572,6 +624,8 @@ export default function BatchAchievementForm() {
         COMP_TYPES={COMP_TYPES}
         MEDAL_TYPES={MEDAL_TYPES}
         APP_TIME_OPTIONS={APP_TIME_OPTIONS}
+        COMP_DISCIPLINE_TYPES={COMP_DISCIPLINE_TYPES}
+        PPC_CLASS_SUGGESTIONS={PPC_CLASS_SUGGESTIONS}
       />
     </div>
     </FeatureGate>
