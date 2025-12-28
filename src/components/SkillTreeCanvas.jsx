@@ -10,6 +10,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import ReviewLegend from './ReviewLegend'
 import { useProfile } from '../hooks/useProfile'
 import ProfileSelector from './ProfileSelector'
+import ConfirmDialog from './ConfirmDialog'
 
 export default function SkillTreeCanvas({ legendDescribedById }) {
   const canvasRef = useRef(null)
@@ -89,6 +90,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   const isProfileLoading = !hydrated || typeof currentProfile === 'undefined'
   const [dismissedFsOnboarding, setDismissedFsOnboarding] = useState(false)
   const [openPicker, setOpenPicker] = useState(false)
+  const [showConfirmReset, setShowConfirmReset] = useState(false)
   const hasOnboardingChoice = (() => {
     try { return window.localStorage.getItem('app:onboardingChoice') } catch { return null }
   })()
@@ -1126,11 +1128,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
             >
               <button
                 type="button"
-                onClick={async () => {
-                  if (window.confirm('Återställa alla märken och förkunskaper? Detta går inte att ångra.')) {
-                    await resetCurrentProfileData()
-                  }
-                }}
+                onClick={() => setShowConfirmReset(true)}
                 className="inline-flex items-center gap-2 rounded-full border border-border bg-background/80 backdrop-blur-sm px-3 py-1.5 text-sm shadow-md min-h-[36px]"
                 aria-label="Återställ alla"
                 title="Återställ alla"
@@ -1262,6 +1260,20 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
         </div>
       )}
 
+      <ConfirmDialog
+        id="reset-confirm-skilltree"
+        open={showConfirmReset}
+        onCancel={() => setShowConfirmReset(false)}
+        onConfirm={async () => {
+          setShowConfirmReset(false)
+          await resetCurrentProfileData()
+        }}
+        title="Återställa allt?"
+        description="Detta rensar alla tillfälliga framsteg (märken och förkunskaper) i gästläget. Denna åtgärd går inte att ångra."
+        confirmLabel="Återställ"
+        cancelLabel="Avbryt"
+        variant="danger"
+      />
       <ProfileSelector
         id="save-progress-picker-canvas"
         mode="picker"
