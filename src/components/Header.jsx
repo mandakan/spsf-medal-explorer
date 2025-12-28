@@ -4,12 +4,11 @@ import ProfileSelector from './ProfileSelector'
 import { useProfile } from '../hooks/useProfile'
 
 const navItems = [
-  { path: '/', label: 'Home' },
-  { path: '/skill-tree', label: 'Märken' },
-  { path: '/medals', label: 'Märkeslista' },
-  { path: '/about', label: 'Om' },
+  { path: '/skill-tree', label: 'Märkesträd' },
+  { path: '/medals', label: 'Alla märken' },
+  { path: '/data', label: 'Data' },
   { path: '/settings', label: 'Inställningar' },
-  { path: '/data', label: 'Data' }
+  { path: '/about', label: 'Om' }
 ]
 
 export default function Header() {
@@ -55,7 +54,7 @@ export default function Header() {
           {/* Top row: brand + controls */}
           <div className="flex items-center justify-between gap-2">
             <Link
-              to="/"
+              to="/skill-tree"
               className="text-2xl font-bold leading-tight break-words text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
             >
               🎖️ Skyttemärken
