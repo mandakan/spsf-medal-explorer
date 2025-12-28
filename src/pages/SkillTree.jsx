@@ -7,7 +7,7 @@ import GuestModeBanner from '../components/GuestModeBanner'
 import { STATUS_ORDER, getStatusProps } from '../config/statuses'
 import StatusIcon from '../components/StatusIcon'
 import { getStatusColorVar } from '../config/statusColors'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate, useLocation, useNavigationType } from 'react-router-dom'
 
 export default function SkillTree() {
   const [viewMode, setViewMode] = useState('canvas') // 'canvas' or 'stats'
@@ -34,17 +34,25 @@ export default function SkillTree() {
 
   const navigate = useNavigate()
   const location = useLocation()
+  const navType = useNavigationType() // 'POP' | 'PUSH' | 'REPLACE'
+
   useEffect(() => {
-    if (typeof window !== 'undefined'
-      && window.innerWidth < 768
-      && location.pathname === '/skill-tree'
-      && !location.state?.fromFullscreenClose) {
+    if (typeof window === 'undefined') return
+    const isMobile = window.innerWidth < 768
+    const isSkillTreeRoot = location.pathname === '/skill-tree'
+    const fromClose = Boolean(location.state?.fromFullscreenClose)
+
+    // Only suppress auto-redirect for true back/forward navigations (not the initial load).
+    const histIdx = window.history?.state?.idx ?? 0
+    const isBackOrForward = navType === 'POP' && histIdx > 0
+
+    if (isMobile && isSkillTreeRoot && !fromClose && !isBackOrForward) {
       navigate('/skill-tree/fullscreen', {
         replace: true,
         state: { backgroundLocation: location },
       })
     }
-  }, [navigate, location])
+  }, [navigate, location, navType])
 
   if (isProfileLoading) {
     return null
