@@ -61,12 +61,12 @@ export default function DevPreviewOverlay({ feature, children, variant = 'auto' 
               aria-label="Feature preview"
               className="mx-2 w-[min(92vw,calc(100%-1rem),28rem)] rounded-lg border border-border bg-bg-secondary/95 p-3 shadow-md text-foreground"
             >
-              <div className="flex items-start gap-2">
+              <div className="flex items-center gap-2">
                 <Icon name="FlaskConical" className="w-4 h-4" aria-hidden="true" style={{ color: 'var(--color-info)' }} />
-                <div>
-                  <div className="font-semibold leading-5 text-balance">{title}</div>
-                  <div className="mt-1 text-sm text-muted-foreground text-pretty break-words">{message}</div>
-                </div>
+                <p className="text-sm leading-5 text-pretty break-words">
+                  <span className="font-semibold">{title}:</span>{' '}
+                  <span className="text-muted-foreground">{message}</span>
+                </p>
               </div>
             </div>
           </div>
