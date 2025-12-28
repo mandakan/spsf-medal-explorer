@@ -6,6 +6,7 @@ import { useProfile } from '../hooks/useProfile'
 import GuestModeBanner from '../components/GuestModeBanner'
 import { STATUS_ORDER, getStatusProps } from '../config/statuses'
 import StatusIcon from '../components/StatusIcon'
+import Icon from '../components/Icon'
 import { getStatusColorVar } from '../config/statusColors'
 import { useNavigate, useLocation } from 'react-router-dom'
 
@@ -109,7 +110,7 @@ export default function SkillTree() {
             className={`btn ${viewMode === 'canvas' ? 'btn-primary' : 'btn-muted'} min-h-[44px]`}
             onClick={() => setViewMode('canvas')}
           >
-            <span aria-hidden="true">🎨</span> Canvas
+            <Icon name="Palette" className="w-5 h-5 shrink-0" /> Canvas
           </button>
           <button
             role="tab"
@@ -119,7 +120,7 @@ export default function SkillTree() {
             className={`btn ${viewMode === 'stats' ? 'btn-primary' : 'btn-muted'} min-h-[44px]`}
             onClick={() => setViewMode('stats')}
           >
-            <span aria-hidden="true">📊</span> Statistik
+            <Icon name="BarChart2" className="w-5 h-5 shrink-0" /> Statistik
           </button>
         </div>
       </div>
