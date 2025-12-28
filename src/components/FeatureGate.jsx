@@ -8,13 +8,17 @@ import DevPreviewOverlay from './DevPreviewOverlay.jsx'
  *  - 'preview' (default) => show children under a blocking overlay when state=preview
  *  - 'hide' => hide entirely when state=preview
  */
-export default function FeatureGate({ name, mode = 'preview', fallback = null, children }) {
+export default function FeatureGate({ name, mode = 'preview', fallback = null, className, style, children }) {
   const { state } = useFlag(name)
 
   if (state === 'off') return fallback
   if (state === 'preview') {
     if (mode === 'hide') return fallback
-    return <DevPreviewOverlay feature={name}>{children}</DevPreviewOverlay>
+    return (
+      <div className={className} style={style}>
+        <DevPreviewOverlay feature={name}>{children}</DevPreviewOverlay>
+      </div>
+    )
   }
-  return children
+  return <div className={className} style={style}>{children}</div>
 }

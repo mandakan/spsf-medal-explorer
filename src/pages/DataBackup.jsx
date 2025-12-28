@@ -138,7 +138,7 @@ export default function DataBackup() {
             </button>
           </div>
 
-          <FeatureGate name="csvImport">
+          <FeatureGate name="csvImport" className="md:col-span-2">
             <CsvActivitiesPanel
               profile={currentProfile}
               updateProfile={updateProfile}

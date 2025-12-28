@@ -40,7 +40,7 @@ export default function DevPreviewOverlay({ feature, children, variant = 'auto' 
           aria-live="polite"
           className="absolute inset-0 z-10 grid place-items-center bg-black/40 backdrop-blur-sm"
         >
-          <div className="w-[min(92vw,36rem)] max-w-none mx-4 rounded-xl border border-border bg-bg-secondary/95 p-4 shadow-lg text-foreground">
+          <div className="w-[min(92vw,36rem,calc(100%-1rem))] max-w-none mx-4 rounded-xl border border-border bg-bg-secondary/95 p-4 shadow-lg text-foreground">
             <div className="flex items-start gap-3">
               <Icon name="FlaskConical" className="w-5 h-5" aria-hidden="true" style={{ color: 'var(--color-info)' }} />
               <div>
