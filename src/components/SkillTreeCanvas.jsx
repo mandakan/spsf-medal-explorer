@@ -11,6 +11,7 @@ import ReviewLegend from './ReviewLegend'
 import { useProfile } from '../hooks/useProfile'
 import ProfileSelector from './ProfileSelector'
 import ConfirmDialog from './ConfirmDialog'
+import Icon from './Icon'
 
 export default function SkillTreeCanvas({ legendDescribedById }) {
   const canvasRef = useRef(null)
@@ -880,7 +881,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                   className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-bg-secondary border border-border text-foreground shadow-lg hover:bg-bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                   title="Återställ vy"
                 >
-                  <span aria-hidden="true">⟲</span>
+                  <Icon name="RotateCcw" className="w-6 h-6" />
                 </button>
               </div>
             </div>
@@ -1071,7 +1072,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                 className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-bg-secondary border border-border text-foreground shadow-lg hover:bg-bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 title="Återställ vy"
               >
-                <span aria-hidden="true">⟲</span>
+                <Icon name="RotateCcw" className="w-6 h-6" />
               </button>
             </div>
           </div>
