@@ -1,6 +1,10 @@
 /**
  * Represents a user's profile and achievements
  */
+export const DEFAULT_PROFILE_FEATURES = {
+  allowManualUnlock: true,
+  enforceCurrentYearForSustained: false,
+}
 export class UserProfile {
   constructor(data) {
     this.userId = data.userId || `user-${Date.now()}`
@@ -11,8 +15,7 @@ export class UserProfile {
     this.unlockedMedals = data.unlockedMedals || []
     this.prerequisites = data.prerequisites || []
     this.features = {
-      allowManualUnlock: false,
-      enforceCurrentYearForSustained: false,
+      ...DEFAULT_PROFILE_FEATURES,
       ...(data.features || {}),
     }
     this.isGuest = Boolean(data.isGuest)

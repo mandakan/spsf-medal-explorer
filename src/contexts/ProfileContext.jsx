@@ -50,7 +50,6 @@ function createGuestProfile() {
     dateOfBirth: '1975-01-02',
     unlockedMedals: [],
     prerequisites: [],
-    features: { allowManualUnlock: true, enforceCurrentYearForSustained: false },
     isGuest: true,
   })
 }
