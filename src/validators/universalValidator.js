@@ -8,6 +8,7 @@
  */
 
 const WG = ['A', 'B', 'C', 'R']
+const COMP_DISCIPLINE_TYPES = ['national_whole_match', 'military_fast_match', 'ppc']
 
 function isFutureDate(dateStr) {
   const d = new Date(dateStr)
@@ -28,6 +29,18 @@ export function validateCompetition(values /* , medal */) {
   if (!values.weaponGroup || !WG.includes(values.weaponGroup)) {
     errors.weaponGroup = 'Select a valid weapon group'
   }
+
+  const dt = String(values.disciplineType || '').toLowerCase()
+  if (!COMP_DISCIPLINE_TYPES.includes(dt)) {
+    errors.disciplineType = 'Select a valid discipline'
+  }
+  if (dt === 'ppc') {
+    const cls = String(values.ppcClass || '').trim()
+    if (!cls) {
+      errors.ppcClass = 'PPC class is required for PPC discipline'
+    }
+  }
+
   if (values.score === '' || values.score == null || Number.isNaN(Number(values.score))) {
     errors.score = 'Enter a valid score/points'
   } else {
@@ -140,6 +153,22 @@ export function validateAchievement(achievement) {
     }
     if (typeof h !== 'number' || Number.isNaN(h) || h < 0) {
       errors.push('Hits required for application series')
+    }
+  }
+  if (type === 'competition_result') {
+    const sc = achievement.score
+    const dt = String(achievement.disciplineType || '').toLowerCase()
+    if (typeof sc !== 'number' || Number.isNaN(sc) || sc < 0) {
+      errors.push('Score required for competition result')
+    }
+    if (!dt || !['national_whole_match', 'military_fast_match', 'ppc'].includes(dt)) {
+      errors.push('Discipline required for competition result')
+    }
+    if (dt === 'ppc') {
+      const cls = achievement.ppcClass
+      if (!cls || String(cls).trim() === '') {
+        errors.push('PPC class required for PPC discipline')
+      }
     }
   }
   return { valid: errors.length === 0, errors }
