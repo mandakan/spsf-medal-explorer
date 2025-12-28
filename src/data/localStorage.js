@@ -449,7 +449,7 @@ export class LocalStorageDataManager extends DataManager {
       if (!copy.features) {
         copy.features = { ...DEFAULT_PROFILE_FEATURES }
       } else {
-        if (typeof copy.features.allowManualUnlock !== 'boolean') copy.features.allowManualUnlock = DEFAULT_PROFILE_FEATURE_FEATURES.allowManualUnlock
+        if (typeof copy.features.allowManualUnlock !== 'boolean') copy.features.allowManualUnlock = DEFAULT_PROFILE_FEATURES.allowManualUnlock
         if (typeof copy.features.enforceCurrentYearForSustained !== 'boolean') copy.features.enforceCurrentYearForSustained = DEFAULT_PROFILE_FEATURES.enforceCurrentYearForSustained
       }
       copy.lastModified = new Date().toISOString()

@@ -1,9 +1,8 @@
-import React, { useState, useCallback, useEffect } from 'react'
-import { ProfileContext } from './profileContext'
+import React, { useState, useCallback, useEffect, createContext } from 'react'
+export const ProfileContext = createContext(null)
 import { LocalStorageDataManager } from '../data/localStorage'
 import { UserProfile } from '../models/Profile'
 import { parseProfileBackup } from '../utils/importManager'
-export { ProfileContext } from './profileContext'
 
 const ONBOARDING_KEY = 'app:onboardingChoice'
 
