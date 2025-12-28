@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { useMedalDatabase } from '../hooks/useMedalDatabase'
 import Disclaimer from '../components/Disclaimer'
+import Icon from '../components/Icon'
 import { LINKS } from '../config/links'
 
 export default function Home() {
@@ -29,7 +30,10 @@ export default function Home() {
           to="/skill-tree"
           className="card p-6 shadow hover:shadow-lg transition-shadow cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
         >
-          <h3 className="text-xl font-bold mb-2 text-foreground">🎯 Märken</h3>
+          <h3 className="text-xl font-bold mb-2 text-foreground flex items-center gap-2">
+            <Icon name="Target" className="w-5 h-5 shrink-0 text-muted-foreground" />
+            <span>Märken</span>
+          </h3>
           <p className="text-muted-foreground">
             Utforska märken i ett interaktivt träd
           </p>
@@ -39,7 +43,10 @@ export default function Home() {
           to="/medals"
           className="card p-6 shadow hover:shadow-lg transition-shadow cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
         >
-          <h3 className="text-xl font-bold mb-2 text-foreground">📊 Märkeslista</h3>
+          <h3 className="text-xl font-bold mb-2 text-foreground flex items-center gap-2">
+            <Icon name="List" className="w-5 h-5 shrink-0 text-muted-foreground" />
+            <span>Märkeslista</span>
+          </h3>
           <p className="text-muted-foreground">
             Översikt över alla märken med filter och sökning
           </p>
@@ -49,7 +56,10 @@ export default function Home() {
           to="/settings"
           className="card p-6 shadow hover:shadow-lg transition-shadow cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
         >
-          <h3 className="text-xl font-bold mb-2 text-foreground">📝 Inställningar</h3>
+          <h3 className="text-xl font-bold mb-2 text-foreground flex items-center gap-2">
+            <Icon name="Settings" className="w-5 h-5 shrink-0 text-muted-foreground" />
+            <span>Inställningar</span>
+          </h3>
           <p className="text-muted-foreground">
             Hanter din profil
           </p>
