@@ -309,6 +309,16 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     })
   }, [setLegendSafeTop, setShowLegend])
 
+  const closeFullscreen = useCallback(() => {
+    const bg = location.state?.backgroundLocation
+    if (bg) {
+      navigate(bg, { replace: true })
+      return
+    }
+    const base = location.pathname.replace(/\/fullscreen$/, '')
+    navigate(base || '/skill-tree', { replace: true })
+  }, [location, navigate])
+
   const setCanvasRef = useCallback((node) => {
     canvasRef.current = node
   }, [])
@@ -414,7 +424,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
       // Only exit fullscreen when focus is inside the fullscreen overlay.
       // If a modal has focus, it will handle Escape itself.
       if (fullscreenRef.current && fullscreenRef.current.contains(active)) {
-        navigate(-1)
+        closeFullscreen()
       }
     }
     window.addEventListener('keydown', onEsc)
@@ -980,7 +990,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                     role="menuitem"
                     type="button"
                     ref={closeBtnRef}
-                    onClick={() => { setMenuOpen(false); navigate(-1) }}
+                    onClick={() => { setMenuOpen(false); closeFullscreen() }}
                     className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                   >
                     Stäng helskärm
