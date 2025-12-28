@@ -1,10 +1,9 @@
 import React from 'react'
 import { LINKS } from '../config/links'
-import { APP_INFO, CURRENT_RULEBOOK_VERSION, getRulebookVersionForYear } from '../config/appInfo'
+import { APP_INFO, CURRENT_RULEBOOK_VERSION } from '../config/appInfo'
 import Disclaimer from '../components/Disclaimer'
 
 export default function About() {
-  const upcoming2026 = getRulebookVersionForYear(2026)
   const base = (typeof document !== 'undefined' && document.querySelector('base')?.getAttribute('href')) || '/'
 
   return (
@@ -42,7 +41,7 @@ export default function About() {
                 target="_blank"
                 rel="noreferrer noopener"
               >
-                Svenska Pistolskytteförbundet (SPSF)
+                SPSF
               </a>
             </li>
             <li>
@@ -87,11 +86,7 @@ export default function About() {
         <section aria-labelledby="about-version" className="mt-8">
           <h2 id="about-version" className="text-2xl font-semibold">Om versionen</h2>
           <p className="mt-2">
-            Skytteboken upplaga / Rulebook version: <strong>{CURRENT_RULEBOOK_VERSION}</strong> (gäller nu)
-          </p>
-          <p className="mt-2 text-text-secondary">
-            Exempel: 2024 använder version <strong>{getRulebookVersionForYear(2024)}</strong>.
-            Från 2026 används version <strong>{upcoming2026}</strong>.
+            Den här versionen använder skjuthandboken upplaga: <strong>{CURRENT_RULEBOOK_VERSION}</strong> (2024)
           </p>
         </section>
 
