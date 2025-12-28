@@ -1,5 +1,5 @@
 import React from 'react'
-import { useFlag } from '../contexts/FeatureFlags.jsx'
+import { useFlag } from '../hooks/useFeatureFlags.js'
 import DevPreviewOverlay from './DevPreviewOverlay.jsx'
 
 /**

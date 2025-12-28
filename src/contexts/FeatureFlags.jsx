@@ -1,7 +1,6 @@
-import React, { createContext, useContext, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import flagsConfig from '../config/featureFlags.js'
-
-const FeatureFlagsContext = createContext(null)
+import { FeatureFlagsContext } from './FeatureFlagsContext.js'
 
 function parseQuery() {
   try {
@@ -28,7 +27,6 @@ function loadLocalOverrides() {
 
 function detectEnv() {
   if (typeof import.meta !== 'undefined' && import.meta.env?.MODE) return import.meta.env.MODE
-  if (typeof process !== 'undefined' && process.env?.NODE_ENV) return process.env.NODE_ENV
   return 'production'
 }
 
@@ -47,7 +45,7 @@ export function FeatureFlagsProvider({ children }) {
       out[name] = fromQuery || local || envState
     }
     return out
-  }, [env])
+  }, [env, overrides, query])
 
   const api = {
     get(name) { return flags[name] || 'off' },
@@ -61,13 +59,4 @@ export function FeatureFlagsProvider({ children }) {
   return <FeatureFlagsContext.Provider value={api}>{children}</FeatureFlagsContext.Provider>
 }
 
-export function useFlag(name) {
-  const ctx = useContext(FeatureFlagsContext)
-  const state = ctx?.get(name) ?? 'off'
-  return { state, enabled: state === 'on' || state === 'preview' }
-}
 
-export function useFlags() {
-  const ctx = useContext(FeatureFlagsContext)
-  return ctx ?? { get: () => 'off', enabled: () => false, all: () => ({}) }
-}
