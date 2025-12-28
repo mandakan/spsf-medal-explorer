@@ -123,7 +123,6 @@ export function mapFormToAchievement({ medal, medalType, formData }) {
         competitionType: String(formData?.competitionType || '').toLowerCase(),
         disciplineType: String(formData?.disciplineType || '').toLowerCase(),
         ppcClass: formData?.ppcClass || '',
-        medalType: String((formData?.medalType ?? medal?.tier ?? '')).toLowerCase(), // bronze/silver/gold
       }
     case 'qualification_result':
       return {

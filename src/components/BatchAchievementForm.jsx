@@ -136,11 +136,9 @@ export default function BatchAchievementForm() {
         }
         case 'competition_result': {
           const ct = String(row.competitionType || '').toLowerCase()
-          const mt = String(row.medalType || '').toLowerCase()
           const dt = String(row.disciplineType || '').toLowerCase()
           const sc = Number(row.score)
           if (!COMP_TYPES.includes(ct)) errs.push('Välj giltig tävlingstyp')
-          if (!MEDAL_TYPES.includes(mt)) errs.push('Välj giltig märkestyp')
           if (!COMP_DISCIPLINE_TYPES.includes(dt)) errs.push('Välj giltig gren')
           if (!Number.isFinite(sc)) errs.push('Poäng måste vara ett tal')
           if (dt === 'ppc' && !String(row.ppcClass || '').trim()) errs.push('Välj PPC-klass')
@@ -472,18 +470,6 @@ export default function BatchAchievementForm() {
                           aria-label={`Poäng för rad ${index + 1}`}
                         />
 
-                        <select
-                          value={row.medalType}
-                          onChange={(e) => handleRowChange(index, 'medalType', e.target.value)}
-                          className="select w-32"
-                          disabled={submitting}
-                          aria-label={`Märkestyp för rad ${index + 1}`}
-                        >
-                          <option value="">Select medal…</option>
-                          {MEDAL_TYPES.map(opt => (
-                            <option key={opt} value={opt}>{opt}</option>
-                          ))}
-                        </select>
                         <input
                           type="text"
                           value={row.competitionName}

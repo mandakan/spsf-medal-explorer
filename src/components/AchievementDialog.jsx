@@ -124,11 +124,9 @@ function FormContent({
         }
         case 'competition_result': {
           const ct = String(row.competitionType || '').toLowerCase()
-          const mt = String(row.medalType || '').toLowerCase()
           const dt = String(row.disciplineType || '').toLowerCase()
           const sc = Number(row.score)
           if (!COMP_TYPES.includes(ct)) errs.push('Välj giltig tävlingstyp')
-          if (!MEDAL_TYPES.includes(mt)) errs.push('Välj giltig märkestyp')
           if (!COMP_DISCIPLINE_TYPES.includes(dt)) errs.push('Välj giltig gren')
           if (!Number.isFinite(sc)) errs.push('Poäng måste vara ett tal')
           if (dt === 'ppc' && !String(row.ppcClass || '').trim()) errs.push('Välj PPC-klass')
@@ -382,18 +380,6 @@ function FormContent({
             />
           </div>
 
-          <div>
-            <label htmlFor="br-mtype" className="field-label mb-2">Märke</label>
-            <select
-              id="br-mtype"
-              className="select py-3"
-              value={form.medalType ?? ''}
-              onChange={(e) => setField('medalType', e.target.value)}
-            >
-              <option value="">Välj märke...</option>
-              {MEDAL_TYPES.map(o => <option key={o} value={o}>{o}</option>)}
-            </select>
-          </div>
 
           <div className="md:col-span-2">
             <label htmlFor="br-cname" className="field-label mb-2">Namn (valfritt)</label>
