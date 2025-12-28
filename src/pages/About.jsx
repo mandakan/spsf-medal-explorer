@@ -88,6 +88,12 @@ export default function About() {
           <p className="mt-2">
             Den här versionen använder skjuthandboken upplaga: <strong>{CURRENT_RULEBOOK_VERSION}</strong> (2024)
           </p>
+          <p className="mt-2 text-muted-foreground">
+            Version: <code>{__APP_VERSION__}</code> • Build: <code>{__BUILD_NUMBER__}</code> • Commit: <code>{__BUILD_COMMIT__}</code>
+          </p>
+          <p className="mt-1 text-muted-foreground">
+            Byggtid: <time dateTime={__BUILD_TIME__}>{new Date(__BUILD_TIME__).toLocaleString()}</time>
+          </p>
         </section>
 
         <section aria-labelledby="about-license" className="mt-8">
