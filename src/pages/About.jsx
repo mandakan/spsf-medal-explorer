@@ -2,6 +2,7 @@ import React from 'react'
 import { LINKS } from '../config/links'
 import { APP_INFO, CURRENT_RULEBOOK_VERSION } from '../config/appInfo'
 import Disclaimer from '../components/Disclaimer'
+import { BUILD } from '../config/buildInfo'
 
 export default function About() {
   const base = (typeof document !== 'undefined' && document.querySelector('base')?.getAttribute('href')) || '/'
@@ -89,10 +90,10 @@ export default function About() {
             Den här versionen använder skjuthandboken upplaga: <strong>{CURRENT_RULEBOOK_VERSION}</strong> (2024)
           </p>
           <p className="mt-2 text-muted-foreground">
-            Version: <code>{__APP_VERSION__}</code> • Build: <code>{__BUILD_NUMBER__}</code> • Commit: <code>{__BUILD_COMMIT__}</code>
+            Version: <code>{BUILD.version}</code> • Build: <code>{BUILD.number}</code> • Commit: <code>{BUILD.commit}</code>
           </p>
           <p className="mt-1 text-muted-foreground">
-            Byggtid: <time dateTime={__BUILD_TIME__}>{new Date(__BUILD_TIME__).toLocaleString()}</time>
+            Byggtid: <time dateTime={BUILD.timeISO}>{new Date(BUILD.timeISO).toLocaleString()}</time>
           </p>
         </section>
 

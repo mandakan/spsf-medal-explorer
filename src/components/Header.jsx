@@ -34,11 +34,6 @@ export default function Header() {
     return () => window.removeEventListener('keydown', onKey)
   }, [open])
 
-  // Close transient UI on route change (forward/back or link navigation)
-  useEffect(() => {
-    setOpenedAtPath(null)
-    setProfilePickerOpen(false)
-  }, [location.pathname])
 
   return (
     <header className="bg-surface border-b border-border sticky top-0 z-50">
@@ -56,6 +51,7 @@ export default function Header() {
           <div className="flex items-center justify-between gap-2">
             <Link
               to="/"
+              onClick={() => { setOpenedAtPath(null); setProfilePickerOpen(false) }}
               className="inline-flex items-center gap-2 text-2xl font-bold leading-tight break-words text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
             >
               <Icon name="Award" className="w-6 h-6 shrink-0" />
@@ -84,6 +80,7 @@ export default function Header() {
                       <li key={item.path}>
                         <Link
                           to={item.path}
+                          onClick={() => setProfilePickerOpen(false)}
                           className={`inline-flex items-center min-h-[44px] px-4 py-2 rounded transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary ${
                             isActive
                               ? 'bg-primary text-primary-foreground'
@@ -128,7 +125,7 @@ export default function Header() {
                   <li key={item.path}>
                     <Link
                       to={item.path}
-                      onClick={() => setOpenedAtPath(null)}
+                      onClick={() => { setOpenedAtPath(null); setProfilePickerOpen(false) }}
                       className={`inline-flex items-center min-h-[44px] px-4 py-2 rounded transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary ${
                         isActive
                           ? 'bg-primary text-primary-foreground'
