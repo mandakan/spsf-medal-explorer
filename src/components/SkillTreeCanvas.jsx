@@ -721,7 +721,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
             )}
 
             <div
-              className="absolute right-3 bottom-3 sm:right-4 sm:bottom-4 z-[60]"
+              className="absolute right-3 bottom-3 sm:right-4 sm:bottom-4 z-30"
               style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
             >
               <div className="relative">
@@ -821,7 +821,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
             </div>
 
             <div
-              className="absolute left-3 bottom-3 sm:left-4 sm:bottom-4 z-[60]"
+              className="absolute left-3 bottom-3 sm:left-4 sm:bottom-4 z-30"
               style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
             >
               <div className="inline-flex flex-col gap-2">
@@ -864,7 +864,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                 role="dialog"
                 aria-modal="false"
                 aria-labelledby="skilltree-help-title"
-                className="absolute left-1/2 bottom-24 -translate-x-1/2 w-[min(92vw,28rem)] rounded-md border border-border bg-background text-foreground shadow-xl p-4 z-[70]"
+                className="absolute left-1/2 bottom-24 -translate-x-1/2 w-[min(92vw,28rem)] rounded-md border border-border bg-background text-foreground shadow-xl p-4 z-30"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>
