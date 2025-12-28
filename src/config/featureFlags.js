@@ -10,5 +10,11 @@ export default {
     env: { production: 'preview' },
     title: 'Förhandsvisning',
     message: 'Historiköversikten är under utveckling. Funktioner kan saknas.'
+  },
+  enforceCurrentYearSetting: {
+    default: 'on',
+    env: { production: 'preview' },
+    title: 'Förhandsvisning',
+    message: 'Inställningen “Kräv innevarande år för återkommande märken” är under utveckling.'
   }
 }

@@ -5,6 +5,7 @@ import AchievementTimeline from '../components/AchievementTimeline'
 import StatisticsDashboard from '../components/StatisticsDashboard'
 import { UndoRedoProvider } from '../contexts/UndoRedoContext'
 import ProfilePromptBanner from '../components/ProfilePromptBanner'
+import FeatureGate from '../components/FeatureGate.jsx'
 
 export default function Settings() {
   const { currentProfile, setProfileFeature } = useProfile()
@@ -46,23 +47,25 @@ export default function Settings() {
             </div>
           </div>
 
-          <div className="flex items-start gap-3 mt-3">
-            <input
-              id="ft-enforce-current-year"
-              type="checkbox"
-              className="h-5 w-5 mt-0.5"
-              checked={!!currentProfile?.features?.enforceCurrentYearForSustained}
-              onChange={(e) => setProfileFeature('enforceCurrentYearForSustained', e.target.checked)}
-            />
-            <div>
-              <label htmlFor="ft-enforce-current-year" className="field-label mb-1">
-                Kräv innevarande år för återkommande märken
-              </label>
-              <p className="field-hint">
-                Märken som kräver återkommande aktiviteter kan bara låsas upp innevarande kalenderår.
-              </p>
+          <FeatureGate name="enforceCurrentYearSetting">
+            <div className="flex items-start gap-3 mt-3">
+              <input
+                id="ft-enforce-current-year"
+                type="checkbox"
+                className="h-5 w-5 mt-0.5"
+                checked={!!currentProfile?.features?.enforceCurrentYearForSustained}
+                onChange={(e) => setProfileFeature('enforceCurrentYearForSustained', e.target.checked)}
+              />
+              <div>
+                <label htmlFor="ft-enforce-current-year" className="field-label mb-1">
+                  Kräv innevarande år för återkommande märken
+                </label>
+                <p className="field-hint">
+                  Märken som kräver återkommande aktiviteter kan bara låsas upp innevarande kalenderår.
+                </p>
+              </div>
             </div>
-          </div>
+          </FeatureGate>
         </div>
 
         <div
