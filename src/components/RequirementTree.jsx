@@ -62,14 +62,14 @@ function countMet(children = []) {
   return { met, total }
 }
 
-function RequirementNode({ node, path = 'root', level = 0, defaultExpanded = level === 0, noBorderTop = false }) {
+function RequirementNode({ node, path = 'root', level = 0, defaultExpanded = level === 0 }) {
   const [expanded, setExpanded] = useState(defaultExpanded)
   const headerId = `${path}-group`
   const isGroup = node?.node === 'and' || node?.node === 'or'
 
   if (!node) return null
 
-  const liClass = (level > 0 || !noBorderTop) ? 'border-l border-border pl-3' : 'pl-0'
+  const liClass = level > 0 ? 'border-l border-border pl-3' : 'pl-0'
 
   // Flatten single-child boolean groups to avoid redundant containers
   if (isGroup) {
@@ -81,7 +81,6 @@ function RequirementNode({ node, path = 'root', level = 0, defaultExpanded = lev
           path={path}
           level={level}
           defaultExpanded={defaultExpanded}
-          noBorderTop={noBorderTop}
         />
       )
     }
@@ -105,7 +104,6 @@ function RequirementNode({ node, path = 'root', level = 0, defaultExpanded = lev
               path={`${path}-sub`}
               level={level}
               defaultExpanded={level < 1}
-              noBorderTop
             />
           </li>
         )
@@ -210,10 +208,9 @@ export default function RequirementTree({ tree }) {
                 path={`root-${idx}`}
                 level={0}
                 defaultExpanded
-                noBorderTop
               />
             ))
-          : <RequirementNode node={flattenedRoot} />
+          : <RequirementNode node={flattenedRoot} level={0} defaultExpanded />
         }
       </ul>
     </div>
