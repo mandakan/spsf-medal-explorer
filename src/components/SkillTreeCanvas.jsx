@@ -1006,6 +1006,11 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                 onClick={handleCanvasClick}
                 onDoubleClick={handleCanvasDoubleClick}
               />
+              {showLegend && (
+                <div className="absolute left-3 top-3 sm:left-4 sm:top-4 z-[40] overflow-x-hidden" role="note" id="skilltree-legend-fs">
+                  <ReviewLegend variant="canvas" />
+                </div>
+              )}
               <div className="pointer-events-none absolute inset-0">
                 {badgeData.map(badge => (
                   <React.Fragment key={badge.id}>
