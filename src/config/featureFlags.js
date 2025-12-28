@@ -17,5 +17,11 @@ export default {
     title: 'Förhandsvisning',
     message: 'Inställningen är under utveckling.',
     overlay: 'inline'
+  },
+  csvImport: {
+    default: 'on',
+    env: { production: 'preview' },
+    title: 'Förhandsvisning',
+    message: 'CSV‑import/export är under utveckling. Gränssnittet kan ändras och vissa funktioner saknas.'
   }
 }
