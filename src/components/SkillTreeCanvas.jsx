@@ -309,6 +309,23 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     })
   }, [setLegendSafeTop, setShowLegend])
 
+  const closeFullscreen = useCallback(() => {
+    const bg = location.state?.backgroundLocation
+    // If we have a background location, return to it and mark that we're closing fullscreen
+    if (bg && typeof bg === 'object') {
+      const to = { pathname: bg.pathname, search: bg.search, hash: bg.hash }
+      navigate(to, { replace: true, state: { ...(bg.state || {}), fromFullscreenClose: true } })
+      return
+    }
+    if (typeof bg === 'string') {
+      navigate(bg, { replace: true, state: { fromFullscreenClose: true } })
+      return
+    }
+    // Fallback to base route with the same skip flag
+    const base = location.pathname.replace(/\/fullscreen$/, '')
+    navigate(base || '/skill-tree', { replace: true, state: { fromFullscreenClose: true } })
+  }, [location, navigate])
+
   const setCanvasRef = useCallback((node) => {
     canvasRef.current = node
   }, [])
@@ -414,7 +431,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
       // Only exit fullscreen when focus is inside the fullscreen overlay.
       // If a modal has focus, it will handle Escape itself.
       if (fullscreenRef.current && fullscreenRef.current.contains(active)) {
-        navigate(-1)
+        closeFullscreen()
       }
     }
     window.addEventListener('keydown', onEsc)
@@ -426,7 +443,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
         el.focus()
       }
     }
-  }, [isFullscreen, navigate, menuOpen, helpOpen])
+  }, [isFullscreen, menuOpen, helpOpen, closeFullscreen])
 
   // Close floating menu on outside click
   useEffect(() => {
@@ -711,7 +728,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
             )}
 
             <div
-              className="absolute right-3 bottom-3 sm:right-4 sm:bottom-4 z-[60]"
+              className="absolute right-3 bottom-3 sm:right-4 sm:bottom-4 z-30"
               style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
             >
               <div className="relative">
@@ -798,7 +815,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                     <button
                       role="menuitem"
                       type="button"
-                      onClick={() => { setMenuOpen(false); navigate('/skill-tree/fullscreen') }}
+                      onClick={() => { setMenuOpen(false); navigate('/skill-tree/fullscreen', { state: { backgroundLocation: location } }) }}
                       className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                       aria-haspopup="dialog"
                       aria-controls="skilltree-fullscreen"
@@ -811,7 +828,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
             </div>
 
             <div
-              className="absolute left-3 bottom-3 sm:left-4 sm:bottom-4 z-[60]"
+              className="absolute left-3 bottom-3 sm:left-4 sm:bottom-4 z-30"
               style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
             >
               <div className="inline-flex flex-col gap-2">
@@ -854,7 +871,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                 role="dialog"
                 aria-modal="false"
                 aria-labelledby="skilltree-help-title"
-                className="absolute left-1/2 bottom-24 -translate-x-1/2 w-[min(92vw,28rem)] rounded-md border border-border bg-background text-foreground shadow-xl p-4 z-[70]"
+                className="absolute left-1/2 bottom-24 -translate-x-1/2 w-[min(92vw,28rem)] rounded-md border border-border bg-background text-foreground shadow-xl p-4 z-30"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>
@@ -980,7 +997,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                     role="menuitem"
                     type="button"
                     ref={closeBtnRef}
-                    onClick={() => { setMenuOpen(false); navigate(-1) }}
+                    onClick={() => { setMenuOpen(false); closeFullscreen() }}
                     className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                   >
                     Stäng helskärm

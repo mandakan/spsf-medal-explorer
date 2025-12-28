@@ -75,7 +75,7 @@ export default function MobileBottomSheet({
   return (
     <div
       aria-hidden={!open}
-      className="fixed inset-0 z-50"
+      className="fixed inset-0 z-[80]"
     >
       {/* Backdrop */}
       <div

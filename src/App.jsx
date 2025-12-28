@@ -35,9 +35,12 @@ function MedalDetailOverlay() {
 function AppRoutes() {
   const location = useLocation()
   const background = location.state?.backgroundLocation
+  const isMedalDetail = location.pathname.startsWith('/medals/')
+  const renderLocation = (isMedalDetail && background) ? background : location
+
   return (
     <>
-      <Routes location={background || location}>
+      <Routes location={renderLocation}>
         <Route path="/" element={<RootLayout />}>
           <Route index element={<Home />} />
           <Route path="skill-tree" element={<SkillTree />} />
@@ -63,7 +66,7 @@ function AppRoutes() {
           <Route path="about" element={<About />} />
         </Route>
       </Routes>
-      {background && (
+      {isMedalDetail && background && (
         <Routes>
           <Route path="/medals/:id" element={<MedalDetailOverlay />} />
         </Routes>
