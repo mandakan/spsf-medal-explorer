@@ -46,6 +46,7 @@ export default defineConfig(({ command, mode }) => {
       // Note: Using 'terser' requires installing it as a dev dependency. Run: npm i -D terser
       minify: 'terser',
       sourcemap: false,
+      manifest: 'asset-manifest.json',
       chunkSizeWarningLimit: 1000,
       rollupOptions: {
         output: {
