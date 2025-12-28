@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useProfile } from '../hooks/useProfile'
 import ProfileSelector from './ProfileSelector'
 import ConfirmDialog from './ConfirmDialog'
+import Icon from './Icon'
 
 export default function GuestModeBanner({ idPrefix = 'default' }) {
   const { resetCurrentProfileData } = useProfile()
@@ -12,7 +13,7 @@ export default function GuestModeBanner({ idPrefix = 'default' }) {
     <>
       <div className="card p-4" role="status" aria-live="polite">
         <div className="flex items-start gap-3">
-          <div aria-hidden="true" className="text-xl leading-none">🧭</div>
+          <Icon name="Compass" className="w-6 h-6 shrink-0" />
           <div className="flex-1">
             <p className="mb-2">Gästläge: framsteg sparas tillfälligt.</p>
             <div className="flex gap-2">
