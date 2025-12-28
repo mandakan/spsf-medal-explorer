@@ -4,6 +4,7 @@ import { MedalProvider } from './contexts/MedalContext.jsx'
 import { ProfileProvider } from './contexts/ProfileContext.jsx'
 import { CalculatorProvider } from './contexts/CalculatorContext.jsx'
 import { UndoRedoProvider } from './contexts/UndoRedoContext.jsx'
+import { FeatureFlagsProvider } from './contexts/FeatureFlags.jsx'
 import RootLayout from './layouts/RootLayout'
 import Home from './pages/Home'
 import SkillTree from './pages/SkillTree'
@@ -85,17 +86,19 @@ function App() {
     return () => mq.removeEventListener?.('change', onChange)
   }, [])
   return (
-    <MedalProvider>
-      <ProfileProvider>
-        <CalculatorProvider>
-          <UndoRedoProvider>
-            <BrowserRouter basename={base}>
-              <AppRoutes />
-            </BrowserRouter>
-          </UndoRedoProvider>
-        </CalculatorProvider>
-      </ProfileProvider>
-    </MedalProvider>
+    <FeatureFlagsProvider>
+      <MedalProvider>
+        <ProfileProvider>
+          <CalculatorProvider>
+            <UndoRedoProvider>
+              <BrowserRouter basename={base}>
+                <AppRoutes />
+              </BrowserRouter>
+            </UndoRedoProvider>
+          </CalculatorProvider>
+        </ProfileProvider>
+      </MedalProvider>
+    </FeatureFlagsProvider>
   )
 }
 

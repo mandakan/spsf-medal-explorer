@@ -1,0 +1,27 @@
+export default {
+  achievementEntry: {
+    default: 'on',
+    env: { production: 'preview' },
+    title: 'Förhandsvisning',
+    message: 'Registrering av prestationer är under utveckling. Gränssnitt och beteende kan ändras.'
+  },
+  historyTimeline: {
+    default: 'on',
+    env: { production: 'preview' },
+    title: 'Förhandsvisning',
+    message: 'Historiköversikten är under utveckling. Funktioner kan saknas.'
+  },
+  enforceCurrentYearSetting: {
+    default: 'on',
+    env: { production: 'preview' },
+    title: 'Förhandsvisning',
+    message: 'Inställningen är under utveckling.',
+    overlay: 'inline'
+  },
+  csvImport: {
+    default: 'on',
+    env: { production: 'preview' },
+    title: 'Förhandsvisning',
+    message: 'CSV‑import/export är under utveckling. Gränssnittet kan ändras och vissa funktioner saknas.'
+  }
+}

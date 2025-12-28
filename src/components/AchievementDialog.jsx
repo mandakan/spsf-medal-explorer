@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import MobileBottomSheet from './MobileBottomSheet'
+import FeatureGate from './FeatureGate'
 
 const currentYear = new Date().getFullYear()
 
@@ -36,19 +37,21 @@ export default function AchievementDialog({
       swipeToDismiss
     >
       {open ? (
-        <FormContent
-          key={resetKey}
-          initialRow={initialRow}
-          onSave={onSave}
-          onClose={onClose}
-          mode={mode}
-          submitLabel={submitLabel}
-          WG={WG}
-          DISCIPLINE_TYPES={DISCIPLINE_TYPES}
-          COMP_TYPES={COMP_TYPES}
-          MEDAL_TYPES={MEDAL_TYPES}
-          APP_TIME_OPTIONS={APP_TIME_OPTIONS}
-        />
+        <FeatureGate name="achievementEntry">
+          <FormContent
+            key={resetKey}
+            initialRow={initialRow}
+            onSave={onSave}
+            onClose={onClose}
+            mode={mode}
+            submitLabel={submitLabel}
+            WG={WG}
+            DISCIPLINE_TYPES={DISCIPLINE_TYPES}
+            COMP_TYPES={COMP_TYPES}
+            MEDAL_TYPES={MEDAL_TYPES}
+            APP_TIME_OPTIONS={APP_TIME_OPTIONS}
+          />
+        </FeatureGate>
       ) : null}
     </MobileBottomSheet>
   )

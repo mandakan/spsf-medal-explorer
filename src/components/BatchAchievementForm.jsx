@@ -3,6 +3,7 @@ import AchievementDialog from './AchievementDialog'
 import AchievementRowCard from './AchievementRowCard'
 import { detectDuplicateAchievements } from '../logic/achievementValidator'
 import { useAchievementHistory } from '../hooks/useAchievementHistory'
+import FeatureGate from './FeatureGate'
 
 const WG = ['A', 'B', 'C', 'R']
 const COMP_TYPES = ['national', 'regional/landsdels', 'crewmate/krets', 'championship']
@@ -182,7 +183,8 @@ export default function BatchAchievementForm() {
   }
 
   return (
-    <div className="card p-6">
+    <FeatureGate name="achievementEntry">
+      <div className="card p-6">
       <h2 className="text-xl font-bold mb-2 text-text-primary">Lägg till aktiviteter i batch</h2>
       <p id="batch-type-help" className="text-sm text-text-secondary mb-4">
         Batcher stödjer precisionsserier och tillämpningsserier. För att lägga till övriga, logga
@@ -572,5 +574,6 @@ export default function BatchAchievementForm() {
         APP_TIME_OPTIONS={APP_TIME_OPTIONS}
       />
     </div>
+    </FeatureGate>
   )
 }

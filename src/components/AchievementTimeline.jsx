@@ -3,6 +3,7 @@ import { useProfile } from '../hooks/useProfile'
 import AchievementCard from './AchievementCard'
 import { achievementsToCSV, downloadCSV } from '../utils/achievementExport'
 import { getAchievementTypeLabel } from '../utils/labels'
+import FeatureGate from './FeatureGate'
 
 export default function AchievementTimeline() {
   const { currentProfile } = useProfile()
@@ -47,7 +48,8 @@ export default function AchievementTimeline() {
   }
 
   return (
-    <div className="space-y-6">
+    <FeatureGate name="historyTimeline">
+      <div className="space-y-6">
       <div className="card p-4">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-bold text-text-primary">Filters</h3>
@@ -124,5 +126,6 @@ export default function AchievementTimeline() {
         )}
       </div>
     </div>
+    </FeatureGate>
   )
 }

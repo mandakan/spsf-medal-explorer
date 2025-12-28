@@ -1,0 +1,24 @@
+import React from 'react'
+import { useFlag } from '../hooks/useFeatureFlags.js'
+import DevPreviewOverlay from './DevPreviewOverlay.jsx'
+
+/**
+ * name: flag name
+ * mode:
+ *  - 'preview' (default) => show children under a blocking overlay when state=preview
+ *  - 'hide' => hide entirely when state=preview
+ */
+export default function FeatureGate({ name, mode = 'preview', fallback = null, className, style, children }) {
+  const { state } = useFlag(name)
+
+  if (state === 'off') return fallback
+  if (state === 'preview') {
+    if (mode === 'hide') return fallback
+    return (
+      <div className={className} style={style}>
+        <DevPreviewOverlay feature={name}>{children}</DevPreviewOverlay>
+      </div>
+    )
+  }
+  return <div className={className} style={style}>{children}</div>
+}
