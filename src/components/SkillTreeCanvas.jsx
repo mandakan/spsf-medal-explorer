@@ -311,12 +311,19 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
 
   const closeFullscreen = useCallback(() => {
     const bg = location.state?.backgroundLocation
-    if (bg) {
-      navigate(bg, { replace: true })
+    // If we have a background location, return to it and mark that we're closing fullscreen
+    if (bg && typeof bg === 'object') {
+      const to = { pathname: bg.pathname, search: bg.search, hash: bg.hash }
+      navigate(to, { replace: true, state: { ...(bg.state || {}), fromFullscreenClose: true } })
       return
     }
+    if (typeof bg === 'string') {
+      navigate(bg, { replace: true, state: { fromFullscreenClose: true } })
+      return
+    }
+    // Fallback to base route with the same skip flag
     const base = location.pathname.replace(/\/fullscreen$/, '')
-    navigate(base || '/skill-tree', { replace: true })
+    navigate(base || '/skill-tree', { replace: true, state: { fromFullscreenClose: true } })
   }, [location, navigate])
 
   const setCanvasRef = useCallback((node) => {
@@ -808,7 +815,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                     <button
                       role="menuitem"
                       type="button"
-                      onClick={() => { setMenuOpen(false); navigate('/skill-tree/fullscreen') }}
+                      onClick={() => { setMenuOpen(false); navigate('/skill-tree/fullscreen', { state: { backgroundLocation: location } }) }}
                       className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                       aria-haspopup="dialog"
                       aria-controls="skilltree-fullscreen"
