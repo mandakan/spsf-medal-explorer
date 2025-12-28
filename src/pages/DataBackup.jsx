@@ -30,12 +30,6 @@ export default function DataBackup() {
     }
   }
 
-
-
-
-
-
-
   return (
     <div className="max-w-6xl mx-auto p-4">
       <h1 className="section-title mb-4">Data &amp; Backup</h1>
