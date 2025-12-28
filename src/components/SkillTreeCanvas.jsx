@@ -822,7 +822,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                         onClick={() => { setMenuOpen(false); setOpenPicker(true) }}
                         className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                       >
-                        Spara framsteg
+                        Spara
                       </button>
                     )}
                     <button
@@ -1123,10 +1123,10 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
               onClick={() => setOpenPicker(true)}
               className="absolute left-1/2 -translate-x-1/2 z-[60] inline-flex items-center gap-2 rounded-full border border-border bg-background/80 backdrop-blur-sm px-3 py-1.5 text-sm shadow-md min-h-[36px]"
               style={{ bottom: 'calc(env(safe-area-inset-bottom) + 16px)' }}
-              aria-label="Gästläge – Spara framsteg"
-              title="Gästläge – Spara framsteg"
+              aria-label="Gästläge - Spara framsteg"
+              title="Gästläge - Spara framsteg"
             >
-              Gästläge – Spara framsteg
+              Gästläge - Spara
             </button>
           )}
           <div className="flex-1">
