@@ -34,6 +34,9 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   const LABEL_HALF_PX = 80           // approximate half-width of label text area
   const LABEL_BOTTOM_PX = 56         // reserve for up to two lines of label text at bottom
   const DEFAULT_LEGEND_SAFE_TOP_PX = 72
+  // Legend visibility and reserved safe-top height must be defined before pan/zoom
+  const [showLegend, setShowLegend] = useState(true)
+  const [legendSafeTop, setLegendSafeTop] = useState(showLegend ? DEFAULT_LEGEND_SAFE_TOP_PX : 0)
   const getWorldBounds = useCallback(() => {
     if (!layout || !layout.medals?.length) return { minX: 0, minY: 0, maxX: 0, maxY: 0 }
     let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity
@@ -71,9 +74,6 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
 
   // Floating menu and overlays state/refs
   const [menuOpen, setMenuOpen] = useState(false)
-  // Show legend by default in all modes for consistency
-  const [showLegend, setShowLegend] = useState(true)
-  const [legendSafeTop, setLegendSafeTop] = useState(showLegend ? DEFAULT_LEGEND_SAFE_TOP_PX : 0)
   const [showYearBadges, setShowYearBadges] = useState(true)
   const [helpOpen, setHelpOpen] = useState(false)
   const legendId = legendDescribedById || 'skilltree-legend'
