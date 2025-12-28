@@ -692,7 +692,8 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
             {showLegend && (
               <div
                 ref={legendRef}
-                className="absolute left-3 top-3 sm:left-4 sm:top-4 z-[40] overflow-x-hidden rounded-md border border-border/60 bg-background/80 backdrop-blur-sm shadow-md px-2 py-1"
+                className="absolute left-3 right-3 top-3 sm:left-4 sm:right-auto sm:top-4 z-[40] overflow-x-auto whitespace-nowrap rounded-md border border-border/60 bg-background/80 backdrop-blur-sm shadow-md px-3 py-1.5"
+                style={{ marginTop: 'env(safe-area-inset-top)' }}
                 role="note"
                 id={legendId}
               >
@@ -1039,7 +1040,8 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
               {showLegend && (
                 <div
                   ref={legendFsRef}
-                  className="absolute left-3 top-3 sm:left-4 sm:top-4 z-[40] overflow-x-hidden rounded-md border border-border/60 bg-background/80 backdrop-blur-sm shadow-md px-2 py-1"
+                  className="absolute left-3 right-3 top-3 sm:left-4 sm:right-auto sm:top-4 z-[40] overflow-x-auto whitespace-nowrap rounded-md border border-border/60 bg-background/80 backdrop-blur-sm shadow-md px-3 py-1.5"
+                  style={{ marginTop: 'env(safe-area-inset-top)' }}
                   role="note"
                   id="skilltree-legend-fs"
                 >
