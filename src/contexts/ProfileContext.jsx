@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useEffect, createContext } from 'react'
-export const ProfileContext = createContext(null)
+import React, { useState, useCallback, useEffect } from 'react'
+import { ProfileContext } from './profileContext.js'
 import { LocalStorageDataManager } from '../data/localStorage'
 import { UserProfile } from '../models/Profile'
 import { parseProfileBackup } from '../utils/importManager'
