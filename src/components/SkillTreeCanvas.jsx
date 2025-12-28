@@ -62,6 +62,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   const [isDragging, setIsDragging] = useState(false)
   const closeBtnRef = useRef(null)
   const prevFocusRef = useRef(null)
+  const didInitViewRef = useRef(false)
 
   // Keep latest interactive scale without causing re-renders
   const scaleRef = useRef(scale)
@@ -275,19 +276,6 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     )
   }, [getVisibleMedalsForCanvas, getEffectiveTransform, layout, medalDatabase, statuses, selectedMedal, render, hoveredMedal])
 
-  // Ensure label readability at initial/reset states without fighting user zoom
-  const ensureLabelVisibilityScale = useCallback(() => {
-    const canvas = canvasRef.current
-    if (!canvas || !layout) return
-    const { baseScale } = computeBaseTransform(canvas)
-    // Target minimum effective scale for label readability (labels draw at >= 0.8)
-    const minEff = 0.8
-    const targetInteractive = minEff / Math.max(0.001, baseScale)
-    const current = scaleRef.current
-    if (current + 1e-3 < targetInteractive) {
-      setScaleAbsolute(targetInteractive)
-    }
-  }, [computeBaseTransform, layout, setScaleAbsolute])
 
   const handleResetView = useCallback(() => {
     const el = canvasRef.current
@@ -333,12 +321,13 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     setBadgeData(getYearsBadgeData(el))
   }, [getYearsBadgeData, panX, panY, scale, hoveredMedal, selectedMedal, layout])
 
-  // Ensure label readability once layout is ready (initialization only)
+  // Initialize view to the same target as "Återställ vy" once when layout is ready
   useEffect(() => {
-    if (canvasRef.current && layout) {
-      ensureLabelVisibilityScale()
-    }
-  }, [layout, ensureLabelVisibilityScale])
+    if (didInitViewRef.current) return
+    if (!canvasRef.current || !layout) return
+    didInitViewRef.current = true
+    handleResetView()
+  }, [layout, handleResetView])
 
   // Redraw and recompute overlay on window resize
   useEffect(() => {
