@@ -1242,7 +1242,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                 <div>
                   <h3 id="skilltree-help-title-fs" className="text-sm font-semibold mb-1">Hjälp</h3>
                   <p className="text-sm text-muted-foreground">
-                    Dra för att panorera • Nyp eller använd +/− för att zooma • 0 återställer vy • Klicka för detaljer
+                    Dra för att panorera • Nyp för att zooma • Klicka för detaljer
                   </p>
                 </div>
                 <button
