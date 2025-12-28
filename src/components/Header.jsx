@@ -54,7 +54,7 @@ export default function Header() {
           {/* Top row: brand + controls */}
           <div className="flex items-center justify-between gap-2">
             <Link
-              to="/skill-tree"
+              to="/"
               className="text-2xl font-bold leading-tight break-words text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
             >
               🎖️ Skyttemärken
