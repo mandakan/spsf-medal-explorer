@@ -1006,6 +1006,16 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                   >
                     {showYearBadges ? 'Dölj årsbrickor' : 'Visa årsbrickor'}
                   </button>
+                  {(!currentProfile || isGuest) && (
+                    <button
+                      role="menuitem"
+                      type="button"
+                      onClick={() => { setMenuOpen(false); setOpenPicker(true) }}
+                      className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                    >
+                      Spara framsteg
+                    </button>
+                  )}
                   <button
                     role="menuitem"
                     type="button"
