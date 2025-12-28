@@ -32,10 +32,9 @@ function detectEnv() {
 
 export function FeatureFlagsProvider({ children }) {
   const env = detectEnv()
-  const overrides = typeof window !== 'undefined' ? loadLocalOverrides() : {}
-  const query = typeof window !== 'undefined' ? parseQuery() : {}
-
   const flags = useMemo(() => {
+    const overrides = typeof window !== 'undefined' ? loadLocalOverrides() : {}
+    const query = typeof window !== 'undefined' ? parseQuery() : {}
     const out = {}
     for (const [name, def] of Object.entries(flagsConfig || {})) {
       const base = def.default || 'off'
@@ -45,7 +44,7 @@ export function FeatureFlagsProvider({ children }) {
       out[name] = fromQuery || local || envState
     }
     return out
-  }, [env, overrides, query])
+  }, [env])
 
   const api = {
     get(name) { return flags[name] || 'off' },
