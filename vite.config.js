@@ -18,37 +18,41 @@ const baseFromCI = process.env.VITE_BASE
 const base = baseFromCI != null && baseFromCI !== '' ? baseFromCI : (isCI ? (isUserOrOrgSite ? '/' : `/${repo}/`) : '/')
 
 const commit = execSync('git rev-parse --short HEAD').toString().trim()
-const buildNumber = process.env.BUILD_NUMBER ?? process.env.GITHUB_RUN_NUMBER
-if (!buildNumber && process.env.NODE_ENV === 'production') {
-  throw new Error('BUILD_NUMBER is required for production builds')
-}
-const buildTime = new Date().toISOString()
+ // buildNumber and buildTime are resolved inside the Vite config function to avoid requiring BUILD_NUMBER during preview
 
 // https://vitejs.dev/config/
-export default defineConfig({
-  base,
-  plugins: [react(), tailwindcss()],
-  define: {
-    __APP_VERSION__: JSON.stringify(pkg.version),
-    __BUILD_NUMBER__: JSON.stringify(buildNumber || 'dev'),
-    __BUILD_COMMIT__: JSON.stringify(commit),
-    __BUILD_TIME__: JSON.stringify(buildTime),
-  },
-  server: {
-    port: 5173,
-    open: true
-  },
-  build: {
-    outDir: 'dist',
-    // Note: Using 'terser' requires installing it as a dev dependency. Run: npm i -D terser
-    minify: 'terser',
-    sourcemap: false,
-    chunkSizeWarningLimit: 1000,
-    rollupOptions: {
-      output: {
-        manualChunks: (id) => {
-          if (id.includes('node_modules')) {
-            return 'vendor'
+export default defineConfig(({ command, mode }) => {
+  const buildNumber = process.env.BUILD_NUMBER ?? process.env.GITHUB_RUN_NUMBER
+  if (command === 'build' && mode === 'production' && !buildNumber) {
+    throw new Error('BUILD_NUMBER is required for production builds')
+  }
+  const buildTime = new Date().toISOString()
+
+  return {
+    base,
+    plugins: [react(), tailwindcss()],
+    define: {
+      __APP_VERSION__: JSON.stringify(pkg.version),
+      __BUILD_NUMBER__: JSON.stringify(buildNumber || 'dev'),
+      __BUILD_COMMIT__: JSON.stringify(commit),
+      __BUILD_TIME__: JSON.stringify(buildTime),
+    },
+    server: {
+      port: 5173,
+      open: true
+    },
+    build: {
+      outDir: 'dist',
+      // Note: Using 'terser' requires installing it as a dev dependency. Run: npm i -D terser
+      minify: 'terser',
+      sourcemap: false,
+      chunkSizeWarningLimit: 1000,
+      rollupOptions: {
+        output: {
+          manualChunks: (id) => {
+            if (id.includes('node_modules')) {
+              return 'vendor'
+            }
           }
         }
       }
