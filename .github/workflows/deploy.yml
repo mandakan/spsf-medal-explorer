@@ -58,6 +58,12 @@ jobs:
       - name: Include LICENSE in build
         run: cp LICENSE dist/LICENSE
 
+      - name: Stamp service worker version
+        run: sed -i "s/^const VERSION = .*/const VERSION = 'build-${{ github.run_number }}'/" dist/service-worker.js
+
+      - name: Create .nojekyll
+        run: touch dist/.nojekyll
+
       - name: Upload artifact for deployment
         uses: actions/upload-pages-artifact@v3
         with:

@@ -1,6 +1,7 @@
 {
   "name": "Skyttemärken",
   "short_name": "Skyttemärken",
+  "id": "./",
   "description": "Utforska och dokumentera dina SPSF-märken och medaljer",
   "start_url": ".",
   "scope": ".",

@@ -41,10 +41,18 @@ self.addEventListener('fetch', (event) => {
     return
   }
 
-  // Images: cache-first
-  if (req.destination === 'image') {
+  // Static assets: cache-first for same-origin JS/CSS/Fonts/Images
+  const isSameOrigin = new URL(req.url).origin === self.location.origin
+  if (isSameOrigin && (['script', 'style', 'font', 'image'].includes(req.destination))) {
     event.respondWith(
-      caches.match(req).then((cached) => cached || fetch(req))
+      caches.match(req).then((cached) => {
+        if (cached) return cached
+        return fetch(req).then((res) => {
+          const copy = res.clone()
+          caches.open(STATIC_CACHE).then((cache) => cache.put(req, copy))
+          return res
+        })
+      })
     )
     return
   }
