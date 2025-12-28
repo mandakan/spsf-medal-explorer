@@ -8,10 +8,10 @@ export default function About() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6">
-      <article className="prose dark:prose-invert max-w-none">
+      <article className="prose prose-headings:text-foreground prose-p:text-foreground prose-a:text-primary dark:prose-invert max-w-none">
         <header>
           <h1 className="text-3xl font-bold">{APP_INFO.APP_NAME}</h1>
-          <p className="mt-2 text-text-secondary">
+          <p className="mt-2 text-muted-foreground">
             Spåra dina skyttemärken och medaljer enligt
             Svenska Pistolskytteförbundets regler.
           </p>
@@ -36,7 +36,7 @@ export default function About() {
           <ul className="mt-2 list-disc list-inside space-y-1">
             <li>
               <a
-                className="text-primary underline underline-offset-2 hover:no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary inline-flex items-center min-h-[44px]"
+                className="text-primary underline underline-offset-2 hover:no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-bg-primary focus-visible:ring-primary inline-flex items-center min-h-[44px]"
                 href={LINKS.SPSF}
                 target="_blank"
                 rel="noreferrer noopener"
@@ -46,7 +46,7 @@ export default function About() {
             </li>
             <li>
               <a
-                className="text-primary underline underline-offset-2 hover:no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary inline-flex items-center min-h-[44px]"
+                className="text-primary underline underline-offset-2 hover:no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-bg-primary focus-visible:ring-primary inline-flex items-center min-h-[44px]"
                 href={LINKS.GITHUB_REPO}
                 target="_blank"
                 rel="noreferrer noopener"
@@ -65,7 +65,7 @@ export default function About() {
             </p>
             <p className="mt-2">
               <a
-                className="inline-flex items-center rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
+                className="inline-flex items-center rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-bg-primary focus-visible:ring-primary"
                 href={LINKS.COFFEE}
                 target="_blank"
                 rel="noreferrer noopener"
@@ -75,7 +75,7 @@ export default function About() {
                   src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
                   alt="Köp en kaffe"
                   height="48"
-                  style={{ height: 48 }}
+                  className="h-12"
                   loading="lazy"
                 />
               </a>
@@ -95,7 +95,7 @@ export default function About() {
           <p className="mt-2">
             Denna applikation är licensierad under <strong>{APP_INFO.LICENSE}</strong>.
             Se <a
-              className="text-primary underline underline-offset-2 hover:no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
+              className="text-primary underline underline-offset-2 hover:no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-bg-primary focus-visible:ring-primary"
               href={`${base}LICENSE`}
               target="_blank"
               rel="noreferrer noopener"
