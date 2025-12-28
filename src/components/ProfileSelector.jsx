@@ -220,7 +220,7 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
                 <label className="block text-sm font-medium text-text-secondary">Profile Name</label>
                 <input
                   type="text"
-                  value={forceCreateOpen ? '' : newProfileName}
+                  value={newProfileName}
                   onChange={(e) => setNewProfileName(e.target.value)}
                   className="input"
                   placeholder="Ditt namn"
@@ -233,7 +233,7 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
                 <label className="block text-sm font-medium text-text-secondary">Födelsedatum</label>
                 <input
                   type="date"
-                  value={forceCreateOpen ? '' : newDateOfBirth}
+                  value={newDateOfBirth}
                   onChange={(e) => setNewDateOfBirth(e.target.value)}
                   className="input"
                   disabled={loading}
@@ -252,7 +252,7 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
                 </button>
                 <button
                   type="button"
-                  onClick={() => setShowModal(false)}
+                  onClick={() => { setShowModal(false); if (forceCreateOpen) onClose?.() }}
                   className="btn btn-secondary"
                   disabled={loading}
                 >

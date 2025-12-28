@@ -1,5 +1,5 @@
 import { DataManager } from './dataManager'
-import { UserProfile } from '../models/Profile'
+import { UserProfile, DEFAULT_PROFILE_FEATURES } from '../models/Profile'
 
 /**
  * LocalStorage-based data manager for POC phase
@@ -65,10 +65,16 @@ export class LocalStorageDataManager extends DataManager {
     if (!this.validateProfile(profile)) {
       throw new Error('Invalid profile structure')
     }
-    // Normalize features
+    // Normalize features (default to shared defaults when undefined)
     const features = {
-      allowManualUnlock: Boolean(profile.features?.allowManualUnlock),
-      enforceCurrentYearForSustained: Boolean(profile.features?.enforceCurrentYearForSustained),
+      allowManualUnlock:
+        profile.features?.allowManualUnlock != null
+          ? !!profile.features.allowManualUnlock
+          : DEFAULT_PROFILE_FEATURES.allowManualUnlock,
+      enforceCurrentYearForSustained:
+        profile.features?.enforceCurrentYearForSustained != null
+          ? !!profile.features.enforceCurrentYearForSustained
+          : DEFAULT_PROFILE_FEATURES.enforceCurrentYearForSustained,
     }
 
     const data = this.getStorageData()
@@ -441,10 +447,10 @@ export class LocalStorageDataManager extends DataManager {
         copy.dateOfBirth = this._defaultDob()
       }
       if (!copy.features) {
-        copy.features = { allowManualUnlock: false, enforceCurrentYearForSustained: false }
+        copy.features = { ...DEFAULT_PROFILE_FEATURES }
       } else {
-        if (typeof copy.features.allowManualUnlock !== 'boolean') copy.features.allowManualUnlock = false
-        if (typeof copy.features.enforceCurrentYearForSustained !== 'boolean') copy.features.enforceCurrentYearForSustained = false
+        if (typeof copy.features.allowManualUnlock !== 'boolean') copy.features.allowManualUnlock = DEFAULT_PROFILE_FEATURES.allowManualUnlock
+        if (typeof copy.features.enforceCurrentYearForSustained !== 'boolean') copy.features.enforceCurrentYearForSustained = DEFAULT_PROFILE_FEATURES.enforceCurrentYearForSustained
       }
       copy.lastModified = new Date().toISOString()
       return copy
@@ -504,8 +510,13 @@ export class LocalStorageDataManager extends DataManager {
       prerequisites: Array.isArray(profile.prerequisites) ? profile.prerequisites : [],
       notifications: !!profile.notifications,
       features: {
-        allowManualUnlock: !!(profile.features && profile.features.allowManualUnlock),
-        enforceCurrentYearForSustained: !!(profile.features && profile.features.enforceCurrentYearForSustained),
+        ...DEFAULT_PROFILE_FEATURES,
+        ...(profile.features
+          ? {
+              allowManualUnlock: !!profile.features.allowManualUnlock,
+              enforceCurrentYearForSustained: !!profile.features.enforceCurrentYearForSustained,
+            }
+          : {}),
       },
     }
 

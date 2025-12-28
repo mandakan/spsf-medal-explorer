@@ -1,9 +1,8 @@
 import React, { useState, useCallback, useEffect } from 'react'
-import { ProfileContext } from './profileContext'
+import { ProfileContext } from './profileContext.js'
 import { LocalStorageDataManager } from '../data/localStorage'
 import { UserProfile } from '../models/Profile'
 import { parseProfileBackup } from '../utils/importManager'
-export { ProfileContext } from './profileContext'
 
 const ONBOARDING_KEY = 'app:onboardingChoice'
 
@@ -50,7 +49,6 @@ function createGuestProfile() {
     dateOfBirth: '1975-01-02',
     unlockedMedals: [],
     prerequisites: [],
-    features: { allowManualUnlock: true, enforceCurrentYearForSustained: false },
     isGuest: true,
   })
 }
