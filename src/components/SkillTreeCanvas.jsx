@@ -70,8 +70,8 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
 
   // Floating menu and overlays state/refs
   const [menuOpen, setMenuOpen] = useState(false)
-  const initialLegend = (typeof window !== 'undefined') ? window.innerWidth >= 768 : true
-  const [showLegend, setShowLegend] = useState(initialLegend)
+  // Show legend by default in all modes for consistency
+  const [showLegend, setShowLegend] = useState(true)
   const [showYearBadges, setShowYearBadges] = useState(true)
   const [helpOpen, setHelpOpen] = useState(false)
   const legendId = legendDescribedById || 'skilltree-legend'
@@ -986,11 +986,6 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
             </div>
           </div>
 
-          {showLegend && (
-            <div className="px-3 pt-3 sm:px-4 overflow-x-hidden" role="note" id="skilltree-legend-fs">
-              <ReviewLegend variant="canvas" />
-            </div>
-          )}
           <div className="flex-1">
             <div className="relative h-full">
               <canvas
