@@ -757,7 +757,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                   title="Visa åtgärder"
                   aria-label="Visa åtgärder"
                 >
-                  <span aria-hidden="true">⋮</span>
+                  <Icon name="MoreVertical" className="w-6 h-6" />
                 </button>
 
                 {menuOpen && (
@@ -863,7 +863,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                   className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-bg-secondary border border-border text-foreground shadow-lg hover:bg-bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                   title="Zooma in"
                 >
-                  <span aria-hidden="true">+</span>
+                  <Icon name="Plus" className="w-6 h-6" />
                 </button>
                 <button
                   type="button"
@@ -872,7 +872,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                   className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-bg-secondary border border-border text-foreground shadow-lg hover:bg-bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                   title="Zooma ut"
                 >
-                  <span aria-hidden="true">−</span>
+                  <Icon name="Minus" className="w-6 h-6" />
                 </button>
                 <button
                   type="button"
@@ -948,7 +948,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                 title="Visa åtgärder"
                 aria-label="Visa åtgärder"
               >
-                <span aria-hidden="true">⋮</span>
+                <Icon name="MoreVertical" className="w-6 h-6" />
               </button>
 
               {menuOpen && (
@@ -1054,7 +1054,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                 className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-bg-secondary border border-border text-foreground shadow-lg hover:bg-bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 title="Zooma in"
               >
-                <span aria-hidden="true">+</span>
+                <Icon name="Plus" className="w-6 h-6" />
               </button>
               <button
                 type="button"
@@ -1063,7 +1063,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                 className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-bg-secondary border border-border text-foreground shadow-lg hover:bg-bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 title="Zooma ut"
               >
-                <span aria-hidden="true">−</span>
+                <Icon name="Minus" className="w-6 h-6" />
               </button>
               <button
                 type="button"
