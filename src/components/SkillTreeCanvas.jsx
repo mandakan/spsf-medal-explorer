@@ -301,20 +301,29 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     setScaleAbsolute(clamp(scaleRef.current / ZOOM_STEP, MIN_SCALE, MAX_SCALE))
   }, [setScaleAbsolute])
 
+  const toggleLegend = useCallback(() => {
+    setShowLegend(prev => {
+      const next = !prev
+      if (!next) setLegendSafeTop(0)
+      return next
+    })
+  }, [setLegendSafeTop, setShowLegend])
+
   const setCanvasRef = useCallback((node) => {
     canvasRef.current = node
   }, [])
 
   // Measure legend height to reserve safe top area for initial render and during layout changes
+  // Schedule via rAF to avoid synchronous setState inside effect (keeps renders predictable)
   useLayoutEffect(() => {
-    if (!showLegend) {
-      setLegendSafeTop(0)
-      return
-    }
+    if (!showLegend) return
     const el = isFullscreen ? legendFsRef.current : legendRef.current
     if (!el) return
-    const r = el.getBoundingClientRect()
-    setLegendSafeTop(Math.max(0, Math.ceil(r.height)))
+    let raf = requestAnimationFrame(() => {
+      const r = el.getBoundingClientRect()
+      setLegendSafeTop(Math.max(0, Math.ceil(r.height)))
+    })
+    return () => cancelAnimationFrame(raf)
   }, [showLegend, isFullscreen])
 
   // Draw with requestAnimationFrame for smoothness
@@ -763,7 +772,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                     <button
                       role="menuitem"
                       type="button"
-                      onClick={() => { setMenuOpen(false); setShowLegend(v => !v) }}
+                      onClick={() => { setMenuOpen(false); toggleLegend() }}
                       aria-pressed={showLegend}
                       className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                     >
@@ -944,7 +953,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                   <button
                     role="menuitem"
                     type="button"
-                    onClick={() => { setMenuOpen(false); setShowLegend(v => !v) }}
+                    onClick={() => { setMenuOpen(false); toggleLegend() }}
                     aria-pressed={showLegend}
                     className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                   >
