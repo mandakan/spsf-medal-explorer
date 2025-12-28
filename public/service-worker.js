@@ -11,7 +11,7 @@ const PRECACHE = [
   `${BASE}icon-512.png`,
 ]
 
-// Warm static cache using Vite's asset manifest
+ // Warm static cache using Vite's asset manifest (cache per-URL, non-atomic)
 async function warmFromViteManifest(cache) {
   try {
     const res = await fetch(`${BASE}asset-manifest.json`, { cache: 'no-cache' })
@@ -32,19 +32,22 @@ async function warmFromViteManifest(cache) {
     if (manifest['index.html']) {
       addByKey('index.html')
     } else {
-      // Fallback: add all entry points
       Object.keys(manifest).forEach((k) => {
         const e = manifest[k]
         if (e && e.isEntry) addByKey(k)
       })
     }
 
-    const list = [...urls]
-    if (list.length) {
-      await cache.addAll(list)
+    for (const url of urls) {
+      try {
+        const r = await fetch(url, { cache: 'no-cache' })
+        if (r.ok) await cache.put(url, r.clone())
+      } catch {
+        // skip individual failures
+      }
     }
   } catch {
-    // ignore
+    // no manifest available
   }
 }
 
@@ -78,7 +81,7 @@ self.addEventListener('fetch', (event) => {
 
   // SPA navigations: network-first with cached index fallback
   if (req.mode === 'navigate') {
-    event.respondWith(fetch(req).catch(() => caches.match(BASE)))
+    event.respondWith(fetch(req).catch(() => caches.match(BASE, { ignoreVary: true })))
     return
   }
 
@@ -87,7 +90,7 @@ self.addEventListener('fetch', (event) => {
   if (isSameOrigin && ['script', 'style', 'font', 'image'].includes(req.destination)) {
     event.respondWith(
       (async () => {
-        const cached = await caches.match(req)
+        const cached = await caches.match(req, { ignoreVary: true })
         if (cached) return cached
         try {
           const res = await fetch(req)
@@ -115,7 +118,7 @@ self.addEventListener('fetch', (event) => {
           cache.put(req, copy)
           return res
         } catch {
-          const cached = await caches.match(req)
+          const cached = await caches.match(req, { ignoreVary: true })
           if (cached) return cached
           return new Response('Offline', { status: 503, statusText: 'Offline' })
         }
@@ -125,5 +128,5 @@ self.addEventListener('fetch', (event) => {
   }
 
   // Default: network-first with offline fallback
-  event.respondWith(fetch(req).catch(() => caches.match(req)))
+  event.respondWith(fetch(req).catch(() => caches.match(req, { ignoreVary: true })))
 })
