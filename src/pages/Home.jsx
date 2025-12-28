@@ -51,7 +51,7 @@ export default function Home() {
         >
           <h3 className="text-xl font-bold mb-2 text-text-primary">📝 Inställningar</h3>
           <p className="text-text-secondary">
-            Logga aktiviteter och hantera din profil
+            Hanter din profil
           </p>
         </Link>
       </section>
