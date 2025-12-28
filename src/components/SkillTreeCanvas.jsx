@@ -8,6 +8,10 @@ import { exportCanvasToPNG } from '../utils/canvasExport'
 import { clearThemeCache } from '../logic/canvasRenderer'
 import { useNavigate, useLocation } from 'react-router-dom'
 import ReviewLegend from './ReviewLegend'
+import { useProfile } from '../hooks/useProfile'
+import ProfileSelector from './ProfileSelector'
+import ConfirmDialog from './ConfirmDialog'
+import Icon from './Icon'
 
 export default function SkillTreeCanvas({ legendDescribedById }) {
   const canvasRef = useRef(null)
@@ -82,6 +86,16 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   const legendRef = useRef(null)
   const legendFsRef = useRef(null)
   const menuId = isFullscreen ? 'fullscreen-actions-menu' : 'canvas-actions-menu'
+  const { currentProfile, startExplorerMode, hydrated, resetCurrentProfileData } = useProfile()
+  const isGuest = Boolean(currentProfile?.isGuest)
+  const isProfileLoading = !hydrated || typeof currentProfile === 'undefined'
+  const [dismissedFsOnboarding, setDismissedFsOnboarding] = useState(false)
+  const [openPicker, setOpenPicker] = useState(false)
+  const [showConfirmReset, setShowConfirmReset] = useState(false)
+  const hasOnboardingChoice = (() => {
+    try { return window.localStorage.getItem('app:onboardingChoice') } catch { return null }
+  })()
+  const showFsOnboarding = isFullscreen && !isProfileLoading && !currentProfile && !hasOnboardingChoice && !dismissedFsOnboarding
 
   // Compute a base transform that anchors the layout's top-left to the canvas' top-left with padding,
   // and auto-fits the layout into the viewport (mobile-first).
@@ -743,7 +757,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                   title="Visa åtgärder"
                   aria-label="Visa åtgärder"
                 >
-                  <span aria-hidden="true">⋮</span>
+                  <Icon name="MoreVertical" className="w-6 h-6" />
                 </button>
 
                 {menuOpen && (
@@ -804,6 +818,16 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                     >
                       {showYearBadges ? 'Dölj årsbrickor' : 'Visa årsbrickor'}
                     </button>
+                    {(!currentProfile || isGuest) && (
+                      <button
+                        role="menuitem"
+                        type="button"
+                        onClick={() => { setMenuOpen(false); setOpenPicker(true) }}
+                        className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                      >
+                        Spara
+                      </button>
+                    )}
                     <button
                       role="menuitem"
                       type="button"
@@ -839,7 +863,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                   className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-bg-secondary border border-border text-foreground shadow-lg hover:bg-bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                   title="Zooma in"
                 >
-                  <span aria-hidden="true">+</span>
+                  <Icon name="Plus" className="w-6 h-6" />
                 </button>
                 <button
                   type="button"
@@ -848,7 +872,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                   className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-bg-secondary border border-border text-foreground shadow-lg hover:bg-bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                   title="Zooma ut"
                 >
-                  <span aria-hidden="true">−</span>
+                  <Icon name="Minus" className="w-6 h-6" />
                 </button>
                 <button
                   type="button"
@@ -857,7 +881,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                   className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-bg-secondary border border-border text-foreground shadow-lg hover:bg-bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                   title="Återställ vy"
                 >
-                  <span aria-hidden="true">⟲</span>
+                  <Icon name="RotateCcw" className="w-6 h-6" />
                 </button>
               </div>
             </div>
@@ -924,7 +948,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                 title="Visa åtgärder"
                 aria-label="Visa åtgärder"
               >
-                <span aria-hidden="true">⋮</span>
+                <Icon name="MoreVertical" className="w-6 h-6" />
               </button>
 
               {menuOpen && (
@@ -985,6 +1009,16 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                   >
                     {showYearBadges ? 'Dölj årsbrickor' : 'Visa årsbrickor'}
                   </button>
+                  {(!currentProfile || isGuest) && (
+                    <button
+                      role="menuitem"
+                      type="button"
+                      onClick={() => { setMenuOpen(false); setOpenPicker(true) }}
+                      className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                    >
+                      Spara framsteg
+                    </button>
+                  )}
                   <button
                     role="menuitem"
                     type="button"
@@ -1020,7 +1054,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                 className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-bg-secondary border border-border text-foreground shadow-lg hover:bg-bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 title="Zooma in"
               >
-                <span aria-hidden="true">+</span>
+                <Icon name="Plus" className="w-6 h-6" />
               </button>
               <button
                 type="button"
@@ -1029,7 +1063,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                 className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-bg-secondary border border-border text-foreground shadow-lg hover:bg-bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 title="Zooma ut"
               >
-                <span aria-hidden="true">−</span>
+                <Icon name="Minus" className="w-6 h-6" />
               </button>
               <button
                 type="button"
@@ -1038,11 +1072,81 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                 className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-bg-secondary border border-border text-foreground shadow-lg hover:bg-bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 title="Återställ vy"
               >
-                <span aria-hidden="true">⟲</span>
+                <Icon name="RotateCcw" className="w-6 h-6" />
               </button>
             </div>
           </div>
 
+          {showFsOnboarding && (
+            <div
+              role="region"
+              aria-label="Onboarding"
+              className="absolute left-3 right-3 z-[50]"
+              style={{ marginTop: 'env(safe-area-inset-top)', top: Math.max(12, legendSafeTop + 12) }}
+            >
+              <div className="rounded-md border border-border bg-background/80 backdrop-blur-sm shadow-md p-3">
+                <p className="text-sm text-foreground mb-2">Spara dina framsteg?</p>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    className="btn btn-primary min-h-[44px]"
+                    onClick={() => {
+                      try { window.localStorage.setItem('app:onboardingChoice', 'saved') } catch { /* ignore unwriteable storage */ }
+                      setDismissedFsOnboarding(true)
+                      setOpenPicker(true)
+                    }}
+                  >
+                    Skapa profil
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-secondary min-h-[44px]"
+                    onClick={() => {
+                      try { window.localStorage.setItem('app:onboardingChoice', 'guest') } catch { /* ignore unwriteable storage */ }
+                      setDismissedFsOnboarding(true)
+                      startExplorerMode()
+                    }}
+                  >
+                    Fortsätt som gäst
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-muted min-h-[44px]"
+                    onClick={() => setDismissedFsOnboarding(true)}
+                  >
+                    Inte nu
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+          {isFullscreen && isGuest && !showFsOnboarding && (
+            <div
+              className="absolute left-1/2 -translate-x-1/2 z-[60] flex items-center gap-2"
+              style={{ bottom: 'calc(env(safe-area-inset-bottom) + 16px)' }}
+              role="group"
+              aria-label="Snabbåtgärder (gäst)"
+            >
+              <button
+                type="button"
+                onClick={() => setShowConfirmReset(true)}
+                className="inline-flex items-center gap-2 rounded-full border border-border bg-background/80 backdrop-blur-sm px-3 py-1.5 text-sm shadow-md min-h-[36px]"
+                aria-label="Återställ alla"
+                title="Återställ alla"
+              >
+                Återställ alla
+              </button>
+              <button
+                type="button"
+                onClick={() => setOpenPicker(true)}
+                className="inline-flex items-center gap-2 rounded-full border border-border bg-background/80 backdrop-blur-sm px-3 py-1.5 text-sm shadow-md min-h-[36px]"
+                aria-label="Spara framsteg"
+                title="Spara framsteg"
+              >
+                Spara framsteg
+              </button>
+            </div>
+          )}
           <div className="flex-1">
             <div className="relative h-full">
               <canvas
@@ -1138,7 +1242,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                 <div>
                   <h3 id="skilltree-help-title-fs" className="text-sm font-semibold mb-1">Hjälp</h3>
                   <p className="text-sm text-muted-foreground">
-                    Dra för att panorera • Nyp eller använd +/− för att zooma • 0 återställer vy • Klicka för detaljer
+                    Dra för att panorera • Nyp för att zooma • Klicka för detaljer
                   </p>
                 </div>
                 <button
@@ -1157,6 +1261,28 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
         </div>
       )}
 
+      <ConfirmDialog
+        id="reset-confirm-skilltree"
+        open={showConfirmReset}
+        onCancel={() => setShowConfirmReset(false)}
+        onConfirm={async () => {
+          setShowConfirmReset(false)
+          await resetCurrentProfileData()
+        }}
+        title="Återställa allt?"
+        description="Detta rensar alla tillfälliga framsteg (märken och förkunskaper) i gästläget. Denna åtgärd går inte att ångra."
+        confirmLabel="Återställ"
+        cancelLabel="Avbryt"
+        variant="danger"
+      />
+      <ProfileSelector
+        id="save-progress-picker-canvas"
+        mode="picker"
+        open={openPicker}
+        onClose={() => setOpenPicker(false)}
+        forceCreate
+        convertGuest
+      />
       {/* Non-fullscreen modal is now route-driven via AppRoutes */}
     </div>
   )
