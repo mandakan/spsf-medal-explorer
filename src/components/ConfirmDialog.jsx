@@ -29,7 +29,6 @@ export default function ConfirmDialog({
 
     const focusables = getFocusables()
     const first = focusables[0]
-    const last = focusables[focusables.length - 1]
     first?.focus()
 
     const onKeyDown = (e) => {
@@ -57,11 +56,12 @@ export default function ConfirmDialog({
     }
 
     document.addEventListener('keydown', onKeyDown)
-    overlayRef.current?.addEventListener('pointerdown', onOverlayPointerDown, { capture: true })
+    const overlayEl = overlayRef.current
+    overlayEl?.addEventListener('pointerdown', onOverlayPointerDown, { capture: true })
 
     return () => {
       document.removeEventListener('keydown', onKeyDown)
-      overlayRef.current?.removeEventListener('pointerdown', onOverlayPointerDown, { capture: true })
+      overlayEl?.removeEventListener('pointerdown', onOverlayPointerDown, { capture: true })
       const prev = lastFocusedRef.current
       if (prev && typeof prev.focus === 'function') prev.focus()
     }

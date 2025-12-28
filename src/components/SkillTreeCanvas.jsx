@@ -1091,7 +1091,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                     type="button"
                     className="btn btn-primary min-h-[44px]"
                     onClick={() => {
-                      try { window.localStorage.setItem('app:onboardingChoice', 'saved') } catch {}
+                      try { window.localStorage.setItem('app:onboardingChoice', 'saved') } catch { /* ignore unwriteable storage */ }
                       setDismissedFsOnboarding(true)
                       setOpenPicker(true)
                     }}
@@ -1102,7 +1102,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                     type="button"
                     className="btn btn-secondary min-h-[44px]"
                     onClick={() => {
-                      try { window.localStorage.setItem('app:onboardingChoice', 'guest') } catch {}
+                      try { window.localStorage.setItem('app:onboardingChoice', 'guest') } catch { /* ignore unwriteable storage */ }
                       setDismissedFsOnboarding(true)
                       startExplorerMode()
                     }}
