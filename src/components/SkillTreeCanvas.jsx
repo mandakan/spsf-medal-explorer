@@ -443,7 +443,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
         el.focus()
       }
     }
-  }, [isFullscreen, navigate, menuOpen, helpOpen])
+  }, [isFullscreen, menuOpen, helpOpen, closeFullscreen])
 
   // Close floating menu on outside click
   useEffect(() => {

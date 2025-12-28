@@ -44,7 +44,7 @@ export default function SkillTree() {
         state: { backgroundLocation: location },
       })
     }
-  }, [navigate, location.pathname])
+  }, [navigate, location])
 
   if (isProfileLoading) {
     return null
