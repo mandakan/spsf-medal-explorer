@@ -54,16 +54,21 @@ export default function DevPreviewOverlay({ feature, children, variant = 'auto' 
         <>
           {/* Light scrim to convey disabled/preview state, blocks interaction */}
           <div className="absolute inset-0 z-10 bg-black/30 backdrop-blur-[1.5px]" aria-hidden="true" />
-          {/* Centered compact badge within the gated area */}
+          {/* Centered compact info card within the gated area */}
           <div className="absolute inset-0 z-20 grid place-items-center">
-            <div className="inline-flex max-w-[min(92vw,calc(100%-1rem))] items-center gap-2 rounded-full border border-border bg-bg-secondary/95 px-3 py-1.5 shadow-md text-foreground">
-              <Icon name="FlaskConical" className="w-4 h-4" aria-hidden="true" style={{ color: 'var(--color-info)' }} />
-              <span className="font-semibold">Förhandsvisning</span>
+            <div
+              role="note"
+              aria-label="Feature preview"
+              className="mx-2 w-[min(92vw,calc(100%-1rem),28rem)] rounded-lg border border-border bg-bg-secondary/95 p-3 shadow-md text-foreground"
+            >
+              <div className="flex items-start gap-2">
+                <Icon name="FlaskConical" className="w-4 h-4" aria-hidden="true" style={{ color: 'var(--color-info)' }} />
+                <div>
+                  <div className="font-semibold leading-5 text-balance">{title}</div>
+                  <div className="mt-1 text-sm text-muted-foreground text-pretty break-words">{message}</div>
+                </div>
+              </div>
             </div>
-          </div>
-          {/* Full message for screen readers, announced politely */}
-          <div className="sr-only" role="note" aria-live="polite">
-            {title}. {message}
           </div>
         </>
       )}
