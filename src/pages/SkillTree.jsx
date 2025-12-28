@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import SkillTreeCanvas from '../components/SkillTreeCanvas'
 import { useAllMedalStatuses } from '../hooks/useMedalCalculator'
 import ProfilePromptBanner from '../components/ProfilePromptBanner'
@@ -7,6 +7,7 @@ import GuestModeBanner from '../components/GuestModeBanner'
 import { STATUS_ORDER, getStatusProps } from '../config/statuses'
 import StatusIcon from '../components/StatusIcon'
 import { getStatusColorVar } from '../config/statusColors'
+import { useNavigate, useLocation } from 'react-router-dom'
 
 export default function SkillTree() {
   const [viewMode, setViewMode] = useState('canvas') // 'canvas' or 'stats'
@@ -30,6 +31,14 @@ export default function SkillTree() {
     try { return window.localStorage.getItem('app:onboardingChoice') } catch { return null }
   })()
   const showOnboarding = !isProfileLoading && !currentProfile && !hasOnboardingChoice && !dismissedOnboarding
+
+  const navigate = useNavigate()
+  const location = useLocation()
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.innerWidth < 768 && location.pathname === '/skill-tree') {
+      navigate('/skill-tree/fullscreen', { replace: true })
+    }
+  }, [navigate, location.pathname])
 
   if (isProfileLoading) {
     return null
