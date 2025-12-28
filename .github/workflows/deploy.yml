@@ -50,6 +50,7 @@ jobs:
         continue-on-error: false
         env:
           VITE_BASE: /${{ github.event.repository.name }}/
+          BUILD_NUMBER: ${{ github.run_number }}
 
       - name: Add SPA fallback
         run: cp dist/index.html dist/404.html

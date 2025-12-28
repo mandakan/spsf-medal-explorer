@@ -34,11 +34,13 @@ export default function SkillTree() {
 
   const navigate = useNavigate()
   const location = useLocation()
+
   useEffect(() => {
-    if (typeof window !== 'undefined'
-      && window.innerWidth < 768
-      && location.pathname === '/skill-tree'
-      && !location.state?.fromFullscreenClose) {
+    if (typeof window === 'undefined') return
+    const isMobile = window.innerWidth < 768
+    const isSkillTreeRoot = location.pathname === '/skill-tree'
+    const fromClose = Boolean(location.state?.fromFullscreenClose)
+    if (isMobile && isSkillTreeRoot && !fromClose) {
       navigate('/skill-tree/fullscreen', {
         replace: true,
         state: { backgroundLocation: location },

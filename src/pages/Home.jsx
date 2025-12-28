@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { useMedalDatabase } from '../hooks/useMedalDatabase'
 import Disclaimer from '../components/Disclaimer'
+import Icon from '../components/Icon'
 import { LINKS } from '../config/links'
 
 export default function Home() {
@@ -10,10 +11,10 @@ export default function Home() {
   return (
     <div className="space-y-8">
       <section className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-text-primary mb-4">
+        <h1 className="text-4xl font-bold text-foreground mb-4">
           Skyttemärken
         </h1>
-        <p className="text-lg text-text-secondary">
+        <p className="text-lg text-muted-foreground">
           Dokumentera dina skyttemärken och medaljer med aktiviteter, utforska framtida märken och planera progression
         </p>
       </section>
@@ -27,39 +28,48 @@ export default function Home() {
       <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Link
           to="/skill-tree"
-          className="bg-bg-secondary border border-slate-200 dark:border-slate-700 rounded-lg p-6 shadow hover:shadow-lg transition-shadow cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+          className="card p-6 shadow hover:shadow-lg transition-shadow cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
         >
-          <h3 className="text-xl font-bold mb-2 text-text-primary">🎯 Märken</h3>
-          <p className="text-text-secondary">
+          <h3 className="text-xl font-bold mb-2 text-foreground flex items-center gap-2">
+            <Icon name="Target" className="w-5 h-5 shrink-0 text-muted-foreground" />
+            <span>Märken</span>
+          </h3>
+          <p className="text-muted-foreground">
             Utforska märken i ett interaktivt träd
           </p>
         </Link>
 
         <Link
           to="/medals"
-          className="bg-bg-secondary border border-slate-200 dark:border-slate-700 rounded-lg p-6 shadow hover:shadow-lg transition-shadow cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+          className="card p-6 shadow hover:shadow-lg transition-shadow cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
         >
-          <h3 className="text-xl font-bold mb-2 text-text-primary">📊 Märkeslista</h3>
-          <p className="text-text-secondary">
+          <h3 className="text-xl font-bold mb-2 text-foreground flex items-center gap-2">
+            <Icon name="List" className="w-5 h-5 shrink-0 text-muted-foreground" />
+            <span>Märkeslista</span>
+          </h3>
+          <p className="text-muted-foreground">
             Översikt över alla märken med filter och sökning
           </p>
         </Link>
 
         <Link
           to="/settings"
-          className="bg-bg-secondary border border-slate-200 dark:border-slate-700 rounded-lg p-6 shadow hover:shadow-lg transition-shadow cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+          className="card p-6 shadow hover:shadow-lg transition-shadow cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
         >
-          <h3 className="text-xl font-bold mb-2 text-text-primary">📝 Inställningar</h3>
-          <p className="text-text-secondary">
-            Logga aktiviteter och hantera din profil
+          <h3 className="text-xl font-bold mb-2 text-foreground flex items-center gap-2">
+            <Icon name="Settings" className="w-5 h-5 shrink-0 text-muted-foreground" />
+            <span>Inställningar</span>
+          </h3>
+          <p className="text-muted-foreground">
+            Hanter din profil
           </p>
         </Link>
       </section>
 
       {!loading && medalDatabase && (
-        <section className="bg-bg-secondary border border-slate-200 dark:border-slate-700 rounded-lg p-6 shadow">
+        <section className="card p-6 shadow">
           <h2 className="text-xl font-bold mb-4">Status</h2>
-          <p className="text-text-secondary">
+          <p className="text-muted-foreground">
             ✓ {medalDatabase.getAllMedals().length} märken laddade
           </p>
         </section>

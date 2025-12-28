@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import ProfileSelector from './ProfileSelector'
 import { useProfile } from '../hooks/useProfile'
+import Icon from './Icon'
 
 const navItems = [
-  { path: '/', label: 'Home' },
-  { path: '/skill-tree', label: 'Märken' },
-  { path: '/medals', label: 'Märkeslista' },
-  { path: '/about', label: 'Om' },
+  { path: '/skill-tree', label: 'Märkesträd' },
+  { path: '/medals', label: 'Alla märken' },
+  { path: '/data', label: 'Data' },
   { path: '/settings', label: 'Inställningar' },
-  { path: '/data', label: 'Data' }
+  { path: '/about', label: 'Om' }
 ]
 
 export default function Header() {
@@ -34,8 +34,9 @@ export default function Header() {
     return () => window.removeEventListener('keydown', onKey)
   }, [open])
 
+
   return (
-    <header className="bg-bg-secondary border-b border-border sticky top-0 z-50">
+    <header className="bg-surface border-b border-border sticky top-0 z-50">
       <div className="max-w-6xl mx-auto px-4">
         <div className="py-2">
           {/* Skip link (WCAG 2.4.1) */}
@@ -50,9 +51,11 @@ export default function Header() {
           <div className="flex items-center justify-between gap-2">
             <Link
               to="/"
-              className="text-2xl font-bold leading-tight break-words text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
+              onClick={() => { setOpenedAtPath(null); setProfilePickerOpen(false) }}
+              className="inline-flex items-center gap-2 text-2xl font-bold leading-tight break-words text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
             >
-              🎖️ Skyttemärken
+              <Icon name="Award" className="w-6 h-6 shrink-0" />
+              <span>Skyttemärken</span>
             </Link>
 
             <div className="flex items-center gap-2">
@@ -77,10 +80,11 @@ export default function Header() {
                       <li key={item.path}>
                         <Link
                           to={item.path}
+                          onClick={() => setProfilePickerOpen(false)}
                           className={`inline-flex items-center min-h-[44px] px-4 py-2 rounded transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary ${
                             isActive
                               ? 'bg-primary text-primary-foreground'
-                              : 'text-muted-foreground hover:bg-bg-secondary'
+                              : 'text-muted-foreground hover:bg-surface'
                           }`}
                           aria-current={isActive ? 'page' : undefined}
                         >
@@ -121,10 +125,11 @@ export default function Header() {
                   <li key={item.path}>
                     <Link
                       to={item.path}
+                      onClick={() => { setOpenedAtPath(null); setProfilePickerOpen(false) }}
                       className={`inline-flex items-center min-h-[44px] px-4 py-2 rounded transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary ${
                         isActive
                           ? 'bg-primary text-primary-foreground'
-                          : 'text-muted-foreground hover:bg-bg-secondary'
+                          : 'text-muted-foreground hover:bg-surface'
                       }`}
                       aria-current={isActive ? 'page' : undefined}
                     >

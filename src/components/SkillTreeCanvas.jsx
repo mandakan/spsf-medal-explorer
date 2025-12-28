@@ -815,7 +815,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                     <button
                       role="menuitem"
                       type="button"
-                      onClick={() => { setMenuOpen(false); navigate('/skill-tree/fullscreen', { state: { backgroundLocation: location } }) }}
+                      onClick={() => { setMenuOpen(false); navigate('/skill-tree/fullscreen', { replace: true, state: { backgroundLocation: location } }) }}
                       className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                       aria-haspopup="dialog"
                       aria-controls="skilltree-fullscreen"

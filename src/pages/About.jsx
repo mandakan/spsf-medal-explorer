@@ -1,18 +1,18 @@
 import React from 'react'
 import { LINKS } from '../config/links'
-import { APP_INFO, CURRENT_RULEBOOK_VERSION, getRulebookVersionForYear } from '../config/appInfo'
+import { APP_INFO, CURRENT_RULEBOOK_VERSION } from '../config/appInfo'
 import Disclaimer from '../components/Disclaimer'
+import { BUILD } from '../config/buildInfo'
 
 export default function About() {
-  const upcoming2026 = getRulebookVersionForYear(2026)
   const base = (typeof document !== 'undefined' && document.querySelector('base')?.getAttribute('href')) || '/'
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6">
-      <article className="prose dark:prose-invert max-w-none">
+      <article className="prose prose-headings:text-foreground prose-p:text-foreground prose-a:text-primary dark:prose-invert max-w-none">
         <header>
           <h1 className="text-3xl font-bold">{APP_INFO.APP_NAME}</h1>
-          <p className="mt-2 text-text-secondary">
+          <p className="mt-2 text-muted-foreground">
             Spåra dina skyttemärken och medaljer enligt
             Svenska Pistolskytteförbundets regler.
           </p>
@@ -37,17 +37,17 @@ export default function About() {
           <ul className="mt-2 list-disc list-inside space-y-1">
             <li>
               <a
-                className="text-primary underline underline-offset-2 hover:no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary inline-flex items-center min-h-[44px]"
+                className="text-primary underline underline-offset-2 hover:no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-bg-primary focus-visible:ring-primary inline-flex items-center min-h-[44px]"
                 href={LINKS.SPSF}
                 target="_blank"
                 rel="noreferrer noopener"
               >
-                Svenska Pistolskytteförbundet (SPSF)
+                SPSF
               </a>
             </li>
             <li>
               <a
-                className="text-primary underline underline-offset-2 hover:no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary inline-flex items-center min-h-[44px]"
+                className="text-primary underline underline-offset-2 hover:no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-bg-primary focus-visible:ring-primary inline-flex items-center min-h-[44px]"
                 href={LINKS.GITHUB_REPO}
                 target="_blank"
                 rel="noreferrer noopener"
@@ -66,7 +66,7 @@ export default function About() {
             </p>
             <p className="mt-2">
               <a
-                className="inline-flex items-center rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
+                className="inline-flex items-center rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-bg-primary focus-visible:ring-primary"
                 href={LINKS.COFFEE}
                 target="_blank"
                 rel="noreferrer noopener"
@@ -76,7 +76,7 @@ export default function About() {
                   src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
                   alt="Köp en kaffe"
                   height="48"
-                  style={{ height: 48 }}
+                  className="h-12"
                   loading="lazy"
                 />
               </a>
@@ -87,11 +87,13 @@ export default function About() {
         <section aria-labelledby="about-version" className="mt-8">
           <h2 id="about-version" className="text-2xl font-semibold">Om versionen</h2>
           <p className="mt-2">
-            Skytteboken upplaga / Rulebook version: <strong>{CURRENT_RULEBOOK_VERSION}</strong> (gäller nu)
+            Den här versionen använder skjuthandboken upplaga: <strong>{CURRENT_RULEBOOK_VERSION}</strong> (2024)
           </p>
-          <p className="mt-2 text-text-secondary">
-            Exempel: 2024 använder version <strong>{getRulebookVersionForYear(2024)}</strong>.
-            Från 2026 används version <strong>{upcoming2026}</strong>.
+          <p className="mt-2 text-muted-foreground">
+            Version: <code>{BUILD.version}</code> • Build: <code>{BUILD.number}</code> • Commit: <code>{BUILD.commit}</code>
+          </p>
+          <p className="mt-1 text-muted-foreground">
+            Byggtid: <time dateTime={BUILD.timeISO}>{new Date(BUILD.timeISO).toLocaleString()}</time>
           </p>
         </section>
 
@@ -100,7 +102,7 @@ export default function About() {
           <p className="mt-2">
             Denna applikation är licensierad under <strong>{APP_INFO.LICENSE}</strong>.
             Se <a
-              className="text-primary underline underline-offset-2 hover:no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
+              className="text-primary underline underline-offset-2 hover:no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-bg-primary focus-visible:ring-primary"
               href={`${base}LICENSE`}
               target="_blank"
               rel="noreferrer noopener"

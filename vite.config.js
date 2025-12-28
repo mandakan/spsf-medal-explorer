@@ -1,6 +1,10 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
+import { execSync } from 'node:child_process'
+import { readFileSync } from 'node:fs'
+
+const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8'))
 
 // Detect repo from GitHub Actions to compute base for GitHub Pages
 const isCI = !!process.env.CI
@@ -13,10 +17,23 @@ const isUserOrOrgSite = repo.endsWith('.github.io')
 const baseFromCI = process.env.VITE_BASE
 const base = baseFromCI != null && baseFromCI !== '' ? baseFromCI : (isCI ? (isUserOrOrgSite ? '/' : `/${repo}/`) : '/')
 
+const commit = execSync('git rev-parse --short HEAD').toString().trim()
+const buildNumber = process.env.BUILD_NUMBER ?? process.env.GITHUB_RUN_NUMBER
+if (!buildNumber && process.env.NODE_ENV === 'production') {
+  throw new Error('BUILD_NUMBER is required for production builds')
+}
+const buildTime = new Date().toISOString()
+
 // https://vitejs.dev/config/
 export default defineConfig({
   base,
   plugins: [react(), tailwindcss()],
+  define: {
+    __APP_VERSION__: JSON.stringify(pkg.version),
+    __BUILD_NUMBER__: JSON.stringify(buildNumber || 'dev'),
+    __BUILD_COMMIT__: JSON.stringify(commit),
+    __BUILD_TIME__: JSON.stringify(buildTime),
+  },
   server: {
     port: 5173,
     open: true
