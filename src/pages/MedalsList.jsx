@@ -95,7 +95,7 @@ export default function MedalsList() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Sync filters/search/sort to URL
+  // Sync filters/search/sort to URL without adding history entries
   useEffect(() => {
     const params = new URLSearchParams()
     if (filters.status) params.set('status', filters.status)
@@ -105,8 +105,12 @@ export default function MedalsList() {
     if (filters.reviewState) params.set('reviewState', filters.reviewState)
     if (query) params.set('search', query)
     if (sortBy && sortBy !== 'name') params.set('sort', sortBy)
-    setSearchParams(params)
-  }, [filters, query, sortBy, setSearchParams])
+    const next = params.toString()
+    const curr = searchParams.toString()
+    if (next !== curr) {
+      setSearchParams(params, { replace: true })
+    }
+  }, [filters, query, sortBy, setSearchParams, searchParams])
 
   const medalTypes = useMemo(() => {
     return [...new Set(medals.map(m => m.type))].filter(Boolean)
