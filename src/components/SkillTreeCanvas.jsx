@@ -33,6 +33,10 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   const CANVAS_PAD = 24
   const LABEL_HALF_PX = 80           // approximate half-width of label text area
   const LABEL_BOTTOM_PX = 56         // reserve for up to two lines of label text at bottom
+  const DEFAULT_LEGEND_SAFE_TOP_PX = 72
+  // Legend visibility and reserved safe-top height must be defined before pan/zoom
+  const [showLegend, setShowLegend] = useState(true)
+  const [legendSafeTop, setLegendSafeTop] = useState(showLegend ? DEFAULT_LEGEND_SAFE_TOP_PX : 0)
   const getWorldBounds = useCallback(() => {
     if (!layout || !layout.medals?.length) return { minX: 0, minY: 0, maxX: 0, maxY: 0 }
     let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity
@@ -46,12 +50,15 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     }
     return { minX, minY, maxX, maxY }
   }, [layout])
-  const { panX, panY, scale, setScaleAbsolute, handleWheel, handlePointerDown, handlePointerMove, handlePointerUp, resetView } = usePanZoom(6, 0.5, 12, {
+  const MIN_SCALE = 0.5
+  const MAX_SCALE = 12
+  const ZOOM_STEP = 1.2
+  const { panX, panY, scale, setScaleAbsolute, handleWheel, handlePointerDown, handlePointerMove, handlePointerUp, resetView } = usePanZoom(6, MIN_SCALE, MAX_SCALE, {
     getBounds: getWorldBounds,
     overscrollPx: 48,
     contentPaddingPx: {
       left: LABEL_HALF_PX + CANVAS_PAD,
-      top: CANVAS_PAD,
+      top: CANVAS_PAD + legendSafeTop,
       right: LABEL_HALF_PX + CANVAS_PAD,
       bottom: LABEL_BOTTOM_PX + CANVAS_PAD
     }
@@ -59,22 +66,26 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   const [isDragging, setIsDragging] = useState(false)
   const closeBtnRef = useRef(null)
   const prevFocusRef = useRef(null)
+  const didInitViewRef = useRef(false)
 
   // Keep latest interactive scale without causing re-renders
   const scaleRef = useRef(scale)
   useEffect(() => { scaleRef.current = scale }, [scale])
 
-  // Fullscreen floating menu state and refs
+  // Floating menu and overlays state/refs
   const [menuOpen, setMenuOpen] = useState(false)
-  const [showLegendFs, setShowLegendFs] = useState(true)
+  const [showYearBadges, setShowYearBadges] = useState(true)
+  const [helpOpen, setHelpOpen] = useState(false)
   const legendId = legendDescribedById || 'skilltree-legend'
-  const fsLegendId = showLegendFs ? 'skilltree-legend-fs' : null
   const menuButtonRef = useRef(null)
   const menuRef = useRef(null)
+  const legendRef = useRef(null)
+  const legendFsRef = useRef(null)
+  const menuId = isFullscreen ? 'fullscreen-actions-menu' : 'canvas-actions-menu'
 
   // Compute a base transform that anchors the layout's top-left to the canvas' top-left with padding,
   // and auto-fits the layout into the viewport (mobile-first).
-  const computeBaseTransform = useCallback((canvas, padding = 24) => {
+  const computeBaseTransform = useCallback((canvas, padding = 24, extraTop = 0) => {
     if (!layout || !canvas) return { baseScale: 1, minX: 0, minY: 0 }
     const width = canvas.width
     const height = canvas.height
@@ -94,26 +105,27 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     const contentW = Math.max(1, maxX - minX)
     const contentH = Math.max(1, maxY - minY)
     const fitX = (width - padding * 2) / contentW
-    const fitY = (height - padding * 2) / contentH
+    const fitY = (height - padding * 2 - Math.max(0, extraTop)) / contentH
     const baseScale = Math.max(0.001, Math.min(fitX, fitY))
     return { baseScale, minX, minY }
   }, [layout])
 
   // Effective transform combines the base (top-left anchored, auto-fit) with interactive pan/zoom.
   const getEffectiveTransform = useCallback((canvas, padding = CANVAS_PAD) => {
-    const { baseScale, minX, minY } = computeBaseTransform(canvas, padding)
+    const { baseScale, minX, minY } = computeBaseTransform(canvas, padding, legendSafeTop)
     const width = canvas?.width || 0
     const height = canvas?.height || 0
     const effScale = Math.max(0.001, baseScale * scale)
     // Compute base pan using the effective scale so the top-left stays anchored at padding
     // Include label half-width so the left-most label stays inside canvas padding.
     const extraLeftWorld = LABEL_HALF_PX / effScale
+    const extraTopWorld = Math.max(0, legendSafeTop) / effScale
     const basePanX = (padding - width / 2) / effScale - (minX - extraLeftWorld)
-    const basePanY = (padding - height / 2) / effScale - minY
+    const basePanY = (padding - height / 2) / effScale - (minY - extraTopWorld)
     const effPanX = panX + basePanX
     const effPanY = panY + basePanY
     return { effScale, effPanX, effPanY, baseScale }
-  }, [computeBaseTransform, panX, panY, scale])
+  }, [computeBaseTransform, panX, panY, scale, legendSafeTop])
 
   // Determine which medals are visible in the current viewport for culling
   const getVisibleMedalsForCanvas = useCallback((canvas, margin = 120) => {
@@ -143,6 +155,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   // Node-anchored "years required" badges (DOM overlay for accessibility)
   const getYearsBadgeData = useCallback((canvas) => {
     if (!canvas || !layout) return []
+    if (!showYearBadges) return []
     const { effScale, effPanX, effPanY } = getEffectiveTransform(canvas)
     const width = canvas.width
     const height = canvas.height
@@ -224,7 +237,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
       badges.push({ id: m.medalId, left: cx, top: cy, text, variant, w: PILL_W, h: PILL_H })
     }
     return badges
-  }, [layout, getEffectiveTransform, getVisibleMedalsForCanvas, hoveredMedal, selectedMedal, statuses])
+  }, [layout, getEffectiveTransform, getVisibleMedalsForCanvas, hoveredMedal, selectedMedal, statuses, showYearBadges])
 
   // Badge overlay positions are computed in a layout effect to avoid ref access during render
 
@@ -268,33 +281,50 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     )
   }, [getVisibleMedalsForCanvas, getEffectiveTransform, layout, medalDatabase, statuses, selectedMedal, render, hoveredMedal])
 
-  // Ensure label readability at initial/reset states without fighting user zoom
-  const ensureLabelVisibilityScale = useCallback(() => {
-    const canvas = canvasRef.current
-    if (!canvas || !layout) return
-    const { baseScale } = computeBaseTransform(canvas)
-    // Target minimum effective scale for label readability (labels draw at >= 0.8)
-    const minEff = 0.8
-    const targetInteractive = minEff / Math.max(0.001, baseScale)
-    const current = scaleRef.current
-    if (current + 1e-3 < targetInteractive) {
-      setScaleAbsolute(targetInteractive)
-    }
-  }, [computeBaseTransform, layout, setScaleAbsolute])
 
   const handleResetView = useCallback(() => {
     const el = canvasRef.current
     if (!el || !layout) return
-    const { baseScale } = computeBaseTransform(el)
+    const { baseScale } = computeBaseTransform(el, CANVAS_PAD, legendSafeTop)
     const minEff = 0.8
     const targetInteractive = minEff / Math.max(0.001, baseScale)
     resetView()
     setScaleAbsolute(targetInteractive)
-  }, [computeBaseTransform, layout, resetView, setScaleAbsolute])
+  }, [computeBaseTransform, layout, resetView, setScaleAbsolute, legendSafeTop])
+
+  // Zoom controls
+  const clamp = (v, min, max) => Math.min(max, Math.max(min, v))
+  const handleZoomIn = useCallback(() => {
+    setScaleAbsolute(clamp(scaleRef.current * ZOOM_STEP, MIN_SCALE, MAX_SCALE))
+  }, [setScaleAbsolute])
+  const handleZoomOut = useCallback(() => {
+    setScaleAbsolute(clamp(scaleRef.current / ZOOM_STEP, MIN_SCALE, MAX_SCALE))
+  }, [setScaleAbsolute])
+
+  const toggleLegend = useCallback(() => {
+    setShowLegend(prev => {
+      const next = !prev
+      if (!next) setLegendSafeTop(0)
+      return next
+    })
+  }, [setLegendSafeTop, setShowLegend])
 
   const setCanvasRef = useCallback((node) => {
     canvasRef.current = node
   }, [])
+
+  // Measure legend height to reserve safe top area for initial render and during layout changes
+  // Schedule via rAF to avoid synchronous setState inside effect (keeps renders predictable)
+  useLayoutEffect(() => {
+    if (!showLegend) return
+    const el = isFullscreen ? legendFsRef.current : legendRef.current
+    if (!el) return
+    let raf = requestAnimationFrame(() => {
+      const r = el.getBoundingClientRect()
+      setLegendSafeTop(Math.max(0, Math.ceil(r.height)))
+    })
+    return () => cancelAnimationFrame(raf)
+  }, [showLegend, isFullscreen])
 
   // Draw with requestAnimationFrame for smoothness
   useEffect(() => {
@@ -317,12 +347,13 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     setBadgeData(getYearsBadgeData(el))
   }, [getYearsBadgeData, panX, panY, scale, hoveredMedal, selectedMedal, layout])
 
-  // Ensure label readability once layout is ready (initialization only)
+  // Initialize view to the same target as "Återställ vy" once when layout is ready
   useEffect(() => {
-    if (canvasRef.current && layout) {
-      ensureLabelVisibilityScale()
-    }
-  }, [layout, ensureLabelVisibilityScale])
+    if (didInitViewRef.current) return
+    if (!canvasRef.current || !layout) return
+    didInitViewRef.current = true
+    handleResetView()
+  }, [layout, handleResetView])
 
   // Redraw and recompute overlay on window resize
   useEffect(() => {
@@ -338,10 +369,18 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
       }
       draw()
       setBadgeData(getYearsBadgeData(el))
+
+      if (showLegend) {
+        const legendEl = isFullscreen ? legendFsRef.current : legendRef.current
+        if (legendEl) {
+          const r = legendEl.getBoundingClientRect()
+          setLegendSafeTop(Math.max(0, Math.ceil(r.height)))
+        }
+      }
     }
     window.addEventListener('resize', onResize)
     return () => window.removeEventListener('resize', onResize)
-  }, [draw, getYearsBadgeData])
+  }, [draw, getYearsBadgeData, isFullscreen, showLegend])
 
   // Native wheel listener (passive: false) to prevent page scroll/zoom during canvas zoom gestures.
   useEffect(() => {
@@ -369,8 +408,8 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
 
     const onEsc = (e) => {
       if (e.key !== 'Escape') return
-      // If the floating menu is open, it should handle Escape itself.
-      if (menuOpen) return
+      // If the floating menu or help is open, they should handle Escape themselves.
+      if (menuOpen || helpOpen) return
       const active = document.activeElement
       // Only exit fullscreen when focus is inside the fullscreen overlay.
       // If a modal has focus, it will handle Escape itself.
@@ -387,7 +426,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
         el.focus()
       }
     }
-  }, [isFullscreen, navigate, menuOpen])
+  }, [isFullscreen, navigate, menuOpen, helpOpen])
 
   // Close floating menu on outside click
   useEffect(() => {
@@ -455,7 +494,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   const handleCanvasKeyDown = useCallback((e) => {
     const { effScale } = getEffectiveTransform(canvasRef.current)
     const step = 50 / Math.max(effScale, 0.001)
-    if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+    if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', '+', '=', '-', '0'].includes(e.key)) {
       e.preventDefault()
     }
     if (e.key === 'ArrowLeft') {
@@ -466,8 +505,14 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
       handlePointerMove({ syntheticPan: { dx: 0, dy: -step } }, effScale)
     } else if (e.key === 'ArrowDown') {
       handlePointerMove({ syntheticPan: { dx: 0, dy: step } }, effScale)
+    } else if (e.key === '+' || e.key === '=') {
+      handleZoomIn()
+    } else if (e.key === '-') {
+      handleZoomOut()
+    } else if (e.key === '0') {
+      handleResetView()
     }
-  }, [getEffectiveTransform, handlePointerMove])
+  }, [getEffectiveTransform, handlePointerMove, handleResetView, handleZoomIn, handleZoomOut])
 
   // Pointer events
   const handleCanvasPointerDown = (e) => {
@@ -584,35 +629,6 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="text-2xl font-bold text-text-primary mb-1 sm:mb-0">Interaktiv träd-vy</h2>
-        <div role="toolbar" aria-label="Träd-vy åtgärder" className="flex flex-wrap gap-2 sm:flex-nowrap">
-          <button
-            type="button"
-            onClick={handleResetView}
-            className="px-3 py-2 sm:px-4 sm:py-2 min-h-[44px] rounded bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-slate-700 dark:text-slate-50 dark:hover:bg-slate-600 border border-gray-300 dark:border-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
-          >
-            Återställ
-          </button>
-          <button
-            type="button"
-            onClick={handleExportPNG}
-            className="hidden sm:inline-flex px-3 py-2 sm:px-4 sm:py-2 min-h-[44px] rounded bg-primary text-white hover:bg-primary-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
-          >
-            <span aria-hidden="true" className="mr-2">📥</span>
-            Exportera som PNG
-          </button>
-          <button
-            type="button"
-            onClick={() => navigate('/skill-tree/fullscreen')}
-            className="px-3 py-2 sm:px-4 sm:py-2 min-h-[44px] rounded bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-slate-700 dark:text-slate-50 dark:hover:bg-slate-600 border border-gray-300 dark:border-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
-            aria-haspopup="dialog"
-            aria-controls="skilltree-fullscreen"
-          >
-            Helskärm
-          </button>
-        </div>
-      </div>
 
       <div className="card overflow-hidden overscroll-contain mt-2" role="region" aria-label="Trädvy canvas" aria-describedby={['skilltree-help', legendId].filter(Boolean).join(' ')}>
         {!isFullscreen && (
@@ -621,8 +637,8 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
               ref={setCanvasRef}
               role="img"
               aria-label="Interaktiv träd-vy-canvas"
-              aria-describedby={['skilltree-help', legendId].filter(Boolean).join(' ')}
-              aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown"
+              aria-describedby={['skilltree-help', showLegend ? legendId : null, legendDescribedById].filter(Boolean).join(' ')}
+              aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown = + - 0"
               tabIndex={0}
               onKeyDown={handleCanvasKeyDown}
               className="w-full h-[60vh] sm:h-[600px] bg-background cursor-grab active:cursor-grabbing touch-none overscroll-contain select-none"
@@ -681,26 +697,187 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                 </React.Fragment>
               ))}
             </div>
+
+            {showLegend && (
+              <div
+                ref={legendRef}
+                className="absolute left-3 right-3 top-3 sm:left-4 sm:right-auto sm:top-4 z-[40] overflow-x-auto whitespace-nowrap rounded-md border border-border/60 bg-background/80 backdrop-blur-sm shadow-md px-3 py-1.5"
+                style={{ marginTop: 'env(safe-area-inset-top)' }}
+                role="note"
+                id={legendId}
+              >
+                <ReviewLegend variant="canvas" />
+              </div>
+            )}
+
+            <div
+              className="absolute right-3 bottom-3 sm:right-4 sm:bottom-4 z-[60]"
+              style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+            >
+              <div className="relative">
+                <button
+                  type="button"
+                  ref={menuButtonRef}
+                  aria-haspopup="menu"
+                  aria-controls={menuId}
+                  aria-expanded={menuOpen}
+                  onClick={() => setMenuOpen((v) => !v)}
+                  className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-bg-secondary border border-border text-foreground shadow-lg hover:bg-bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  title="Visa åtgärder"
+                  aria-label="Visa åtgärder"
+                >
+                  <span aria-hidden="true">⋮</span>
+                </button>
+
+                {menuOpen && (
+                  <div
+                    id={menuId}
+                    ref={menuRef}
+                    role="menu"
+                    aria-label="Åtgärder"
+                    className="absolute right-0 bottom-14 sm:bottom-16 w-56 rounded-md border border-border bg-background shadow-xl overflow-hidden"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Escape') {
+                        e.preventDefault()
+                        setMenuOpen(false)
+                        menuButtonRef.current?.focus()
+                      } else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                        const items = Array.from(e.currentTarget.querySelectorAll('[role="menuitem"]'))
+                        if (items.length === 0) return
+                        const i = items.indexOf(document.activeElement)
+                        let next = 0
+                        if (e.key === 'ArrowDown') next = i >= 0 ? (i + 1) % items.length : 0
+                        if (e.key === 'ArrowUp') next = i >= 0 ? (i - 1 + items.length) % items.length : items.length - 1
+                        e.preventDefault()
+                        items[next]?.focus()
+                      }
+                    }}
+                  >
+                    <button
+                      role="menuitem"
+                      type="button"
+                      onClick={() => { setMenuOpen(false); handleResetView() }}
+                      className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                    >
+                      Återställ vy
+                    </button>
+                    <button
+                      role="menuitem"
+                      type="button"
+                      onClick={() => { setMenuOpen(false); handleExportPNG() }}
+                      className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                    >
+                      Exportera som PNG
+                    </button>
+                    <button
+                      role="menuitem"
+                      type="button"
+                      onClick={() => { setMenuOpen(false); toggleLegend() }}
+                      aria-pressed={showLegend}
+                      className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                    >
+                      {showLegend ? 'Dölj teckenförklaring' : 'Visa teckenförklaring'}
+                    </button>
+                    <button
+                      role="menuitem"
+                      type="button"
+                      onClick={() => { setMenuOpen(false); setShowYearBadges(v => !v) }}
+                      aria-pressed={showYearBadges}
+                      className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                    >
+                      {showYearBadges ? 'Dölj årsbrickor' : 'Visa årsbrickor'}
+                    </button>
+                    <button
+                      role="menuitem"
+                      type="button"
+                      onClick={() => { setMenuOpen(false); setHelpOpen(true) }}
+                      className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                    >
+                      Visa hjälp
+                    </button>
+                    <button
+                      role="menuitem"
+                      type="button"
+                      onClick={() => { setMenuOpen(false); navigate('/skill-tree/fullscreen') }}
+                      className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                      aria-haspopup="dialog"
+                      aria-controls="skilltree-fullscreen"
+                    >
+                      Öppna helskärm
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div
+              className="absolute left-3 bottom-3 sm:left-4 sm:bottom-4 z-[60]"
+              style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+            >
+              <div className="inline-flex flex-col gap-2">
+                <button
+                  type="button"
+                  aria-label="Zooma in"
+                  onClick={handleZoomIn}
+                  className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-bg-secondary border border-border text-foreground shadow-lg hover:bg-bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  title="Zooma in"
+                >
+                  <span aria-hidden="true">+</span>
+                </button>
+                <button
+                  type="button"
+                  aria-label="Zooma ut"
+                  onClick={handleZoomOut}
+                  className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-bg-secondary border border-border text-foreground shadow-lg hover:bg-bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  title="Zooma ut"
+                >
+                  <span aria-hidden="true">−</span>
+                </button>
+                <button
+                  type="button"
+                  aria-label="Återställ vy"
+                  onClick={handleResetView}
+                  className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-bg-secondary border border-border text-foreground shadow-lg hover:bg-bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  title="Återställ vy"
+                >
+                  <span aria-hidden="true">⟲</span>
+                </button>
+              </div>
+            </div>
+
+            <p id="skilltree-help" className="sr-only">
+              💡 Dra för att panorera • Nyp för att zooma • Klicka på märken för detaljer
+            </p>
+
+            {helpOpen && (
+              <div
+                role="dialog"
+                aria-modal="false"
+                aria-labelledby="skilltree-help-title"
+                className="absolute left-1/2 bottom-24 -translate-x-1/2 w-[min(92vw,28rem)] rounded-md border border-border bg-background text-foreground shadow-xl p-4 z-[70]"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <h3 id="skilltree-help-title" className="text-sm font-semibold mb-1">Hjälp</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Dra för att panorera • Nyp eller använd +/− för att zooma • 0 återställer vy • Klicka för detaljer
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    aria-label="Stäng hjälp"
+                    className="btn btn-muted min-h-[44px] px-3 py-2"
+                    onClick={() => setHelpOpen(false)}
+                  >
+                    Stäng
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
 
-      <div className="text-xs text-muted-foreground overflow-x-hidden" role="note" id={legendId}>
-        <ReviewLegend variant="canvas" />
-      </div>
-      <div className="text-sm text-muted-foreground">
-        <p id="skilltree-help">💡 Dra för att panorera • Nyp för att zooma • Klicka på märken för detaljer</p>
-      </div>
-      <div className="sm:hidden">
-        <button
-          type="button"
-          onClick={handleExportPNG}
-          className="mt-2 w-full px-3 py-2 min-h-[44px] rounded bg-primary text-white hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
-        >
-          <span aria-hidden="true" className="mr-2">📥</span>
-          Exportera som PNG
-        </button>
-      </div>
 
       {isFullscreen && (
         <div
@@ -719,96 +896,144 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
             style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
           >
             <div className="relative">
-            <button
-              type="button"
-              ref={menuButtonRef}
-              aria-haspopup="menu"
-              aria-controls="fullscreen-actions-menu"
-              aria-expanded={menuOpen}
-              onClick={() => setMenuOpen((v) => !v)}
-              className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-bg-secondary border border-border text-foreground shadow-lg hover:bg-bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-              title="Visa åtgärder"
-              aria-label="Visa åtgärder"
-            >
-              <span aria-hidden="true">⋮</span>
-            </button>
-
-            {menuOpen && (
-              <div
-                id="fullscreen-actions-menu"
-                ref={menuRef}
-                role="menu"
-                aria-label="Åtgärder"
-                className="absolute right-0 bottom-14 sm:bottom-16 w-56 rounded-md border border-border bg-background shadow-xl overflow-hidden"
-                onKeyDown={(e) => {
-                  if (e.key === 'Escape') {
-                    e.preventDefault()
-                    setMenuOpen(false)
-                    menuButtonRef.current?.focus()
-                  } else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
-                    const items = Array.from(e.currentTarget.querySelectorAll('[role="menuitem"]'))
-                    if (items.length === 0) return
-                    const i = items.indexOf(document.activeElement)
-                    let next = 0
-                    if (e.key === 'ArrowDown') next = i >= 0 ? (i + 1) % items.length : 0
-                    if (e.key === 'ArrowUp') next = i >= 0 ? (i - 1 + items.length) % items.length : items.length - 1
-                    e.preventDefault()
-                    items[next]?.focus()
-                  }
-                }}
+              <button
+                type="button"
+                ref={menuButtonRef}
+                aria-haspopup="menu"
+                aria-controls={menuId}
+                aria-expanded={menuOpen}
+                onClick={() => setMenuOpen((v) => !v)}
+                className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-bg-secondary border border-border text-foreground shadow-lg hover:bg-bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                title="Visa åtgärder"
+                aria-label="Visa åtgärder"
               >
-                <button
-                  role="menuitem"
-                  type="button"
-                  onClick={() => { setMenuOpen(false); handleResetView() }}
-                  className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                <span aria-hidden="true">⋮</span>
+              </button>
+
+              {menuOpen && (
+                <div
+                  id={menuId}
+                  ref={menuRef}
+                  role="menu"
+                  aria-label="Åtgärder"
+                  className="absolute right-0 bottom-14 sm:bottom-16 w-56 rounded-md border border-border bg-background shadow-xl overflow-hidden"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Escape') {
+                      e.preventDefault()
+                      setMenuOpen(false)
+                      menuButtonRef.current?.focus()
+                    } else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                      const items = Array.from(e.currentTarget.querySelectorAll('[role="menuitem"]'))
+                      if (items.length === 0) return
+                      const i = items.indexOf(document.activeElement)
+                      let next = 0
+                      if (e.key === 'ArrowDown') next = i >= 0 ? (i + 1) % items.length : 0
+                      if (e.key === 'ArrowUp') next = i >= 0 ? (i - 1 + items.length) % items.length : items.length - 1
+                      e.preventDefault()
+                      items[next]?.focus()
+                    }
+                  }}
                 >
-                  Återställ vy
-                </button>
-                <button
-                  role="menuitem"
-                  type="button"
-                  onClick={() => { setMenuOpen(false); handleExportPNG() }}
-                  className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                >
-                  Exportera som PNG
-                </button>
-                <button
-                  role="menuitem"
-                  type="button"
-                  onClick={() => { setMenuOpen(false); setShowLegendFs(v => !v) }}
-                  aria-pressed={showLegendFs}
-                  className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                >
-                  {showLegendFs ? 'Dölj teckenförklaring' : 'Visa teckenförklaring'}
-                </button>
-                <button
-                  role="menuitem"
-                  type="button"
-                  ref={closeBtnRef}
-                  onClick={() => { setMenuOpen(false); navigate(-1) }}
-                  className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                >
-                  Stäng helskärm
-                </button>
-              </div>
-            )}
+                  <button
+                    role="menuitem"
+                    type="button"
+                    onClick={() => { setMenuOpen(false); handleResetView() }}
+                    className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                  >
+                    Återställ vy
+                  </button>
+                  <button
+                    role="menuitem"
+                    type="button"
+                    onClick={() => { setMenuOpen(false); handleExportPNG() }}
+                    className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                  >
+                    Exportera som PNG
+                  </button>
+                  <button
+                    role="menuitem"
+                    type="button"
+                    onClick={() => { setMenuOpen(false); toggleLegend() }}
+                    aria-pressed={showLegend}
+                    className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                  >
+                    {showLegend ? 'Dölj teckenförklaring' : 'Visa teckenförklaring'}
+                  </button>
+                  <button
+                    role="menuitem"
+                    type="button"
+                    onClick={() => { setMenuOpen(false); setShowYearBadges(v => !v) }}
+                    aria-pressed={showYearBadges}
+                    className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                  >
+                    {showYearBadges ? 'Dölj årsbrickor' : 'Visa årsbrickor'}
+                  </button>
+                  <button
+                    role="menuitem"
+                    type="button"
+                    onClick={() => { setMenuOpen(false); setHelpOpen(true) }}
+                    className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                  >
+                    Visa hjälp
+                  </button>
+                  <button
+                    role="menuitem"
+                    type="button"
+                    ref={closeBtnRef}
+                    onClick={() => { setMenuOpen(false); navigate(-1) }}
+                    className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                  >
+                    Stäng helskärm
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 
-          {showLegendFs && (
-            <div className="px-3 pt-3 sm:px-4 overflow-x-hidden" role="note" id={fsLegendId}>
-              <ReviewLegend variant="canvas" />
+          {/* Zoom controls (bottom-left) */}
+          <div
+            className="absolute left-3 bottom-3 sm:left-4 sm:bottom-4 z-[60]"
+            style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+          >
+            <div className="inline-flex flex-col gap-2">
+              <button
+                type="button"
+                aria-label="Zooma in"
+                onClick={handleZoomIn}
+                className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-bg-secondary border border-border text-foreground shadow-lg hover:bg-bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                title="Zooma in"
+              >
+                <span aria-hidden="true">+</span>
+              </button>
+              <button
+                type="button"
+                aria-label="Zooma ut"
+                onClick={handleZoomOut}
+                className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-bg-secondary border border-border text-foreground shadow-lg hover:bg-bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                title="Zooma ut"
+              >
+                <span aria-hidden="true">−</span>
+              </button>
+              <button
+                type="button"
+                aria-label="Återställ vy"
+                onClick={handleResetView}
+                className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-bg-secondary border border-border text-foreground shadow-lg hover:bg-bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                title="Återställ vy"
+              >
+                <span aria-hidden="true">⟲</span>
+              </button>
             </div>
-          )}
+          </div>
+
           <div className="flex-1">
             <div className="relative h-full">
               <canvas
                 ref={setCanvasRef}
                 role="img"
                 aria-label="Interaktiv träd-vy-canvas"
-                aria-describedby={['skilltree-help-fs', fsLegendId, legendDescribedById].filter(Boolean).join(' ')}
-                aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown"
+                aria-describedby={['skilltree-help-fs', showLegend ? 'skilltree-legend-fs' : null, legendDescribedById].filter(Boolean).join(' ')}
+                aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown = + - 0"
                 tabIndex={0}
                 onKeyDown={handleCanvasKeyDown}
                 className="w-full h-full bg-background cursor-grab active:cursor-grabbing touch-none overscroll-contain select-none"
@@ -821,6 +1046,17 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                 onClick={handleCanvasClick}
                 onDoubleClick={handleCanvasDoubleClick}
               />
+              {showLegend && (
+                <div
+                  ref={legendFsRef}
+                  className="absolute left-3 right-3 top-3 sm:left-4 sm:right-auto sm:top-4 z-[40] overflow-x-auto whitespace-nowrap rounded-md border border-border/60 bg-background/80 backdrop-blur-sm shadow-md px-3 py-1.5"
+                  style={{ marginTop: 'env(safe-area-inset-top)' }}
+                  role="note"
+                  id="skilltree-legend-fs"
+                >
+                  <ReviewLegend variant="canvas" />
+                </div>
+              )}
               <div className="pointer-events-none absolute inset-0">
                 {badgeData.map(badge => (
                   <React.Fragment key={badge.id}>
@@ -873,6 +1109,32 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
           <p id="skilltree-help-fs" className="sr-only">
             💡 Dra för att panorera • Nyp för att zooma • Klicka på märken för detaljer
           </p>
+
+          {helpOpen && (
+            <div
+              role="dialog"
+              aria-modal="false"
+              aria-labelledby="skilltree-help-title-fs"
+              className="absolute left-1/2 bottom-24 -translate-x-1/2 w-[min(92vw,28rem)] rounded-md border border-border bg-background text-foreground shadow-xl p-4 z-[70]"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <h3 id="skilltree-help-title-fs" className="text-sm font-semibold mb-1">Hjälp</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Dra för att panorera • Nyp eller använd +/− för att zooma • 0 återställer vy • Klicka för detaljer
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  aria-label="Stäng hjälp"
+                  className="btn btn-muted min-h-[44px] px-3 py-2"
+                  onClick={() => setHelpOpen(false)}
+                >
+                  Stäng
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Modal is route-driven while in fullscreen */}
         </div>
