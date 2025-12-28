@@ -84,7 +84,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   const legendRef = useRef(null)
   const legendFsRef = useRef(null)
   const menuId = isFullscreen ? 'fullscreen-actions-menu' : 'canvas-actions-menu'
-  const { currentProfile, startExplorerMode, hydrated } = useProfile()
+  const { currentProfile, startExplorerMode, hydrated, resetCurrentProfileData } = useProfile()
   const isGuest = Boolean(currentProfile?.isGuest)
   const isProfileLoading = !hydrated || typeof currentProfile === 'undefined'
   const [dismissedFsOnboarding, setDismissedFsOnboarding] = useState(false)
@@ -1118,16 +1118,35 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
             </div>
           )}
           {isFullscreen && isGuest && !showFsOnboarding && (
-            <button
-              type="button"
-              onClick={() => setOpenPicker(true)}
-              className="absolute left-1/2 -translate-x-1/2 z-[60] inline-flex items-center gap-2 rounded-full border border-border bg-background/80 backdrop-blur-sm px-3 py-1.5 text-sm shadow-md min-h-[36px]"
+            <div
+              className="absolute left-1/2 -translate-x-1/2 z-[60] flex items-center gap-2"
               style={{ bottom: 'calc(env(safe-area-inset-bottom) + 16px)' }}
-              aria-label="Gästläge - Spara framsteg"
-              title="Gästläge - Spara framsteg"
+              role="group"
+              aria-label="Snabbåtgärder (gäst)"
             >
-              Gästläge - Spara
-            </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  if (window.confirm('Återställa alla märken och förkunskaper? Detta går inte att ångra.')) {
+                    await resetCurrentProfileData()
+                  }
+                }}
+                className="inline-flex items-center gap-2 rounded-full border border-border bg-background/80 backdrop-blur-sm px-3 py-1.5 text-sm shadow-md min-h-[36px]"
+                aria-label="Återställ alla"
+                title="Återställ alla"
+              >
+                Återställ alla
+              </button>
+              <button
+                type="button"
+                onClick={() => setOpenPicker(true)}
+                className="inline-flex items-center gap-2 rounded-full border border-border bg-background/80 backdrop-blur-sm px-3 py-1.5 text-sm shadow-md min-h-[36px]"
+                aria-label="Spara framsteg"
+                title="Spara framsteg"
+              >
+                Spara framsteg
+              </button>
+            </div>
           )}
           <div className="flex-1">
             <div className="relative h-full">
