@@ -33,6 +33,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   const CANVAS_PAD = 24
   const LABEL_HALF_PX = 80           // approximate half-width of label text area
   const LABEL_BOTTOM_PX = 56         // reserve for up to two lines of label text at bottom
+  const DEFAULT_LEGEND_SAFE_TOP_PX = 72
   const getWorldBounds = useCallback(() => {
     if (!layout || !layout.medals?.length) return { minX: 0, minY: 0, maxX: 0, maxY: 0 }
     let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity
@@ -54,7 +55,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     overscrollPx: 48,
     contentPaddingPx: {
       left: LABEL_HALF_PX + CANVAS_PAD,
-      top: CANVAS_PAD,
+      top: CANVAS_PAD + legendSafeTop,
       right: LABEL_HALF_PX + CANVAS_PAD,
       bottom: LABEL_BOTTOM_PX + CANVAS_PAD
     }
@@ -72,16 +73,19 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   const [menuOpen, setMenuOpen] = useState(false)
   // Show legend by default in all modes for consistency
   const [showLegend, setShowLegend] = useState(true)
+  const [legendSafeTop, setLegendSafeTop] = useState(showLegend ? DEFAULT_LEGEND_SAFE_TOP_PX : 0)
   const [showYearBadges, setShowYearBadges] = useState(true)
   const [helpOpen, setHelpOpen] = useState(false)
   const legendId = legendDescribedById || 'skilltree-legend'
   const menuButtonRef = useRef(null)
   const menuRef = useRef(null)
+  const legendRef = useRef(null)
+  const legendFsRef = useRef(null)
   const menuId = isFullscreen ? 'fullscreen-actions-menu' : 'canvas-actions-menu'
 
   // Compute a base transform that anchors the layout's top-left to the canvas' top-left with padding,
   // and auto-fits the layout into the viewport (mobile-first).
-  const computeBaseTransform = useCallback((canvas, padding = 24) => {
+  const computeBaseTransform = useCallback((canvas, padding = 24, extraTop = 0) => {
     if (!layout || !canvas) return { baseScale: 1, minX: 0, minY: 0 }
     const width = canvas.width
     const height = canvas.height
@@ -101,26 +105,27 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     const contentW = Math.max(1, maxX - minX)
     const contentH = Math.max(1, maxY - minY)
     const fitX = (width - padding * 2) / contentW
-    const fitY = (height - padding * 2) / contentH
+    const fitY = (height - padding * 2 - Math.max(0, extraTop)) / contentH
     const baseScale = Math.max(0.001, Math.min(fitX, fitY))
     return { baseScale, minX, minY }
   }, [layout])
 
   // Effective transform combines the base (top-left anchored, auto-fit) with interactive pan/zoom.
   const getEffectiveTransform = useCallback((canvas, padding = CANVAS_PAD) => {
-    const { baseScale, minX, minY } = computeBaseTransform(canvas, padding)
+    const { baseScale, minX, minY } = computeBaseTransform(canvas, padding, legendSafeTop)
     const width = canvas?.width || 0
     const height = canvas?.height || 0
     const effScale = Math.max(0.001, baseScale * scale)
     // Compute base pan using the effective scale so the top-left stays anchored at padding
     // Include label half-width so the left-most label stays inside canvas padding.
     const extraLeftWorld = LABEL_HALF_PX / effScale
+    const extraTopWorld = Math.max(0, legendSafeTop) / effScale
     const basePanX = (padding - width / 2) / effScale - (minX - extraLeftWorld)
-    const basePanY = (padding - height / 2) / effScale - minY
+    const basePanY = (padding - height / 2) / effScale - (minY - extraTopWorld)
     const effPanX = panX + basePanX
     const effPanY = panY + basePanY
     return { effScale, effPanX, effPanY, baseScale }
-  }, [computeBaseTransform, panX, panY, scale])
+  }, [computeBaseTransform, panX, panY, scale, legendSafeTop])
 
   // Determine which medals are visible in the current viewport for culling
   const getVisibleMedalsForCanvas = useCallback((canvas, margin = 120) => {
@@ -280,12 +285,12 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   const handleResetView = useCallback(() => {
     const el = canvasRef.current
     if (!el || !layout) return
-    const { baseScale } = computeBaseTransform(el)
+    const { baseScale } = computeBaseTransform(el, CANVAS_PAD, legendSafeTop)
     const minEff = 0.8
     const targetInteractive = minEff / Math.max(0.001, baseScale)
     resetView()
     setScaleAbsolute(targetInteractive)
-  }, [computeBaseTransform, layout, resetView, setScaleAbsolute])
+  }, [computeBaseTransform, layout, resetView, setScaleAbsolute, legendSafeTop])
 
   // Zoom controls
   const clamp = (v, min, max) => Math.min(max, Math.max(min, v))
@@ -299,6 +304,18 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   const setCanvasRef = useCallback((node) => {
     canvasRef.current = node
   }, [])
+
+  // Measure legend height to reserve safe top area for initial render and during layout changes
+  useLayoutEffect(() => {
+    if (!showLegend) {
+      setLegendSafeTop(0)
+      return
+    }
+    const el = isFullscreen ? legendFsRef.current : legendRef.current
+    if (!el) return
+    const r = el.getBoundingClientRect()
+    setLegendSafeTop(Math.max(0, Math.ceil(r.height)))
+  }, [showLegend, isFullscreen])
 
   // Draw with requestAnimationFrame for smoothness
   useEffect(() => {
@@ -343,10 +360,18 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
       }
       draw()
       setBadgeData(getYearsBadgeData(el))
+
+      if (showLegend) {
+        const legendEl = isFullscreen ? legendFsRef.current : legendRef.current
+        if (legendEl) {
+          const r = legendEl.getBoundingClientRect()
+          setLegendSafeTop(Math.max(0, Math.ceil(r.height)))
+        }
+      }
     }
     window.addEventListener('resize', onResize)
     return () => window.removeEventListener('resize', onResize)
-  }, [draw, getYearsBadgeData])
+  }, [draw, getYearsBadgeData, isFullscreen, showLegend])
 
   // Native wheel listener (passive: false) to prevent page scroll/zoom during canvas zoom gestures.
   useEffect(() => {
@@ -665,7 +690,12 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
             </div>
 
             {showLegend && (
-              <div className="absolute left-3 top-3 sm:left-4 sm:top-4 z-[40] overflow-x-hidden" role="note" id={legendId}>
+              <div
+                ref={legendRef}
+                className="absolute left-3 top-3 sm:left-4 sm:top-4 z-[40] overflow-x-hidden rounded-md border border-border/60 bg-background/80 backdrop-blur-sm shadow-md px-2 py-1"
+                role="note"
+                id={legendId}
+              >
                 <ReviewLegend variant="canvas" />
               </div>
             )}
@@ -1007,7 +1037,12 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                 onDoubleClick={handleCanvasDoubleClick}
               />
               {showLegend && (
-                <div className="absolute left-3 top-3 sm:left-4 sm:top-4 z-[40] overflow-x-hidden" role="note" id="skilltree-legend-fs">
+                <div
+                  ref={legendFsRef}
+                  className="absolute left-3 top-3 sm:left-4 sm:top-4 z-[40] overflow-x-hidden rounded-md border border-border/60 bg-background/80 backdrop-blur-sm shadow-md px-2 py-1"
+                  role="note"
+                  id="skilltree-legend-fs"
+                >
                   <ReviewLegend variant="canvas" />
                 </div>
               )}
