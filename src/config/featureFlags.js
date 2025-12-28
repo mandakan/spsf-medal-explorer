@@ -15,7 +15,7 @@ export default {
     default: 'on',
     env: { production: 'preview' },
     title: 'Förhandsvisning',
-    message: 'Inställningen “Kräv innevarande år för återkommande märken” är under utveckling.',
+    message: 'Inställningen är under utveckling.',
     overlay: 'inline'
   }
 }
