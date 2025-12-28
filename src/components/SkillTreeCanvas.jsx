@@ -521,6 +521,49 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     }
   }, [draw, getYearsBadgeData])
 
+  // Redraw when returning from bfcache/tab visibility and on orientation changes
+  useEffect(() => {
+    const redraw = () => {
+      requestAnimationFrame(() => {
+        const el = canvasRef.current
+        if (!el) return
+        const rect = el.getBoundingClientRect()
+        const w = Math.floor(rect.width)
+        const h = Math.floor(rect.height)
+        if (w > 0 && h > 0 && (el.width !== w || el.height !== h)) {
+          el.width = w
+          el.height = h
+        }
+        clearThemeCache()
+        draw()
+        setBadgeData(getYearsBadgeData(el))
+      })
+    }
+
+    const onPageShow = (e) => {
+      void e
+      redraw()
+    }
+    const onVisibility = () => {
+      if (typeof document !== 'undefined' && document.visibilityState === 'visible') {
+        redraw()
+      }
+    }
+    const onOrientation = () => {
+      redraw()
+    }
+
+    window.addEventListener('pageshow', onPageShow)
+    document.addEventListener('visibilitychange', onVisibility)
+    window.addEventListener('orientationchange', onOrientation)
+
+    return () => {
+      window.removeEventListener('pageshow', onPageShow)
+      document.removeEventListener('visibilitychange', onVisibility)
+      window.removeEventListener('orientationchange', onOrientation)
+    }
+  }, [draw, getYearsBadgeData])
+
   // Keyboard pan shortcuts (scope to focused canvas for WCAG 2.1/2.2)
   const handleCanvasKeyDown = useCallback((e) => {
     const { effScale } = getEffectiveTransform(canvasRef.current)
