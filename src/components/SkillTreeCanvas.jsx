@@ -8,6 +8,8 @@ import { exportCanvasToPNG } from '../utils/canvasExport'
 import { clearThemeCache } from '../logic/canvasRenderer'
 import { useNavigate, useLocation } from 'react-router-dom'
 import ReviewLegend from './ReviewLegend'
+import { useProfile } from '../hooks/useProfile'
+import ProfileSelector from './ProfileSelector'
 
 export default function SkillTreeCanvas({ legendDescribedById }) {
   const canvasRef = useRef(null)
@@ -82,6 +84,15 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   const legendRef = useRef(null)
   const legendFsRef = useRef(null)
   const menuId = isFullscreen ? 'fullscreen-actions-menu' : 'canvas-actions-menu'
+  const { currentProfile, startExplorerMode, hydrated } = useProfile()
+  const isGuest = Boolean(currentProfile?.isGuest)
+  const isProfileLoading = !hydrated || typeof currentProfile === 'undefined'
+  const [dismissedFsOnboarding, setDismissedFsOnboarding] = useState(false)
+  const [openPicker, setOpenPicker] = useState(false)
+  const hasOnboardingChoice = (() => {
+    try { return window.localStorage.getItem('app:onboardingChoice') } catch { return null }
+  })()
+  const showFsOnboarding = isFullscreen && !isProfileLoading && !currentProfile && !hasOnboardingChoice && !dismissedFsOnboarding
 
   // Compute a base transform that anchors the layout's top-left to the canvas' top-left with padding,
   // and auto-fits the layout into the viewport (mobile-first).
@@ -804,6 +815,16 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                     >
                       {showYearBadges ? 'Dölj årsbrickor' : 'Visa årsbrickor'}
                     </button>
+                    {(!currentProfile || isGuest) && (
+                      <button
+                        role="menuitem"
+                        type="button"
+                        onClick={() => { setMenuOpen(false); setOpenPicker(true) }}
+                        className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                      >
+                        Spara framsteg
+                      </button>
+                    )}
                     <button
                       role="menuitem"
                       type="button"
@@ -1043,6 +1064,61 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
             </div>
           </div>
 
+          {showFsOnboarding && (
+            <div
+              role="region"
+              aria-label="Onboarding"
+              className="absolute left-3 right-3 z-[50]"
+              style={{ marginTop: 'env(safe-area-inset-top)', top: Math.max(12, legendSafeTop + 12) }}
+            >
+              <div className="rounded-md border border-border bg-background/80 backdrop-blur-sm shadow-md p-3">
+                <p className="text-sm text-foreground mb-2">Spara dina framsteg?</p>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    className="btn btn-primary min-h-[44px]"
+                    onClick={() => {
+                      try { window.localStorage.setItem('app:onboardingChoice', 'saved') } catch {}
+                      setDismissedFsOnboarding(true)
+                      setOpenPicker(true)
+                    }}
+                  >
+                    Skapa profil
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-secondary min-h-[44px]"
+                    onClick={() => {
+                      try { window.localStorage.setItem('app:onboardingChoice', 'guest') } catch {}
+                      setDismissedFsOnboarding(true)
+                      startExplorerMode()
+                    }}
+                  >
+                    Fortsätt som gäst
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-muted min-h-[44px]"
+                    onClick={() => setDismissedFsOnboarding(true)}
+                  >
+                    Inte nu
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+          {isFullscreen && isGuest && !showFsOnboarding && (
+            <button
+              type="button"
+              onClick={() => setOpenPicker(true)}
+              className="absolute left-3 z-[50] inline-flex items-center gap-2 rounded-full border border-border bg-background/80 backdrop-blur-sm px-3 py-1.5 text-sm shadow-md min-h-[36px]"
+              style={{ marginTop: 'env(safe-area-inset-top)', top: Math.max(12, legendSafeTop + 12) }}
+              aria-label="Gästläge – Spara framsteg"
+              title="Gästläge – Spara framsteg"
+            >
+              Gästläge – Spara framsteg
+            </button>
+          )}
           <div className="flex-1">
             <div className="relative h-full">
               <canvas
@@ -1157,6 +1233,14 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
         </div>
       )}
 
+      <ProfileSelector
+        id="save-progress-picker-canvas"
+        mode="picker"
+        open={openPicker}
+        onClose={() => setOpenPicker(false)}
+        forceCreate
+        convertGuest
+      />
       {/* Non-fullscreen modal is now route-driven via AppRoutes */}
     </div>
   )
