@@ -48,7 +48,7 @@ export function FeatureFlagsProvider({ children }) {
   const profileCtx = useContext(ProfileContext)
   const currentProfile = profileCtx?.currentProfile
   const updateProfile = profileCtx?.updateProfile
-  const profileOverrides = currentProfile?.features?.featureFlags || {}
+  const profileOverrides = useMemo(() => currentProfile?.features?.featureFlags || {}, [currentProfile])
 
   const flags = useMemo(() => {
     const query = (typeof window !== 'undefined') ? parseQuery() : {}
