@@ -71,7 +71,8 @@ export default function Home() {
         <section className="card p-6 shadow">
           <h2 className="text-xl font-bold mb-4">Status</h2>
           <p className="text-muted-foreground">
-            ✓ {medalDatabase.getAllMedals().length} märken laddade
+            <Icon name="CheckCircle" className="inline w-4 h-4 align-text-bottom mr-1 text-muted-foreground" />
+            {medalDatabase.getAllMedals().length} märken laddade
           </p>
           <p className="mt-2 text-muted-foreground">
             Version: <code>{BUILD.version}</code> • Build: <code>{BUILD.number}</code> • Commit: <code>{BUILD.commit}</code>
