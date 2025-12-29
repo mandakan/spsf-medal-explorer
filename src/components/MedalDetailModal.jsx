@@ -386,14 +386,8 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
               />
             </div>
             {!isPlaceholder && (
-              <div className="mb-4">
-                <div className="inline-flex items-center gap-2">
-                  <StatusIcon
-                    status={status?.status || 'locked'}
-                    className="w-4 h-4"
-                  />
-                  <StatusPill status={status?.status || 'locked'} />
-                </div>
+              <div className="mb-4" role="status" aria-live="polite">
+                <StatusPill status={status?.status || 'locked'} />
               </div>
             )}
             {isPlaceholder && (
