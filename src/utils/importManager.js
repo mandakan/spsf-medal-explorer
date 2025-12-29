@@ -104,16 +104,24 @@ export function parseCSV(content) {
     }
     // Expected headers: Medal,Type,DisciplineType,PPCClass,Date,Score,Position,Weapon,Team,Notes,Status
     const score = get('score')
+    const date = get('date') || undefined
+    const year = date ? Number(String(date).slice(0, 4)) : undefined
+
+    const WG = ['A', 'B', 'C', 'R']
+    const wgRaw = (get('weapon') || '').toString().toUpperCase()
+    const weaponGroup = WG.includes(wgRaw) ? wgRaw : (wgRaw ? 'A' : undefined)
+
     return {
       id: undefined,
       medalId: get('medal') || undefined,
       type: get('type') || undefined,
       disciplineType: get('disciplinetype') || undefined,
       ppcClass: get('ppcclass') || undefined,
-      date: get('date') || undefined,
+      date,
+      year,
       score: score !== '' ? Number(score) : undefined,
       position: get('position') || undefined,
-      weaponGroup: get('weapon') || undefined,
+      weaponGroup,
       team: get('team') || undefined,
       notes: get('notes') || undefined,
       status: get('status') || undefined,
