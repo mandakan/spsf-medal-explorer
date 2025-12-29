@@ -17,8 +17,8 @@ const HEADERS = [
   'hits',
   'competitionName',
   'competitionType',
-  'medalType',
   'disciplineType',
+  'ppcClass',
   'weapon',
   'score',
   'teamName',
@@ -51,8 +51,8 @@ export function exportCsvTemplate(schemaVersion = '1') {
     '',                 // hits
     '',                 // competitionName
     '',                 // competitionType
-    '',                 // medalType
     '',                 // disciplineType
+    '',                 // ppcClass
     '',                 // weapon
     '',                 // score
     '',                 // teamName

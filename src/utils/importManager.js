@@ -14,8 +14,8 @@ import { readFile } from './fileHandlers'
  * Prefer existing project validator logic if available.
  * Use static imports to avoid mixed static/dynamic import warnings and ensure consistent bundling.
  */
-import { InputValidator } from '../logic/validator.js'
 import { detectDuplicateAchievements } from '../logic/achievementValidator.js'
+import { validateAchievement as validateAchievementObj } from '../validators/universalValidator.js'
 
 function normalizeAchievementsContainer(parsed) {
   if (Array.isArray(parsed)) {
@@ -102,13 +102,16 @@ export function parseCSV(content) {
       const idx = header.indexOf(key)
       return idx >= 0 ? cols[idx] : ''
     }
-    // Expected headers (from PR): Medal,Type,Date,Score,Position,Weapon,Team,Notes,Status
+    // Expected headers: Medal,Type,DisciplineType,PPCClass,Date,Score,Position,Weapon,Team,Notes,Status
+    const score = get('score')
     return {
       id: undefined,
       medalId: get('medal') || undefined,
       type: get('type') || undefined,
+      disciplineType: get('disciplinetype') || undefined,
+      ppcClass: get('ppcclass') || undefined,
       date: get('date') || undefined,
-      points: get('score') !== '' ? Number(get('score')) : undefined,
+      score: score !== '' ? Number(score) : undefined,
       position: get('position') || undefined,
       weaponGroup: get('weapon') || undefined,
       team: get('team') || undefined,
@@ -128,26 +131,12 @@ export function validateData(achievements) {
   }
   const list = Array.isArray(achievements) ? achievements : (achievements?.achievements || [])
   list.forEach((ach, idx) => {
-    let errors = []
-    if (InputValidator && ach?.type === 'precision_series') {
-      const res = InputValidator.validatePrecisionSeriesInput(ach)
-      if (!res.isValid) {
-        errors = res.errors || ['Invalid gold_series entry']
-      }
-    } else {
-      // Generic sanity checks
-      if (!ach?.type) errors.push('Missing type')
-      if (!ach?.date) errors.push('Missing date')
-      if (ach?.points != null && (Number.isNaN(Number(ach.points)) || Number(ach.points) < 0)) {
-        errors.push('Invalid points')
-      }
-    }
-
-    if (errors.length) {
-      result.invalid.push(ach)
-      result.errorsByIndex[idx] = errors
-    } else {
+    const { valid, errors } = validateAchievementObj(ach)
+    if (valid) {
       result.valid.push(ach)
+    } else {
+      result.invalid.push(ach)
+      result.errorsByIndex[idx] = errors && errors.length ? errors : ['Invalid achievement']
     }
   })
   return result
