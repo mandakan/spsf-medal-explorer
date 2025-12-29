@@ -52,7 +52,7 @@ export default function AdminFeatureFlagsDialog({ open, onClose }) {
 
   const content = (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center px-4 py-6 bg-black/50"
+      className="fixed inset-0 z-50 grid place-items-center p-4 sm:p-6 bg-black/50"
       onClick={onClose}
       onKeyDown={handleKeyDown}
       role="dialog"
@@ -60,7 +60,7 @@ export default function AdminFeatureFlagsDialog({ open, onClose }) {
       aria-labelledby={headingId}
     >
       <div
-        className="card w-full max-w-lg sm:max-w-xl md:max-w-2xl p-4 md:p-6 mx-auto"
+        className="card flex-none w-full max-w-md sm:max-w-lg md:max-w-2xl p-4 md:p-6 mx-auto overflow-auto max-h-[calc(100dvh-3rem)]"
         onClick={e => e.stopPropagation()}
       >
         {!authed ? (
@@ -95,7 +95,7 @@ export default function AdminFeatureFlagsDialog({ open, onClose }) {
                   <label className="sr-only" htmlFor={`flag-${f.name}`}>{f.meta.title || f.name}</label>
                   <select
                     id={`flag-${f.name}`}
-                    className="select w-36 sm:w-40 md:w-44"
+                    className="select shrink-0 w-36 sm:w-40 md:w-44"
                     value={draft[f.name] ?? 'off'}
                     onChange={e => setDraft(prev => ({ ...prev, [f.name]: e.target.value }))}
                   >
