@@ -35,7 +35,6 @@ export function useAchievementHistory() {
   // Apply a snapshot by reconciling current → target using ids
   const applySnapshot = useCallback(async (targetList) => {
     if (!currentProfile) return
-    const userId = currentProfile.userId
     const current = (currentProfile.prerequisites || []).map(a => ({ ...a }))
     const byIdCurrent = new Map(current.map(a => [a.id, a]))
     const byIdTarget = new Map(targetList.map(a => [a.id, a]))
@@ -127,7 +126,7 @@ export function useAchievementHistory() {
           added++
         } catch (e1) {
           failures.push({ index: i, message: e1?.message || 'Failed to add achievement' })
-          try { console.error('addMany: add failed', { index: i + 1, error: e1, achievement }) } catch {}
+          console.error('addMany: add failed', { index: i + 1, error: e1, achievement })
         }
       }
     }
