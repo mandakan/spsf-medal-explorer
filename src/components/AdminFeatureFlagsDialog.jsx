@@ -60,7 +60,7 @@ export default function AdminFeatureFlagsDialog({ open, onClose }) {
       aria-labelledby={headingId}
     >
       <div
-        className="card flex-none w-full max-w-[calc(100vw-2rem)] sm:max-w-[calc(100vw-3rem)] md:max-w-2xl min-w-[20rem] p-4 md:p-6 mx-auto overflow-auto max-h-[calc(100dvh-3rem)]"
+        className="card flex-none w-full max-w-[calc(100vw-2rem)] sm:max-w-[calc(100vw-3rem)] md:max-w-3xl min-w-[20rem] p-4 md:p-6 mx-auto overflow-auto max-h-[calc(100dvh-3rem)]"
         onClick={e => e.stopPropagation()}
       >
         {!authed ? (
@@ -87,15 +87,15 @@ export default function AdminFeatureFlagsDialog({ open, onClose }) {
             <h2 id={headingId} className="section-title mb-2">Feature-flaggor</h2>
             <div className="space-y-3 max-h-[60vh] overflow-auto pr-1">
               {knownFlags.map(f => (
-                <div key={f.name} className="grid grid-cols-1 sm:grid-cols-[1fr_auto] items-start sm:items-center gap-2 sm:gap-4">
-                  <div>
+                <div key={f.name} className="grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_12rem] md:grid-cols-[minmax(0,1fr)_14rem] items-start sm:items-center gap-2 sm:gap-4">
+                  <div className="min-w-0">
                     <div className="font-medium">{f.meta.title || f.name}</div>
                     {f.meta.message && <div className="text-xs text-muted-foreground">{f.meta.message}</div>}
                   </div>
                   <label className="sr-only" htmlFor={`flag-${f.name}`}>{f.meta.title || f.name}</label>
                   <select
                     id={`flag-${f.name}`}
-                    className="select w-full sm:w-40 md:w-44"
+                    className="select w-full"
                     value={draft[f.name] ?? 'off'}
                     onChange={e => setDraft(prev => ({ ...prev, [f.name]: e.target.value }))}
                   >
