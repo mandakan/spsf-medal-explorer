@@ -169,8 +169,13 @@ export class LocalStorageDataManager extends DataManager {
         return `${base}|${String(ach.points ?? '').trim()}`
       case 'standard_medal':
         return `${base}|${(ach.disciplineType || '').toLowerCase()}|${(ach.medalType || '').toLowerCase()}`
-      case 'competition_result':
-        return `${base}|${(ach.competitionType || '').toLowerCase()}|${(ach.medalType || '').toLowerCase()}|${(ach.competitionName || '').toLowerCase()}`
+      case 'competition_result': {
+        const disc = (ach.disciplineType || '').toLowerCase()
+        const ppc = (ach.ppcClass || '').toLowerCase()
+        const date = String(ach.date || '').toLowerCase()
+        const score = String(ach.score ?? '').trim()
+        return `${base}|${disc}|${ppc}|${date}|${score}`
+      }
       case 'qualification_result':
         return `${base}|${(ach.weapon || '').toLowerCase()}|${String(ach.score ?? '').trim()}`
       case 'team_event':
@@ -354,10 +359,22 @@ export class LocalStorageDataManager extends DataManager {
     }
 
     if (achievement.type === 'competition_result') {
-      const allowedTypes = ['national', 'regional/landsdels', 'crewmate/krets', 'championship']
-      const allowedMedals = ['bronze', 'silver', 'gold']
-      if (!allowedTypes.includes(achievement.competitionType || '')) return false
-      if (!allowedMedals.includes(achievement.medalType || '')) return false
+      if (!achievement.date || Number.isNaN(new Date(achievement.date).getTime())) return false
+      const d = new Date(achievement.date)
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
+      d.setHours(0, 0, 0, 0)
+      if (d.getTime() > today.getTime()) return false
+
+      if (typeof achievement.score !== 'number' || !Number.isFinite(achievement.score) || achievement.score < 0) return false
+
+      const allowedDisciplines = ['national_whole_match', 'military_fast_match', 'ppc']
+      const disc = String(achievement.disciplineType || '').toLowerCase()
+      if (!allowedDisciplines.includes(disc)) return false
+
+      if (disc === 'ppc') {
+        if (!achievement.ppcClass || !String(achievement.ppcClass).trim()) return false
+      }
     }
 
     return true
