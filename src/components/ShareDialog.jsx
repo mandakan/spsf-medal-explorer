@@ -56,11 +56,7 @@ export default function ShareDialog({ open, onClose, shareData }) {
 
         {error && (
           <div
-            className="
-              mb-4 p-3 rounded-lg
-              bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-300
-              border border-red-300 dark:border-red-600
-            "
+            className="alert alert-error mb-4"
             role="alert"
             aria-live="assertive"
           >
@@ -88,7 +84,7 @@ export default function ShareDialog({ open, onClose, shareData }) {
                   type="text"
                   readOnly
                   value={shareLink}
-                  className="flex-1 px-3 py-2 rounded border border-border bg-bg-primary text-foreground"
+                  className="input flex-1"
                   aria-label="Share link"
                 />
                 <button

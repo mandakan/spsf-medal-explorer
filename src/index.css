@@ -36,6 +36,22 @@
   --color-danger-subtle: #fef2f2;
   --color-danger-border: #fca5a5;
 
+  /* Ink colors for readable text on subtle status backgrounds */
+  --color-success-ink: #166534;
+  --color-warning-ink: #92400E;
+  --color-info-ink:    #075985;
+  --color-danger-ink:  #991B1B;
+
+  /* Optional ink for status badges */
+  --color-status-locked-ink:    #334155;
+  --color-status-available-ink: #075985;
+  --color-status-eligible-ink:  #92400E;
+  --color-status-unlocked-ink:  #166534;
+
+  /* Form field tokens (ensure >= 3:1 boundary contrast) */
+  --color-field: #FFFFFF;
+  --color-field-border: #64748B; /* slate-500 */
+
   /* Medal colors */
   --color-medal-gold: #FFD700;
   --color-medal-silver: #C0C0C0;
@@ -101,6 +117,11 @@
   .bg-placeholder { background-color: var(--color-placeholder); }
   .border-placeholder { border-color: var(--color-placeholder); }
 
+  .text-danger { color: var(--color-danger-ink); }
+
+  .bg-field { background-color: var(--color-field); }
+  .border-field { border-color: var(--color-field-border); }
+
   /* Legend badges and dots */
   .legend-badge {
     display: inline-flex;
@@ -135,22 +156,22 @@
   /* Reusable status badge utilities */
   .status-badge { @apply inline-flex items-center gap-2 rounded-full border px-2.5 py-1 text-sm leading-none; }
   .status--locked {
-    color: var(--color-status-locked);
+    color: var(--color-status-locked-ink);
     background-color: var(--color-status-locked-subtle);
     border-color: var(--color-status-locked-border);
   }
   .status--available {
-    color: var(--color-status-available);
+    color: var(--color-status-available-ink);
     background-color: var(--color-status-available-subtle);
     border-color: var(--color-status-available-border);
   }
   .status--eligible {
-    color: var(--color-status-eligible);
+    color: var(--color-status-eligible-ink);
     background-color: var(--color-status-eligible-subtle);
     border-color: var(--color-status-eligible-border);
   }
   .status--unlocked {
-    color: var(--color-status-unlocked);
+    color: var(--color-status-unlocked-ink);
     background-color: var(--color-status-unlocked-subtle);
     border-color: var(--color-status-unlocked-border);
   }
@@ -195,7 +216,7 @@
   --color-background: #0f172a;      /* slate-900 */
   --color-surface: #1f2937;         /* gray-800 */
   --color-foreground: #e5e7eb;      /* gray-200 */
-  --color-muted: #9ca3af;           /* gray-400 */
+  --color-muted: #cbd5e1;           /* slate-300 for better contrast */
 
   --color-primary: #1d745f;
   --color-primary-hover: #16605a;
@@ -220,9 +241,25 @@
 
   --color-danger: #ef4444;
   --color-danger-hover: #dc2626;
-  --color-danger-foreground: #1f2937;
+  --color-danger-foreground: #ffffff;
   --color-danger-subtle: rgba(239, 68, 68, 0.12);
   --color-danger-border: rgba(239, 68, 68, 0.45);
+
+  /* Ink colors for readable text on subtle status backgrounds (dark) */
+  --color-success-ink: #86EFAC;
+  --color-warning-ink: #FCD34D;
+  --color-info-ink:    #7DD3FC;
+  --color-danger-ink:  #FCA5A5;
+
+  /* Optional ink for status badges (dark) */
+  --color-status-locked-ink:    #E5E7EB;
+  --color-status-available-ink: #7DD3FC;
+  --color-status-eligible-ink:  #FCD34D;
+  --color-status-unlocked-ink:  #86EFAC;
+
+  /* Form field tokens (dark) */
+  --color-field: #1f2937;         /* match surface */
+  --color-field-border: #cbd5e1;  /* slate-300 for >=3:1 on #1f2937 */
 
   --color-medal-gold: #FFD700;
   --color-medal-silver: #C0C0C0;
@@ -290,13 +327,16 @@ body {
     @apply mt-1 text-xs text-muted-foreground;
   }
   .input, .select, .textarea {
-    @apply w-full rounded-md bg-bg-secondary text-foreground placeholder:text-muted-foreground
-           border border-border px-3 py-2
+    @apply w-full rounded-md text-foreground placeholder:text-muted-foreground
+           border px-3 py-2
            focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary
            focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary;
+    background-color: var(--color-field);
+    border-color: var(--color-field-border);
   }
   .input[disabled], .select[disabled], .textarea[disabled] {
-    @apply opacity-100 text-muted-foreground bg-bg-secondary/70;
+    @apply opacity-100 text-muted-foreground;
+    background-color: color-mix(in srgb, var(--color-field) 70%, transparent);
   }
 
   .alert {
@@ -304,23 +344,23 @@ body {
   }
   .alert-success {
     background-color: var(--color-success-subtle);
-    color: var(--color-success-foreground);
+    color: var(--color-success-ink);
     border-color: var(--color-success-border);
   }
   .alert-warning {
     background-color: var(--color-warning-subtle);
-    color: var(--color-warning-foreground);
+    color: var(--color-warning-ink);
     border-color: var(--color-warning-border);
   }
   .alert-error {
     background-color: var(--color-danger-subtle);
-    color: var(--color-danger-foreground);
+    color: var(--color-danger-ink);
     border-color: var(--color-danger-border);
   }
 
   .alert-info {
     background-color: var(--color-info-subtle);
-    color: var(--color-info-foreground);
+    color: var(--color-info-ink);
     border-color: var(--color-info-border);
   }
 

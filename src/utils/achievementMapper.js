@@ -72,8 +72,12 @@ function ensureISODate(dateStr) {
  */
 export function mapFormToAchievement({ medal, medalType, formData }) {
   const date = ensureISODate(formData?.date)
-  const year = Number(String(date).slice(0, 4))
-  const weaponGroup = formData?.weaponGroup || 'A'
+  const parsedYear = Number(formData?.year)
+  const year = Number.isFinite(parsedYear) ? parsedYear : Number(String(date).slice(0, 4))
+
+  const WG = ['A', 'B', 'C', 'R']
+  const wgRaw = String(formData?.weaponGroup || 'A').toUpperCase()
+  const weaponGroup = WG.includes(wgRaw) ? wgRaw : 'A'
 
   // Decide internal storage type
   let storageType = 'custom'
@@ -112,7 +116,7 @@ export function mapFormToAchievement({ medal, medalType, formData }) {
     case 'standard_medal':
       return {
         ...base,
-        discplineType: String(formData?.discplineType || '').toLowerCase(),
+        disciplineType: String(formData?.disciplineType || '').toLowerCase(),
         medalType: String((formData?.medalType ?? medal?.tier ?? '')).toLowerCase(), // bronze/silver/gold
       }
     case 'competition_result':
@@ -121,7 +125,8 @@ export function mapFormToAchievement({ medal, medalType, formData }) {
         score: Number(formData?.score ?? 0),
         competitionName: formData?.competitionName || '',
         competitionType: String(formData?.competitionType || '').toLowerCase(),
-        medalType: String((formData?.medalType ?? medal?.tier ?? '')).toLowerCase(), // bronze/silver/gold
+        disciplineType: String(formData?.disciplineType || '').toLowerCase(),
+        ppcClass: formData?.ppcClass || '',
       }
     case 'qualification_result':
       return {

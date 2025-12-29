@@ -27,6 +27,7 @@ export class Achievement {
     // competition_result specific fields required by validator
     this.competitionType = data.competitionType
     this.medalType = data.medalType
+    this.ppcClass = data.ppcClass
 
     // Common optional fields
     this.competitionName = data.competitionName || ''

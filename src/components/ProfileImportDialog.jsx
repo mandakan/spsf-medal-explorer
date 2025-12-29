@@ -68,7 +68,7 @@ export default function ProfileImportDialog({
               type="file"
               accept=".json,application/json"
               onChange={onFileChange}
-              className="block w-full text-sm text-text-primary file:mr-3 file:py-2 file:px-3 file:rounded file:border-0 file:bg-primary file:text-white hover:file:bg-primary-hover"
+              className="input text-sm file:mr-3 file:px-3 file:py-2 file:rounded-md file:bg-primary file:text-primary-foreground hover:file:bg-primary-hover file:cursor-pointer"
               disabled={busy}
             />
           </div>

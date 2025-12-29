@@ -8,6 +8,8 @@ import FeatureGate from './FeatureGate'
 const WG = ['A', 'B', 'C', 'R']
 const COMP_TYPES = ['national', 'regional/landsdels', 'crewmate/krets', 'championship']
 const DISCIPLINE_TYPES = ['field', 'precision', 'military_fast']
+const COMP_DISCIPLINE_TYPES = ['national_whole_match', 'military_fast_match', 'ppc']
+const PPC_CLASS_SUGGESTIONS = ['R1500', 'P1500', 'Open', 'SSA', 'SR 4"', 'SR 2,75"', 'Dist pistol', 'Dist revolver']
 const MEDAL_TYPES = ['bronze', 'silver', 'gold']
 const APP_TIME_OPTIONS = [
   { value: 60, label: '60, Brons' },
@@ -30,6 +32,7 @@ const newRow = () => ({
   competitionName: '',
   weapon: '',
   score: '',
+  ppcClass: '',
   teamName: '',
   position: '',
   participants: '',
@@ -92,12 +95,16 @@ export default function BatchAchievementForm() {
 
     rows.forEach((row, idx) => {
       const errs = []
+      const fields = {}
+
       const y = Number(row.year)
       if (!Number.isFinite(y) || y < 2000 || y > currentYear) {
         errs.push(`Året måste vara mellan 2000 och ${currentYear}`)
+        fields.year = true
       }
       if (!WG.includes(row.weaponGroup)) {
         errs.push('Ogiltig grupp (A, B, C, R)')
+        fields.weaponGroup = true
       }
 
       switch (row.type) {
@@ -105,6 +112,7 @@ export default function BatchAchievementForm() {
           const p = Number(row.points)
           if (!Number.isFinite(p) || p < 0 || p > 50) {
             errs.push('Poäng måste vara mellan 0-50')
+            fields.points = true
           }
           break
         }
@@ -112,30 +120,49 @@ export default function BatchAchievementForm() {
           const d = new Date(row.date)
           if (!row.date || Number.isNaN(d.getTime())) {
             errs.push('Ogiltigt datum')
+            fields.date = true
           } else {
             const today = new Date()
             today.setHours(0, 0, 0, 0)
             d.setHours(0, 0, 0, 0)
             if (d.getTime() > today.getTime()) {
               errs.push('Datum kan inte vara i framtiden')
+              fields.date = true
             }
           }
           const allowed = [60, 40, 17, 15]
           const t = Number(row.timeSeconds)
           if (!Number.isFinite(t) || !allowed.includes(t)) {
             errs.push('Välj giltig tid')
+            fields.timeSeconds = true
           }
           const h = Number(row.hits)
           if (!Number.isFinite(h) || h < 0) {
             errs.push('Ange giltigt antal träffar')
+            fields.hits = true
           }
           break
         }
         case 'competition_result': {
           const ct = String(row.competitionType || '').toLowerCase()
-          const mt = String(row.medalType || '').toLowerCase()
-          if (!COMP_TYPES.includes(ct)) errs.push('Välj giltig tävlingstyp')
-          if (!MEDAL_TYPES.includes(mt)) errs.push('Välj giltig märkestyp')
+          const dt = String(row.disciplineType || '').toLowerCase()
+          const sc = Number(row.score)
+          if (!COMP_TYPES.includes(ct)) {
+            errs.push('Välj giltig tävlingstyp')
+            fields.competitionType = true
+          }
+          if (!COMP_DISCIPLINE_TYPES.includes(dt)) {
+            errs.push('Välj giltig gren')
+            fields.disciplineType = true
+          }
+          if (!Number.isFinite(sc)) {
+            errs.push('Poäng måste vara ett tal')
+            fields.score = true
+          }
+          if (dt === 'ppc' && !String(row.ppcClass || '').trim()) {
+            errs.push('Välj PPC-klass')
+            fields.ppcClass = true
+          }
           break
         }
         case 'standard_medal':
@@ -148,7 +175,7 @@ export default function BatchAchievementForm() {
       }
 
       if (errs.length) {
-        rowErrors[idx] = errs
+        rowErrors[idx] = { list: errs, fields }
       } else {
         validRows.push(row)
       }
@@ -192,14 +219,14 @@ export default function BatchAchievementForm() {
       </p>
 
       {successCount > 0 && (
-        <div role="status" aria-live="polite" className="card p-4 mb-4">
-          <p className="text-foreground">✓ Lyckades lägga till {successCount} aktivitet(er)</p>
+        <div role="status" aria-live="polite" className="alert alert-success mb-4">
+          <p>✓ Lyckades lägga till {successCount} aktivitet(er)</p>
         </div>
       )}
 
       {dupWarnings.length > 0 && (
-        <div role="alert" className="card p-4 mb-4">
-          <p className="font-medium text-foreground mb-1">Möjliga duplikat:</p>
+        <div role="alert" className="alert alert-warning mb-4">
+          <p className="font-medium mb-1">Möjliga duplikat:</p>
           <ul className="list-disc list-inside text-muted-foreground text-sm">
             {dupWarnings.map((d, i) => <li key={i}>{d}</li>)}
           </ul>
@@ -207,8 +234,8 @@ export default function BatchAchievementForm() {
       )}
 
       {errors.form && (
-        <div role="alert" className="card p-4 mb-4">
-          <p className="text-foreground">{errors.form}</p>
+        <div role="alert" className="alert alert-error mb-4">
+          <p>{errors.form}</p>
         </div>
       )}
 
@@ -237,27 +264,35 @@ export default function BatchAchievementForm() {
 
       <form onSubmit={handleSubmit}>
         <div className="hidden sm:block overflow-x-auto mb-4">
-          <table className="w-full text-sm text-foreground">
+          <table className="w-full text-sm text-foreground table-fixed">
+            <colgroup>
+              <col className="w-[7rem]" />
+              <col className="w-[12rem]" />
+              <col className="w-[5rem]" />
+              <col />
+              <col className="w-[7rem]" />
+            </colgroup>
             <caption className="sr-only">Batch achievement input</caption>
             <thead>
               <tr className="border-b border-border bg-bg-secondary">
                 <th scope="col" className="text-left px-3 py-2">År</th>
                 <th scope="col" className="text-left px-3 py-2">Typ</th>
                 <th scope="col" className="text-left px-3 py-2">Grupp</th>
-                <th scope="col" className="text-left px-3 py-2">Detailer</th>
+                <th scope="col" className="text-left px-3 py-2">Detaljer</th>
                 <th scope="col" className="text-left px-3 py-2">Åtgärd</th>
               </tr>
             </thead>
             <tbody>
               {rows.map((row, index) => {
-                const rowErrs = Array.isArray(errors[index]) ? errors[index] : []
+                const rowObj = errors[index]
+                const rowErrs = rowObj?.list || []
                 const errorId = `row-${index}-errors`
-                const hasYearErr = rowErrs.some(e => /year/i.test(e))
-                const hasGroupErr = rowErrs.some(e => /group/i.test(e))
-                const hasPointsErr = rowErrs.some(e => /points?/i.test(e))
-                const hasDateErr = rowErrs.some(e => /date/i.test(e))
-                const hasTimeErr = rowErrs.some(e => /time/i.test(e))
-                const hasHitsErr = rowErrs.some(e => /hits?/i.test(e))
+                const hasYearErr = !!rowObj?.fields?.year
+                const hasGroupErr = !!rowObj?.fields?.weaponGroup
+                const hasPointsErr = !!rowObj?.fields?.points
+                const hasDateErr = !!rowObj?.fields?.date
+                const hasTimeErr = !!rowObj?.fields?.timeSeconds
+                const hasHitsErr = !!rowObj?.fields?.hits
                 return (
                 <tr key={index} className="border-b border-border hover:bg-bg-secondary/60">
                   <td className="px-3 py-2">
@@ -267,7 +302,7 @@ export default function BatchAchievementForm() {
                       max={new Date().getFullYear()}
                       value={row.year}
                       onChange={(e) => handleRowChange(index, 'year', e.target.value)}
-                      className="input w-24"
+                      className="input w-full"
                       disabled={submitting}
                       aria-label={`Year for row ${index + 1}`}
                       aria-invalid={hasYearErr || undefined}
@@ -278,7 +313,7 @@ export default function BatchAchievementForm() {
                     <select
                       value={row.type}
                       onChange={(e) => handleRowChange(index, 'type', e.target.value)}
-                      className="select w-32"
+                      className="select w-full"
                       disabled={submitting}
                       aria-label={`Type for row ${index + 1}`}
                       aria-describedby="batch-type-help"
@@ -294,20 +329,24 @@ export default function BatchAchievementForm() {
                     </select>
                   </td>
                   <td className="px-3 py-2">
-                    <select
-                      value={row.weaponGroup}
-                      onChange={(e) => handleRowChange(index, 'weaponGroup', e.target.value)}
-                      className="select w-20"
-                      disabled={submitting}
-                      aria-label={`Vapengrupp för rad ${index + 1}`}
-                      aria-invalid={hasGroupErr || undefined}
-                      aria-describedby={rowErrs.length ? errorId : undefined}
-                    >
-                      <option value="A">A</option>
-                      <option value="B">B</option>
-                      <option value="C">C</option>
-                      <option value="R">R</option>
-                    </select>
+                    {!(row.type === 'competition_result' && String(row.disciplineType || '').toLowerCase() === 'ppc') ? (
+                      <select
+                        value={row.weaponGroup}
+                        onChange={(e) => handleRowChange(index, 'weaponGroup', e.target.value)}
+                        className="select w-full"
+                        disabled={submitting}
+                        aria-label={`Vapengrupp för rad ${index + 1}`}
+                        aria-invalid={hasGroupErr || undefined}
+                        aria-describedby={rowErrs.length ? errorId : undefined}
+                      >
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="R">R</option>
+                      </select>
+                    ) : (
+                      <span className="text-muted-foreground text-xs">—</span>
+                    )}
                   </td>
                   <td className="px-3 py-2">
                     {row.type === 'precision_series' ? (
@@ -317,7 +356,7 @@ export default function BatchAchievementForm() {
                         max="50"
                         value={row.points}
                         onChange={(e) => handleRowChange(index, 'points', e.target.value)}
-                        className="input w-20"
+                        className="input w-full"
                         placeholder="0-50"
                         disabled={submitting}
                         aria-label={`Poäng för rad ${index + 1}`}
@@ -325,12 +364,12 @@ export default function BatchAchievementForm() {
                         aria-describedby={rowErrs.length ? errorId : undefined}
                       />
                     ) : row.type === 'application_series' ? (
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex flex-wrap gap-2 min-w-0 whitespace-normal">
                         <input
                           type="date"
                           value={row.date}
                           onChange={(e) => handleRowChange(index, 'date', e.target.value)}
-                          className="input w-44"
+                          className="input w-full"
                           disabled={submitting}
                           aria-label={`Datum för rad ${index + 1}`}
                           aria-invalid={hasDateErr || undefined}
@@ -345,7 +384,7 @@ export default function BatchAchievementForm() {
                               e.target.value === '' ? '' : Number(e.target.value)
                             )
                           }
-                          className="select w-40"
+                          className="select w-full"
                           disabled={submitting}
                           aria-label={`Tid för rad ${index + 1}`}
                           aria-invalid={hasTimeErr || undefined}
@@ -362,7 +401,7 @@ export default function BatchAchievementForm() {
                           step="1"
                           value={row.hits}
                           onChange={(e) => handleRowChange(index, 'hits', e.target.value)}
-                          className="input w-24"
+                          className="input w-full"
                           placeholder="Hits"
                           disabled={submitting}
                           aria-label={`Träffar för rad ${index + 1}`}
@@ -371,11 +410,11 @@ export default function BatchAchievementForm() {
                         />
                       </div>
                     ) : row.type === 'standard_medal' ? (
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex flex-wrap gap-2 min-w-0 whitespace-normal">
                         <select
                           value={row.disciplineType}
                           onChange={(e) => handleRowChange(index, 'disciplineType', e.target.value)}
-                          className="select w-40"
+                          className="select w-full"
                           disabled={submitting}
                           aria-label={`Tävlinggren för rad ${index + 1}`}
                         >
@@ -387,7 +426,7 @@ export default function BatchAchievementForm() {
                         <select
                           value={row.medalType}
                           onChange={(e) => handleRowChange(index, 'medalType', e.target.value)}
-                          className="select w-32"
+                          className="select w-full"
                           disabled={submitting}
                           aria-label={`Medaljtyp för rad ${index + 1}`}
                         >
@@ -400,18 +439,18 @@ export default function BatchAchievementForm() {
                           type="text"
                           value={row.competitionName}
                           onChange={(e) => handleRowChange(index, 'competitionName', e.target.value)}
-                          className="input flex-1 min-w-[10rem]"
+                          className="input w-full"
                           placeholder="Tävlingsnamn (valfritt)"
                           disabled={submitting}
                           aria-label={`Tävlingsnamn för rad ${index + 1}`}
                         />
                         </div>
                     ) : row.type === 'competition_result' ? (
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex flex-wrap gap-2 min-w-0 whitespace-normal">
                         <select
                           value={row.competitionType}
                           onChange={(e) => handleRowChange(index, 'competitionType', e.target.value)}
-                          className="select w-40"
+                          className="select w-full"
                           disabled={submitting}
                           aria-label={`Tävlingstyp för rad ${index + 1}`}
                         >
@@ -420,35 +459,67 @@ export default function BatchAchievementForm() {
                             <option key={opt} value={opt}>{opt}</option>
                           ))}
                         </select>
+
                         <select
-                          value={row.medalType}
-                          onChange={(e) => handleRowChange(index, 'medalType', e.target.value)}
-                          className="select w-32"
+                          value={row.disciplineType}
+                          onChange={(e) => handleRowChange(index, 'disciplineType', e.target.value)}
+                          className="select w-full"
                           disabled={submitting}
-                          aria-label={`Märkestyp för rad ${index + 1}`}
+                          aria-label={`Gren för rad ${index + 1}`}
                         >
-                          <option value="">Select medal…</option>
-                          {MEDAL_TYPES.map(opt => (
+                          <option value="">Välj gren…</option>
+                          {COMP_DISCIPLINE_TYPES.map(opt => (
                             <option key={opt} value={opt}>{opt}</option>
                           ))}
                         </select>
+
+                        {String(row.disciplineType || '') === 'ppc' && (
+                          <>
+                            <input
+                              type="text"
+                              value={row.ppcClass}
+                              onChange={(e) => handleRowChange(index, 'ppcClass', e.target.value)}
+                              className="input w-full"
+                              list={`ppc-classes-row-${index}`}
+                              placeholder="PPC-klass"
+                              disabled={submitting}
+                              aria-label={`PPC-klass för rad ${index + 1}`}
+                            />
+                            <datalist id={`ppc-classes-row-${index}`}>
+                              {PPC_CLASS_SUGGESTIONS.map(opt => (
+                                <option key={opt} value={opt} />
+                              ))}
+                            </datalist>
+                          </>
+                        )}
+
+                        <input
+                          type="number"
+                          value={row.score}
+                          onChange={(e) => handleRowChange(index, 'score', e.target.value)}
+                          className="input w-full"
+                          placeholder="Poäng"
+                          disabled={submitting}
+                          aria-label={`Poäng för rad ${index + 1}`}
+                        />
+
                         <input
                           type="text"
                           value={row.competitionName}
                           onChange={(e) => handleRowChange(index, 'competitionName', e.target.value)}
-                          className="input flex-1 min-w-[10rem]"
+                          className="input w-full"
                           placeholder="Tävlingsnamn (valfritt)"
                           disabled={submitting}
                           aria-label={`Tävlingsnamn för rad ${index + 1}`}
                         />
                       </div>
                     ) : row.type === 'qualification_result' ? (
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex flex-wrap gap-2 min-w-0 whitespace-normal">
                         <input
                           type="text"
                           value={row.weapon}
                           onChange={(e) => handleRowChange(index, 'weapon', e.target.value)}
-                          className="input w-32"
+                          className="input w-full"
                           placeholder="Weapon"
                           disabled={submitting}
                           aria-label={`Vapen för rad ${index + 1}`}
@@ -457,19 +528,19 @@ export default function BatchAchievementForm() {
                           type="number"
                           value={row.score}
                           onChange={(e) => handleRowChange(index, 'score', e.target.value)}
-                          className="input w-24"
+                          className="input w-full"
                           placeholder="Score"
                           disabled={submitting}
                           aria-label={`Poäng för rad ${index + 1}`}
                         />
                       </div>
                     ) : row.type === 'team_event' ? (
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex flex-wrap gap-2 min-w-0 whitespace-normal">
                         <input
                           type="text"
                           value={row.teamName}
                           onChange={(e) => handleRowChange(index, 'teamName', e.target.value)}
-                          className="input w-40"
+                          className="input w-full"
                           placeholder="Lagnamn"
                           disabled={submitting}
                           aria-label={`Lagamn för rad ${index + 1}`}
@@ -479,7 +550,7 @@ export default function BatchAchievementForm() {
                           min="1"
                           value={row.position}
                           onChange={(e) => handleRowChange(index, 'position', e.target.value)}
-                          className="input w-24"
+                          className="input w-full"
                           placeholder="Placering"
                           disabled={submitting}
                           aria-label={`Placering för rad ${index + 1}`}
@@ -488,7 +559,7 @@ export default function BatchAchievementForm() {
                           type="text"
                           value={row.participants}
                           onChange={(e) => handleRowChange(index, 'participants', e.target.value)}
-                          className="input w-56"
+                          className="input w-full"
                           placeholder="Deltagare (komma-separerad)"
                           disabled={submitting}
                           aria-label={`Deltagara för rad ${index + 1}`}
@@ -499,7 +570,7 @@ export default function BatchAchievementForm() {
                         type="text"
                         value={row.eventName}
                         onChange={(e) => handleRowChange(index, 'eventName', e.target.value)}
-                        className="input w-48"
+                        className="input w-full"
                         placeholder="Event-namn / detaljer"
                         disabled={submitting}
                         aria-label={`Event-namn för rad ${index + 1}`}
@@ -509,7 +580,7 @@ export default function BatchAchievementForm() {
                       <div
                         id={errorId}
                         role="alert"
-                        className="text-red-600 text-xs mt-1"
+                        className="text-danger text-xs mt-1"
                       >
                         {rowErrs.join(', ')}
                       </div>
@@ -520,7 +591,7 @@ export default function BatchAchievementForm() {
                       <button
                         type="button"
                         onClick={() => handleRemoveRow(index)}
-                        className="btn btn-muted text-red-600"
+                        className="btn btn-danger"
                         disabled={submitting}
                         aria-label={`Ta bort rad ${index + 1}`}
                       >
@@ -572,6 +643,8 @@ export default function BatchAchievementForm() {
         COMP_TYPES={COMP_TYPES}
         MEDAL_TYPES={MEDAL_TYPES}
         APP_TIME_OPTIONS={APP_TIME_OPTIONS}
+        COMP_DISCIPLINE_TYPES={COMP_DISCIPLINE_TYPES}
+        PPC_CLASS_SUGGESTIONS={PPC_CLASS_SUGGESTIONS}
       />
     </div>
     </FeatureGate>

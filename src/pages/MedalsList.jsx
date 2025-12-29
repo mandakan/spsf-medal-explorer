@@ -303,7 +303,7 @@ export default function MedalsList() {
               <p className="text-muted-foreground">Inga märken matchar dina filter</p>
             </div>
           ) : (
-            <div className="border border-gray-200 dark:border-slate-700 rounded-md overflow-hidden" role="region" aria-label="Märkes-resultat">
+            <div className="border border-border rounded-md overflow-hidden" role="region" aria-label="Märkes-resultat">
               <MedalList medals={finalResults} height={listHeight} itemSize={60} onSelect={(m) => navigate(`/medals/${m.id}`)} statusesById={statusesById} />
             </div>
           )}

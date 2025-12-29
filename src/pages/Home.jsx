@@ -61,7 +61,7 @@ export default function Home() {
             <span>Inställningar</span>
           </h3>
           <p className="text-muted-foreground">
-            Hanter din profil
+            Hantera din profil
           </p>
         </Link>
       </section>

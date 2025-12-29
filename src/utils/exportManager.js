@@ -85,12 +85,14 @@ startxref
 
 export async function toCSV(achievements) {
   const rows = []
-  const header = ['Medal', 'Type', 'Date', 'Score', 'Position', 'Weapon', 'Team', 'Notes', 'Status']
+  const header = ['Medal', 'Type', 'DisciplineType', 'PPCClass', 'Date', 'Score', 'Position', 'Weapon', 'Team', 'Notes', 'Status']
   rows.push(header)
 
   ensureArray(achievements).forEach(a => {
     const medal = a.medalName || a.medalId || ''
     const type = a.type || ''
+    const discipline = a.disciplineType || ''
+    const ppcClass = a.ppcClass || ''
     const date = a.date || a.competitionDate || ''
     const score = a.points ?? a.score ?? ''
     const position = a.position ?? ''
@@ -98,7 +100,7 @@ export async function toCSV(achievements) {
     const team = a.team ?? ''
     const notes = a.notes ?? ''
     const status = a.status ?? ''
-    rows.push([medal, type, date, score, position, weapon, team, notes, status])
+    rows.push([medal, type, discipline, ppcClass, date, score, position, weapon, team, notes, status])
   })
 
   return buildCsv(rows)

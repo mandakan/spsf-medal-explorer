@@ -169,8 +169,13 @@ export class LocalStorageDataManager extends DataManager {
         return `${base}|${String(ach.points ?? '').trim()}`
       case 'standard_medal':
         return `${base}|${(ach.disciplineType || '').toLowerCase()}|${(ach.medalType || '').toLowerCase()}`
-      case 'competition_result':
-        return `${base}|${(ach.competitionType || '').toLowerCase()}|${(ach.medalType || '').toLowerCase()}|${(ach.competitionName || '').toLowerCase()}`
+      case 'competition_result': {
+        const disc = (ach.disciplineType || '').toLowerCase()
+        const ppc = (ach.ppcClass || '').toLowerCase()
+        const date = String(ach.date || '').toLowerCase()
+        const score = String(ach.score ?? '').trim()
+        return `${base}|${disc}|${ppc}|${date}|${score}`
+      }
       case 'qualification_result':
         return `${base}|${(ach.weapon || '').toLowerCase()}|${String(ach.score ?? '').trim()}`
       case 'team_event':
@@ -203,25 +208,48 @@ export class LocalStorageDataManager extends DataManager {
     const next = [...current]
     const result = { added: 0, updated: 0, skipped: 0, failed: 0, errors: [] }
 
-    for (const rec of rows || []) {
+    for (let i = 0; i < (rows || []).length; i++) {
+      const rec = rows[i]
       try {
-        if (!this.validateAchievement(rec)) {
+        const ok = this.validateAchievement(rec)
+        if (!ok) {
+          const reasonText = Array.isArray(this._lastValidationReasons) && this._lastValidationReasons.length
+            ? this._lastValidationReasons.join('; ')
+            : 'Invalid achievement structure'
+          console.groupCollapsed(`[LocalStorageDataManager] Validation failed for row #${i + 1}`)
+          console.error('Reason:', reasonText)
+          console.log('Record:', rec)
+          console.groupEnd()
           result.failed++
-          result.errors.push({ record: rec, error: 'Invalid achievement structure' })
+          result.errors.push({ record: rec, row: i + 1, error: reasonText })
           continue
         }
       } catch (e) {
+        console.groupCollapsed(`[LocalStorageDataManager] Exception validating row #${i + 1}`)
+        console.error(e)
+        console.log('Record:', rec)
+        console.groupEnd()
         result.failed++
-        result.errors.push({ record: rec, error: e?.message || 'Validation failed' })
+        result.errors.push({ record: rec, row: i + 1, error: e?.message || 'Validation failed' })
         continue
       }
 
       let target = null
       if (updateById && rec.id && byId.has(rec.id)) {
         target = byId.get(rec.id)
+        console.debug('[LocalStorageDataManager] Matched by id', { row: i + 1, id: rec.id })
       } else if (matchNaturalKey) {
         const k = this.buildNaturalKey(rec)
-        if (k && byKey.has(k)) target = byKey.get(k)
+        if (k) {
+          if (byKey.has(k)) {
+            console.debug('[LocalStorageDataManager] Matched by natural key', { row: i + 1, key: k })
+            target = byKey.get(k)
+          } else {
+            console.debug('[LocalStorageDataManager] No match by natural key', { row: i + 1, key: k })
+          }
+        } else {
+          console.debug('[LocalStorageDataManager] No natural key for record', { row: i + 1 })
+        }
       }
 
       if (target) {
@@ -229,6 +257,7 @@ export class LocalStorageDataManager extends DataManager {
         if (idx >= 0) {
           next[idx] = { ...rec, id: target.id }
           result.updated++
+          console.info('[LocalStorageDataManager] Updated achievement', { row: i + 1, id: target.id })
         }
         continue
       }
@@ -237,8 +266,10 @@ export class LocalStorageDataManager extends DataManager {
         const id = rec.id && !byId.has(rec.id) ? rec.id : `achievement-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
         next.push({ ...rec, id })
         result.added++
+        console.info('[LocalStorageDataManager] Added achievement', { row: i + 1, id })
       } else {
         result.skipped++
+        console.info('[LocalStorageDataManager] Skipped (addNew=false)', { row: i + 1 })
       }
     }
 
@@ -257,8 +288,12 @@ export class LocalStorageDataManager extends DataManager {
     const profile = await this.getUserProfile(userId)
     if (!profile) throw new Error('Profile not found')
 
-    if (!this.validateAchievement(achievement)) {
-      throw new Error('Invalid achievement structure')
+    const ok = this.validateAchievement(achievement)
+    if (!ok) {
+      const reasons = Array.isArray(this._lastValidationReasons) && this._lastValidationReasons.length
+        ? this._lastValidationReasons.join('; ')
+        : 'Invalid achievement structure'
+      throw new Error(reasons)
     }
 
     const id = achievement.id || `achievement-${Date.now()}`
@@ -281,8 +316,12 @@ export class LocalStorageDataManager extends DataManager {
     if (index < 0) throw new Error('Achievement not found')
 
     const updated = { ...achievement, id: achievementId }
-    if (!this.validateAchievement(updated)) {
-      throw new Error('Invalid achievement structure')
+    const ok = this.validateAchievement(updated)
+    if (!ok) {
+      const reasons = Array.isArray(this._lastValidationReasons) && this._lastValidationReasons.length
+        ? this._lastValidationReasons.join('; ')
+        : 'Invalid achievement structure'
+      throw new Error(reasons)
     }
 
     profile.prerequisites[index] = updated
@@ -332,35 +371,100 @@ export class LocalStorageDataManager extends DataManager {
    * Validate achievement structure with minimal business rules
    */
   validateAchievement(achievement) {
-    if (!achievement || typeof achievement !== 'object') return false
-    if (!achievement.type || typeof achievement.type !== 'string') return false
-    if (typeof achievement.year !== 'number') return false
-    if (!['A', 'B', 'C', 'R'].includes(achievement.weaponGroup || 'A')) return false
+    const reasons = []
 
-    if (achievement.type === 'precision_series') {
-      if (typeof achievement.points !== 'number') return false
-      if (achievement.points < 0 || achievement.points > 50) return false
+    if (!achievement || typeof achievement !== 'object') {
+      reasons.push('achievement must be an object')
+    } else {
+      if (!achievement.type || typeof achievement.type !== 'string') {
+        reasons.push('type missing or not a string')
+      }
+      if (typeof achievement.year !== 'number' || Number.isNaN(achievement.year)) {
+        reasons.push('year must be a finite number')
+      }
+      const wg = achievement.weaponGroup || ''
+      if (!['A', 'B', 'C', 'R'].includes(wg)) {
+        reasons.push(`weaponGroup must be one of A/B/C/R (got "${wg}")`)
+      }
+
+      // Type-specific checks
+      if (achievement.type === 'precision_series') {
+        if (typeof achievement.points !== 'number' || Number.isNaN(achievement.points)) {
+          reasons.push('points must be a number')
+        } else {
+          if (achievement.points < 0 || achievement.points > 50) {
+            reasons.push('points must be between 0 and 50')
+          }
+        }
+      }
+
+      if (achievement.type === 'application_series') {
+        if (!achievement.date || Number.isNaN(new Date(achievement.date).getTime())) {
+          reasons.push('date must be a valid ISO date')
+        } else {
+          const d = new Date(achievement.date)
+          const today = new Date()
+          today.setHours(0, 0, 0, 0)
+          d.setHours(0, 0, 0, 0)
+          if (d.getTime() > today.getTime()) {
+            reasons.push('date cannot be in the future')
+          }
+        }
+        if (typeof achievement.timeSeconds !== 'number' || !Number.isFinite(achievement.timeSeconds) || achievement.timeSeconds <= 0) {
+          reasons.push('timeSeconds must be a positive number')
+        }
+        if (typeof achievement.hits !== 'number' || !Number.isFinite(achievement.hits) || achievement.hits < 0) {
+          reasons.push('hits must be a non-negative number')
+        }
+      }
+
+      if (achievement.type === 'competition_result') {
+        if (!achievement.date || Number.isNaN(new Date(achievement.date).getTime())) {
+          reasons.push('date must be a valid ISO date')
+        } else {
+          const d = new Date(achievement.date)
+          const today = new Date()
+          today.setHours(0, 0, 0, 0)
+          d.setHours(0, 0, 0, 0)
+          if (d.getTime() > today.getTime()) {
+            reasons.push('date cannot be in the future')
+          }
+        }
+
+        if (typeof achievement.score !== 'number' || !Number.isFinite(achievement.score)) {
+          reasons.push('score must be a number')
+        } else if (achievement.score < 0) {
+          reasons.push('score must be >= 0')
+        }
+
+        const allowedDisciplines = ['national_whole_match', 'military_fast_match', 'ppc']
+        const disc = String(achievement.disciplineType || '').toLowerCase()
+        if (!allowedDisciplines.includes(disc)) {
+          reasons.push(`disciplineType must be one of ${allowedDisciplines.join(', ')} (got "${disc || '(empty)'}")`)
+        }
+
+        if (disc === 'ppc') {
+          const cls = achievement.ppcClass
+          if (!cls || String(cls).trim() === '') {
+            reasons.push('ppcClass is required when disciplineType is "ppc"')
+          }
+        }
+      }
     }
 
-    if (achievement.type === 'application_series') {
-      if (!achievement.date || Number.isNaN(new Date(achievement.date).getTime())) return false
-      const d = new Date(achievement.date)
-      const today = new Date()
-      today.setHours(0, 0, 0, 0)
-      d.setHours(0, 0, 0, 0)
-      if (d.getTime() > today.getTime()) return false
-      if (typeof achievement.timeSeconds !== 'number' || !Number.isFinite(achievement.timeSeconds) || achievement.timeSeconds <= 0) return false
-      if (typeof achievement.hits !== 'number' || !Number.isFinite(achievement.hits) || achievement.hits < 0) return false
+    const ok = reasons.length === 0
+    this._lastValidationReasons = reasons
+    if (!ok) {
+      try {
+        console.groupCollapsed('[LocalStorageDataManager] validateAchievement failed')
+        console.error('Reasons:', reasons)
+        console.log('Achievement:', achievement)
+        console.groupEnd()
+      } catch {
+        // ignore console errors
+      }
     }
-
-    if (achievement.type === 'competition_result') {
-      const allowedTypes = ['national', 'regional/landsdels', 'crewmate/krets', 'championship']
-      const allowedMedals = ['bronze', 'silver', 'gold']
-      if (!allowedTypes.includes(achievement.competitionType || '')) return false
-      if (!allowedMedals.includes(achievement.medalType || '')) return false
-    }
-
-    return true
+    return ok
   }
 
   /**

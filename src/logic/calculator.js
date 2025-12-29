@@ -563,8 +563,8 @@ export class MedalCalculator {
       case 'sustained_achievement':
         leaf = this.checkSustainedAchievementRequirement(req, -1, medal, opts)
         break
-      case 'championship_competition':
-        leaf = this.checkChampionshipRequirement(req, -1, opts)
+      case 'cumulative_competition_score':
+        leaf = this.checkCumulativeCompetitionScoreRequirement(req, -1, opts)
         break
       case 'standard_medal':
         leaf = this.checkStandardMedalRequirement(req, -1, opts)
@@ -976,6 +976,86 @@ export class MedalCalculator {
       progress,
       description: req.description,
       windowYear: met && endYear != null ? endYear : null
+    }
+  }
+
+  checkCumulativeCompetitionScoreRequirement(req, index, opts = {}) {
+    const all = (this.profile.prerequisites || []).filter(a => a.type === 'competition_result')
+
+    const filterByDiscipline = (list) => {
+      const dt = req.disciplineType
+      return (list || []).filter(a => a.disciplineType === dt)
+    }
+
+    const evaluateForEndYear = (endYear) => {
+      let list = filterByDiscipline(all)
+
+      if (endYear != null) {
+        if (typeof req.timeWindowYears === 'number' && req.timeWindowYears > 0) {
+          const start0 = endYear - req.timeWindowYears + 1
+          const windowStart = Math.max(start0, Number.isFinite(opts.minStartYear) ? opts.minStartYear : start0)
+          list = list.filter(a => (a.year ?? 0) >= windowStart && (a.year ?? 0) <= endYear)
+        } else {
+          list = list.filter(a => a.year === endYear)
+        }
+      }
+
+      let matches = []
+      if (req.disciplineType === 'ppc') {
+        // Thresholds keyed by PPC class (e.g. R1500, P1500, Open, ...)
+        matches = list.filter(a => {
+          const cls = a.ppcClass
+          const th = req.pointThreshold?.[cls]?.min
+          return typeof a.score === 'number' && typeof th === 'number' && a.score >= th
+        })
+      } else {
+        // Thresholds keyed by weapon group (A/B/C/R)
+        matches = list.filter(a => {
+          const g = a.weaponGroup || 'A'
+          const th = req.pointThresholds?.[g]?.min
+          return typeof a.score === 'number' && typeof th === 'number' && a.score >= th
+        })
+      }
+
+      return matches
+    }
+
+    const endYear = (opts && typeof opts.endYear === 'number') ? opts.endYear : null
+    const required = req.minCompetitions ?? 1
+
+    if (endYear != null) {
+      const matches = evaluateForEndYear(endYear)
+      const met = matches.length >= required
+      return {
+        type: 'cumulative_competition_score',
+        index,
+        isMet: met,
+        progress: { current: matches.length, required },
+        description: req.description,
+        windowYear: met ? endYear : null
+      }
+    }
+
+    // When no fixed endYear is provided, scan candidate years and pick the best end year
+    const years = Array.from(new Set(filterByDiscipline(all).map(a => a.year).filter(y => typeof y === 'number'))).sort((a, b) => a - b)
+    let bestEndYear = null
+    let bestCount = 0
+    for (const y of years) {
+      const matches = evaluateForEndYear(y)
+      if (matches.length > bestCount) {
+        bestCount = matches.length
+        bestEndYear = y
+      }
+    }
+
+    const met = bestCount >= required
+    return {
+      type: 'cumulative_competition_score',
+      index,
+      isMet: met,
+      progress: { current: bestCount, required },
+      description: req.description,
+      windowYear: met ? bestEndYear : null
     }
   }
 

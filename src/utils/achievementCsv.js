@@ -1,6 +1,6 @@
 export const HEADERS = [
   'id','type','year','weaponGroup','points','date','timeSeconds','hits',
-  'competitionName','competitionType','medalType','disciplineType','weapon','score',
+  'competitionName','competitionType','disciplineType','ppcClass','weapon','score',
   'teamName','position','eventName','notes','schema_version'
 ]
 
@@ -58,7 +58,6 @@ function normalizeRecord(obj) {
       case 'score': out.score = toNumber(v); break
       case 'position': out.position = toNumber(v); break
       case 'competitionType':
-      case 'medalType':
       case 'disciplineType':
       case 'weapon':
       case 'teamName':
@@ -67,11 +66,16 @@ function normalizeRecord(obj) {
       case 'notes':
       case 'date': {
         const s = typeof v === 'string' ? v.trim() : v
-        if (key === 'competitionType' || key === 'medalType' || key === 'disciplineType' || key === 'weapon') {
+        if (key === 'competitionType' || key === 'disciplineType' || key === 'weapon') {
           out[key] = lc(s)
         } else {
           out[key] = s
         }
+        break
+      }
+      case 'ppcClass': {
+        // Keep PPC class as typed (case and punctuation can be significant)
+        out.ppcClass = typeof v === 'string' ? v.trim() : v
         break
       }
       case 'id': out.id = String(v || '').trim() || undefined; break
@@ -111,8 +115,8 @@ export function toAchievement(rec) {
     hits: rec.hits,
     competitionName: rec.competitionName,
     competitionType: rec.competitionType,
-    medalType: rec.medalType,
     disciplineType: rec.disciplineType,
+    ppcClass: rec.ppcClass,
     weapon: rec.weapon,
     score: rec.score,
     teamName: rec.teamName,

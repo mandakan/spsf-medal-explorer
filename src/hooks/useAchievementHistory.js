@@ -35,7 +35,6 @@ export function useAchievementHistory() {
   // Apply a snapshot by reconciling current → target using ids
   const applySnapshot = useCallback(async (targetList) => {
     if (!currentProfile) return
-    const userId = currentProfile.userId
     const current = (currentProfile.prerequisites || []).map(a => ({ ...a }))
     const byIdCurrent = new Map(current.map(a => [a.id, a]))
     const byIdTarget = new Map(targetList.map(a => [a.id, a]))
@@ -44,12 +43,7 @@ export function useAchievementHistory() {
     for (const cur of current) {
       if (!byIdTarget.has(cur.id)) {
         if (typeof profileRemoveAchievement === 'function') {
-          // removeAchievement likely signature: (userId, achievementId) or (achievementId)
-          try {
-            await profileRemoveAchievement(userId, cur.id)
-          } catch {
-            try { await profileRemoveAchievement(cur.id) } catch { void 0 }
-          }
+          try { await profileRemoveAchievement(cur.id) } catch { void 0 }
         }
       }
     }
@@ -60,9 +54,7 @@ export function useAchievementHistory() {
         if (typeof profileAddAchievement === 'function') {
           try {
             await profileAddAchievement(new Achievement(tgt))
-          } catch {
-            try { await profileAddAchievement(userId, new Achievement(tgt)) } catch { void 0 }
-          }
+          } catch { void 0 }
         }
       }
     }
@@ -76,9 +68,7 @@ export function useAchievementHistory() {
       if (changed && typeof profileUpdateAchievement === 'function') {
         try {
           await profileUpdateAchievement(new Achievement(tgt))
-        } catch {
-          try { await profileUpdateAchievement(userId, tgt.id, new Achievement(tgt)) } catch { void 0 }
-        }
+        } catch { void 0 }
       }
     }
   }, [profileAddAchievement, profileRemoveAchievement, profileUpdateAchievement, currentProfile])
@@ -103,14 +93,15 @@ export function useAchievementHistory() {
         notes: row.notes || '',
         // precision_series
         points: row.type === 'precision_series' ? toNum(row.points) : undefined,
-        // standard_medal
-        disciplineType: row.type === 'standard_medal' ? (row.disciplineType || '') : undefined,
-        medalType: (row.type === 'standard_medal' || row.type === 'competition_result' )? (row.medalType || '') : undefined,
+        // disciplineType across standard_medal and competition_result
+        disciplineType: (row.type === 'standard_medal' || row.type === 'competition_result') ? (row.disciplineType || '') : undefined,
+        medalType: row.type === 'standard_medal' ? (row.medalType || '') : undefined,
         // competition_result
         competitionType: row.type === 'competition_result' ? (row.competitionType || '') : undefined,
+        ppcClass: row.type === 'competition_result' ? (row.ppcClass || '') : undefined,
+        score: row.type === 'competition_result' ? toNum(row.score) : (row.type === 'qualification_result' ? toNum(row.score) : undefined),
         // qualification_result
         weapon: row.type === 'qualification_result' ? (row.weapon || '') : undefined,
-        score: row.type === 'qualification_result' ? toNum(row.score) : undefined,
         // team_event
         teamName: row.type === 'team_event' ? (row.teamName || '') : undefined,
         position: row.type === 'team_event' ? toNum(row.position) : undefined,
@@ -134,12 +125,8 @@ export function useAchievementHistory() {
           await profileAddAchievement(achievement)
           added++
         } catch (e1) {
-          try {
-            await profileAddAchievement(currentProfile.userId, achievement)
-            added++
-          } catch (e2) {
-            failures.push({ index: i, message: e2?.message || e1?.message || 'Failed to add achievement' })
-          }
+          failures.push({ index: i, message: e1?.message || 'Failed to add achievement' })
+          console.error('addMany: add failed', { index: i + 1, error: e1, achievement })
         }
       }
     }
@@ -168,14 +155,8 @@ export function useAchievementHistory() {
       pushCurrent()
       return true
     } catch (e1) {
-      try {
-        await profileUpdateAchievement(currentProfile.userId, payload.id, payload)
-        pushCurrent()
-        return true
-      } catch (e2) {
-        console.error('updateAchievement failed', { e1, e2, payload })
-        return false
-      }
+      console.error('updateAchievement failed', { error: e1, payload })
+      return false
     }
   }, [currentProfile, profileUpdateAchievement, pushCurrent])
 
@@ -186,11 +167,8 @@ export function useAchievementHistory() {
       try {
         await profileRemoveAchievement(achievementId)
         ok = true
-      } catch {
-        try {
-          await profileRemoveAchievement(currentProfile.userId, achievementId)
-          ok = true
-        } catch { void 0 }
+      } catch (e) {
+        console.error('removeAchievement failed', { error: e, achievementId })
       }
     }
     if (ok) pushCurrent()
@@ -245,12 +223,12 @@ export function useAchievementHistory() {
     if (typeof profileAddAchievement !== 'function') return false
     try {
       await profileAddAchievement(achievement)
-    } catch {
-      // alt signature (userId, achievement)
-      await profileAddAchievement(currentProfile.userId, achievement)
+      pushCurrent()
+      return true
+    } catch (e) {
+      console.error('addAchievement failed', { error: e, achievement })
+      return false
     }
-    pushCurrent()
-    return true
   }, [currentProfile, profileAddAchievement, pushCurrent])
 
   const updateAchievement = updateOne
