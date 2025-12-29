@@ -89,16 +89,13 @@ function Row({ data, index, style }) {
                 Plats­hållare
               </span>
             ) : (
-              <StatusPill status={status?.status || 'locked'} />
-            )}
-
-            {!isPlaceholder && underReview && (
-              <span
-                className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-900 border border-amber-300 dark:bg-amber-900/40 dark:text-amber-200 dark:border-amber-700"
-                aria-label="Status för regler: under granskning"
-              >
-                <StatusIcon status="review" className="w-3.5 h-3.5" />
-                Under granskning
+              <span className="relative inline-flex">
+                <StatusPill status={status?.status || 'locked'} />
+                {underReview && (
+                  <span className="pill-flag pointer-events-none" aria-hidden="true">
+                    <StatusIcon status="review" className="w-2.5 h-2.5 text-white" />
+                  </span>
+                )}
               </span>
             )}
           </div>
