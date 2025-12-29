@@ -1,4 +1,5 @@
 import React from 'react'
+import Icon from './Icon'
 
 export default function OnboardingChoiceBanner({ idPrefix = 'default', onChooseGuest, onChooseSaved }) {
   const titleId = `onboarding-title-${idPrefix}`
@@ -14,6 +15,7 @@ export default function OnboardingChoiceBanner({ idPrefix = 'default', onChooseG
           className="btn btn-secondary min-h-[44px]"
           onClick={onChooseGuest}
         >
+          <Icon name="Compass" className="w-4 h-4" />
           Utforska utan att spara (Gästläge)
         </button>
         <button
@@ -21,6 +23,7 @@ export default function OnboardingChoiceBanner({ idPrefix = 'default', onChooseG
           className="btn btn-primary min-h-[44px]"
           onClick={onChooseSaved}
         >
+          <Icon name="UserPlus" className="w-4 h-4" />
           Skapa profil
         </button>
       </div>

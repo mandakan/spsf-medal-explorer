@@ -15,13 +15,14 @@ export default function GuestModeBanner({ idPrefix = 'default' }) {
         <div className="flex items-start gap-3">
           <Icon name="Compass" className="w-6 h-6 shrink-0" />
           <div className="flex-1">
-            <p className="mb-2">Gästläge: framsteg sparas tillfälligt.</p>
+            <p className="mb-2 text-muted-foreground">Gästläge: framsteg sparas tillfälligt.</p>
             <div className="flex gap-2">
               <button
                 type="button"
                 className="btn btn-primary min-h-[44px]"
                 onClick={() => setOpenPicker(true)}
               >
+                <Icon name="Save" className="w-4 h-4" />
                 Spara framsteg
               </button>
               <button
@@ -29,6 +30,7 @@ export default function GuestModeBanner({ idPrefix = 'default' }) {
                 className="btn btn-secondary min-h-[44px]"
                 onClick={() => setShowConfirmReset(true)}
               >
+                <Icon name="RotateCcw" className="w-4 h-4" />
                 Återställ alla
               </button>
             </div>
