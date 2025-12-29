@@ -96,12 +96,14 @@ export function useAchievementHistory() {
         points: row.type === 'precision_series' ? toNum(row.points) : undefined,
         // standard_medal
         disciplineType: row.type === 'standard_medal' ? (row.disciplineType || '') : undefined,
-        medalType: (row.type === 'standard_medal' || row.type === 'competition_result' )? (row.medalType || '') : undefined,
+        medalType: row.type === 'standard_medal' ? (row.medalType || '') : undefined,
         // competition_result
         competitionType: row.type === 'competition_result' ? (row.competitionType || '') : undefined,
+        disciplineType: row.type === 'competition_result' ? (row.disciplineType || '') : undefined,
+        ppcClass: row.type === 'competition_result' ? (row.ppcClass || '') : undefined,
+        score: row.type === 'competition_result' ? toNum(row.score) : (row.type === 'qualification_result' ? toNum(row.score) : undefined),
         // qualification_result
         weapon: row.type === 'qualification_result' ? (row.weapon || '') : undefined,
-        score: row.type === 'qualification_result' ? toNum(row.score) : undefined,
         // team_event
         teamName: row.type === 'team_event' ? (row.teamName || '') : undefined,
         position: row.type === 'team_event' ? toNum(row.position) : undefined,
