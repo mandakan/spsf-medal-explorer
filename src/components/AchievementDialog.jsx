@@ -77,6 +77,7 @@ function FormContent({
 }) {
   const [form, setForm] = useState(() => initialRow || {})
   const [errors, setErrors] = useState({})
+  const showWeaponGroup = !(form.type === 'competition_result' && String(form.disciplineType || '').toLowerCase() === 'ppc')
 
   const setField = (name, value) => setForm(prev => ({ ...prev, [name]: value }))
 
@@ -177,7 +178,7 @@ function FormContent({
 
   return (
     <form onSubmit={(e) => { e.preventDefault(); onSubmit(false) }} className="space-y-4" noValidate>
-      <div className="grid grid-cols-2 gap-3">
+      <div className={['grid gap-3', showWeaponGroup ? 'grid-cols-2' : 'grid-cols-1'].join(' ')}>
         <div>
           <label htmlFor="br-year" className="field-label mb-2">År</label>
           <input
@@ -192,18 +193,20 @@ function FormContent({
           />
         </div>
 
-        <div>
-          <label htmlFor="br-group" className="field-label mb-2">Grupp</label>
-          <select
-            id="br-group"
-            className="select py-3"
-            value={form.weaponGroup ?? 'A'}
-            onChange={(e) => setField('weaponGroup', e.target.value)}
-            aria-invalid={errors.list?.some(e => /group/i.test(e)) || undefined}
-          >
-            {WG.map(g => <option key={g} value={g}>{g}</option>)}
-          </select>
-        </div>
+        {showWeaponGroup && (
+          <div>
+            <label htmlFor="br-group" className="field-label mb-2">Grupp</label>
+            <select
+              id="br-group"
+              className="select py-3"
+              value={form.weaponGroup ?? 'A'}
+              onChange={(e) => setField('weaponGroup', e.target.value)}
+              aria-invalid={errors.list?.some(e => /group/i.test(e)) || undefined}
+            >
+              {WG.map(g => <option key={g} value={g}>{g}</option>)}
+            </select>
+          </div>
+        )}
       </div>
 
       <div>

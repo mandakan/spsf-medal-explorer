@@ -300,20 +300,24 @@ export default function BatchAchievementForm() {
                     </select>
                   </td>
                   <td className="px-3 py-2">
-                    <select
-                      value={row.weaponGroup}
-                      onChange={(e) => handleRowChange(index, 'weaponGroup', e.target.value)}
-                      className="select w-20"
-                      disabled={submitting}
-                      aria-label={`Vapengrupp för rad ${index + 1}`}
-                      aria-invalid={hasGroupErr || undefined}
-                      aria-describedby={rowErrs.length ? errorId : undefined}
-                    >
-                      <option value="A">A</option>
-                      <option value="B">B</option>
-                      <option value="C">C</option>
-                      <option value="R">R</option>
-                    </select>
+                    {!(row.type === 'competition_result' && String(row.disciplineType || '').toLowerCase() === 'ppc') ? (
+                      <select
+                        value={row.weaponGroup}
+                        onChange={(e) => handleRowChange(index, 'weaponGroup', e.target.value)}
+                        className="select w-20"
+                        disabled={submitting}
+                        aria-label={`Vapengrupp för rad ${index + 1}`}
+                        aria-invalid={hasGroupErr || undefined}
+                        aria-describedby={rowErrs.length ? errorId : undefined}
+                      >
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="R">R</option>
+                      </select>
+                    ) : (
+                      <span className="text-muted-foreground text-xs">—</span>
+                    )}
                   </td>
                   <td className="px-3 py-2">
                     {row.type === 'precision_series' ? (
