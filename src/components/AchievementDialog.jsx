@@ -84,12 +84,16 @@ function FormContent({
   const validate = useMemo(() => {
     return (row) => {
       const errs = []
+      const fields = {}
+
       const y = Number(row.year)
       if (!Number.isFinite(y) || y < 1900 || y > currentYear) {
         errs.push(`Året måste vara mellan 1900 och ${currentYear}`)
+        fields.year = true
       }
       if (!WG.includes(row.weaponGroup)) {
         errs.push('Ogiltig grupp (A, B, C, R)')
+        fields.weaponGroup = true
       }
 
       switch (row.type) {
@@ -97,6 +101,7 @@ function FormContent({
           const p = Number(row.points)
           if (!Number.isFinite(p) || p < 0 || p > 50) {
             errs.push('Poäng måste vara 0-50')
+            fields.points = true
           }
           break
         }
@@ -104,22 +109,26 @@ function FormContent({
           const d = new Date(row.date)
           if (!row.date || Number.isNaN(d.getTime())) {
             errs.push('Ogiltigt datum')
+            fields.date = true
           } else {
             const today = new Date()
             today.setHours(0, 0, 0, 0)
             d.setHours(0, 0, 0, 0)
             if (d.getTime() > today.getTime()) {
               errs.push('Datum kan inte vara i framtiden')
+              fields.date = true
             }
           }
           const allowed = APP_TIME_OPTIONS.map(o => o.value)
           const t = Number(row.timeSeconds)
           if (!Number.isFinite(t) || !allowed.includes(t)) {
             errs.push('Välj giltig tid')
+            fields.timeSeconds = true
           }
           const h = Number(row.hits)
           if (!Number.isFinite(h) || h < 0) {
             errs.push('Ange giltigt antal träffar')
+            fields.hits = true
           }
           break
         }
@@ -127,23 +136,35 @@ function FormContent({
           const ct = String(row.competitionType || '').toLowerCase()
           const dt = String(row.disciplineType || '').toLowerCase()
           const sc = Number(row.score)
-          if (!COMP_TYPES.includes(ct)) errs.push('Välj giltig tävlingstyp')
-          if (!COMP_DISCIPLINE_TYPES.includes(dt)) errs.push('Välj giltig gren')
-          if (!Number.isFinite(sc)) errs.push('Poäng måste vara ett tal')
-          if (dt === 'ppc' && !String(row.ppcClass || '').trim()) errs.push('Välj PPC-klass')
+          if (!COMP_TYPES.includes(ct)) {
+            errs.push('Välj giltig tävlingstyp')
+            fields.competitionType = true
+          }
+          if (!COMP_DISCIPLINE_TYPES.includes(dt)) {
+            errs.push('Välj giltig gren')
+            fields.disciplineType = true
+          }
+          if (!Number.isFinite(sc)) {
+            errs.push('Poäng måste vara ett tal')
+            fields.score = true
+          }
+          if (dt === 'ppc' && !String(row.ppcClass || '').trim()) {
+            errs.push('Välj PPC-klass')
+            fields.ppcClass = true
+          }
           break
         }
         default:
           break
       }
-      return errs
+      return { errs, fields }
     }
-  }, [WG, COMP_TYPES, MEDAL_TYPES, APP_TIME_OPTIONS])
+  }, [WG, COMP_TYPES, APP_TIME_OPTIONS, COMP_DISCIPLINE_TYPES])
 
   const onSubmit = (addAnother = false) => {
-    const errs = validate(form)
+    const { errs, fields } = validate(form)
     if (errs.length) {
-      setErrors({ list: errs })
+      setErrors({ list: errs, fields })
       return
     }
     onSave?.(form, { addAnother })
@@ -189,7 +210,7 @@ function FormContent({
             className="input py-3"
             value={form.year ?? currentYear}
             onChange={(e) => setField('year', Number(e.target.value))}
-            aria-invalid={errors.list?.some(e => /year/i.test(e)) || undefined}
+            aria-invalid={errors.fields?.year || undefined}
           />
         </div>
 
@@ -201,7 +222,7 @@ function FormContent({
               className="select py-3"
               value={form.weaponGroup ?? 'A'}
               onChange={(e) => setField('weaponGroup', e.target.value)}
-              aria-invalid={errors.list?.some(e => /group/i.test(e)) || undefined}
+              aria-invalid={errors.fields?.weaponGroup || undefined}
             >
               {WG.map(g => <option key={g} value={g}>{g}</option>)}
             </select>
@@ -239,7 +260,7 @@ function FormContent({
             className="input py-3"
             value={form.points ?? ''}
             onChange={(e) => setField('points', e.target.value)}
-            aria-invalid={errors.list?.some(e => /points?/i.test(e)) || undefined}
+            aria-invalid={errors.fields?.points || undefined}
           />
         </div>
       )}
@@ -254,7 +275,7 @@ function FormContent({
               className="input py-3"
               value={form.date ?? new Date().toISOString().slice(0,10)}
               onChange={(e) => setField('date', e.target.value)}
-              aria-invalid={errors.list?.some(e => /date/i.test(e)) || undefined}
+              aria-invalid={errors.fields?.date || undefined}
             />
           </div>
           <div>
@@ -264,7 +285,7 @@ function FormContent({
               className="select py-3"
               value={form.timeSeconds === '' ? '' : Number(form.timeSeconds)}
               onChange={(e) => setField('timeSeconds', e.target.value === '' ? '' : Number(e.target.value))}
-              aria-invalid={errors.list?.some(e => /time/i.test(e)) || undefined}
+              aria-invalid={errors.fields?.timeSeconds || undefined}
             >
               <option value="">Select time…</option>
               {APP_TIME_OPTIONS.map(opt => (
@@ -281,7 +302,7 @@ function FormContent({
               className="input py-3"
               value={form.hits ?? ''}
               onChange={(e) => setField('hits', e.target.value)}
-              aria-invalid={errors.list?.some(e => /hits?/i.test(e)) || undefined}
+              aria-invalid={errors.fields?.hits || undefined}
             />
           </div>
         </div>
@@ -335,6 +356,7 @@ function FormContent({
               className="select py-3"
               value={form.competitionType ?? ''}
               onChange={(e) => setField('competitionType', e.target.value)}
+              aria-invalid={errors.fields?.competitionType || undefined}
             >
               <option value="">Select type…</option>
               {COMP_TYPES.map(o => <option key={o} value={o}>{o}</option>)}
@@ -348,6 +370,7 @@ function FormContent({
               className="select py-3"
               value={form.disciplineType ?? ''}
               onChange={(e) => setField('disciplineType', e.target.value)}
+              aria-invalid={errors.fields?.disciplineType || undefined}
             >
               <option value="">Välj gren…</option>
               {COMP_DISCIPLINE_TYPES.map(o => <option key={o} value={o}>{o}</option>)}
@@ -365,6 +388,7 @@ function FormContent({
                 value={form.ppcClass ?? ''}
                 onChange={(e) => setField('ppcClass', e.target.value)}
                 placeholder="t.ex. R1500"
+                aria-invalid={errors.fields?.ppcClass || undefined}
               />
               <datalist id="ppc-classes">
                 {PPC_CLASS_SUGGESTIONS.map(opt => <option key={opt} value={opt} />)}
@@ -380,6 +404,7 @@ function FormContent({
               className="input py-3"
               value={form.score ?? ''}
               onChange={(e) => setField('score', e.target.value)}
+              aria-invalid={errors.fields?.score || undefined}
             />
           </div>
 
@@ -484,7 +509,7 @@ function FormContent({
       </div>
 
       {errors.list?.length ? (
-        <div role="alert" className="card p-3 text-sm text-red-600 dark:text-red-400">
+        <div role="alert" className="alert alert-error text-sm">
           {errors.list.join(', ')}
         </div>
       ) : null}

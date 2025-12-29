@@ -95,12 +95,16 @@ export default function BatchAchievementForm() {
 
     rows.forEach((row, idx) => {
       const errs = []
+      const fields = {}
+
       const y = Number(row.year)
       if (!Number.isFinite(y) || y < 2000 || y > currentYear) {
         errs.push(`Året måste vara mellan 2000 och ${currentYear}`)
+        fields.year = true
       }
       if (!WG.includes(row.weaponGroup)) {
         errs.push('Ogiltig grupp (A, B, C, R)')
+        fields.weaponGroup = true
       }
 
       switch (row.type) {
@@ -108,6 +112,7 @@ export default function BatchAchievementForm() {
           const p = Number(row.points)
           if (!Number.isFinite(p) || p < 0 || p > 50) {
             errs.push('Poäng måste vara mellan 0-50')
+            fields.points = true
           }
           break
         }
@@ -115,22 +120,26 @@ export default function BatchAchievementForm() {
           const d = new Date(row.date)
           if (!row.date || Number.isNaN(d.getTime())) {
             errs.push('Ogiltigt datum')
+            fields.date = true
           } else {
             const today = new Date()
             today.setHours(0, 0, 0, 0)
             d.setHours(0, 0, 0, 0)
             if (d.getTime() > today.getTime()) {
               errs.push('Datum kan inte vara i framtiden')
+              fields.date = true
             }
           }
           const allowed = [60, 40, 17, 15]
           const t = Number(row.timeSeconds)
           if (!Number.isFinite(t) || !allowed.includes(t)) {
             errs.push('Välj giltig tid')
+            fields.timeSeconds = true
           }
           const h = Number(row.hits)
           if (!Number.isFinite(h) || h < 0) {
             errs.push('Ange giltigt antal träffar')
+            fields.hits = true
           }
           break
         }
@@ -138,10 +147,22 @@ export default function BatchAchievementForm() {
           const ct = String(row.competitionType || '').toLowerCase()
           const dt = String(row.disciplineType || '').toLowerCase()
           const sc = Number(row.score)
-          if (!COMP_TYPES.includes(ct)) errs.push('Välj giltig tävlingstyp')
-          if (!COMP_DISCIPLINE_TYPES.includes(dt)) errs.push('Välj giltig gren')
-          if (!Number.isFinite(sc)) errs.push('Poäng måste vara ett tal')
-          if (dt === 'ppc' && !String(row.ppcClass || '').trim()) errs.push('Välj PPC-klass')
+          if (!COMP_TYPES.includes(ct)) {
+            errs.push('Välj giltig tävlingstyp')
+            fields.competitionType = true
+          }
+          if (!COMP_DISCIPLINE_TYPES.includes(dt)) {
+            errs.push('Välj giltig gren')
+            fields.disciplineType = true
+          }
+          if (!Number.isFinite(sc)) {
+            errs.push('Poäng måste vara ett tal')
+            fields.score = true
+          }
+          if (dt === 'ppc' && !String(row.ppcClass || '').trim()) {
+            errs.push('Välj PPC-klass')
+            fields.ppcClass = true
+          }
           break
         }
         case 'standard_medal':
@@ -154,7 +175,7 @@ export default function BatchAchievementForm() {
       }
 
       if (errs.length) {
-        rowErrors[idx] = errs
+        rowErrors[idx] = { list: errs, fields }
       } else {
         validRows.push(row)
       }
@@ -198,14 +219,14 @@ export default function BatchAchievementForm() {
       </p>
 
       {successCount > 0 && (
-        <div role="status" aria-live="polite" className="card p-4 mb-4">
-          <p className="text-foreground">✓ Lyckades lägga till {successCount} aktivitet(er)</p>
+        <div role="status" aria-live="polite" className="alert alert-success mb-4">
+          <p>✓ Lyckades lägga till {successCount} aktivitet(er)</p>
         </div>
       )}
 
       {dupWarnings.length > 0 && (
-        <div role="alert" className="card p-4 mb-4">
-          <p className="font-medium text-foreground mb-1">Möjliga duplikat:</p>
+        <div role="alert" className="alert alert-warning mb-4">
+          <p className="font-medium mb-1">Möjliga duplikat:</p>
           <ul className="list-disc list-inside text-muted-foreground text-sm">
             {dupWarnings.map((d, i) => <li key={i}>{d}</li>)}
           </ul>
@@ -213,8 +234,8 @@ export default function BatchAchievementForm() {
       )}
 
       {errors.form && (
-        <div role="alert" className="card p-4 mb-4">
-          <p className="text-foreground">{errors.form}</p>
+        <div role="alert" className="alert alert-error mb-4">
+          <p>{errors.form}</p>
         </div>
       )}
 
@@ -263,14 +284,15 @@ export default function BatchAchievementForm() {
             </thead>
             <tbody>
               {rows.map((row, index) => {
-                const rowErrs = Array.isArray(errors[index]) ? errors[index] : []
+                const rowObj = errors[index]
+                const rowErrs = rowObj?.list || []
                 const errorId = `row-${index}-errors`
-                const hasYearErr = rowErrs.some(e => /year/i.test(e))
-                const hasGroupErr = rowErrs.some(e => /group/i.test(e))
-                const hasPointsErr = rowErrs.some(e => /points?/i.test(e))
-                const hasDateErr = rowErrs.some(e => /date/i.test(e))
-                const hasTimeErr = rowErrs.some(e => /time/i.test(e))
-                const hasHitsErr = rowErrs.some(e => /hits?/i.test(e))
+                const hasYearErr = !!rowObj?.fields?.year
+                const hasGroupErr = !!rowObj?.fields?.weaponGroup
+                const hasPointsErr = !!rowObj?.fields?.points
+                const hasDateErr = !!rowObj?.fields?.date
+                const hasTimeErr = !!rowObj?.fields?.timeSeconds
+                const hasHitsErr = !!rowObj?.fields?.hits
                 return (
                 <tr key={index} className="border-b border-border hover:bg-bg-secondary/60">
                   <td className="px-3 py-2">
@@ -558,7 +580,7 @@ export default function BatchAchievementForm() {
                       <div
                         id={errorId}
                         role="alert"
-                        className="text-red-600 text-xs mt-1"
+                        className="text-danger text-xs mt-1"
                       >
                         {rowErrs.join(', ')}
                       </div>
@@ -569,7 +591,7 @@ export default function BatchAchievementForm() {
                       <button
                         type="button"
                         onClick={() => handleRemoveRow(index)}
-                        className="btn btn-muted text-red-600"
+                        className="btn btn-danger"
                         disabled={submitting}
                         aria-label={`Ta bort rad ${index + 1}`}
                       >
