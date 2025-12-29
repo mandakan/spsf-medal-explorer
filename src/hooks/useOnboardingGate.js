@@ -1,6 +1,15 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useProfile } from '../hooks/useProfile'
 
+function safeLocalSet(key, value) {
+  try {
+    window.localStorage.setItem(key, value)
+    return true
+  } catch {
+    return false
+  }
+}
+
 export function useOnboardingGate() {
   const { currentProfile, startExplorerMode, hydrated } = useProfile()
   const [dismissed, setDismissed] = useState(false)
@@ -19,12 +28,12 @@ export function useOnboardingGate() {
   const isGuest = Boolean(currentProfile?.isGuest)
 
   const chooseGuest = useCallback(() => {
-    try { window.localStorage.setItem('app:onboardingChoice', 'guest') } catch {}
+    safeLocalSet('app:onboardingChoice', 'guest')
     startExplorerMode()
   }, [startExplorerMode])
 
   const chooseSaved = useCallback(() => {
-    try { window.localStorage.setItem('app:onboardingChoice', 'saved') } catch {}
+    safeLocalSet('app:onboardingChoice', 'saved')
     setDismissed(true)
   }, [])
 
