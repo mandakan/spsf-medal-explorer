@@ -1,4 +1,4 @@
-import { InputValidator } from './validator'
+import { validateAchievement as validateAchievementObj } from '../validators/universalValidator'
 
 export function validateAchievements(achievements) {
   const errors = {}
@@ -35,6 +35,9 @@ export function detectDuplicateAchievements(achievements) {
     let key
     if (ach.type === 'precision_series') {
       key = `${ach.year}-${ach.type}-${ach.weaponGroup}-${ach.points}`
+    } else if (ach.type === 'competition_result') {
+      // Use a richer key to avoid false duplicates across competitions
+      key = `${ach.year}-${ach.type}-${ach.weaponGroup}-${ach.disciplineType || ''}-${ach.date || ''}-${ach.score ?? ''}`
     } else {
       key = `${ach.year}-${ach.type}-${ach.weaponGroup}`
     }
