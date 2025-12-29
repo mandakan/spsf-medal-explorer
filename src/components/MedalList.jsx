@@ -1,5 +1,6 @@
 import React, { useMemo, useCallback, useRef, useEffect, useState } from 'react'
 import StatusIcon from './StatusIcon'
+import { StatusPill } from './StatusPill'
 
 function MedalIcon({ iconUrl, alt, unlocked }) {
   const [loaded, setLoaded] = useState(false)
@@ -59,9 +60,10 @@ function Row({ data, index, style }) {
     const d = new Date(iso)
     return Number.isNaN(d.getTime()) ? null : d.getFullYear()
   })()
+  const name = medal.displayName || medal.name
   const ariaLabel = isPlaceholder
-    ? `${medal.displayName || medal.name}`
-    : `${medal.displayName || medal.name} ${medal.tier || ''}${underReview ? ' • Under granskning' : ''}${isUnlocked && unlockedYear ? ' • Upplåst ' + unlockedYear : ''}`
+    ? `${name}`
+    : `${name}${underReview ? ' • Under granskning' : ''}${isUnlocked && unlockedYear ? ' • Upplåst ' + unlockedYear : ''}`
   return (
     <div
       role="listitem"
@@ -75,28 +77,33 @@ function Row({ data, index, style }) {
       <MedalIcon iconUrl={medal.iconUrl || medal.icon} alt={medal.displayName || medal.name} unlocked={isUnlocked} />
       <div className="min-w-0">
         <div className="font-medium text-text-primary truncate flex items-center gap-2">
-          <span className="truncate">{medal.displayName || medal.name}</span>
+          <span className="truncate">{name}</span>
 
-          {isPlaceholder && (
-            <span className="inline-flex items-center gap-1 text-xs text-placeholder" title="Plats­hållare" aria-label="Plats­hållare">
-              <StatusIcon status="placeholder" className="w-3.5 h-3.5" />
-              <span className="sr-only">Plats­hållare</span>
-            </span>
-          )}
+          <div className="shrink-0 flex items-center gap-2">
+            {isPlaceholder ? (
+              <span
+                className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-900 border border-indigo-300 dark:bg-indigo-900/30 dark:text-indigo-200 dark:border-indigo-700"
+                aria-label="Status: plats­hållare"
+              >
+                <StatusIcon status="placeholder" className="w-3.5 h-3.5" />
+                Plats­hållare
+              </span>
+            ) : (
+              <StatusPill status={status?.status || 'locked'} />
+            )}
 
-          {!isPlaceholder && underReview && (
-            <span className="inline-flex items-center gap-1 text-xs text-review" title="Under granskning" aria-label="Under granskning">
-              <StatusIcon status="review" className="w-3.5 h-3.5" />
-              <span className="sr-only">Under granskning</span>
-            </span>
-          )}
-        </div>
-        {!isPlaceholder && (
-          <div className="text-sm text-text-secondary truncate">
-            {medal.type} • {medal.tier}
-            {isUnlocked && unlockedYear != null ? ` • Upplåst ${unlockedYear}` : ''}
+            {!isPlaceholder && underReview && (
+              <span
+                className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-900 border border-amber-300 dark:bg-amber-900/40 dark:text-amber-200 dark:border-amber-700"
+                aria-label="Status för regler: under granskning"
+              >
+                <StatusIcon status="review" className="w-3.5 h-3.5" />
+                Under granskning
+              </span>
+            )}
           </div>
-        )}
+        </div>
+        {/* Secondary line removed: replaced by status pill next to title */}
       </div>
     </div>
   )
