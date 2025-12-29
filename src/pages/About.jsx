@@ -26,13 +26,6 @@ export default function About() {
           linkUrl={LINKS.RULEBOOK}
         />
 
-        <section aria-labelledby="about-author" className="mt-8">
-          <h2 id="about-author" className="text-2xl font-semibold">Skapare</h2>
-          <p className="mt-2">
-            {APP_INFO.AUTHOR_NAME}
-          </p>
-        </section>
-
         <section aria-labelledby="about-links" className="mt-8">
           <h2 id="about-links" className="text-2xl font-semibold">Användbara länkar</h2>
           <ul className="mt-2 list-disc list-inside space-y-1">
@@ -57,6 +50,13 @@ export default function About() {
               </a>
             </li>
           </ul>
+        </section>
+
+        <section aria-labelledby="about-author" className="mt-8">
+          <h2 id="about-author" className="text-2xl font-semibold">Skapare</h2>
+          <p className="mt-2">
+            {APP_INFO.AUTHOR_NAME}
+          </p>
         </section>
 
         {LINKS.COFFEE ? (
