@@ -21,7 +21,7 @@ export default function Settings() {
         <div>
           <h1 className="text-3xl font-bold text-text-primary mb-2">Inställningar</h1>
           <p className="text-text-secondary">
-            Profile: <span className="font-semibold">{currentProfile.displayName}</span> (Group {currentProfile.weaponGroupPreference})
+            Profile: <span className="font-semibold">{currentProfile.displayName}</span>
           </p>
         </div>
 
