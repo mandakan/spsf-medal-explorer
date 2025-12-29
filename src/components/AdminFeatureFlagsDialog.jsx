@@ -60,7 +60,7 @@ export default function AdminFeatureFlagsDialog({ open, onClose }) {
       aria-labelledby={headingId}
     >
       <div
-        className="card flex-none w-full max-w-md sm:max-w-lg md:max-w-2xl p-4 md:p-6 mx-auto overflow-auto max-h-[calc(100dvh-3rem)]"
+        className="card flex-none w-full max-w-[calc(100vw-2rem)] sm:max-w-[calc(100vw-3rem)] md:max-w-2xl min-w-[20rem] p-4 md:p-6 mx-auto overflow-auto max-h-[calc(100dvh-3rem)]"
         onClick={e => e.stopPropagation()}
       >
         {!authed ? (
