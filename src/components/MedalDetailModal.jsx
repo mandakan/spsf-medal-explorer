@@ -335,35 +335,39 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
           {/* Header */}
           <div className="sticky top-0 z-10 flex items-start justify-between gap-4 p-4 sm:p-6 bg-bg-secondary border-b border-border">
             <div className="min-w-0">
-              <h2
-                id={titleId}
-                className="text-xl sm:text-2xl font-bold text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary break-words"
-                tabIndex={-1}
-              >
-                {medal.displayName}
-                {isPlaceholder ? (
+              <div className="flex items-start gap-2 flex-wrap">
+                <h2
+                  id={titleId}
+                  className="text-xl sm:text-2xl font-bold text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary break-words"
+                  tabIndex={-1}
+                >
+                  {medal.displayName}
+                </h2>
+
+                <div role="status" aria-live="polite" className="mt-1 sm:mt-0">
+                  {isPlaceholder ? (
+                    <span
+                      className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-900 border border-indigo-300 dark:bg-indigo-900/30 dark:text-indigo-200 dark:border-indigo-700"
+                      aria-label="Status: plats­hållare"
+                    >
+                      <StatusIcon status="placeholder" className="w-3.5 h-3.5" />
+                      Plats­hållare
+                    </span>
+                  ) : (
+                    <StatusPill status={status?.status || 'locked'} />
+                  )}
+                </div>
+
+                {underReview && (
                   <span
-                    className="ml-2 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-900 border border-indigo-300 dark:bg-indigo-900/30 dark:text-indigo-200 dark:border-indigo-700"
-                    aria-label="Status: plats­hållare"
-                  >
-                    <StatusIcon status="placeholder" className="w-3.5 h-3.5" />
-                    Plats­hållare
-                  </span>
-                ) : underReview && (
-                  <span
-                    className="ml-2 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-900 border border-amber-300 dark:bg-amber-900/40 dark:text-amber-200 dark:border-amber-700"
+                    className="mt-1 sm:mt-0 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-900 border border-amber-300 dark:bg-amber-900/40 dark:text-amber-200 dark:border-amber-700"
                     aria-label="Status för regler: under granskning"
                   >
                     <StatusIcon status="review" className="w-3.5 h-3.5" />
                     Under granskning
                   </span>
                 )}
-              </h2>
-              {!isPlaceholder && (
-                <p className="mt-1 text-sm text-muted-foreground break-words">
-                  {medal.type} • {medal.tier}
-                </p>
-              )}
+              </div>
             </div>
             <button
               onClick={onClose}
@@ -385,11 +389,7 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
                 linkUrl={LINKS.RULEBOOK}
               />
             </div>
-            {!isPlaceholder && (
-              <div className="mb-4" role="status" aria-live="polite">
-                <StatusPill status={status?.status || 'locked'} />
-              </div>
-            )}
+            {/* status pill moved to header */}
             {isPlaceholder && (
               <>
                 <p id={placeholderNoteId} className="sr-only">
