@@ -4,7 +4,7 @@ import { useFlags } from '../hooks/useFeatureFlags'
 import flagsConfig from '../config/featureFlags.js'
 import { useProfile } from '../hooks/useProfile'
 
-const ADMIN_PASSWORD = 'spsf-admin' // Hard-coded per requirement
+const ADMIN_PASSWORD = 'idkfa' // Hard-coded per requirement
 
 export default function AdminFeatureFlagsDialog({ open, onClose }) {
   const flagsCtx = useFlags()
