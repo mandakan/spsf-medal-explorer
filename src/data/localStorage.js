@@ -213,12 +213,15 @@ export class LocalStorageDataManager extends DataManager {
       try {
         const ok = this.validateAchievement(rec)
         if (!ok) {
+          const reasonText = Array.isArray(this._lastValidationReasons) && this._lastValidationReasons.length
+            ? this._lastValidationReasons.join('; ')
+            : 'Invalid achievement structure'
           console.groupCollapsed(`[LocalStorageDataManager] Validation failed for row #${i + 1}`)
-          console.error('Reason:', 'Invalid achievement structure')
+          console.error('Reason:', reasonText)
           console.log('Record:', rec)
           console.groupEnd()
           result.failed++
-          result.errors.push({ record: rec, row: i + 1, error: 'Invalid achievement structure' })
+          result.errors.push({ record: rec, row: i + 1, error: reasonText })
           continue
         }
       } catch (e) {
@@ -285,8 +288,12 @@ export class LocalStorageDataManager extends DataManager {
     const profile = await this.getUserProfile(userId)
     if (!profile) throw new Error('Profile not found')
 
-    if (!this.validateAchievement(achievement)) {
-      throw new Error('Invalid achievement structure')
+    const ok = this.validateAchievement(achievement)
+    if (!ok) {
+      const reasons = Array.isArray(this._lastValidationReasons) && this._lastValidationReasons.length
+        ? this._lastValidationReasons.join('; ')
+        : 'Invalid achievement structure'
+      throw new Error(reasons)
     }
 
     const id = achievement.id || `achievement-${Date.now()}`
@@ -309,8 +316,12 @@ export class LocalStorageDataManager extends DataManager {
     if (index < 0) throw new Error('Achievement not found')
 
     const updated = { ...achievement, id: achievementId }
-    if (!this.validateAchievement(updated)) {
-      throw new Error('Invalid achievement structure')
+    const ok = this.validateAchievement(updated)
+    if (!ok) {
+      const reasons = Array.isArray(this._lastValidationReasons) && this._lastValidationReasons.length
+        ? this._lastValidationReasons.join('; ')
+        : 'Invalid achievement structure'
+      throw new Error(reasons)
     }
 
     profile.prerequisites[index] = updated
@@ -442,6 +453,7 @@ export class LocalStorageDataManager extends DataManager {
     }
 
     const ok = reasons.length === 0
+    this._lastValidationReasons = reasons
     if (!ok) {
       try {
         console.groupCollapsed('[LocalStorageDataManager] validateAchievement failed')
