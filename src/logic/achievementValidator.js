@@ -1,3 +1,4 @@
+import { InputValidator } from './validator'
 import { validateAchievement as validateAchievementObj } from '../validators/universalValidator'
 
 export function validateAchievements(achievements) {
@@ -14,7 +15,23 @@ export function validateAchievements(achievements) {
     if (t === 'competition_result' && (ach.score === '' || ach.score == null)) return
     if (t === 'qualification_result' && (ach.score === '' || ach.score == null)) return
 
-    const { valid, errors: rowErrors } = validateAchievementObj(ach)
+    let valid = true
+    let rowErrors = []
+
+    if (t === 'precision_series' && typeof InputValidator?.validatePrecisionSeriesInput === 'function') {
+      const res = InputValidator.validatePrecisionSeriesInput({
+        year: ach.year,
+        weaponGroup: ach.weaponGroup,
+        points: ach.points
+      })
+      valid = !!res.isValid
+      rowErrors = res.errors || []
+    } else {
+      const res = validateAchievementObj(ach)
+      valid = !!res.valid
+      rowErrors = res.errors || []
+    }
+
     if (!valid) {
       errors[index] = rowErrors
     } else {
