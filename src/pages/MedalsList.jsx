@@ -12,9 +12,8 @@ import MedalList from '../components/MedalList'
 import MobileBottomSheet from '../components/MobileBottomSheet'
 import MedalDetailModal from '../components/MedalDetailModal'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
-import ProfilePromptBanner from '../components/ProfilePromptBanner'
+import ProfileExperienceBanner from '../components/ProfileExperienceBanner'
 import ReviewLegend from '../components/ReviewLegend'
-import GuestModeBanner from '../components/GuestModeBanner'
 import { useProfile } from '../hooks/useProfile'
 
 export default function MedalsList() {
@@ -26,14 +25,8 @@ export default function MedalsList() {
   const [showFilters, setShowFilters] = useState(false)
   const searchInputRef = useRef(null)
   const [searchParams, setSearchParams] = useSearchParams()
-  const { currentProfile, startExplorerMode, hydrated } = useProfile()
-  const isGuest = Boolean(currentProfile?.isGuest)
-  const [dismissedOnboarding, setDismissedOnboarding] = useState(false)
+  const { currentProfile, hydrated } = useProfile()
   const isProfileLoading = !hydrated || typeof currentProfile === 'undefined'
-  const hasOnboardingChoice = (() => {
-    try { return window.localStorage.getItem('app:onboardingChoice') } catch { return null }
-  })()
-  const showOnboarding = !isProfileLoading && !currentProfile && !hasOnboardingChoice && !dismissedOnboarding
 
   // Responsive, mobile-first list height (~70vh with a sensible minimum)
   const [listHeight, setListHeight] = useState(600)
@@ -157,40 +150,7 @@ export default function MedalsList() {
 
   return (
     <div className="space-y-6">
-      {showOnboarding ? (
-        <div className="card p-4" role="dialog" aria-modal="true" aria-labelledby="onboarding-title">
-          <h2 id="onboarding-title" className="section-title mb-2">Hur vill du börja?</h2>
-          <p className="text-sm text-muted-foreground mb-3">
-            Utforska märken direkt eller skapa en profil för att spara ditt arbete.
-          </p>
-          <div className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              className="btn btn-secondary min-h-[44px]"
-              onClick={() => {
-                try { window.localStorage.setItem('app:onboardingChoice', 'guest') } catch { /* ignore unavailable storage */ }
-                startExplorerMode()
-              }}
-            >
-              Utforska utan att spara (Gästläge)
-            </button>
-            <button
-              type="button"
-              className="btn btn-primary min-h-[44px]"
-              onClick={() => {
-                try { window.localStorage.setItem('app:onboardingChoice', 'saved') } catch { /* ignore unavailable storage */ }
-                setDismissedOnboarding(true)
-              }}
-            >
-              Skapa profil
-            </button>
-          </div>
-        </div>
-      ) : isGuest ? (
-        <GuestModeBanner idPrefix="medals-list" />
-      ) : (
-        <ProfilePromptBanner id="profile-picker-medals-list" />
-      )}
+      <ProfileExperienceBanner idPrefix="medals-list" promptId="profile-picker-medals-list" />
       <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-3">
         <h1 className="text-3xl font-bold text-foreground">Märken</h1>
 
