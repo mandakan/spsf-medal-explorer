@@ -514,7 +514,7 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
                         {item.type === 'medal' ? (item.displayName || item.medalId) : (item.description || item.type)}
                       </span>
                       {item.type === 'medal' && typeof item.yearOffset === 'number' ? (
-                        <span className={item.gapFailed ? 'text-red-600 dark:text-red-400' : 'text-muted-foreground'}>
+                        <span className={item.gapFailed ? 'text-danger' : 'text-muted-foreground'}>
                           Kräver {item.yearOffset} års gap
                         </span>
                       ) : null}
@@ -527,7 +527,7 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
 
 
             {underReview && (
-              <div id={`under-review-note-${medal.id}`} className="mb-4 bg-amber-50 text-amber-900 border border-amber-300 rounded p-3 dark:bg-amber-900/20 dark:text-amber-100 dark:border-amber-700">
+              <div id={`under-review-note-${medal.id}`} className="mb-4 alert alert-warning">
                 Reglerna för det här märket är under granskning och kan komma att ändras.
               </div>
             )}

@@ -24,7 +24,7 @@ function MedalIcon({ iconUrl, alt, unlocked }) {
   return (
     <div
       ref={ref}
-      className="relative w-10 h-10 flex items-center justify-center rounded bg-gray-200 dark:bg-slate-700 overflow-hidden"
+      className="relative w-10 h-10 flex items-center justify-center rounded bg-bg-secondary overflow-hidden"
       aria-hidden="true"
     >
       {unlocked && (
@@ -39,7 +39,7 @@ function MedalIcon({ iconUrl, alt, unlocked }) {
           onError={() => setErrored(true)}
         />
       ) : (
-        <div className="w-6 h-6 bg-gray-300 dark:bg-slate-600 rounded" />
+        <div className="w-6 h-6 bg-bg-secondary rounded" />
       )}
     </div>
   )
@@ -150,7 +150,7 @@ export default function MedalList({ medals, onSelect, height = 800, itemSize = 6
   const RowMemo = useCallback((props) => <Row {...props} />, [])
 
   return (
-    <div className="border border-gray-200 dark:border-slate-700 rounded-md overflow-hidden">
+    <div className="border border-border rounded-md overflow-hidden">
       <VirtualList
         height={height}
         itemCount={itemCount}
