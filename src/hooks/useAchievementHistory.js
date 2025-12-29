@@ -94,12 +94,11 @@ export function useAchievementHistory() {
         notes: row.notes || '',
         // precision_series
         points: row.type === 'precision_series' ? toNum(row.points) : undefined,
-        // standard_medal
-        disciplineType: row.type === 'standard_medal' ? (row.disciplineType || '') : undefined,
+        // disciplineType across standard_medal and competition_result
+        disciplineType: (row.type === 'standard_medal' || row.type === 'competition_result') ? (row.disciplineType || '') : undefined,
         medalType: row.type === 'standard_medal' ? (row.medalType || '') : undefined,
         // competition_result
         competitionType: row.type === 'competition_result' ? (row.competitionType || '') : undefined,
-        disciplineType: row.type === 'competition_result' ? (row.disciplineType || '') : undefined,
         ppcClass: row.type === 'competition_result' ? (row.ppcClass || '') : undefined,
         score: row.type === 'competition_result' ? toNum(row.score) : (row.type === 'qualification_result' ? toNum(row.score) : undefined),
         // qualification_result
