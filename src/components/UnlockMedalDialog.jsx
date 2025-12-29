@@ -243,7 +243,7 @@ export default function UnlockMedalDialog({ medal, open, onClose }) {
               }
 
               return msg ? (
-                <p className="field-hint mt-2 text-red-600 dark:text-red-400" role="status">
+                <p className="field-hint mt-2 text-danger" role="status">
                   {msg}
                 </p>
               ) : null

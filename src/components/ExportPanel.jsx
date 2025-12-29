@@ -74,7 +74,7 @@ export default function ExportPanel({ profile }) {
               onChange={(e) => setFormat(e.target.value)}
               className="
                 w-5 h-5 rounded
-                bg-bg-primary border border-border
+                bg-field border border-field
                 focus-visible:ring-2 focus-visible:ring-primary
                 focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary
               "

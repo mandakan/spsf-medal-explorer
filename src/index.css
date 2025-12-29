@@ -119,6 +119,9 @@
 
   .text-danger { color: var(--color-danger-ink); }
 
+  .bg-field { background-color: var(--color-field); }
+  .border-field { border-color: var(--color-field-border); }
+
   /* Legend badges and dots */
   .legend-badge {
     display: inline-flex;

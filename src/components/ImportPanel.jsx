@@ -148,11 +148,7 @@ export default function ImportPanel({ onImport }) {
           {/* Conflicts */}
           {conflicts && conflicts.length > 0 && (
             <div
-              className="
-                mt-4 p-3 rounded-lg
-                bg-amber-50 text-amber-900 dark:bg-amber-900/30 dark:text-amber-300
-                border border-amber-300 dark:border-amber-600
-              "
+              className="alert alert-warning mt-4"
               role="status"
               aria-live="polite"
             >
@@ -175,11 +171,7 @@ export default function ImportPanel({ onImport }) {
       {/* Error Display */}
       {error && (
         <div
-          className="
-            mt-4 p-3 rounded-lg flex items-center gap-2
-            bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-300
-            border border-red-300 dark:border-red-600
-          "
+          className="alert alert-error mt-4 flex items-center gap-2"
           role="alert"
           aria-live="assertive"
         >
