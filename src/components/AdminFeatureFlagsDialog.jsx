@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { useFlags } from '../hooks/useFeatureFlags'
 import flagsConfig from '../config/featureFlags.js'
 import { useProfile } from '../hooks/useProfile'
@@ -49,16 +50,19 @@ export default function AdminFeatureFlagsDialog({ open, onClose }) {
 
   const headingId = 'admin-flags-heading'
 
-  return (
+  const content = (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+      className="fixed inset-0 z-50 flex items-center justify-center px-4 py-6 bg-black/50"
       onClick={onClose}
       onKeyDown={handleKeyDown}
       role="dialog"
       aria-modal="true"
       aria-labelledby={headingId}
     >
-      <div className="card max-w-xl w-full p-4" onClick={e => e.stopPropagation()}>
+      <div
+        className="card w-full max-w-lg sm:max-w-xl md:max-w-2xl p-4 md:p-6 mx-auto"
+        onClick={e => e.stopPropagation()}
+      >
         {!authed ? (
           <>
             <h2 id={headingId} className="section-title mb-2">Admin-läge</h2>
@@ -91,7 +95,7 @@ export default function AdminFeatureFlagsDialog({ open, onClose }) {
                   <label className="sr-only" htmlFor={`flag-${f.name}`}>{f.meta.title || f.name}</label>
                   <select
                     id={`flag-${f.name}`}
-                    className="select w-[9rem]"
+                    className="select w-36 sm:w-40 md:w-44"
                     value={draft[f.name] ?? 'off'}
                     onChange={e => setDraft(prev => ({ ...prev, [f.name]: e.target.value }))}
                   >
@@ -117,4 +121,6 @@ export default function AdminFeatureFlagsDialog({ open, onClose }) {
       </div>
     </div>
   )
+
+  return createPortal(content, document.body)
 }
