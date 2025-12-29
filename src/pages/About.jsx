@@ -1,11 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { LINKS } from '../config/links'
 import { APP_INFO, CURRENT_RULEBOOK_VERSION } from '../config/appInfo'
 import Disclaimer from '../components/Disclaimer'
 import { BUILD } from '../config/buildInfo'
+import AdminFeatureFlagsDialog from '../components/AdminFeatureFlagsDialog'
 
 export default function About() {
   const base = (typeof document !== 'undefined' && document.querySelector('base')?.getAttribute('href')) || '/'
+  const [adminOpen, setAdminOpen] = useState(false)
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6">
@@ -13,8 +15,7 @@ export default function About() {
         <header>
           <h1 className="text-3xl font-bold">{APP_INFO.APP_NAME}</h1>
           <p className="mt-2 text-muted-foreground">
-            Spåra dina skyttemärken och medaljer enligt
-            Svenska Pistolskytteförbundets regler.
+            Spåra dina skyttemärken och medaljer enligt Svenska Pistolskytteförbundets regler
           </p>
         </header>
 
@@ -24,13 +25,6 @@ export default function About() {
           text="Fristående app. Regelboken gäller före appen."
           linkUrl={LINKS.RULEBOOK}
         />
-
-        <section aria-labelledby="about-author" className="mt-8">
-          <h2 id="about-author" className="text-2xl font-semibold">Skapare</h2>
-          <p className="mt-2">
-            {APP_INFO.AUTHOR_NAME}
-          </p>
-        </section>
 
         <section aria-labelledby="about-links" className="mt-8">
           <h2 id="about-links" className="text-2xl font-semibold">Användbara länkar</h2>
@@ -56,6 +50,13 @@ export default function About() {
               </a>
             </li>
           </ul>
+        </section>
+
+        <section aria-labelledby="about-author" className="mt-8">
+          <h2 id="about-author" className="text-2xl font-semibold">Skapare</h2>
+          <p className="mt-2">
+            {APP_INFO.AUTHOR_NAME}
+          </p>
         </section>
 
         {LINKS.COFFEE ? (
@@ -85,7 +86,16 @@ export default function About() {
         ) : null}
 
         <section aria-labelledby="about-version" className="mt-8">
-          <h2 id="about-version" className="text-2xl font-semibold">Om versionen</h2>
+          <h2 id="about-version" className="text-2xl font-semibold">
+            <button
+              type="button"
+              className="inline p-0 m-0 bg-transparent decoration-dotted underline-offset-4 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-bg-primary focus-visible:ring-primary"
+              onClick={() => setAdminOpen(true)}
+              aria-label="Öppna admin"
+            >
+              Om
+            </button>
+            {' '}versionen</h2>
           <p className="mt-2">
             Den här versionen använder skjuthandboken upplaga: <strong>{CURRENT_RULEBOOK_VERSION}</strong> (2024)
           </p>
@@ -110,6 +120,7 @@ export default function About() {
           </p>
         </section>
       </article>
+      <AdminFeatureFlagsDialog open={adminOpen} onClose={() => setAdminOpen(false)} />
     </div>
   )
 }

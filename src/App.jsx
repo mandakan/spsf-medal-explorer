@@ -89,9 +89,9 @@ function App() {
     return () => mq.removeEventListener?.('change', onChange)
   }, [])
   return (
-    <FeatureFlagsProvider>
-      <MedalProvider>
-        <ProfileProvider>
+    <MedalProvider>
+      <ProfileProvider>
+        <FeatureFlagsProvider>
           <CalculatorProvider>
             <UndoRedoProvider>
               <BrowserRouter basename={base}>
@@ -99,9 +99,9 @@ function App() {
               </BrowserRouter>
             </UndoRedoProvider>
           </CalculatorProvider>
-        </ProfileProvider>
-      </MedalProvider>
-    </FeatureFlagsProvider>
+        </FeatureFlagsProvider>
+      </ProfileProvider>
+    </MedalProvider>
   )
 }
 
