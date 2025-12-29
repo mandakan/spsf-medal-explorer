@@ -245,9 +245,9 @@ export default function BatchAchievementForm() {
         <div className="hidden sm:block overflow-x-auto mb-4">
           <table className="w-full text-sm text-foreground table-fixed">
             <colgroup>
-              <col className="w-[6rem]" />
+              <col className="w-[7rem]" />
               <col className="w-[12rem]" />
-              <col className="w-[6rem]" />
+              <col className="w-[5rem]" />
               <col />
               <col className="w-[7rem]" />
             </colgroup>
