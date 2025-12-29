@@ -48,6 +48,10 @@
   --color-status-eligible-ink:  #92400E;
   --color-status-unlocked-ink:  #166534;
 
+  /* Form field tokens (ensure >= 3:1 boundary contrast) */
+  --color-field: #FFFFFF;
+  --color-field-border: #64748B; /* slate-500 */
+
   /* Medal colors */
   --color-medal-gold: #FFD700;
   --color-medal-silver: #C0C0C0;
@@ -250,6 +254,10 @@
   --color-status-eligible-ink:  #FCD34D;
   --color-status-unlocked-ink:  #86EFAC;
 
+  /* Form field tokens (dark) */
+  --color-field: #1f2937;         /* match surface */
+  --color-field-border: #cbd5e1;  /* slate-300 for >=3:1 on #1f2937 */
+
   --color-medal-gold: #FFD700;
   --color-medal-silver: #C0C0C0;
   --color-medal-bronze: #CD7F32;
@@ -316,13 +324,16 @@ body {
     @apply mt-1 text-xs text-muted-foreground;
   }
   .input, .select, .textarea {
-    @apply w-full rounded-md bg-bg-secondary text-foreground placeholder:text-muted-foreground
-           border border-border px-3 py-2
+    @apply w-full rounded-md text-foreground placeholder:text-muted-foreground
+           border px-3 py-2
            focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary
            focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary;
+    background-color: var(--color-field);
+    border-color: var(--color-field-border);
   }
   .input[disabled], .select[disabled], .textarea[disabled] {
-    @apply opacity-100 text-muted-foreground bg-bg-secondary/70;
+    @apply opacity-100 text-muted-foreground;
+    background-color: color-mix(in srgb, var(--color-field) 70%, transparent);
   }
 
   .alert {
