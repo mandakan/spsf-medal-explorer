@@ -15,15 +15,7 @@ export default function About() {
         <header>
           <h1 className="text-3xl font-bold">{APP_INFO.APP_NAME}</h1>
           <p className="mt-2 text-muted-foreground">
-            Spåra dina skyttemärken och medaljer enligt Svenska Pistolskytteförbundets{' '}
-            <button
-              type="button"
-              className="inline p-0 m-0 bg-transparent text-muted-foreground underline decoration-dotted underline-offset-4 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-bg-primary focus-visible:ring-primary"
-              onClick={() => setAdminOpen(true)}
-              aria-label="Öppna admin"
-            >
-              regler
-            </button>.
+            Spåra dina skyttemärken och medaljer enligt Svenska Pistolskytteförbundets regler
           </p>
         </header>
 
@@ -94,7 +86,16 @@ export default function About() {
         ) : null}
 
         <section aria-labelledby="about-version" className="mt-8">
-          <h2 id="about-version" className="text-2xl font-semibold">Om versionen</h2>
+          <h2 id="about-version" className="text-2xl font-semibold">
+            <button
+              type="button"
+              className="inline p-0 m-0 bg-transparent decoration-dotted underline-offset-4 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-bg-primary focus-visible:ring-primary"
+              onClick={() => setAdminOpen(true)}
+              aria-label="Öppna admin"
+            >
+              Om
+            </button>
+            {' '}versionen</h2>
           <p className="mt-2">
             Den här versionen använder skjuthandboken upplaga: <strong>{CURRENT_RULEBOOK_VERSION}</strong> (2024)
           </p>
