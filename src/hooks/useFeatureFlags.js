@@ -9,5 +9,15 @@ export function useFlag(name) {
 
 export function useFlags() {
   const ctx = useContext(FeatureFlagsContext)
-  return ctx ?? { get: () => 'off', enabled: () => false, all: () => ({}) }
+  return ctx ?? {
+    get: () => 'off',
+    enabled: () => false,
+    all: () => ({}),
+    set: () => {},
+    setMany: () => {},
+    clear: () => {},
+    clearAll: () => {},
+    saveToProfile: async () => false,
+    clearProfileOverrides: async () => false,
+  }
 }
