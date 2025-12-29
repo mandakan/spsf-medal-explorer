@@ -6,11 +6,17 @@ export function validateAchievements(achievements) {
 
   achievements.forEach((ach, index) => {
     if (ach == null) return
-    if (ach.points === '' || ach.points == null) return // Skip empty rows
 
-    const validation = InputValidator.validatePrecisionSeriesInput(ach)
-    if (!validation.isValid) {
-      errors[index] = validation.errors
+    const t = ach.type
+    // Skip “empty” rows per type (batch UX)
+    if (t === 'precision_series' && (ach.points === '' || ach.points == null)) return
+    if (t === 'application_series' && ((ach.timeSeconds === '' || ach.timeSeconds == null) && (ach.hits === '' || ach.hits == null))) return
+    if (t === 'competition_result' && (ach.score === '' || ach.score == null)) return
+    if (t === 'qualification_result' && (ach.score === '' || ach.score == null)) return
+
+    const { valid, errors: rowErrors } = validateAchievementObj(ach)
+    if (!valid) {
+      errors[index] = rowErrors
     } else {
       validAchievements.push(ach)
     }
