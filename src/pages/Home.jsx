@@ -4,6 +4,7 @@ import { useMedalDatabase } from '../hooks/useMedalDatabase'
 import Disclaimer from '../components/Disclaimer'
 import Icon from '../components/Icon'
 import { LINKS } from '../config/links'
+import { BUILD } from '../config/buildInfo'
 
 export default function Home() {
   const { medalDatabase, loading } = useMedalDatabase()
@@ -71,6 +72,9 @@ export default function Home() {
           <h2 className="text-xl font-bold mb-4">Status</h2>
           <p className="text-muted-foreground">
             ✓ {medalDatabase.getAllMedals().length} märken laddade
+          </p>
+          <p className="mt-2 text-muted-foreground">
+            Version: <code>{BUILD.version}</code> • Build: <code>{BUILD.number}</code> • Commit: <code>{BUILD.commit}</code>
           </p>
         </section>
       )}
