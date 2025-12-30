@@ -8,7 +8,8 @@ function Row({ data, index, style }) {
   const isPlaceholder = typeof medal?.isPlaceholder === 'function' ? medal.isPlaceholder() : (medal?.status === 'placeholder')
   const underReview = !isPlaceholder && (typeof medal?.isUnderReview === 'function' ? medal.isUnderReview() : (medal?.status === 'under_review'))
   const status = statusesById?.[medal.id]
-  const isUnlocked = !isPlaceholder && status?.status === 'unlocked'
+  const medalStatus = status?.status ?? 'locked'
+  const isUnlocked = !isPlaceholder && medalStatus === 'unlocked'
   const unlockedYear = (() => {
     if (!isUnlocked) return null
     const iso = status?.unlockedDate
@@ -21,7 +22,7 @@ function Row({ data, index, style }) {
     ? `${name} • Plats­hållare`
     : `${name}${underReview ? ' • Under granskning' : ''}${isUnlocked && unlockedYear ? ' • Upplåst ' + unlockedYear : ''}`
 
-  const currentStatus = isPlaceholder ? 'placeholder' : (status?.status ?? medal?.status ?? 'locked')
+  // Left icon reflects progression status only (locked/available/eligible/unlocked).
   return (
     <div
       role="listitem"
@@ -33,7 +34,7 @@ function Row({ data, index, style }) {
       aria-label={ariaLabel}
     >
       <div className="relative w-10 h-10 flex items-center justify-center rounded bg-bg-secondary" aria-hidden="true">
-        <StatusIcon status={currentStatus} className="w-6 h-6" />
+        <StatusIcon status={medalStatus} className="w-6 h-6" />
         {!isPlaceholder && underReview && (
           <span className="pill-flag pointer-events-none" aria-hidden="true">
             <StatusIcon status="review" className="w-2.5 h-2.5 text-white" />
