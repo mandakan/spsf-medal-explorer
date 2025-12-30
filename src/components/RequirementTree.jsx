@@ -1,14 +1,12 @@
 import React, { useMemo, useState } from 'react'
+import Icon from './Icon'
 
 function StatusIcon({ met }) {
   return (
-    <span
-      aria-hidden="true"
-      className={met ? 'text-foreground' : 'text-muted-foreground'}
-      style={{ minWidth: 16, display: 'inline-block' }}
-    >
-      {met ? '✓' : '○'}
-    </span>
+    <Icon
+      name={met ? 'CheckCircle2' : 'Circle'}
+      className={met ? 'w-4 h-4 text-foreground shrink-0' : 'w-4 h-4 text-muted-foreground shrink-0'}
+    />
   )
 }
 
