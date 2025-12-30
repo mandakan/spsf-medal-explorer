@@ -33,8 +33,8 @@ function Row({ data, index, style }) {
       style={style}
       aria-label={ariaLabel}
     >
-      <div className="relative w-10 h-10 flex items-center justify-center rounded bg-bg-secondary" aria-hidden="true">
-        <StatusIcon status={medalStatus} className="w-6 h-6" />
+      <div className="relative w-10 h-10 flex items-center justify-center rounded bg-bg-secondary flex-shrink-0" aria-hidden="true">
+        <StatusIcon status={medalStatus} className="w-2/3 h-2/3" />
         {!isPlaceholder && underReview && (
           <span className="pill-flag pointer-events-none" aria-hidden="true">
             <StatusIcon status="review" className="w-2.5 h-2.5 text-white" />
