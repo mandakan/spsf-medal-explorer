@@ -23,7 +23,7 @@ export default function GuestModeBanner({ idPrefix = 'default' }) {
                 onClick={() => setOpenPicker(true)}
               >
                 <Icon name="Save" className="w-4 h-4" />
-                Spara framsteg
+                Spara
               </button>
               <button
                 type="button"
@@ -31,7 +31,7 @@ export default function GuestModeBanner({ idPrefix = 'default' }) {
                 onClick={() => setShowConfirmReset(true)}
               >
                 <Icon name="RotateCcw" className="w-4 h-4" />
-                Återställ alla
+                Återställ
               </button>
             </div>
           </div>
