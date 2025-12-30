@@ -1,14 +1,12 @@
 import React, { useMemo, useState } from 'react'
+import Icon from './Icon'
 
 function StatusIcon({ met }) {
   return (
-    <span
-      aria-hidden="true"
-      className={met ? 'text-foreground' : 'text-muted-foreground'}
-      style={{ minWidth: 16, display: 'inline-block' }}
-    >
-      {met ? '✓' : '○'}
-    </span>
+    <Icon
+      name={met ? 'CheckCircle2' : 'Circle'}
+      className={met ? 'w-4 h-4 text-foreground shrink-0' : 'w-4 h-4 text-muted-foreground shrink-0'}
+    />
   )
 }
 
@@ -46,12 +44,14 @@ function LeafRow({ leaf }) {
   const yearText = yearValue != null ? `• År ${yearValue}` : null
 
   return (
-    <div className="px-2 py-1 flex items-baseline gap-2">
+    <div className="px-2 py-1 flex items-start gap-2">
       <StatusIcon met={!!leaf.isMet} />
-      <span className={leaf.isMet ? 'text-foreground' : 'text-muted-foreground'}>{label}</span>
-      <span className="text-xs text-muted-foreground">
-        {progressText}{progressText && yearText ? ' ' : ''}{yearText}
+      <span className={`${leaf.isMet ? 'text-foreground' : 'text-muted-foreground'} flex-1 min-w-0`}>
+        {label} {yearText ? <span className="text-xs text-muted-foreground">{yearText}</span> : null}
       </span>
+      {progressText ? (
+        <span className="ml-auto shrink-0 text-xs text-muted-foreground tabular-nums">{progressText}</span>
+      ) : null}
     </div>
   )
 }
@@ -129,7 +129,7 @@ function RequirementNode({ node, path = 'root', level = 0, defaultExpanded = lev
             onToggle={() => setExpanded(e => !e)}
           />
           {expanded && (
-            <ul id={headerIdLeaf} role="group" className="ml-2">
+            <ul id={headerIdLeaf} role="group" className="ml-2 list-none m-0 p-0">
               {(Array.isArray(st.children) ? st.children : []).map((child, idx) => (
                 <RequirementNode
                   key={`${path}-sub-${idx}`}
@@ -167,7 +167,7 @@ function RequirementNode({ node, path = 'root', level = 0, defaultExpanded = lev
         onToggle={() => setExpanded(e => !e)}
       />
       {expanded && (
-        <ul id={headerId} role="group" className="ml-2">
+        <ul id={headerId} role="group" className="ml-2 list-none m-0 p-0">
           {children.map((child, idx) => (
             <RequirementNode
               key={`${path}-${idx}`}
@@ -183,7 +183,7 @@ function RequirementNode({ node, path = 'root', level = 0, defaultExpanded = lev
   )
 }
 
-export default function RequirementTree({ tree }) {
+export default function RequirementTree({ tree, bare = false }) {
   // Compute flattened root via hook first; avoid calling hooks conditionally
   const flattenedRoot = useMemo(() => {
     let n = tree || null
@@ -197,22 +197,28 @@ export default function RequirementTree({ tree }) {
 
   const isTopLevelAnd = flattenedRoot.node === 'and'
 
+  const content = (
+    <ul className="list-none m-0 p-0 text-sm text-muted-foreground space-y-1">
+      {isTopLevelAnd
+        ? (flattenedRoot.children || []).map((child, idx) => (
+            <RequirementNode
+              key={`root-${idx}`}
+              node={child}
+              path={`root-${idx}`}
+              level={0}
+              defaultExpanded
+            />
+          ))
+        : <RequirementNode node={flattenedRoot} level={0} defaultExpanded />
+      }
+    </ul>
+  )
+
+  if (bare) return content
+
   return (
     <div className="bg-background border border-border rounded p-3" role="region" aria-label="Krav">
-      <ul className="text-sm text-muted-foreground space-y-1">
-        {isTopLevelAnd
-          ? (flattenedRoot.children || []).map((child, idx) => (
-              <RequirementNode
-                key={`root-${idx}`}
-                node={child}
-                path={`root-${idx}`}
-                level={0}
-                defaultExpanded
-              />
-            ))
-          : <RequirementNode node={flattenedRoot} level={0} defaultExpanded />
-        }
-      </ul>
+      {content}
     </div>
   )
 }
