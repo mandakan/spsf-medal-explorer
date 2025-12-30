@@ -1,50 +1,7 @@
-import React, { useMemo, useCallback, useRef, useEffect, useState } from 'react'
+import React, { useMemo, useCallback, useRef, useState } from 'react'
 import StatusIcon from './StatusIcon'
 import { StatusPill } from './StatusPill'
 
-function MedalIcon({ iconUrl, alt, unlocked }) {
-  const [loaded, setLoaded] = useState(false)
-  const [errored, setErrored] = useState(false)
-  const ref = useRef(null)
-
-  // Accept only URL-like values (http(s), absolute, relative, or data URI)
-  const isUrlLike = (s) => !!s && /^(https?:\/\/|\/|\.{1,2}\/|data:image\/)/.test(s)
-  const validSrc = isUrlLike(iconUrl) ? iconUrl : null
-
-  useEffect(() => {
-    if (!ref.current) return
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) setLoaded(true)
-    }, { rootMargin: '200px' })
-    observer.observe(ref.current)
-    return () => observer.disconnect()
-  }, [])
-
-  const showImg = loaded && validSrc && !errored
-
-  return (
-    <div
-      ref={ref}
-      className="relative w-10 h-10 flex items-center justify-center rounded bg-bg-secondary overflow-hidden"
-      aria-hidden="true"
-    >
-      {unlocked && (
-        <span className="absolute -top-1 -right-1 text-[10px]" aria-hidden="true" title="Upplåst">🏆</span>
-      )}
-      {showImg ? (
-        <img
-          src={validSrc}
-          alt={alt}
-          className="w-full h-full object-contain"
-          loading="lazy"
-          onError={() => setErrored(true)}
-        />
-      ) : (
-        <div className="w-6 h-6 bg-bg-secondary rounded" />
-      )}
-    </div>
-  )
-}
 
 function Row({ data, index, style }) {
   const { medals, onSelect, statusesById } = data
@@ -62,7 +19,7 @@ function Row({ data, index, style }) {
   })()
   const name = medal.displayName || medal.name
   const ariaLabel = isPlaceholder
-    ? `${name}`
+    ? `${name} • Plats­hållare`
     : `${name}${underReview ? ' • Under granskning' : ''}${isUnlocked && unlockedYear ? ' • Upplåst ' + unlockedYear : ''}`
   return (
     <div
@@ -74,10 +31,12 @@ function Row({ data, index, style }) {
       style={style}
       aria-label={ariaLabel}
     >
-      <MedalIcon iconUrl={medal.iconUrl || medal.icon} alt={medal.displayName || medal.name} unlocked={isUnlocked} />
+      <div className="relative w-10 h-10 flex items-center justify-center rounded bg-bg-secondary" aria-hidden="true">
+        <StatusIcon status={status?.status || 'locked'} className="w-6 h-6" />
+      </div>
       <div className="min-w-0">
         <div className="font-medium text-text-primary grid grid-cols-[1fr_auto] items-start gap-x-2">
-          <span className="clamp-2 min-w-0">{name}</span>
+          <span className={['clamp-2 min-w-0', isPlaceholder ? 'name--placeholder' : ''].join(' ')}>{name}</span>
 
           <div className="shrink-0 flex items-center gap-2 justify-self-start">
             {isPlaceholder ? (

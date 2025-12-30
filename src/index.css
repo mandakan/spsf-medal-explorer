@@ -141,6 +141,13 @@
   .bg-placeholder { background-color: var(--color-placeholder); }
   .border-placeholder { border-color: var(--color-placeholder); }
 
+  /* Outline for placeholder names to avoid color-only indication */
+  .name--placeholder {
+    border: 1px dotted var(--color-placeholder-border);
+    border-radius: 0.375rem;
+    padding: 0.125rem 0.375rem;
+  }
+
   .text-danger { color: var(--color-danger-ink); }
 
   .bg-field { background-color: var(--color-field); }
