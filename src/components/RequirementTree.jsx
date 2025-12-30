@@ -183,7 +183,7 @@ function RequirementNode({ node, path = 'root', level = 0, defaultExpanded = lev
   )
 }
 
-export default function RequirementTree({ tree }) {
+export default function RequirementTree({ tree, bare = false }) {
   // Compute flattened root via hook first; avoid calling hooks conditionally
   const flattenedRoot = useMemo(() => {
     let n = tree || null
@@ -197,22 +197,28 @@ export default function RequirementTree({ tree }) {
 
   const isTopLevelAnd = flattenedRoot.node === 'and'
 
+  const content = (
+    <ul className="text-sm text-muted-foreground space-y-1">
+      {isTopLevelAnd
+        ? (flattenedRoot.children || []).map((child, idx) => (
+            <RequirementNode
+              key={`root-${idx}`}
+              node={child}
+              path={`root-${idx}`}
+              level={0}
+              defaultExpanded
+            />
+          ))
+        : <RequirementNode node={flattenedRoot} level={0} defaultExpanded />
+      }
+    </ul>
+  )
+
+  if (bare) return content
+
   return (
     <div className="bg-background border border-border rounded p-3" role="region" aria-label="Krav">
-      <ul className="text-sm text-muted-foreground space-y-1">
-        {isTopLevelAnd
-          ? (flattenedRoot.children || []).map((child, idx) => (
-              <RequirementNode
-                key={`root-${idx}`}
-                node={child}
-                path={`root-${idx}`}
-                level={0}
-                defaultExpanded
-              />
-            ))
-          : <RequirementNode node={flattenedRoot} level={0} defaultExpanded />
-        }
-      </ul>
+      {content}
     </div>
   )
 }

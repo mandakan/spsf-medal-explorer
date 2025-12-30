@@ -12,6 +12,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import Disclaimer from './Disclaimer'
 import { LINKS } from '../config/links'
 import RequirementTree from './RequirementTree'
+import SectionCard from './SectionCard'
 import { StatusPill } from './StatusPill'
 import StatusIcon from './StatusIcon'
 
@@ -23,11 +24,9 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
   const allowManual = !!currentProfile?.features?.allowManualUnlock
   const medal = medalDatabase?.getMedalById(medalId)
   const [unlockOpen, setUnlockOpen] = useState(false)
-  const [showOriginal, setShowOriginal] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
   const originalId = medal ? `medal-req-original-${medal.id}` : undefined
-  const [showUnlockTargets, setShowUnlockTargets] = useState(false)
   const unlockTargetsId = medal ? `medal-unlock-targets-${medal.id}` : undefined
 
   const { canRemove, blocking, tryRemove } = useUnlockGuard(medalId)
@@ -69,6 +68,22 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
     }
   }, [calculator, medal, status])
 
+  const reqCounts = useMemo(() => {
+    if (!reqTree) return null
+    const acc = { met: 0, total: 0 }
+    const walk = (n) => {
+      if (!n) return
+      if (n.node === 'leaf') {
+        acc.total += 1
+        if (n.leaf?.isMet) acc.met += 1
+        return
+      }
+      for (const ch of n.children || []) walk(ch)
+    }
+    walk(reqTree)
+    return acc
+  }, [reqTree])
+
   // Prerequisites (presence + optional year-offset gap) for display and gating "Unlock"
   const prereqCheck = useMemo(() => {
     if (!calculator || !medal) return { allMet: true, items: [], missingItems: [] }
@@ -102,6 +117,13 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
       return it
     })
   }, [prereqCheck, prereqGapFailedIds, medalDatabase])
+
+  const prereqCounts = useMemo(() => {
+    const items = prereqItemsResolved || []
+    const total = items.length
+    const met = items.reduce((a, it) => a + (it.displayMet ? 1 : 0), 0)
+    return { met, total }
+  }, [prereqItemsResolved])
 
   const prereqsOk = prereqCheck?.allMet === true
   const prereqHintId = medal ? `unlock-prereq-hint-${medal.id}` : undefined
@@ -396,108 +418,82 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
                   Detta är ett platshållarmärke. Avsnitten nedan visar exempel på information som kommer att finnas här när märket publiceras.
                 </p>
 
-                <div className="mb-4 bg-background border border-border rounded p-3" role="region" aria-labelledby={`placeholder-unlocked-${medal.id}`}>
-                  <p id={`placeholder-unlocked-${medal.id}`} className="text-sm font-semibold text-foreground mb-1">
-                    Upplåst
-                  </p>
+                <SectionCard id={`placeholder-unlocked-${medal.id}`} title="Upplåst" collapsible={false}>
                   <p className="text-sm text-muted-foreground">
                     Här visas normalt vilket år du låste upp märket.
                   </p>
-                </div>
+                </SectionCard>
 
-                <div className="mb-4 bg-background border border-border rounded p-3" role="region" aria-labelledby={`placeholder-prereq-${medal.id}`}>
-                  <p id={`placeholder-prereq-${medal.id}`} className="text-sm font-semibold text-foreground mb-2">
-                    Förhandskrav
-                  </p>
+                <SectionCard id={`placeholder-prereq-${medal.id}`} title="Förhandskrav" collapsible={false}>
                   <ul className="text-sm text-muted-foreground space-y-1">
                     <li>• Exempel: krav eller förkunskap 1</li>
                     <li>• Exempel: krav eller förkunskap 2</li>
                     <li>• Exempel: krav eller förkunskap 3</li>
                   </ul>
-                </div>
+                </SectionCard>
 
-                <div className="mb-4 bg-background border border-border rounded p-3" role="region" aria-labelledby={`placeholder-req-${medal.id}`}>
-                  <p id={`placeholder-req-${medal.id}`} className="text-sm font-semibold text-foreground mb-2">
-                    Krav
-                  </p>
+                <SectionCard id={`placeholder-req-${medal.id}`} title="Krav" collapsible={false}>
                   <ul className="text-sm text-muted-foreground space-y-1">
                     <li><span className="text-foreground">✓</span> Exempel: uppfyllt krav</li>
                     <li><span className="text-muted-foreground">○</span> Exempel: krav som återstår</li>
                     <li><span className="text-muted-foreground">○</span> Exempel: ytterligare krav</li>
                   </ul>
-                </div>
+                </SectionCard>
 
-                <div className="mb-4">
-                  <p id={descBaseId || `placeholder-desc-${medal.id}`} className="text-muted-foreground break-words">
+                <SectionCard id={descBaseId || `placeholder-desc-${medal.id}`} title="Beskrivning" collapsible={false}>
+                  <p className="text-muted-foreground break-words">
                     Beskrivning kommer att visas här när innehållet är klart.
                   </p>
-                </div>
+                </SectionCard>
 
-                <div className="mb-4 bg-background border border-border rounded">
-                  <button
-                    type="button"
-                    onClick={() => setShowOriginal(v => !v)}
-                    aria-expanded={showOriginal}
-                    aria-controls={originalId}
-                    className="w-full text-left px-3 py-2 flex items-center justify-between hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary rounded-t"
-                  >
-                    <span className="text-sm font-semibold text-foreground">Visa ursprunglig kravtext</span>
-                    <span aria-hidden="true" className="ml-2">{showOriginal ? '▼' : '▶'}</span>
-                  </button>
-                  {showOriginal && (
-                    <div className="px-3 pb-3" id={originalId} aria-hidden={!showOriginal}>
-                      <div className="text-sm text-foreground break-words">
-                        <Suspense fallback={null}>
-                          <Markdown remarkPlugins={[remarkGfm]} components={mdComponents}>
-                            {`Det här avsnittet visar vanligtvis den ursprungliga kravtexten från regelboken.
+                <SectionCard id={originalId} title="Visa ursprunglig kravtext" collapsible defaultOpen={false}>
+                  <div className="text-sm text-foreground break-words">
+                    <Suspense fallback={null}>
+                      <Markdown remarkPlugins={[remarkGfm]} components={mdComponents}>
+                        {`Det här avsnittet visar vanligtvis den ursprungliga kravtexten från regelboken.
 
 - Exempelpunkt 1
 - Exempelpunkt 2
 - Exempelpunkt 3`}
-                          </Markdown>
-                        </Suspense>
-                      </div>
-                    </div>
-                  )}
-                </div>
+                      </Markdown>
+                    </Suspense>
+                  </div>
+                </SectionCard>
 
-                <div className="mb-4 bg-background border border-border rounded p-3">
-                  <p className="text-sm font-semibold text-foreground mb-2">
-                    Uppfyller också kraven för:
-                  </p>
+                <SectionCard id={`placeholder-refs-${medal.id}`} title="Uppfyller också kraven för" collapsible={false}>
                   <ul className="text-sm text-muted-foreground space-y-1">
                     <li>• Kommer snart</li>
                   </ul>
-                </div>
+                </SectionCard>
 
-                <div className="mb-4 bg-background border border-border rounded p-3">
-                  <p className="text-sm font-semibold text-foreground mb-2">
-                    Detta märke krävs för
-                  </p>
+                <SectionCard id={`placeholder-required-for-${medal.id}`} title="Detta märke krävs för" collapsible={false}>
                   <ul className="text-sm text-muted-foreground space-y-1">
                     <li>• Kommer snart</li>
                   </ul>
-                </div>
+                </SectionCard>
               </>
             )}
 
             {!isPlaceholder && unlockedYear != null && (
-              <div className="mb-4 bg-background border border-border rounded p-3" role="status" aria-live="polite">
-                <p className="text-sm text-foreground">
-                  <span className="font-semibold">Upplåst</span>:{' '}
-                  <time dateTime={(function() { try { return new Date(unlockedIso).toISOString().slice(0,10) } catch { return String(unlockedIso) } })()}>
-                    {unlockedYear}
-                  </time>
-                </p>
-              </div>
+              <SectionCard id={`unlocked-${medal.id}`} title="Upplåst" collapsible={false}>
+                <div role="status" aria-live="polite">
+                  <p className="text-sm text-foreground">
+                    <time dateTime={(function() { try { return new Date(unlockedIso).toISOString().slice(0,10) } catch { return String(unlockedIso) } })()}>
+                      {unlockedYear}
+                    </time>
+                  </p>
+                </div>
+              </SectionCard>
             )}
 
             {/* Prerequisites */}
             {!isPlaceholder && prereqItemsResolved.length > 0 && (
-              <div className="mb-4 bg-background border border-border rounded p-3" role="region" aria-labelledby={`prereq-title-${medal.id}`}>
-                <p id={`prereq-title-${medal.id}`} className="text-sm font-semibold text-foreground mb-2">
-                  Förhandskrav
-                </p>
+              <SectionCard
+                id={`prereq-${medal.id}`}
+                title="Förhandskrav"
+                summary={`${prereqCounts.met}/${prereqCounts.total} uppfyllda`}
+                collapsible={false}
+              >
                 <ul className="text-sm text-muted-foreground space-y-1">
                   {prereqItemsResolved.map((item, i) => (
                     <li key={i} className="flex flex-wrap items-baseline gap-2 break-words">
@@ -515,7 +511,7 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
                     </li>
                   ))}
                 </ul>
-              </div>
+              </SectionCard>
             )}
 
 
@@ -548,43 +544,36 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
             )}
 
             {!isPlaceholder && reqTree && (
-              <div className="mb-4">
-                <p className="text-sm font-semibold text-foreground mb-2">Krav:</p>
-                <RequirementTree tree={reqTree} />
-              </div>
+              <SectionCard
+                id={`req-${medal.id}`}
+                title="Krav"
+                summary={reqCounts ? `${reqCounts.met}/${reqCounts.total} uppfyllda` : undefined}
+                collapsible={false}
+              >
+                <RequirementTree tree={reqTree} bare />
+              </SectionCard>
             )}
 
             {!isPlaceholder && medal.requirementsOriginal && (
-              <div className="mb-4 bg-background border border-border rounded">
-                <button
-                  type="button"
-                  onClick={() => setShowOriginal(v => !v)}
-                  aria-expanded={showOriginal}
-                  aria-controls={originalId}
-                  className="w-full text-left px-3 py-2 flex items-center justify-between hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary rounded-t"
-                >
-                  <span className="text-sm font-semibold text-foreground">Visa ursprunglig kravtext</span>
-                  <span aria-hidden="true" className="ml-2">{showOriginal ? '▼' : '▶'}</span>
-                </button>
-                {showOriginal && (
-                  <div className="px-3 pb-3" id={originalId} aria-hidden={!showOriginal}>
-                    <div className="text-sm text-foreground break-words">
-                      <Suspense fallback={null}>
-                        <Markdown remarkPlugins={[remarkGfm]} components={mdComponents}>
-                          {medal.requirementsOriginal}
-                        </Markdown>
-                      </Suspense>
-                    </div>
-                  </div>
-                )}
-              </div>
+              <SectionCard id={originalId} title="Visa ursprunglig kravtext" collapsible defaultOpen={false}>
+                <div className="text-sm text-foreground break-words">
+                  <Suspense fallback={null}>
+                    <Markdown remarkPlugins={[remarkGfm]} components={mdComponents}>
+                      {medal.requirementsOriginal}
+                    </Markdown>
+                  </Suspense>
+                </div>
+              </SectionCard>
             )}
 
             {!isPlaceholder && referencedMedals.length > 0 && (
-              <div className="mb-4 bg-background border border-border rounded p-3">
-                <p className="text-sm font-semibold text-foreground mb-2">
-                  Uppfyller också kraven för:
-                </p>
+              <SectionCard
+                id={`refs-${medal.id}`}
+                title="Uppfyller också kraven för"
+                summary={`${referencedMedals.length}`}
+                collapsible
+                defaultOpen={false}
+              >
                 <ul className="space-y-1">
                   {referencedMedals.map(({ target }) => (
                     <li key={target.id}>
@@ -598,42 +587,31 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
                     </li>
                   ))}
                 </ul>
-              </div>
+              </SectionCard>
             )}
 
             {!isPlaceholder && unlockTargets.length > 0 && (
-              <div className="mb-4 bg-background border border-border rounded">
-                <button
-                  type="button"
-                  onClick={() => setShowUnlockTargets(v => !v)}
-                  aria-expanded={showUnlockTargets}
-                  aria-controls={unlockTargetsId}
-                  className="w-full text-left px-3 py-2 flex items-center justify-between hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary rounded-t"
-                >
-                  <span className="text-sm font-semibold text-foreground">
-                    Detta märke krävs för
-                    <span className="ml-1 text-muted-foreground">({unlockTargets.length})</span>
-                  </span>
-                  <span aria-hidden="true" className="ml-2">{showUnlockTargets ? '▼' : '▶'}</span>
-                </button>
-                {showUnlockTargets && (
-                  <div className="px-3 pb-3" id={unlockTargetsId} aria-hidden={!showUnlockTargets}>
-                    <ul className="space-y-1">
-                      {unlockTargets.map(({ target }) => (
-                        <li key={target.id}>
-                          <a
-                            href={`/medals/${target.id}`}
-                            onClick={handleReferenceClick(target.id)}
-                            className="inline-flex items-center underline text-primary hover:text-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary px-2 py-2 rounded min-h-[44px]"
-                          >
-                            {target.displayName || target.name}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
+              <SectionCard
+                id={unlockTargetsId}
+                title="Detta märke krävs för"
+                summary={`${unlockTargets.length}`}
+                collapsible
+                defaultOpen={false}
+              >
+                <ul className="space-y-1">
+                  {unlockTargets.map(({ target }) => (
+                    <li key={target.id}>
+                      <a
+                        href={`/medals/${target.id}`}
+                        onClick={handleReferenceClick(target.id)}
+                        className="inline-flex items-center underline text-primary hover:text-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary px-2 py-2 rounded min-h-[44px]"
+                      >
+                        {target.displayName || target.name}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </SectionCard>
             )}
 
           </div>
