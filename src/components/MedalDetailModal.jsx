@@ -495,15 +495,15 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
                 summary={`${prereqCounts.met}/${prereqCounts.total} uppfyllda`}
                 collapsible={false}
               >
-                <ul className="text-sm text-muted-foreground space-y-1">
+                <ul className="list-none m-0 p-0 text-sm text-muted-foreground space-y-1">
                   {prereqItemsResolved.map((item, i) => (
-                    <li key={i} className="flex flex-wrap items-baseline gap-2 break-words">
+                    <li key={i} className="flex items-start gap-2">
                       <Icon
                         name={item.displayMet ? 'CheckCircle2' : 'Circle'}
-                        className={item.displayMet ? 'w-4 h-4 text-foreground' : 'w-4 h-4 text-muted-foreground'}
+                        className={item.displayMet ? 'w-4 h-4 text-foreground shrink-0' : 'w-4 h-4 text-muted-foreground shrink-0'}
                       />
                       <span className="sr-only">{item.displayMet ? 'Uppfyllt' : 'Saknas'}</span>
-                      <span className="text-foreground">
+                      <span className="text-foreground flex-1 min-w-0 break-words">
                         {item.type === 'medal' ? (item.displayName || item.medalId) : (item.description || item.type)}
                       </span>
                       {item.type === 'medal' && typeof item.yearOffset === 'number' ? (
