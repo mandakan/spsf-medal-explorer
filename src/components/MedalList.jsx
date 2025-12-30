@@ -1,6 +1,5 @@
 import React, { useMemo, useCallback, useRef, useState } from 'react'
 import StatusIcon from './StatusIcon'
-import { StatusPill } from './StatusPill'
 
 
 function Row({ data, index, style }) {
@@ -21,6 +20,8 @@ function Row({ data, index, style }) {
   const ariaLabel = isPlaceholder
     ? `${name} • Plats­hållare`
     : `${name}${underReview ? ' • Under granskning' : ''}${isUnlocked && unlockedYear ? ' • Upplåst ' + unlockedYear : ''}`
+
+  const currentStatus = isPlaceholder ? 'placeholder' : (status?.status ?? medal?.status ?? 'locked')
   return (
     <div
       role="listitem"
@@ -32,34 +33,20 @@ function Row({ data, index, style }) {
       aria-label={ariaLabel}
     >
       <div className="relative w-10 h-10 flex items-center justify-center rounded bg-bg-secondary" aria-hidden="true">
-        <StatusIcon status={status?.status || 'locked'} className="w-6 h-6" />
+        <StatusIcon status={currentStatus} className="w-6 h-6" />
+        {!isPlaceholder && underReview && (
+          <span className="pill-flag pointer-events-none" aria-hidden="true">
+            <StatusIcon status="review" className="w-2.5 h-2.5 text-white" />
+          </span>
+        )}
       </div>
       <div className="min-w-0">
-        <div className="font-medium text-text-primary grid grid-cols-[1fr_auto] items-start gap-x-2">
-          <span className={['clamp-2 min-w-0', isPlaceholder ? 'name--placeholder' : ''].join(' ')}>{name}</span>
-
-          <div className="shrink-0 flex items-center gap-2 justify-self-start">
-            {isPlaceholder ? (
-              <span
-                className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-900 border border-indigo-300 dark:bg-indigo-900/30 dark:text-indigo-200 dark:border-indigo-700"
-                aria-label="Status: plats­hållare"
-              >
-                <StatusIcon status="placeholder" className="w-3.5 h-3.5" />
-                Plats­hållare
-              </span>
-            ) : (
-              <span className="relative inline-flex">
-                <StatusPill status={status?.status || 'locked'} />
-                {underReview && (
-                  <span className="pill-flag pointer-events-none" aria-hidden="true">
-                    <StatusIcon status="review" className="w-2.5 h-2.5 text-white" />
-                  </span>
-                )}
-              </span>
-            )}
-          </div>
+        <div className="font-medium text-text-primary flex items-start gap-x-2">
+          <span className={['clamp-2 min-w-0', isPlaceholder ? 'name--placeholder' : ''].join(' ')}>
+            {name}
+          </span>
+          {isPlaceholder && <span className="sr-only">Plats­hållare</span>}
         </div>
-        {/* Secondary line removed: replaced by status pill next to title */}
       </div>
     </div>
   )
