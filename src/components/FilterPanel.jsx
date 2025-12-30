@@ -12,7 +12,7 @@ export default function FilterPanel({
   onSortChange,
 }) {
   return (
-    <div className="card flex flex-col overflow-hidden h-[80svh] max-h-[80vh] sm:h-auto sm:max-h-none">
+    <div className="card flex flex-col overflow-hidden max-h-[80dvh] sm:max-h-none">
       <div className="p-4 flex justify-between items-center">
         <h3 className="font-bold text-foreground">Filter</h3>
         {hasActiveFilters && (
@@ -143,7 +143,7 @@ export default function FilterPanel({
         </div>
       </div>
 
-      <div className="p-4 border-t border-border pb-[calc(env(safe-area-inset-bottom)+1rem)] text-sm text-muted-foreground" aria-live="polite">
+      <div className="px-4 pt-4 border-t border-border text-sm text-muted-foreground flex-none sm:pb-4 pb-[env(safe-area-inset-bottom)]" aria-live="polite">
         {resultCount} märke(n) matchar filtren
       </div>
     </div>
