@@ -26,10 +26,11 @@ import { Lock, CirclePlus, CircleCheck, Trophy, CircleDashed, Search, Circle } f
     switch (tag) {
       case 'path': {
         const d = attrs?.d
-        if (d) {
+        if (d && typeof Path2D === 'function') {
           const p = new Path2D(d)
           ctx.stroke(p)
         }
+        // If Path2D is unavailable (e.g., test environment), skip path segments gracefully.
         break
       }
       case 'line': {
@@ -269,16 +270,31 @@ export function drawMedalNode(ctx, x, y, radius, medal, status, scale, forceLabe
   const iconNode = ICON_NODE_BY_NAME[iconName] || Circle
   const size = radius * 1.3
   const iconScale = size / 24
-  ctx.save()
-  ctx.translate(x, y)
-  ctx.scale(iconScale, iconScale)
-  ctx.translate(-12, -12)
-  ctx.lineWidth = Math.max(1.25, 2 * iconScale)
-  ctx.strokeStyle = ringColor
-  ctx.lineCap = 'round'
-  ctx.lineJoin = 'round'
-  drawLucideIcon(ctx, iconNode)
-  ctx.restore()
+  const canIconTransform =
+    typeof ctx?.save === 'function' &&
+    typeof ctx?.translate === 'function' &&
+    typeof ctx?.scale === 'function' &&
+    typeof ctx?.restore === 'function'
+
+  if (canIconTransform) {
+    ctx.save()
+    ctx.translate(x, y)
+    ctx.scale(iconScale, iconScale)
+    ctx.translate(-12, -12)
+    ctx.lineWidth = Math.max(1.25, 2 * iconScale)
+    ctx.strokeStyle = ringColor
+    ctx.lineCap = 'round'
+    ctx.lineJoin = 'round'
+    drawLucideIcon(ctx, iconNode)
+    ctx.restore()
+  } else {
+    // Fallback for minimal test/dummy contexts: draw a simple center mark
+    ctx.beginPath()
+    ctx.strokeStyle = ringColor
+    ctx.lineWidth = Math.max(1, radius * 0.15)
+    ctx.arc(x, y, Math.max(2, radius * 0.5), 0, Math.PI * 2)
+    ctx.stroke()
+  }
 
   // Under review indicator: corner dot (matches list)
   if (isUnderReview) {
