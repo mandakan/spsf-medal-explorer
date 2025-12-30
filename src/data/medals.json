@@ -1858,8 +1858,7 @@
             {
               "type": "sustained_achievement",
               "description": "Under tre år, oavsett om i följd eller ej, uppfyllt fordringarna för springskyttemärket i brons (inklusive det första)",
-              "minAchievements": 3,
-              "timeWindowYears": 1,
+              "yearsOfAchievement": 3,
               "references": [
                 {
                   "medalId": "run-mark-bronze",
@@ -1908,8 +1907,7 @@
             {
               "type": "sustained_achievement",
               "description": "Under tre år, oavsett om i följd eller ej, uppfyllt fordringarna för springskyttemärket i silver (inklusive det första märket)",
-              "minAchievements": 3,
-              "timeWindowYears": 1,
+              "yearsOfAchievement": 3,
               "references": [
                 {
                   "medalId": "run-mark-silver",
@@ -1937,6 +1935,7 @@
     },
     {
       "id": "run-mark-gold-star-1",
+      "status": "under_review",
       "type": "running_mark",
       "tier": "star_1",
       "name": "Springskyttemärket",
@@ -1952,9 +1951,14 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för springskyttemärket i guld.",
+          "description": "Innehavare av springskyttemärket i guld som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för springskyttemärket i guld.",
           "yearsOfAchievement": 3,
-          "references": {}
+          "references": [
+            {
+              "medalId": "run-mark-gold",
+              "description": "Ånyo uppfyllt fordringarna för springskyttemärket i guld"
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["run-mark-gold-star-2"],
@@ -1964,6 +1968,7 @@
     },
     {
       "id": "run-mark-gold-star-2",
+      "status": "under_review",
       "type": "running_mark",
       "tier": "star_2",
       "name": "Springskyttemärket",
@@ -1979,8 +1984,14 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för springskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "description": "Innehavare av springskyttemärket i guld med en stjärna som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för springskyttemärket i guld.",
+          "yearsOfAchievement": 3,
+          "references": [
+            {
+              "medalId": "run-mark-gold",
+              "description": "Ånyo uppfyllt fordringarna för springskyttemärket i guld"
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["run-mark-gold-star-3"],
@@ -1990,6 +2001,7 @@
     },
     {
       "id": "run-mark-gold-star-3",
+      "status": "under_review",
       "type": "running_mark",
       "tier": "star_3",
       "name": "Springskyttemärket",
@@ -2005,8 +2017,14 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för springskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "description": "Innehavare av springskyttemärket i guld med två stjärnor som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för springskyttemärket i guld.",
+          "yearsOfAchievement": 3,
+          "references": [
+            {
+              "medalId": "run-mark-gold",
+              "description": "Ånyo uppfyllt fordringarna för springskyttemärket i guld"
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["run-mark-gold-enamel"],
@@ -2016,6 +2034,7 @@
     },
     {
       "id": "run-mark-gold-enamel",
+      "status": "under_review",
       "type": "running_mark",
       "tier": "gold_enamel",
       "name": "Springskyttemärket",
@@ -2031,8 +2050,14 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för springskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "description": "Innehavare av springskyttemärket i guld med tre stjärnor som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för springskyttemärket i guld.",
+          "yearsOfAchievement": 3,
+          "references": [
+            {
+              "medalId": "run-mark-gold",
+              "description": "Ånyo uppfyllt fordringarna för springskyttemärket i guld"
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["run-mark-gold-enamel-star-1"],
@@ -2042,6 +2067,7 @@
     },
     {
       "id": "run-mark-gold-enamel-star-1",
+      "status": "under_review",
       "type": "running_mark",
       "tier": "gold_enamel_star_1",
       "name": "Springskyttemärket",
@@ -2057,8 +2083,14 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för springskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "description": "Innehavare av springskyttemärket i guld med blå emalj som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för springskyttemärket i guld.",
+          "yearsOfAchievement": 3,
+          "references": [
+            {
+              "medalId": "run-mark-gold",
+              "description": "Ånyo uppfyllt fordringarna för springskyttemärket i guld"
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["run-mark-gold-enamel-star-2"],
@@ -2068,6 +2100,7 @@
     },
     {
       "id": "run-mark-gold-enamel-star-2",
+      "status": "under_review",
       "type": "running_mark",
       "tier": "gold_enamel_star_2",
       "name": "Springskyttemärket",
@@ -2083,8 +2116,14 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för springskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "description": "Innehavare av springskyttemärket i guld med blå emalj med en stjärna som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för springskyttemärket i guld.",
+          "yearsOfAchievement": 3,
+          "references": [
+            {
+              "medalId": "run-mark-gold",
+              "description": "Ånyo uppfyllt fordringarna för springskyttemärket i guld"
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["run-mark-gold-enamel-star-3"],
@@ -2094,6 +2133,7 @@
     },
     {
       "id": "run-mark-gold-enamel-star-3",
+      "status": "under_review",
       "type": "running_mark",
       "tier": "gold_enamel_star_3",
       "name": "Springskyttemärket",
@@ -2109,8 +2149,14 @@
       "requirements": [
         {
           "type": "sustained_achievement",
-          "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för springskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "description": "Innehavare av springskyttemärket i guld med blå emalj med två stjärnor som under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för springskyttemärket i guld.",
+          "yearsOfAchievement": 3,
+          "references": [
+            {
+              "medalId": "run-mark-gold",
+              "description": "Ånyo uppfyllt fordringarna för springskyttemärket i guld"
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": [],
