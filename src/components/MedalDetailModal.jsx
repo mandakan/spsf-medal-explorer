@@ -15,6 +15,7 @@ import RequirementTree from './RequirementTree'
 import SectionCard from './SectionCard'
 import { StatusPill } from './StatusPill'
 import StatusIcon from './StatusIcon'
+import Icon from './Icon'
 
 export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) {
   const { medalDatabase } = useMedalDatabase()
@@ -497,9 +498,11 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
                 <ul className="text-sm text-muted-foreground space-y-1">
                   {prereqItemsResolved.map((item, i) => (
                     <li key={i} className="flex flex-wrap items-baseline gap-2 break-words">
-                      <span className={item.displayMet ? 'text-foreground' : 'text-muted-foreground'}>
-                        {item.displayMet ? '✅' : '❌'}
-                      </span>
+                      <Icon
+                        name={item.displayMet ? 'CheckCircle2' : 'Circle'}
+                        className={item.displayMet ? 'w-4 h-4 text-foreground' : 'w-4 h-4 text-muted-foreground'}
+                      />
+                      <span className="sr-only">{item.displayMet ? 'Uppfyllt' : 'Saknas'}</span>
                       <span className="text-foreground">
                         {item.type === 'medal' ? (item.displayName || item.medalId) : (item.description || item.type)}
                       </span>
