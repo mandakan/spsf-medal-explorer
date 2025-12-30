@@ -30,7 +30,6 @@ export default function QuickFilterChips({
 }) {
 
   const status = filters.status || null
-  const weaponGroup = filters.weaponGroup || null
 
   return (
     <div
@@ -68,22 +67,8 @@ export default function QuickFilterChips({
         Låst
       </ChipButton>
 
-      <span className="mx-2 h-5 w-px bg-border shrink-0" aria-hidden="true" />
+      <span className="mx-2 h-5 w-px bg-border shrink-0 lg:hidden" aria-hidden="true" />
 
-      {/* Weapon group chips */}
-      {['A', 'B', 'C', 'R'].map((wg) => (
-        <ChipButton
-          key={wg}
-          active={weaponGroup === wg}
-          onClick={() => onToggle('weaponGroup', wg)}
-          ariaLabel={`Filtrera på vapengrupp ${wg}`}
-        >
-          {wg}
-        </ChipButton>
-      ))}
-
-      {/* Trailing "Filter" chip on mobile – scrolls with the row */}
-      <span className="mx-2 h-5 w-px bg-transparent shrink-0 lg:hidden" aria-hidden="true" />
       <button
         type="button"
         onClick={onOpenFilters}

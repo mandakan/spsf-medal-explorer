@@ -122,14 +122,22 @@ export default function MedalsList() {
   }, [filters, setFilter])
 
   const statusesById = useMemo(() => {
-    const map = {}
-    if (statuses) {
-      ;['unlocked', 'achievable', 'locked'].forEach((k) => {
-        (statuses[k] || []).forEach((r) => {
-          map[r.medalId] = r
-        })
+    const map = Object.create(null)
+
+    if (!statuses) return map
+
+    // Build canonical progression map with explicit status and clear priority
+    const addMany = (arr, s) => {
+      (arr || []).forEach((r) => {
+        map[r.medalId] = { ...r, status: s }
       })
     }
+
+    addMany(statuses.locked, 'locked')
+    addMany(statuses.available, 'available')
+    addMany(statuses.eligible, 'eligible')
+    addMany(statuses.unlocked, 'unlocked')
+
     return map
   }, [statuses])
 

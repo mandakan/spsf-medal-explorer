@@ -1,49 +1,6 @@
-import React, { useMemo, useCallback, useRef, useEffect, useState } from 'react'
+import React, { useMemo, useCallback, useRef, useState } from 'react'
 import StatusIcon from './StatusIcon'
 
-function MedalIcon({ iconUrl, alt, unlocked }) {
-  const [loaded, setLoaded] = useState(false)
-  const [errored, setErrored] = useState(false)
-  const ref = useRef(null)
-
-  // Accept only URL-like values (http(s), absolute, relative, or data URI)
-  const isUrlLike = (s) => !!s && /^(https?:\/\/|\/|\.{1,2}\/|data:image\/)/.test(s)
-  const validSrc = isUrlLike(iconUrl) ? iconUrl : null
-
-  useEffect(() => {
-    if (!ref.current) return
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) setLoaded(true)
-    }, { rootMargin: '200px' })
-    observer.observe(ref.current)
-    return () => observer.disconnect()
-  }, [])
-
-  const showImg = loaded && validSrc && !errored
-
-  return (
-    <div
-      ref={ref}
-      className="relative w-10 h-10 flex items-center justify-center rounded bg-bg-secondary overflow-hidden"
-      aria-hidden="true"
-    >
-      {unlocked && (
-        <span className="absolute -top-1 -right-1 text-[10px]" aria-hidden="true" title="Upplåst">🏆</span>
-      )}
-      {showImg ? (
-        <img
-          src={validSrc}
-          alt={alt}
-          className="w-full h-full object-contain"
-          loading="lazy"
-          onError={() => setErrored(true)}
-        />
-      ) : (
-        <div className="w-6 h-6 bg-bg-secondary rounded" />
-      )}
-    </div>
-  )
-}
 
 function Row({ data, index, style }) {
   const { medals, onSelect, statusesById } = data
@@ -51,7 +8,9 @@ function Row({ data, index, style }) {
   const isPlaceholder = typeof medal?.isPlaceholder === 'function' ? medal.isPlaceholder() : (medal?.status === 'placeholder')
   const underReview = !isPlaceholder && (typeof medal?.isUnderReview === 'function' ? medal.isUnderReview() : (medal?.status === 'under_review'))
   const status = statusesById?.[medal.id]
-  const isUnlocked = !isPlaceholder && status?.status === 'unlocked'
+  const medalStatus = status?.status ?? 'locked'
+  const leadingStatus = isPlaceholder ? 'placeholder' : medalStatus
+  const isUnlocked = !isPlaceholder && medalStatus === 'unlocked'
   const unlockedYear = (() => {
     if (!isUnlocked) return null
     const iso = status?.unlockedDate
@@ -59,44 +18,40 @@ function Row({ data, index, style }) {
     const d = new Date(iso)
     return Number.isNaN(d.getTime()) ? null : d.getFullYear()
   })()
+  const name = medal.displayName || medal.name
   const ariaLabel = isPlaceholder
-    ? `${medal.displayName || medal.name}`
-    : `${medal.displayName || medal.name} ${medal.tier || ''}${underReview ? ' • Under granskning' : ''}${isUnlocked && unlockedYear ? ' • Upplåst ' + unlockedYear : ''}`
+    ? `${name} • Plats­hållare`
+    : `${name}${underReview ? ' • Under granskning' : ''}${isUnlocked && unlockedYear ? ' • Upplåst ' + unlockedYear : ''}`
+
+  // Left icon reflects progression status only (locked/available/eligible/unlocked).
   return (
     <div
       role="listitem"
       tabIndex={0}
       onClick={() => onSelect?.(medal)}
       onKeyDown={(e) => { if (e.key === 'Enter') onSelect?.(medal) }}
-      className="flex items-center gap-3 px-3 py-2 hover:bg-black/5 dark:hover:bg-white/6 focus-visible:bg-black/10 dark:focus-visible:bg-white/10 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+      className={[
+        'flex items-center gap-3 px-3 py-2 hover:bg-bg-secondary focus-visible:bg-bg-secondary cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+        isPlaceholder ? 'bg-placeholder-subtle border-l-2 border-placeholder' : ''
+      ].join(' ')}
       style={style}
       aria-label={ariaLabel}
     >
-      <MedalIcon iconUrl={medal.iconUrl || medal.icon} alt={medal.displayName || medal.name} unlocked={isUnlocked} />
+      <div className="relative w-10 h-10 flex items-center justify-center rounded bg-bg-secondary flex-shrink-0" aria-hidden="true">
+        <StatusIcon status={leadingStatus} className="w-2/3 h-2/3" />
+        {!isPlaceholder && underReview && (
+          <span className="pill-flag pointer-events-none" aria-hidden="true">
+            <StatusIcon status="review" className="w-2.5 h-2.5 text-white" />
+          </span>
+        )}
+      </div>
       <div className="min-w-0">
-        <div className="font-medium text-text-primary truncate flex items-center gap-2">
-          <span className="truncate">{medal.displayName || medal.name}</span>
-
+        <div className="font-medium text-text-primary flex items-start gap-x-2">
+          <span className="clamp-2 min-w-0">{name}</span>
           {isPlaceholder && (
-            <span className="inline-flex items-center gap-1 text-xs text-placeholder" title="Plats­hållare" aria-label="Plats­hållare">
-              <StatusIcon status="placeholder" className="w-3.5 h-3.5" />
-              <span className="sr-only">Plats­hållare</span>
-            </span>
-          )}
-
-          {!isPlaceholder && underReview && (
-            <span className="inline-flex items-center gap-1 text-xs text-review" title="Under granskning" aria-label="Under granskning">
-              <StatusIcon status="review" className="w-3.5 h-3.5" />
-              <span className="sr-only">Under granskning</span>
-            </span>
+            <span className="status-badge status--placeholder">Plats­hållare</span>
           )}
         </div>
-        {!isPlaceholder && (
-          <div className="text-sm text-text-secondary truncate">
-            {medal.type} • {medal.tier}
-            {isUnlocked && unlockedYear != null ? ` • Upplåst ${unlockedYear}` : ''}
-          </div>
-        )}
       </div>
     </div>
   )
@@ -131,7 +86,8 @@ function VirtualList({ height, itemCount, itemSize, width = '100%', itemData, ch
   return (
     <div
       ref={containerRef}
-      style={{ height, width, overflowY: 'auto', position: 'relative', WebkitOverflowScrolling: 'touch' }}
+      className="relative overflow-y-auto"
+      style={{ height, width, WebkitOverflowScrolling: 'touch' }}
       onScroll={onScroll}
       role="list"
       aria-label="Medal list"
@@ -143,7 +99,7 @@ function VirtualList({ height, itemCount, itemSize, width = '100%', itemData, ch
   )
 }
 
-export default function MedalList({ medals, onSelect, height = 800, itemSize = 60, statusesById }) {
+export default function MedalList({ medals, onSelect, height = 800, itemSize = 72, statusesById }) {
   const itemData = useMemo(() => ({ medals, onSelect, statusesById }), [medals, onSelect, statusesById])
   const itemCount = medals?.length || 0
 

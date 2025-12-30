@@ -4,8 +4,94 @@
  */
 import { Medal } from '../models/Medal.js'
 import { STATUS_COLOR_VARS } from '../config/statusColors.js'
+import { ICON_FOR_STATUS } from '../constants/statusIcons.js'
+import { Lock, CirclePlus, CircleCheck, Trophy, CircleDashed, Search, Circle } from 'lucide'
 
  const LABEL_FONT_PX = 14
+
+ // lucide icon rendering helpers for canvas (keep in sync with StatusIcon mapping)
+ const ICON_NODE_BY_NAME = {
+  Lock,
+  CirclePlus,
+  CircleCheck,
+  Trophy,
+  CircleDashed,
+  Search,
+  Circle,
+ }
+
+ function drawLucideIcon(ctx, iconNode) {
+  if (!Array.isArray(iconNode)) return
+  for (const [tag, attrs] of iconNode) {
+    switch (tag) {
+      case 'path': {
+        const d = attrs?.d
+        if (d && typeof Path2D === 'function') {
+          const p = new Path2D(d)
+          ctx.stroke(p)
+        }
+        // If Path2D is unavailable (e.g., test environment), skip path segments gracefully.
+        break
+      }
+      case 'line': {
+        const { x1, y1, x2, y2 } = attrs || {}
+        if ([x1, y1, x2, y2].every((n) => typeof n === 'number')) {
+          ctx.beginPath()
+          ctx.moveTo(x1, y1)
+          ctx.lineTo(x2, y2)
+          ctx.stroke()
+        }
+        break
+      }
+      case 'polyline':
+      case 'polygon': {
+        const pts = (attrs?.points || '').trim()
+        if (pts) {
+          const nums = pts.split(/[\s,]+/).map(Number)
+          if (nums.length >= 4) {
+            ctx.beginPath()
+            ctx.moveTo(nums[0], nums[1])
+            for (let i = 2; i < nums.length; i += 2) {
+              ctx.lineTo(nums[i], nums[i + 1])
+            }
+            if (tag === 'polygon') ctx.closePath()
+            ctx.stroke()
+          }
+        }
+        break
+      }
+      case 'rect': {
+        const { x = 0, y = 0, width = 0, height = 0, rx = 0, ry = 0 } = attrs || {}
+        ctx.beginPath()
+        if ((rx || ry) && typeof ctx.roundRect === 'function') {
+          ctx.roundRect(x, y, width, height, rx || ry)
+        } else {
+          ctx.rect(x, y, width, height)
+        }
+        ctx.stroke()
+        break
+      }
+      case 'circle': {
+        const { cx = 0, cy = 0, r = 0 } = attrs || {}
+        ctx.beginPath()
+        ctx.arc(cx, cy, r, 0, Math.PI * 2)
+        ctx.stroke()
+        break
+      }
+      case 'ellipse': {
+        const { cx = 0, cy = 0, rx = 0, ry = 0 } = attrs || {}
+        if (typeof ctx.ellipse === 'function') {
+          ctx.beginPath()
+          ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2)
+          ctx.stroke()
+        }
+        break
+      }
+      default:
+        // ignore
+    }
+  }
+ }
 
 // Cache for measured Tailwind class colors to avoid reflow per call
 const classColorCache = new Map()
@@ -96,6 +182,9 @@ export function getThemeColors(canvas) {
     placeholder:
       (styles && readVar(styles, [STATUS_COLOR_VARS.placeholder])) ||
       '#94A3B8',
+    surface:
+      (styles && readVar(styles, ['--color-bg-primary', '--color-surface'])) ||
+      '#FFFFFF',
   }
   return palette
 }
@@ -151,50 +240,78 @@ export function drawMedalNode(ctx, x, y, radius, medal, status, scale, forceLabe
   const statusKey = status?.status || 'locked'
   const statusColor = palette[statusKey]
   
-  // Node base
+  // Node base: neutral fill to guarantee icon contrast
+  const s = Math.max(scale, 0.001)
   ctx.beginPath()
-  ctx.fillStyle = statusColor
+  ctx.fillStyle = palette.surface
   ctx.arc(x, y, radius, 0, Math.PI * 2)
   ctx.fill()
 
-  // Border
-  ctx.strokeStyle = palette.border
-  ctx.lineWidth = Math.max(0.5, 2 * Math.max(scale, 0.001))
-  ctx.stroke()
-
-  // Placeholder indicator: dotted ring
-  if (isPlaceholder) {
-    const s = Math.max(scale, 0.001)
-    const canSave = typeof ctx.save === 'function'
-    if (canSave) ctx.save()
-    if (typeof ctx.setLineDash === 'function') {
-      // dotted effect
-      const dot = Math.max(1, 2 * s)
-      ctx.setLineDash([dot, dot * 1.5])
-    }
-    ctx.strokeStyle = palette.placeholder
-    ctx.lineWidth = Math.max(0.75, 2.5 * s)
-    ctx.beginPath()
-    ctx.arc(x, y, radius + Math.max(1, 3 * s), 0, Math.PI * 2)
-    ctx.stroke()
-    if (canSave && typeof ctx.restore === 'function') ctx.restore()
+  // Status ring (dotted for placeholders to mirror list)
+  const ringColor = isPlaceholder ? palette.placeholder : statusColor
+  const ringWidth = Math.max(2, 3 * s)
+  const canSave = typeof ctx.save === 'function'
+  if (canSave) ctx.save()
+  if (isPlaceholder && typeof ctx.setLineDash === 'function') {
+    const dot = Math.max(1, 2 * s)
+    ctx.setLineDash([dot, dot * 1.5])
   }
-  // Under review indicator: dashed ring
-  if (isUnderReview) {
-    const s = Math.max(scale, 0.001)
-    const canSave = typeof ctx.save === 'function'
-    if (canSave) ctx.save()
-    if (typeof ctx.setLineDash === 'function') {
-      const dash = Math.max(1, 6 * s)
-      ctx.setLineDash([dash, dash])
-    }
-    ctx.strokeStyle = palette.review
-    ctx.lineWidth = Math.max(0.75, 2.5 * s)
+  ctx.strokeStyle = ringColor
+  ctx.lineWidth = ringWidth
+  ctx.beginPath()
+  ctx.arc(x, y, Math.max(1, radius - ringWidth / 2), 0, Math.PI * 2)
+  ctx.stroke()
+  if (isPlaceholder && typeof ctx.setLineDash === 'function') ctx.setLineDash([])
+  if (canSave && typeof ctx.restore === 'function') ctx.restore()
+
+  // Center glyph (uses status, not review) — reuse lucide glyphs for consistency with list
+  const glyphStatus = isPlaceholder ? 'placeholder' : statusKey
+  const iconName = ICON_FOR_STATUS[glyphStatus] || 'Circle'
+  const iconNode = ICON_NODE_BY_NAME[iconName] || Circle
+  const size = radius * 1.3
+  const iconScale = size / 24
+  const canIconTransform =
+    typeof ctx?.save === 'function' &&
+    typeof ctx?.translate === 'function' &&
+    typeof ctx?.scale === 'function' &&
+    typeof ctx?.restore === 'function'
+
+  if (canIconTransform) {
+    ctx.save()
+    ctx.translate(x, y)
+    ctx.scale(iconScale, iconScale)
+    ctx.translate(-12, -12)
+    ctx.lineWidth = Math.max(1.25, 2 * iconScale)
+    ctx.strokeStyle = ringColor
+    ctx.lineCap = 'round'
+    ctx.lineJoin = 'round'
+    drawLucideIcon(ctx, iconNode)
+    ctx.restore()
+  } else {
+    // Fallback for minimal test/dummy contexts: draw a simple center mark
     ctx.beginPath()
-    ctx.arc(x, y, radius + Math.max(1, 3 * s), 0, Math.PI * 2)
+    ctx.strokeStyle = ringColor
+    ctx.lineWidth = Math.max(1, radius * 0.15)
+    ctx.arc(x, y, Math.max(2, radius * 0.5), 0, Math.PI * 2)
     ctx.stroke()
-    if (canSave && typeof ctx.restore === 'function') ctx.restore()
-    // No text label for under-review in canvas; using dashed review ring only for consistency with list
+  }
+
+  // Under review indicator: corner dot (matches list)
+  if (isUnderReview) {
+    const dotR = Math.max(3, radius * 0.22)
+    const dx = radius * 0.7
+    const dy = radius * 0.7
+    // outer dot
+    ctx.beginPath()
+    ctx.fillStyle = palette.review
+    ctx.arc(x + dx, y - dy, dotR, 0, Math.PI * 2)
+    ctx.fill()
+    // separator ring for contrast against ring/background
+    ctx.beginPath()
+    ctx.strokeStyle = palette.surface
+    ctx.lineWidth = Math.max(1, 2 * s)
+    ctx.arc(x + dx, y - dy, dotR, 0, Math.PI * 2)
+    ctx.stroke()
   }
 
   // Label text: base name on first line; tierName on subsequent lines
