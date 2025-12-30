@@ -76,10 +76,10 @@ function Row({ data, index, style }) {
     >
       <MedalIcon iconUrl={medal.iconUrl || medal.icon} alt={medal.displayName || medal.name} unlocked={isUnlocked} />
       <div className="min-w-0">
-        <div className="font-medium text-text-primary truncate flex items-center gap-2">
-          <span className="truncate">{name}</span>
+        <div className="font-medium text-text-primary grid grid-cols-[1fr_auto] items-start gap-x-2">
+          <span className="clamp-2 min-w-0">{name}</span>
 
-          <div className="shrink-0 flex items-center gap-2">
+          <div className="shrink-0 flex items-center gap-2 justify-self-start">
             {isPlaceholder ? (
               <span
                 className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-900 border border-indigo-300 dark:bg-indigo-900/30 dark:text-indigo-200 dark:border-indigo-700"
@@ -147,7 +147,7 @@ function VirtualList({ height, itemCount, itemSize, width = '100%', itemData, ch
   )
 }
 
-export default function MedalList({ medals, onSelect, height = 800, itemSize = 60, statusesById }) {
+export default function MedalList({ medals, onSelect, height = 800, itemSize = 72, statusesById }) {
   const itemData = useMemo(() => ({ medals, onSelect, statusesById }), [medals, onSelect, statusesById])
   const itemCount = medals?.length || 0
 

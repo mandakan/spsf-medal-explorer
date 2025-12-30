@@ -113,6 +113,14 @@
   .bg-review { background-color: var(--color-review); }
   .border-review { border-color: var(--color-review); }
 
+  /* Clamp to two lines with ellipsis */
+  .clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
   /* Tiny corner flag to decorate a pill without adding layout width */
   .pill-flag {
     position: absolute;
