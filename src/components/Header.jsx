@@ -105,9 +105,7 @@ export default function Header() {
                 aria-controls="mobile-primary-nav"
                 aria-expanded={open ? 'true' : 'false'}
               >
-                <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                  <path fill="currentColor" d="M3 6h18v2H3zM3 11h18v2H3zM3 16h18v2H3z"></path>
-                </svg>
+                <Icon name="Menu" size={20} className="shrink-0" />
               </button>
             </div>
           </div>
