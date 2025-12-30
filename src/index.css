@@ -140,6 +140,7 @@
   .text-placeholder { color: var(--color-placeholder); }
   .bg-placeholder { background-color: var(--color-placeholder); }
   .border-placeholder { border-color: var(--color-placeholder); }
+  .bg-placeholder-subtle { background-color: var(--color-placeholder-subtle); }
 
   /* Outline for placeholder names to avoid color-only indication */
   .name--placeholder {
@@ -205,6 +206,12 @@
     color: var(--color-status-unlocked-ink);
     background-color: var(--color-status-unlocked-subtle);
     border-color: var(--color-status-unlocked-border);
+  }
+  .status--placeholder {
+    color: var(--color-placeholder);
+    background-color: var(--color-placeholder-subtle);
+    border-color: var(--color-placeholder-border);
+    border-style: dotted;
   }
 }
 

@@ -9,6 +9,7 @@ function Row({ data, index, style }) {
   const underReview = !isPlaceholder && (typeof medal?.isUnderReview === 'function' ? medal.isUnderReview() : (medal?.status === 'under_review'))
   const status = statusesById?.[medal.id]
   const medalStatus = status?.status ?? 'locked'
+  const leadingStatus = isPlaceholder ? 'placeholder' : medalStatus
   const isUnlocked = !isPlaceholder && medalStatus === 'unlocked'
   const unlockedYear = (() => {
     if (!isUnlocked) return null
@@ -29,12 +30,15 @@ function Row({ data, index, style }) {
       tabIndex={0}
       onClick={() => onSelect?.(medal)}
       onKeyDown={(e) => { if (e.key === 'Enter') onSelect?.(medal) }}
-      className="flex items-center gap-3 px-3 py-2 hover:bg-bg-secondary focus-visible:bg-bg-secondary cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+      className={[
+        'flex items-center gap-3 px-3 py-2 hover:bg-bg-secondary focus-visible:bg-bg-secondary cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+        isPlaceholder ? 'bg-placeholder-subtle border-l-2 border-placeholder' : ''
+      ].join(' ')}
       style={style}
       aria-label={ariaLabel}
     >
       <div className="relative w-10 h-10 flex items-center justify-center rounded bg-bg-secondary flex-shrink-0" aria-hidden="true">
-        <StatusIcon status={medalStatus} className="w-2/3 h-2/3" />
+        <StatusIcon status={leadingStatus} className="w-2/3 h-2/3" />
         {!isPlaceholder && underReview && (
           <span className="pill-flag pointer-events-none" aria-hidden="true">
             <StatusIcon status="review" className="w-2.5 h-2.5 text-white" />
@@ -43,10 +47,10 @@ function Row({ data, index, style }) {
       </div>
       <div className="min-w-0">
         <div className="font-medium text-text-primary flex items-start gap-x-2">
-          <span className={['clamp-2 min-w-0', isPlaceholder ? 'name--placeholder' : ''].join(' ')}>
-            {name}
-          </span>
-          {isPlaceholder && <span className="sr-only">Plats­hållare</span>}
+          <span className="clamp-2 min-w-0">{name}</span>
+          {isPlaceholder && (
+            <span className="status-badge status--placeholder">Plats­hållare</span>
+          )}
         </div>
       </div>
     </div>
