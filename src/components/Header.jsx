@@ -105,7 +105,7 @@ export default function Header() {
                 aria-controls="mobile-primary-nav"
                 aria-expanded={open ? 'true' : 'false'}
               >
-                <Icon name="Menu" size={32} className="shrink-0" />
+                <Icon name="Menu" size={20} className="shrink-0" />
               </button>
             </div>
           </div>
