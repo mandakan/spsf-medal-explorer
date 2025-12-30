@@ -338,7 +338,7 @@ body {
     @apply text-lg font-semibold text-foreground;
   }
   .btn {
-    @apply inline-flex items-center justify-center gap-2 h-11 px-4 rounded-md font-medium leading-none whitespace-nowrap
+    @apply inline-flex items-center justify-center gap-2 h-11 px-4 rounded-md font-medium leading-none whitespace-nowrap box-border border border-transparent
            focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary
            focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary;
   }
