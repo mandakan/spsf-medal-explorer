@@ -29,7 +29,7 @@ function Row({ data, index, style }) {
       tabIndex={0}
       onClick={() => onSelect?.(medal)}
       onKeyDown={(e) => { if (e.key === 'Enter') onSelect?.(medal) }}
-      className="flex items-center gap-3 px-3 py-2 hover:bg-black/5 dark:hover:bg-white/6 focus-visible:bg-black/10 dark:focus-visible:bg-white/10 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+      className="flex items-center gap-3 px-3 py-2 hover:bg-bg-secondary focus-visible:bg-bg-secondary cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
       style={style}
       aria-label={ariaLabel}
     >
@@ -82,7 +82,8 @@ function VirtualList({ height, itemCount, itemSize, width = '100%', itemData, ch
   return (
     <div
       ref={containerRef}
-      style={{ height, width, overflowY: 'auto', position: 'relative', WebkitOverflowScrolling: 'touch' }}
+      className="relative overflow-y-auto"
+      style={{ height, width, WebkitOverflowScrolling: 'touch' }}
       onScroll={onScroll}
       role="list"
       aria-label="Medal list"
