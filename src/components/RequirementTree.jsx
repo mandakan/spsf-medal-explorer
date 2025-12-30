@@ -44,12 +44,14 @@ function LeafRow({ leaf }) {
   const yearText = yearValue != null ? `• År ${yearValue}` : null
 
   return (
-    <div className="px-2 py-1 flex items-baseline gap-2">
+    <div className="px-2 py-1 flex items-start gap-2">
       <StatusIcon met={!!leaf.isMet} />
-      <span className={leaf.isMet ? 'text-foreground' : 'text-muted-foreground'}>{label}</span>
-      <span className="text-xs text-muted-foreground">
-        {progressText}{progressText && yearText ? ' ' : ''}{yearText}
+      <span className={`${leaf.isMet ? 'text-foreground' : 'text-muted-foreground'} flex-1 min-w-0`}>
+        {label} {yearText ? <span className="text-xs text-muted-foreground">{yearText}</span> : null}
       </span>
+      {progressText ? (
+        <span className="ml-auto shrink-0 text-xs text-muted-foreground tabular-nums">{progressText}</span>
+      ) : null}
     </div>
   )
 }
@@ -127,7 +129,7 @@ function RequirementNode({ node, path = 'root', level = 0, defaultExpanded = lev
             onToggle={() => setExpanded(e => !e)}
           />
           {expanded && (
-            <ul id={headerIdLeaf} role="group" className="ml-2">
+            <ul id={headerIdLeaf} role="group" className="ml-2 list-none m-0 p-0">
               {(Array.isArray(st.children) ? st.children : []).map((child, idx) => (
                 <RequirementNode
                   key={`${path}-sub-${idx}`}
@@ -165,7 +167,7 @@ function RequirementNode({ node, path = 'root', level = 0, defaultExpanded = lev
         onToggle={() => setExpanded(e => !e)}
       />
       {expanded && (
-        <ul id={headerId} role="group" className="ml-2">
+        <ul id={headerId} role="group" className="ml-2 list-none m-0 p-0">
           {children.map((child, idx) => (
             <RequirementNode
               key={`${path}-${idx}`}
@@ -196,7 +198,7 @@ export default function RequirementTree({ tree, bare = false }) {
   const isTopLevelAnd = flattenedRoot.node === 'and'
 
   const content = (
-    <ul className="text-sm text-muted-foreground space-y-1">
+    <ul className="list-none m-0 p-0 text-sm text-muted-foreground space-y-1">
       {isTopLevelAnd
         ? (flattenedRoot.children || []).map((child, idx) => (
             <RequirementNode

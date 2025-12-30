@@ -121,6 +121,9 @@
     overflow: hidden;
   }
 
+  /* Use tabular numbers for aligned digits */
+  .tabular-nums { font-variant-numeric: tabular-nums; }
+
   /* Tiny corner flag to decorate a pill without adding layout width */
   .pill-flag {
     position: absolute;
