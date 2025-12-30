@@ -1820,7 +1820,7 @@
         {
           "type": "competition_performance",
           "disciplineType": "running",
-          "description": "3x1 km terränglöpning med skytte",
+          "description": "3x1 km terränglöpning med skytte enligt poängkrav för brons",
           "minAchievements": 1,
           "timeWindowYears": 1,
           "maxPoints": {
@@ -1854,14 +1854,30 @@
       ],
       "requirements": [
         {
-          "type": "running_shooting_course",
-          "description": "3x1km running course with shooting",
-          "minAchievements": 1,
-          "timeWindowYears": 1,
-          "maxPoints": {
-            "male": 35,
-            "female": 41
-          }
+          "or": [
+            {
+              "type": "sustained_achievement",
+              "description": "Under tre år, oavsett om i följd eller ej, uppfyllt fordringarna för springskyttemärket i brons (inklusive det första)",
+              "minAchievements": 3,
+              "timeWindowYears": 1,
+              "references": [
+                {
+                  "medalId": "run-mark-bronze",
+                  "description": "Ånyo uppfyllt fordringarna för springskyttemärket i brons"
+                }
+              ]
+            },
+            {
+              "type": "running_shooting_course",
+              "description": "3x1 km terränglöpning med skytte enligt poängkrav för silver",
+              "minAchievements": 1,
+              "timeWindowYears": 1,
+              "maxPoints": {
+                "male": 35,
+                "female": 41
+              }
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["run-mark-gold"],
@@ -1888,14 +1904,30 @@
       ],
       "requirements": [
         {
-          "type": "running_shooting_course",
-          "description": "3x1km running course with shooting",
-          "minAchievements": 1,
-          "timeWindowYears": 1,
-          "maxPoints": {
-            "male": 30,
-            "female": 36
-          }
+          "or": [
+            {
+              "type": "sustained_achievement",
+              "description": "Under tre år, oavsett om i följd eller ej, uppfyllt fordringarna för springskyttemärket i silver (inklusive det första märket)",
+              "minAchievements": 3,
+              "timeWindowYears": 1,
+              "references": [
+                {
+                  "medalId": "run-mark-silver",
+                  "description": "Ånyo uppfyllt fordringarna för springskyttemärket i silver"
+                }
+              ]
+            },
+            {
+              "type": "running_shooting_course",
+              "description": "3x1 km terränglöpning med skytte enligt poängkrav för guld",
+              "minAchievements": 1,
+              "timeWindowYears": 1,
+              "maxPoints": {
+                "male": 35,
+                "female": 41
+              }
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["run-mark-gold-star-1"],
@@ -1921,7 +1953,8 @@
         {
           "type": "sustained_achievement",
           "description": "Under tre år, oavsett om i följd eller ej, ånyo uppfyllt fordringarna för springskyttemärket i guld.",
-          "yearsOfAchievement": 3
+          "yearsOfAchievement": 3,
+          "references": {}
         }
       ],
       "unlocksFollowingMedals": ["run-mark-gold-star-2"],
