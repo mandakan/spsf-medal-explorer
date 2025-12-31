@@ -270,10 +270,9 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
 
     // Render skill tree with view culling for performance
     const allMedals = medalDatabase.getAllMedals()
-    const visibleMedals = getVisibleMedalsForCanvas(canvas)
-    const visibleIds = new Set(visibleMedals.map(m => m.medalId))
-    const filteredLayout = { ...layout, medals: visibleMedals }
-    const filteredMedals = allMedals.filter(m => visibleIds.has(m.id))
+    const visibleNodes = getVisibleMedalsForCanvas(canvas)
+    const visibleIds = new Set(visibleNodes.map(n => n.medalId))
+    const culledMedals = allMedals.filter(m => visibleIds.has(m.id))
 
     const { effScale, effPanX, effPanY } = getEffectiveTransform(canvas)
 
@@ -338,8 +337,8 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
 
     render(
       ctx,
-      filteredMedals,
-      filteredLayout,
+      culledMedals,
+      layout,
       statuses,
       effPanX,
       effPanY,
