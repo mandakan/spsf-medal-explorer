@@ -2,6 +2,18 @@ function uniq(arr) {
   return Array.from(new Set(arr))
 }
 
+function sustainedYears(medal) {
+  const reqs = Array.isArray(medal?.requirements) ? medal.requirements : []
+  let maxYears = 0
+  for (const r of reqs) {
+    const y = (r && r.type === 'sustained_achievement' && Number.isFinite(r.yearsOfAchievement))
+      ? r.yearsOfAchievement
+      : 0
+    if (y > maxYears) maxYears = y
+  }
+  return maxYears
+}
+
 export const timelineLayout = {
   id: 'timeline',
   label: 'Tidslinje',
@@ -21,6 +33,9 @@ export const timelineLayout = {
 
     const medalsArr = Array.isArray(medals) ? medals : []
     const medalById = new Map(medalsArr.map(m => [m.id, m]))
+
+    // Node duration cost from sustained_achievement (yearsOfAchievement - 1)
+    const nodeCost = new Map(medalsArr.map(m => [m.id, Math.max(0, sustainedYears(m) - 1)]))
 
     // Graph structures
     const incoming = new Map() // toId -> [{ from, cost }]
@@ -60,11 +75,16 @@ export const timelineLayout = {
       }
     }
 
-    // Longest-path (xYears) via Kahn's topo sort
-    const xYears = new Map(medalsArr.map(m => [m.id, 0]))
+    // Earliest-finish (xYears) via Kahn's topo sort with node duration
+    const startAcc = new Map(medalsArr.map(m => [m.id, 0])) // earliest start per node
+    const xYears = new Map(medalsArr.map(m => [m.id, 0]))   // earliest finish per node
     const queue = []
     for (const m of medalsArr) {
-      if ((inDegree.get(m.id) || 0) === 0) queue.push(m.id)
+      if ((inDegree.get(m.id) || 0) === 0) {
+        // roots: finish at their own duration
+        xYears.set(m.id, (nodeCost.get(m.id) || 0))
+        queue.push(m.id)
+      }
     }
 
     while (queue.length) {
@@ -72,11 +92,15 @@ export const timelineLayout = {
       const outs = outgoing.get(id) || []
       for (const to of outs) {
         const edge = (incoming.get(to) || []).find(e => e.from === id)
-        const cost = edge?.cost || 0
-        const cand = (xYears.get(id) || 0) + cost
-        if (cand > (xYears.get(to) || 0)) xYears.set(to, cand)
+        const edgeCost = edge?.cost || 0
+        const candStart = (xYears.get(id) || 0) + edgeCost
+        if ((startAcc.get(to) || 0) < candStart) startAcc.set(to, candStart)
+
         inDegree.set(to, (inDegree.get(to) || 0) - 1)
-        if ((inDegree.get(to) || 0) === 0) queue.push(to)
+        if ((inDegree.get(to) || 0) === 0) {
+          xYears.set(to, (startAcc.get(to) || 0) + (nodeCost.get(to) || 0))
+          queue.push(to)
+        }
       }
     }
 
