@@ -34,8 +34,8 @@ export const timelineLayout = {
     const medalsArr = Array.isArray(medals) ? medals : []
     const medalById = new Map(medalsArr.map(m => [m.id, m]))
 
-    // Node duration cost from sustained_achievement (yearsOfAchievement - 1)
-    const nodeCost = new Map(medalsArr.map(m => [m.id, Math.max(0, sustainedYears(m) - 1)]))
+    // Node duration cost equals sustained_achievement.yearsOfAchievement (full years must elapse)
+    const nodeCost = new Map(medalsArr.map(m => [m.id, sustainedYears(m)]))
 
     // Graph structures
     const incoming = new Map() // toId -> [{ from, cost }]
