@@ -85,6 +85,7 @@ function AppRoutes() {
             }
           />
           <Route path="about" element={<About />} />
+          <Route path="whats-new" element={<WhatsNewOverlay />} />
         </Route>
       </Routes>
       {isMedalDetail && background && (
@@ -92,9 +93,11 @@ function AppRoutes() {
           <Route path="/medals/:id" element={<MedalDetailOverlay />} />
         </Routes>
       )}
-      <Routes>
-        <Route path="/whats-new" element={<WhatsNewOverlay />} />
-      </Routes>
+      {isWhatsNew && background && (
+        <Routes>
+          <Route path="/whats-new" element={<WhatsNewOverlay />} />
+        </Routes>
+      )}
     </>
   )
 }
