@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useCallback } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { getBuildId, getLastSeen, setLastSeen } from '../utils/whatsNew'
+import { getReleaseId, getLastSeen, setLastSeen } from '../utils/whatsNew'
 import { getReleasesSince } from '../content/whatsNew'
 
 export default function WhatsNewOverlay() {
@@ -8,20 +8,20 @@ export default function WhatsNewOverlay() {
   const location = useLocation()
   const background = location.state?.backgroundLocation
 
-  const buildId = getBuildId()
+  const releaseId = getReleaseId()
   const items = useMemo(() => getReleasesSince(getLastSeen()), [])
   const dialogRef = useRef(null)
   const lastFocusedRef = useRef(null)
 
   const handleClose = useCallback(() => {
-    if (buildId) setLastSeen(buildId)
+    if (releaseId) setLastSeen(releaseId)
     if (background && background.pathname) {
       const to = `${background.pathname}${background.search || ''}${background.hash || ''}`
       navigate(to, { replace: true })
     } else {
       navigate(-1)
     }
-  }, [buildId, background, navigate])
+  }, [releaseId, background, navigate])
 
   // Focus management and trap
   useEffect(() => {

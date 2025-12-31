@@ -15,7 +15,7 @@ import About from './pages/About'
 import MedalDetailModal from './components/MedalDetailModal'
 import RequireSavedProfile from './components/RequireSavedProfile'
 import WhatsNewOverlay from './components/WhatsNewOverlay'
-import { getBuildId, getLastSeen, isProductionEnv } from './utils/whatsNew'
+import { getReleaseId, getLastSeen, isProductionEnv } from './utils/whatsNew'
 
 
 function MedalDetailOverlay() {
@@ -49,9 +49,9 @@ function AppRoutes() {
     if (bootedRef.current) return
     bootedRef.current = true
     if (!isProductionEnv()) return
-    const buildId = getBuildId()
+    const releaseId = getReleaseId()
     const last = getLastSeen()
-    if (!buildId || last === buildId) return
+    if (!releaseId || last === releaseId) return
     const timer = setTimeout(() => {
       const state = { backgroundLocation: location }
       navigate('/whats-new', { replace: true, state })

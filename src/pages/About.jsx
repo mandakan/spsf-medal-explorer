@@ -5,7 +5,7 @@ import { APP_INFO, CURRENT_RULEBOOK_VERSION } from '../config/appInfo'
 import Disclaimer from '../components/Disclaimer'
 import { BUILD } from '../config/buildInfo'
 import AdminFeatureFlagsDialog from '../components/AdminFeatureFlagsDialog'
-import { getBuildId, getLastSeen } from '../utils/whatsNew'
+import { getReleaseId, getLastSeen } from '../utils/whatsNew'
 import { releases } from '../content/whatsNew'
 
 export default function About() {
@@ -14,9 +14,9 @@ export default function About() {
   const location = useLocation()
   const navigate = useNavigate()
   const hasNew = (() => {
-    const buildId = getBuildId()
-    if (!buildId) return false
-    return getLastSeen() !== buildId
+    const releaseId = getReleaseId()
+    if (!releaseId) return false
+    return getLastSeen() !== releaseId
   })()
 
   return (

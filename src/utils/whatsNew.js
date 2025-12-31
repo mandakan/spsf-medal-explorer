@@ -3,6 +3,13 @@ import { BUILD } from '../config/buildInfo'
 export const WHATSNEW_STORAGE_KEY = 'whatsnew:lastSeen'
 
 /**
+ * User-facing release identity (semver). Use version only for gating.
+ */
+export function getReleaseId() {
+  return BUILD?.version || ''
+}
+
+/**
  * Create a stable build identifier from build metadata.
  * Example: "1.5.0+210"
  */
@@ -29,7 +36,7 @@ export function setLastSeen(id) {
 }
 
 export function hasNewWhatsNew() {
-  const id = getBuildId()
+  const id = getReleaseId()
   if (!id) return false
   return getLastSeen() !== id
 }

@@ -4,7 +4,7 @@
  */
 export const releases = [
   {
-    id: '1.5.0+210',
+    id: '1.5.0',
     date: '2025-01-01',
     title: 'Snabbare sökning och ny medaljvy',
     highlights: [
@@ -15,7 +15,7 @@ export const releases = [
     link: 'https://example.com/releases/v1.5.0',
   },
   {
-    id: '1.4.0+180',
+    id: '1.4.0',
     date: '2024-12-10',
     title: 'Feature-flaggor och förbättrad UX',
     highlights: [
@@ -32,7 +32,16 @@ export const releases = [
  * If lastSeen isn't found or missing, returns all releases.
  */
 export function getReleasesSince(lastSeen) {
-  if (!lastSeen) return releases
-  const idx = releases.findIndex(r => r.id === lastSeen)
-  return idx <= 0 ? releases : releases.slice(0, idx)
+  // Ensure newest-first by semantic version regardless of authoring order
+  const ordered = [...releases].sort((a, b) => {
+    const pa = String(a.id).split('.').map(n => parseInt(n, 10) || 0)
+    const pb = String(b.id).split('.').map(n => parseInt(n, 10) || 0)
+    for (let i = 0; i < 3; i++) {
+      if (pa[i] !== pb[i]) return pb[i] - pa[i]
+    }
+    return 0
+  })
+  if (!lastSeen) return ordered
+  const idx = ordered.findIndex(r => r.id === lastSeen)
+  return idx <= 0 ? ordered : ordered.slice(0, idx)
 }
