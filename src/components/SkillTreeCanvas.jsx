@@ -3,7 +3,6 @@ import { useMedalDatabase } from '../hooks/useMedalDatabase'
 import { useAllMedalStatuses } from '../hooks/useMedalCalculator'
 import { usePanZoom } from '../hooks/usePanZoom'
 import { useCanvasRenderer } from '../hooks/useCanvasRenderer'
-import { generateMedalLayout } from '../logic/canvasLayout'
 import { exportCanvasToPNG } from '../utils/canvasExport'
 import { clearThemeCache } from '../logic/canvasRenderer'
 import { useNavigate, useLocation } from 'react-router-dom'
@@ -12,14 +11,16 @@ import { useProfile } from '../hooks/useProfile'
 import ProfileSelector from './ProfileSelector'
 import ConfirmDialog from './ConfirmDialog'
 import Icon from './Icon'
+import { useSkillTreeLayoutPreset } from '../hooks/useSkillTreeLayoutPreset'
+import { useSkillTreeLayout } from '../hooks/useSkillTreeLayout'
 
 export default function SkillTreeCanvas({ legendDescribedById }) {
   const canvasRef = useRef(null)
   const { medalDatabase } = useMedalDatabase()
   const statuses = useAllMedalStatuses()
-  
+
   const { render } = useCanvasRenderer()
-  
+
   const [selectedMedal, setSelectedMedal] = useState(null)
   const [hoveredMedal, setHoveredMedal] = useState(null)
   const [badgeData, setBadgeData] = useState([])
@@ -27,11 +28,9 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   const location = useLocation()
   const isFullscreen = location.pathname.endsWith('/skill-tree/fullscreen')
   const fullscreenRef = useRef(null)
-  const layout = useMemo(() => {
-    if (!medalDatabase) return null
-    const medals = medalDatabase.getAllMedals()
-    return generateMedalLayout(medals)
-  }, [medalDatabase])
+
+  const { presetId } = useSkillTreeLayoutPreset()
+  const { layout } = useSkillTreeLayout(presetId)
 
   // Shared canvas/label padding constants
   const CANVAS_PAD = 24
@@ -230,8 +229,6 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
         }
       }
 
-      // Node label is drawn below the node; pill is above by design so no label-collision handling is needed.
-
       // Safety: if still too close to node center, nudge outward along the radial
       const dx = cx - toNode.x
       const dy = cy - toNode.y
@@ -253,14 +250,12 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     return badges
   }, [layout, getEffectiveTransform, getVisibleMedalsForCanvas, hoveredMedal, selectedMedal, statuses, showYearBadges])
 
-  // Badge overlay positions are computed in a layout effect to avoid ref access during render
-
   const draw = useCallback(() => {
     if (!canvasRef.current || !layout || !medalDatabase) return
 
     const canvas = canvasRef.current
     const ctx = canvas.getContext('2d')
-    
+
     // Resize canvas to match container size
     const rect = canvas.getBoundingClientRect()
     if (canvas.width !== Math.floor(rect.width) || canvas.height !== Math.floor(rect.height)) {
@@ -294,7 +289,6 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
       hoveredMedal
     )
   }, [getVisibleMedalsForCanvas, getEffectiveTransform, layout, medalDatabase, statuses, selectedMedal, render, hoveredMedal])
-
 
   const handleResetView = useCallback(() => {
     const el = canvasRef.current
@@ -961,7 +955,6 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
           </div>
         )}
       </div>
-
 
       {isFullscreen && (
         <div
