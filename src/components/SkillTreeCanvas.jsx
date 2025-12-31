@@ -4,7 +4,7 @@ import { useAllMedalStatuses } from '../hooks/useMedalCalculator'
 import { usePanZoom } from '../hooks/usePanZoom'
 import { useCanvasRenderer } from '../hooks/useCanvasRenderer'
 import { exportCanvasToPNG } from '../utils/canvasExport'
-import { clearThemeCache } from '../logic/canvasRenderer'
+import { clearThemeCache, getThemeColors } from '../logic/canvasRenderer'
 import { useNavigate, useLocation } from 'react-router-dom'
 import ReviewLegend from './ReviewLegend'
 import { useProfile } from '../hooks/useProfile'
@@ -29,7 +29,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   const isFullscreen = location.pathname.endsWith('/skill-tree/fullscreen')
   const fullscreenRef = useRef(null)
 
-  const { presetId } = useSkillTreeLayoutPreset()
+  const { presetId, setPresetId } = useSkillTreeLayoutPreset()
   const { layout } = useSkillTreeLayout(presetId)
 
   // Shared canvas/label padding constants
@@ -277,6 +277,65 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
 
     const { effScale, effPanX, effPanY } = getEffectiveTransform(canvas)
 
+    // Timeline overlay (grid + lane labels)
+    if (layout?.meta?.kind === 'timeline') {
+      const palette = getThemeColors(canvas) || {}
+      const width = canvas.width
+      const height = canvas.height
+
+      // Visible world-space range
+      const worldLeft = (-width / 2) / effScale - effPanX
+      const worldRight = (width / 2) / effScale - effPanX
+
+      const yearWidth = Number(layout.meta.yearWidth) || 220
+      const startYear = Math.floor(worldLeft / yearWidth)
+      const endYear = Math.ceil(worldRight / yearWidth)
+
+      // Grid lines
+      const gridColor = palette.connection || 'rgba(0,0,0,0.3)'
+      const labelColor = palette.text || '#111827'
+      const labelY = Math.max(12, (showLegend ? legendSafeTop + 12 : 12))
+
+      ctx.save()
+      ctx.lineWidth = 1
+      ctx.strokeStyle = gridColor
+      ctx.globalAlpha = 0.25
+      for (let yi = startYear; yi <= endYear; yi++) {
+        const worldX = yi * yearWidth
+        const screenX = (worldX + effPanX) * effScale + width / 2
+        ctx.beginPath()
+        ctx.moveTo(screenX, 0)
+        ctx.lineTo(screenX, height)
+        ctx.stroke()
+
+        // Year labels at top
+        ctx.globalAlpha = 0.8
+        ctx.fillStyle = labelColor
+        ctx.textAlign = 'center'
+        ctx.textBaseline = 'top'
+        ctx.font = '12px system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif'
+        ctx.fillText(`${yi} år`, screenX, labelY)
+        ctx.globalAlpha = 0.25
+      }
+      ctx.restore()
+
+      // Lane labels (follow world-space vertically)
+      const lanes = Array.isArray(layout.meta.lanes) ? layout.meta.lanes : []
+      if (lanes.length) {
+        ctx.save()
+        ctx.fillStyle = labelColor
+        ctx.textAlign = 'left'
+        ctx.textBaseline = 'middle'
+        ctx.font = '12px system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif'
+        for (const lane of lanes) {
+          const screenY = (lane.y + effPanY) * effScale + height / 2
+          if (screenY < -24 || screenY > height + 24) continue
+          ctx.fillText(String(lane.label || lane.type || ''), 8, screenY)
+        }
+        ctx.restore()
+      }
+    }
+
     render(
       ctx,
       filteredMedals,
@@ -288,7 +347,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
       selectedMedal,
       hoveredMedal
     )
-  }, [getVisibleMedalsForCanvas, getEffectiveTransform, layout, medalDatabase, statuses, selectedMedal, render, hoveredMedal])
+  }, [getVisibleMedalsForCanvas, getEffectiveTransform, layout, medalDatabase, statuses, selectedMedal, render, hoveredMedal, legendSafeTop, showLegend])
 
   const handleResetView = useCallback(() => {
     const el = canvasRef.current
@@ -855,6 +914,26 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                     >
                       {showYearBadges ? 'Dölj årsbrickor' : 'Visa årsbrickor'}
                     </button>
+                    <div role="group" aria-label="Visualisering" className="border-t border-border/60">
+                      <button
+                        role="menuitemradio"
+                        aria-checked={presetId === 'columns'}
+                        type="button"
+                        onClick={() => { setMenuOpen(false); setPresetId('columns'); handleResetView() }}
+                        className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                      >
+                        Visualisering: Standard (kolumner)
+                      </button>
+                      <button
+                        role="menuitemradio"
+                        aria-checked={presetId === 'timeline'}
+                        type="button"
+                        onClick={() => { setMenuOpen(false); setPresetId('timeline'); handleResetView() }}
+                        className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                      >
+                        Visualisering: Tidslinje
+                      </button>
+                    </div>
                     {(!currentProfile || isGuest) && (
                       <button
                         role="menuitem"
@@ -1045,6 +1124,26 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                   >
                     {showYearBadges ? 'Dölj årsbrickor' : 'Visa årsbrickor'}
                   </button>
+                  <div role="group" aria-label="Visualisering" className="border-t border-border/60">
+                    <button
+                      role="menuitemradio"
+                      aria-checked={presetId === 'columns'}
+                      type="button"
+                      onClick={() => { setMenuOpen(false); setPresetId('columns'); handleResetView() }}
+                      className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                    >
+                      Visualisering: Standard (kolumner)
+                    </button>
+                    <button
+                      role="menuitemradio"
+                      aria-checked={presetId === 'timeline'}
+                      type="button"
+                      onClick={() => { setMenuOpen(false); setPresetId('timeline'); handleResetView() }}
+                      className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                    >
+                      Visualisering: Tidslinje
+                    </button>
+                  </div>
                   {(!currentProfile || isGuest) && (
                     <button
                       role="menuitem"
