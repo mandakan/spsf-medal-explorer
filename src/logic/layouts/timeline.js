@@ -111,10 +111,21 @@ export const timelineLayout = {
     const nodes = []
     const lanesMeta = []
 
+    // Build human-friendly labels per type from first seen typeName; fallback to raw type
+    const typeLabelByType = new Map()
+    for (const m of medalsArr) {
+      const t = m?.type || 'unknown'
+      if (!typeLabelByType.has(t)) {
+        const tn = (m && typeof m.typeName === 'string') ? m.typeName.trim() : ''
+        typeLabelByType.set(t, tn.length ? tn : t)
+      }
+    }
+
     for (const type of types) {
       const laneIndex = laneIndexByType.get(type) || 0
       const laneBaseY = laneIndex * laneHeight
-      lanesMeta.push({ type, y: laneBaseY, label: type })
+      const label = typeLabelByType.get(type) ?? type
+      lanesMeta.push({ type, y: laneBaseY, label })
 
       const laneMedals = medalsArr.filter(m => (m?.type || 'unknown') === type)
 

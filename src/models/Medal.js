@@ -15,6 +15,7 @@ export class Medal {
     this.tierName = data.tierName
     this.color = data.color
     this.icon = data.icon
+    this.typeName = data.typeName ?? null
     this.status = normalizeStatus(data.status)
     this.prerequisites = data.prerequisites || []
     this.requirements = data.requirements || []
