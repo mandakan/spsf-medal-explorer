@@ -113,6 +113,172 @@ Key modules
 - Prefer hooks for reusable UI behavior (swipe gestures, form state, search)
 - Validation lives in logic/validator.js and validators/universalValidator.js
 
+## Creating a new skill-tree visualisation (layout preset)
+
+The skill tree supports multiple visualisations via a "layout preset" architecture. A preset is a small module that generates a layout (node positions + connections) from the medal database. The canvas renderer and interaction logic are intentionally kept generic: they consume the layout output and do not care which preset produced it.
+
+This section explains how to add a new visualisation step-by-step.
+
+### 1) Understand the layout contract
+
+A layout generator must return an object with this shape:
+
+- `layout.medals`: array of nodes (one per medal)
+  - Required fields:
+    - `medalId` (string) — must match the medal `id` in the database
+    - `x` (number) — world coordinate
+    - `y` (number) — world coordinate
+    - `radius` (number) — node radius in world units (used for hit testing and bounds)
+  - Optional fields:
+    - `yearsRequired` (number) — used by the DOM overlay "år"-badges
+    - `type` (string) — can be used by renderers/filters (optional)
+
+- `layout.connections`: array of edges
+  - Required fields:
+    - `from` (string) — source medalId
+    - `to` (string) — target medalId
+  - Optional fields:
+    - `type` (string) — e.g. `'prerequisite'`
+    - `label` (string) — optional text label
+
+The canonical JSDoc types live in:
+- `src/logic/layouts/layoutTypes.js`
+
+Important constraints:
+- Coordinates are in "world space". The canvas applies pan/zoom and an auto-fit base transform.
+- The renderer expects stable `medalId` values and uses `radius` for hit testing and bounds.
+- Keep generators deterministic for the same input (important for UX stability and caching).
+
+### 2) Create a new preset module
+
+Create a new file in:
+- `src/logic/layouts/`
+
+Example filename:
+- `src/logic/layouts/radial.js`
+
+A preset module exports a preset definition object with:
+- `id` (string) — stable identifier (URL/localStorage friendly)
+- `label` (string) — human readable name (used in UI later)
+- `description` (string, optional)
+- `generator(medals, options)` — returns a layout
+- `defaultOptions` (optional)
+
+Minimal template:
+
+```js
+// src/logic/layouts/radial.js
+export const radialLayout = {
+  id: 'radial',
+  label: 'Radial',
+  description: 'Grupperar märken i en cirkel.',
+  generator: (medals) => {
+    // medals is an array of medal objects from medalDatabase.getAllMedals()
+    // You must return { medals: [...], connections: [...] }
+
+    const nodes = []
+    const connections = []
+
+    // Example: place medals evenly on a circle
+    const R = 600
+    const n = medals.length || 1
+    for (let i = 0; i < medals.length; i++) {
+      const m = medals[i]
+      const a = (i / n) * Math.PI * 2
+      nodes.push({
+        medalId: m.id,
+        x: Math.cos(a) * R,
+        y: Math.sin(a) * R,
+        radius: 22,
+        // yearsRequired: optional
+      })
+
+      // Example: if your medal model has prerequisites, you can add edges here.
+      // Keep the edge shape: { from, to, type? }
+      // connections.push({ from: prereqId, to: m.id, type: 'prerequisite' })
+    }
+
+    return { medals: nodes, connections }
+  },
+}
+```
+
+Notes:
+- Use `m.id` as `medalId`.
+- If you want the existing "år"-badges to work, set `yearsRequired` on the node (same semantics as the current layout).
+- If you want prerequisite lines to render, include `connections` that match the medal ids.
+
+### 3) Register the preset in the layouts index
+
+Open:
+- `src/logic/layouts/index.js`
+
+Add:
+- an import for your new preset
+- a `registerLayout(...)` call
+
+Example:
+
+```js
+import { radialLayout } from './radial'
+
+registerLayout(radialLayout)
+```
+
+Rules:
+- `id` must be unique. The registry throws on duplicates.
+- The default preset is controlled by `DEFAULT_LAYOUT_ID` in `src/logic/layouts/registry.js`.
+
+### 4) (Optional) Add a minimal test for the new preset
+
+Add a Jest test in `tests/` to ensure the preset is registered and returns a valid shape.
+
+Example:
+
+```js
+import { getLayout } from '../src/logic/layouts'
+
+test('radial layout preset exists', () => {
+  const def = getLayout('radial')
+  expect(def).toBeTruthy()
+  expect(typeof def.generator).toBe('function')
+})
+```
+
+If you want to validate output shape, call the generator with a small medal fixture and assert:
+- `layout.medals` is an array
+- each node has `medalId`, `x`, `y`, `radius`
+- `layout.connections` is an array
+
+### 5) How the canvas picks a preset (no UI required)
+
+The canvas does not import a specific layout generator directly. Instead it uses:
+
+- `useSkillTreeLayoutPreset()` — resolves the active preset id (currently persisted in localStorage)
+- `useSkillTreeLayout(presetId)` — resolves the preset from the registry and generates the layout
+
+Key files:
+- `src/hooks/useSkillTreeLayoutPreset.js`
+- `src/hooks/useSkillTreeLayout.js`
+- `src/logic/layouts/registry.js`
+- `src/logic/layouts/index.js`
+
+This means:
+- Adding a new preset does not require changes to the renderer.
+- Once you add a UI selector later, it will call `setPresetId(...)` from `useSkillTreeLayoutPreset()`.
+
+### 6) UX and performance guidelines (mobile-first)
+
+When designing a new visualisation:
+- Keep node spacing generous at the default zoom (mobile screens are small).
+- Avoid layouts that require precision tapping; keep `radius` reasonable (hit testing uses radius).
+- Prefer stable layouts (deterministic output) to avoid "jumping" between renders.
+- Keep generator work out of the render path:
+  - The app already memoizes layout generation via hooks.
+  - If you add heavy computation (e.g. force-directed), keep iterations low and deterministic.
+- Ensure the layout fits within reasonable bounds:
+  - The canvas auto-fits based on node bounds, but extreme outliers can make everything tiny.
+
 ## Testing
 
 - Jest unit tests (see tests/)
