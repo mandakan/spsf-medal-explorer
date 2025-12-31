@@ -1874,7 +1874,29 @@
               "maxPoints": {
                 "male": 35,
                 "female": 41
-              }
+              },
+              "ageCategories": [
+                {
+                  "name": "under_47",
+                  "ageMin": 0,
+                  "ageMax": 46,
+                  "description": "Under 47 år",
+                  "maxPoints": {
+                    "male": 35,
+                    "female": 41
+                  }
+                },
+                {
+                  "name": "age_47_plus",
+                  "ageMin": 47,
+                  "ageMax": 999,
+                  "description": "47 år och äldre",
+                  "maxPoints": {
+                    "male": 40,
+                    "female": 46
+                  }
+                }
+              ]
             }
           ]
         }
@@ -1921,9 +1943,31 @@
               "minAchievements": 1,
               "timeWindowYears": 1,
               "maxPoints": {
-                "male": 35,
-                "female": 41
-              }
+                "male": 30,
+                "female": 36
+              },
+              "ageCategories": [
+                {
+                  "name": "under_47",
+                  "ageMin": 0,
+                  "ageMax": 46,
+                  "description": "Under 47 år",
+                  "maxPoints": {
+                    "male": 30,
+                    "female": 36
+                  }
+                },
+                {
+                  "name": "age_47_plus",
+                  "ageMin": 47,
+                  "ageMax": 999,
+                  "description": "47 år och äldre",
+                  "maxPoints": {
+                    "male": 35,
+                    "female": 41
+                  }
+                }
+              ]
             }
           ]
         }
