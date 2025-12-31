@@ -128,7 +128,8 @@
       ],
       "yearIntroduced": 1900,
       "sortOrder": 1,
-      "tierName": "Brons"
+      "tierName": "Brons",
+      "typeName": "Pistolskyttemärket"
     },
     {
       "id": "pistol-mark-silver",
@@ -254,7 +255,8 @@
       "unlocksFollowingMedals": ["pistol-mark-gold"],
       "yearIntroduced": 1900,
       "sortOrder": 2,
-      "tierName": "Silver"
+      "tierName": "Silver",
+      "typeName": "Pistolskyttemärket"
     },
     {
       "id": "pistol-mark-gold",
@@ -419,7 +421,8 @@
       ],
       "yearIntroduced": 1900,
       "sortOrder": 3,
-      "tierName": "Guld"
+      "tierName": "Guld",
+      "typeName": "Pistolskyttemärket"
     },
     {
       "id": "elite-mark-bronze",
@@ -483,7 +486,8 @@
       "unlocksFollowingMedals": ["elite-mark-silver"],
       "yearIntroduced": 1900,
       "sortOrder": 10,
-      "tierName": "Brons"
+      "tierName": "Brons",
+      "typeName": "Elitmärket"
     },
     {
       "id": "elite-mark-silver",
@@ -548,7 +552,8 @@
       "unlocksFollowingMedals": ["elite-mark-gold"],
       "yearIntroduced": 1900,
       "sortOrder": 11,
-      "tierName": "Silver"
+      "tierName": "Silver",
+      "typeName": "Elitmärket"
     },
     {
       "id": "elite-mark-gold",
@@ -613,7 +618,8 @@
       "unlocksFollowingMedals": ["elite-mark-gold-wreath"],
       "yearIntroduced": 1900,
       "sortOrder": 12,
-      "tierName": "Guld"
+      "tierName": "Guld",
+      "typeName": "Elitmärket"
     },
     {
       "id": "elite-mark-gold-wreath",
@@ -647,7 +653,8 @@
       "unlocksFollowingMedals": ["elite-mark-gold-wreath-star-1"],
       "yearIntroduced": 1900,
       "sortOrder": 13,
-      "tierName": "Guld med kvistar"
+      "tierName": "Guld med kvistar",
+      "typeName": "Elitmärket"
     },
     {
       "id": "elite-mark-gold-wreath-star-1",
@@ -681,7 +688,8 @@
       "unlocksFollowingMedals": ["elite-mark-gold-wreath-star-2"],
       "yearIntroduced": 1900,
       "sortOrder": 14,
-      "tierName": "Guld med kvistar och en stjärna"
+      "tierName": "Guld med kvistar och en stjärna",
+      "typeName": "Elitmärket"
     },
     {
       "id": "elite-mark-gold-wreath-star-2",
@@ -715,7 +723,8 @@
       "unlocksFollowingMedals": ["elite-mark-gold-wreath-star-3"],
       "yearIntroduced": 1900,
       "sortOrder": 15,
-      "tierName": "Guld med kvistar och två stjärnor"
+      "tierName": "Guld med kvistar och två stjärnor",
+      "typeName": "Elitmärket"
     },
     {
       "id": "elite-mark-gold-wreath-star-3",
@@ -749,7 +758,8 @@
       "unlocksFollowingMedals": [],
       "yearIntroduced": 1900,
       "sortOrder": 16,
-      "tierName": "Guld med kvistar och tre stjärnor"
+      "tierName": "Guld med kvistar och tre stjärnor",
+      "typeName": "Elitmärket"
     },
     {
       "id": "field-mark-bronze",
@@ -800,7 +810,8 @@
       "unlocksFollowingMedals": ["field-mark-silver"],
       "yearIntroduced": 1900,
       "sortOrder": 20,
-      "tierName": "Brons"
+      "tierName": "Brons",
+      "typeName": "Fältskyttemärket"
     },
     {
       "id": "field-mark-silver",
@@ -845,7 +856,8 @@
       "unlocksFollowingMedals": ["field-mark-gold"],
       "yearIntroduced": 1900,
       "sortOrder": 21,
-      "tierName": "Silver"
+      "tierName": "Silver",
+      "typeName": "Fältskyttemärket"
     },
     {
       "id": "field-mark-gold",
@@ -890,7 +902,8 @@
       "unlocksFollowingMedals": ["field-mark-gold-star-1"],
       "yearIntroduced": 1900,
       "sortOrder": 22,
-      "tierName": "Guld"
+      "tierName": "Guld",
+      "typeName": "Fältskyttemärket"
     },
     {
       "id": "field-mark-gold-star-1",
@@ -924,7 +937,8 @@
       "unlocksFollowingMedals": ["field-mark-gold-star-2"],
       "yearIntroduced": 1900,
       "sortOrder": 23,
-      "tierName": "Guld med en stjärna"
+      "tierName": "Guld med en stjärna",
+      "typeName": "Fältskyttemärket"
     },
     {
       "id": "field-mark-gold-star-2",
@@ -957,7 +971,8 @@
       "unlocksFollowingMedals": ["field-mark-gold-star-3"],
       "yearIntroduced": 1900,
       "sortOrder": 24,
-      "tierName": "Guld med två stjärnor"
+      "tierName": "Guld med två stjärnor",
+      "typeName": "Fältskyttemärket"
     },
     {
       "id": "field-mark-gold-star-3",
@@ -990,7 +1005,8 @@
       "unlocksFollowingMedals": ["field-mark-gold-wreath"],
       "yearIntroduced": 1900,
       "sortOrder": 25,
-      "tierName": "Guld med tre stjärnor"
+      "tierName": "Guld med tre stjärnor",
+      "typeName": "Fältskyttemärket"
     },
     {
       "id": "field-mark-gold-wreath",
@@ -1023,7 +1039,8 @@
       "unlocksFollowingMedals": ["field-mark-gold-wreath-star-1"],
       "yearIntroduced": 1900,
       "sortOrder": 26,
-      "tierName": "Guld med kvistar"
+      "tierName": "Guld med kvistar",
+      "typeName": "Fältskyttemärket"
     },
     {
       "id": "field-mark-gold-wreath-star-1",
@@ -1056,7 +1073,8 @@
       "unlocksFollowingMedals": ["field-mark-gold-wreath-star-2"],
       "yearIntroduced": 1900,
       "sortOrder": 27,
-      "tierName": "Guld med kvistar och en stjärna"
+      "tierName": "Guld med kvistar och en stjärna",
+      "typeName": "Fältskyttemärket"
     },
     {
       "id": "field-mark-gold-wreath-star-2",
@@ -1089,7 +1107,8 @@
       "unlocksFollowingMedals": ["field-mark-gold-wreath-star-3"],
       "yearIntroduced": 1900,
       "sortOrder": 28,
-      "tierName": "Guld med kvistar och två stjärnor"
+      "tierName": "Guld med kvistar och två stjärnor",
+      "typeName": "Fältskyttemärket"
     },
     {
       "id": "field-mark-gold-wreath-star-3",
@@ -1122,7 +1141,8 @@
       "unlocksFollowingMedals": [],
       "yearIntroduced": 1900,
       "sortOrder": 29,
-      "tierName": "Guld med kvistar och tre stjärnor"
+      "tierName": "Guld med kvistar och tre stjärnor",
+      "typeName": "Fältskyttemärket"
     },
     {
       "id": "championship-mark-bronze",
@@ -1162,7 +1182,8 @@
       "unlocksFollowingMedals": ["championship-mark-silver"],
       "yearIntroduced": 1900,
       "sortOrder": 30,
-      "tierName": "Brons"
+      "tierName": "Brons",
+      "typeName": "Mästarmärket"
     },
     {
       "id": "championship-mark-silver",
@@ -1188,7 +1209,8 @@
       "unlocksFollowingMedals": ["championship-mark-gold"],
       "yearIntroduced": 1900,
       "sortOrder": 31,
-      "tierName": "Silver"
+      "tierName": "Silver",
+      "typeName": "Mästarmärket"
     },
     {
       "id": "championship-mark-gold",
@@ -1214,7 +1236,8 @@
       "unlocksFollowingMedals": ["championship-mark-gold-star-1"],
       "yearIntroduced": 1900,
       "sortOrder": 32,
-      "tierName": "Guld"
+      "tierName": "Guld",
+      "typeName": "Mästarmärket"
     },
     {
       "id": "championship-mark-gold-star-1",
@@ -1241,7 +1264,8 @@
       "unlocksFollowingMedals": ["championship-mark-gold-star-2"],
       "yearIntroduced": 1900,
       "sortOrder": 33,
-      "tierName": "Guld med en stjärna"
+      "tierName": "Guld med en stjärna",
+      "typeName": "Mästarmärket"
     },
     {
       "id": "championship-mark-gold-star-2",
@@ -1268,7 +1292,8 @@
       "unlocksFollowingMedals": ["championship-mark-gold-star-3"],
       "yearIntroduced": 1900,
       "sortOrder": 34,
-      "tierName": "Guld med två stjärnor"
+      "tierName": "Guld med två stjärnor",
+      "typeName": "Mästarmärket"
     },
     {
       "id": "championship-mark-gold-star-3",
@@ -1295,7 +1320,8 @@
       "unlocksFollowingMedals": [],
       "yearIntroduced": 1900,
       "sortOrder": 35,
-      "tierName": "Guld med tre stjärnor"
+      "tierName": "Guld med tre stjärnor",
+      "typeName": "Mästarmärket"
     },
     {
       "id": "precision-mark-bronze",
@@ -1337,7 +1363,8 @@
       "unlocksFollowingMedals": ["precision-mark-silver"],
       "yearIntroduced": 1900,
       "sortOrder": 40,
-      "tierName": "Brons"
+      "tierName": "Brons",
+      "typeName": "Precisionsskyttemärket"
     },
     {
       "id": "precision-mark-silver",
@@ -1378,7 +1405,8 @@
       "unlocksFollowingMedals": ["precision-mark-gold"],
       "yearIntroduced": 1900,
       "sortOrder": 41,
-      "tierName": "Silver"
+      "tierName": "Silver",
+      "typeName": "Precisionsskyttemärket"
     },
     {
       "id": "precision-mark-gold",
@@ -1419,7 +1447,8 @@
       "unlocksFollowingMedals": ["precision-mark-gold-star-1"],
       "yearIntroduced": 1900,
       "sortOrder": 42,
-      "tierName": "Guld"
+      "tierName": "Guld",
+      "typeName": "Precisionsskyttemärket"
     },
     {
       "id": "precision-mark-gold-star-1",
@@ -1452,7 +1481,8 @@
       "unlocksFollowingMedals": ["precision-mark-gold-star-2"],
       "yearIntroduced": 1900,
       "sortOrder": 43,
-      "tierName": "Guld med en stjärna"
+      "tierName": "Guld med en stjärna",
+      "typeName": "Precisionsskyttemärket"
     },
     {
       "id": "precision-mark-gold-star-2",
@@ -1485,7 +1515,8 @@
       "unlocksFollowingMedals": ["precision-mark-gold-star-3"],
       "yearIntroduced": 1900,
       "sortOrder": 44,
-      "tierName": "Guld med två stjärnor"
+      "tierName": "Guld med två stjärnor",
+      "typeName": "Precisionsskyttemärket"
     },
     {
       "id": "precision-mark-gold-star-3",
@@ -1518,7 +1549,8 @@
       "unlocksFollowingMedals": [],
       "yearIntroduced": 1900,
       "sortOrder": 45,
-      "tierName": "Guld med tre stjärnor"
+      "tierName": "Guld med tre stjärnor",
+      "typeName": "Precisionsskyttemärket"
     },
     {
       "id": "skis-mark-bronze",
@@ -1551,7 +1583,8 @@
       "unlocksFollowingMedals": ["skis-mark-silver"],
       "yearIntroduced": 1900,
       "sortOrder": 50,
-      "tierName": "Brons"
+      "tierName": "Brons",
+      "typeName": "Skidskyttemärket"
     },
     {
       "id": "skis-mark-silver",
@@ -1582,7 +1615,8 @@
       "unlocksFollowingMedals": ["skis-mark-gold"],
       "yearIntroduced": 1900,
       "sortOrder": 51,
-      "tierName": "Silver"
+      "tierName": "Silver",
+      "typeName": "Skidskyttemärket"
     },
     {
       "id": "skis-mark-gold",
@@ -1614,7 +1648,8 @@
       "unlocksFollowingMedals": ["skis-mark-gold-star-1"],
       "yearIntroduced": 1900,
       "sortOrder": 52,
-      "tierName": "Guld"
+      "tierName": "Guld",
+      "typeName": "Skidskyttemärket"
     },
     {
       "id": "skis-mark-gold-star-1",
@@ -1640,7 +1675,8 @@
       "unlocksFollowingMedals": ["skis-mark-gold-star-2"],
       "yearIntroduced": 1900,
       "sortOrder": 53,
-      "tierName": "Guld med en stjärna"
+      "tierName": "Guld med en stjärna",
+      "typeName": "Skidskyttemärket"
     },
     {
       "id": "skis-mark-gold-star-2",
@@ -1666,7 +1702,8 @@
       "unlocksFollowingMedals": ["skis-mark-gold-star-3"],
       "yearIntroduced": 1900,
       "sortOrder": 54,
-      "tierName": "Guld med två stjärnor"
+      "tierName": "Guld med två stjärnor",
+      "typeName": "Skidskyttemärket"
     },
     {
       "id": "skis-mark-gold-star-3",
@@ -1692,7 +1729,8 @@
       "unlocksFollowingMedals": ["skis-mark-gold-enamel"],
       "yearIntroduced": 1900,
       "sortOrder": 55,
-      "tierName": "Guld med tre stjärnor"
+      "tierName": "Guld med tre stjärnor",
+      "typeName": "Skidskyttemärket"
     },
     {
       "id": "skis-mark-gold-enamel",
@@ -1718,7 +1756,8 @@
       "unlocksFollowingMedals": ["skis-mark-gold-enamel-star-1"],
       "yearIntroduced": 1900,
       "sortOrder": 56,
-      "tierName": "Guld med blå emalj"
+      "tierName": "Guld med blå emalj",
+      "typeName": "Skidskyttemärket"
     },
     {
       "id": "skis-mark-gold-enamel-star-1",
@@ -1744,7 +1783,8 @@
       "unlocksFollowingMedals": ["skis-mark-gold-enamel-star-2"],
       "yearIntroduced": 1900,
       "sortOrder": 57,
-      "tierName": "Guld med blå emalj och en stjärna"
+      "tierName": "Guld med blå emalj och en stjärna",
+      "typeName": "Skidskyttemärket"
     },
     {
       "id": "skis-mark-gold-enamel-star-2",
@@ -1770,7 +1810,8 @@
       "unlocksFollowingMedals": ["skis-mark-gold-enamel-star-3"],
       "yearIntroduced": 1900,
       "sortOrder": 58,
-      "tierName": "Guld med blå emalj och två stjärnor"
+      "tierName": "Guld med blå emalj och två stjärnor",
+      "typeName": "Skidskyttemärket"
     },
     {
       "id": "skis-mark-gold-enamel-star-3",
@@ -1796,7 +1837,8 @@
       "unlocksFollowingMedals": [],
       "yearIntroduced": 1900,
       "sortOrder": 59,
-      "tierName": "Guld med blå emalj och tre stjärnor"
+      "tierName": "Guld med blå emalj och tre stjärnor",
+      "typeName": "Skidskyttemärket"
     },
     {
       "id": "run-mark-bronze",
@@ -1832,7 +1874,8 @@
       "unlocksFollowingMedals": ["run-mark-silver"],
       "yearIntroduced": 1900,
       "sortOrder": 60,
-      "tierName": "Brons"
+      "tierName": "Brons",
+      "typeName": "Springskyttemärket"
     },
     {
       "id": "run-mark-silver",
@@ -1904,7 +1947,8 @@
       "unlocksFollowingMedals": ["run-mark-gold"],
       "yearIntroduced": 1900,
       "sortOrder": 61,
-      "tierName": "Silver"
+      "tierName": "Silver",
+      "typeName": "Springskyttemärket"
     },
     {
       "id": "run-mark-gold",
@@ -1975,7 +2019,8 @@
       "unlocksFollowingMedals": ["run-mark-gold-star-1"],
       "yearIntroduced": 1900,
       "sortOrder": 62,
-      "tierName": "Guld"
+      "tierName": "Guld",
+      "typeName": "Springskyttemärket"
     },
     {
       "id": "run-mark-gold-star-1",
@@ -2008,7 +2053,8 @@
       "unlocksFollowingMedals": ["run-mark-gold-star-2"],
       "yearIntroduced": 1900,
       "sortOrder": 63,
-      "tierName": "Guld med en stjärna"
+      "tierName": "Guld med en stjärna",
+      "typeName": "Springskyttemärket"
     },
     {
       "id": "run-mark-gold-star-2",
@@ -2041,7 +2087,8 @@
       "unlocksFollowingMedals": ["run-mark-gold-star-3"],
       "yearIntroduced": 1900,
       "sortOrder": 64,
-      "tierName": "Guld med två stjärnor"
+      "tierName": "Guld med två stjärnor",
+      "typeName": "Springskyttemärket"
     },
     {
       "id": "run-mark-gold-star-3",
@@ -2074,7 +2121,8 @@
       "unlocksFollowingMedals": ["run-mark-gold-enamel"],
       "yearIntroduced": 1900,
       "sortOrder": 65,
-      "tierName": "Guld med tre stjärnor"
+      "tierName": "Guld med tre stjärnor",
+      "typeName": "Springskyttemärket"
     },
     {
       "id": "run-mark-gold-enamel",
@@ -2107,7 +2155,8 @@
       "unlocksFollowingMedals": ["run-mark-gold-enamel-star-1"],
       "yearIntroduced": 1900,
       "sortOrder": 66,
-      "tierName": "Guld med blå emalj"
+      "tierName": "Guld med blå emalj",
+      "typeName": "Springskyttemärket"
     },
     {
       "id": "run-mark-gold-enamel-star-1",
@@ -2140,7 +2189,8 @@
       "unlocksFollowingMedals": ["run-mark-gold-enamel-star-2"],
       "yearIntroduced": 1900,
       "sortOrder": 67,
-      "tierName": "Guld med blå emalj och en stjärna"
+      "tierName": "Guld med blå emalj och en stjärna",
+      "typeName": "Springskyttemärket"
     },
     {
       "id": "run-mark-gold-enamel-star-2",
@@ -2173,7 +2223,8 @@
       "unlocksFollowingMedals": ["run-mark-gold-enamel-star-3"],
       "yearIntroduced": 1900,
       "sortOrder": 68,
-      "tierName": "Guld med blå emalj och två stjärnor"
+      "tierName": "Guld med blå emalj och två stjärnor",
+      "typeName": "Springskyttemärket"
     },
     {
       "id": "run-mark-gold-enamel-star-3",
@@ -2206,7 +2257,8 @@
       "unlocksFollowingMedals": [],
       "yearIntroduced": 1900,
       "sortOrder": 69,
-      "tierName": "Guld med blå emalj och tre stjärnor"
+      "tierName": "Guld med blå emalj och tre stjärnor",
+      "typeName": "Springskyttemärket"
     },
     {
       "id": "national-match-mark-bronze",
@@ -2249,7 +2301,8 @@
       "unlocksFollowingMedals": ["national-match-mark-silver"],
       "yearIntroduced": 1900,
       "sortOrder": 70,
-      "tierName": "Brons"
+      "tierName": "Brons",
+      "typeName": "Nationell helmatch"
     },
     {
       "id": "national-match-mark-silver",
@@ -2291,7 +2344,8 @@
       "unlocksFollowingMedals": ["national-match-mark-gold"],
       "yearIntroduced": 1900,
       "sortOrder": 71,
-      "tierName": "Silver"
+      "tierName": "Silver",
+      "typeName": "Nationell helmatch"
     },
     {
       "id": "national-match-mark-gold",
@@ -2333,7 +2387,8 @@
       "unlocksFollowingMedals": ["national-match-mark-gold-star-1"],
       "yearIntroduced": 1900,
       "sortOrder": 72,
-      "tierName": "Guld"
+      "tierName": "Guld",
+      "typeName": "Nationell helmatch"
     },
     {
       "id": "national-match-mark-gold-star-1",
@@ -2360,7 +2415,8 @@
       "unlocksFollowingMedals": ["national-match-mark-gold-star-2"],
       "yearIntroduced": 1900,
       "sortOrder": 73,
-      "tierName": "Guld med en stjärna"
+      "tierName": "Guld med en stjärna",
+      "typeName": "Nationell helmatch"
     },
     {
       "id": "national-match-mark-gold-star-2",
@@ -2387,7 +2443,8 @@
       "unlocksFollowingMedals": ["national-match-mark-gold-star-3"],
       "yearIntroduced": 1900,
       "sortOrder": 74,
-      "tierName": "Guld med två stjärnor"
+      "tierName": "Guld med två stjärnor",
+      "typeName": "Nationell helmatch"
     },
     {
       "id": "national-match-mark-gold-star-3",
@@ -2414,7 +2471,8 @@
       "unlocksFollowingMedals": [],
       "yearIntroduced": 1900,
       "sortOrder": 75,
-      "tierName": "Guld med tre stjärnor"
+      "tierName": "Guld med tre stjärnor",
+      "typeName": "Nationell helmatch"
     },
     {
       "id": "military-match-mark-bronze",
@@ -2460,7 +2518,8 @@
       "unlocksFollowingMedals": ["military-match-mark-silver"],
       "yearIntroduced": 2010,
       "sortOrder": 80,
-      "tierName": "Brons"
+      "tierName": "Brons",
+      "typeName": "Militär snabbmatch"
     },
     {
       "id": "military-match-mark-silver",
@@ -2504,7 +2563,8 @@
       "unlocksFollowingMedals": ["military-match-mark-gold"],
       "yearIntroduced": 2010,
       "sortOrder": 81,
-      "tierName": "Silver"
+      "tierName": "Silver",
+      "typeName": "Militär snabbmatch"
     },
     {
       "id": "military-match-mark-gold",
@@ -2548,7 +2608,8 @@
       "unlocksFollowingMedals": ["military-match-mark-gold-star-1"],
       "yearIntroduced": 2010,
       "sortOrder": 82,
-      "tierName": "Guld"
+      "tierName": "Guld",
+      "typeName": "Militär snabbmatch"
     },
     {
       "id": "military-match-mark-gold-star-1",
@@ -2575,7 +2636,8 @@
       "unlocksFollowingMedals": ["military-match-mark-gold-star-2"],
       "yearIntroduced": 2010,
       "sortOrder": 83,
-      "tierName": "Guld med en stjärna"
+      "tierName": "Guld med en stjärna",
+      "typeName": "Militär snabbmatch"
     },
     {
       "id": "military-match-mark-gold-star-2",
@@ -2602,7 +2664,8 @@
       "unlocksFollowingMedals": ["military-match-mark-gold-star-3"],
       "yearIntroduced": 2010,
       "sortOrder": 84,
-      "tierName": "Guld med två stjärnor"
+      "tierName": "Guld med två stjärnor",
+      "typeName": "Militär snabbmatch"
     },
     {
       "id": "military-match-mark-gold-star-3",
@@ -2629,7 +2692,8 @@
       "unlocksFollowingMedals": [],
       "yearIntroduced": 2010,
       "sortOrder": 85,
-      "tierName": "Guld med tre stjärnor"
+      "tierName": "Guld med tre stjärnor",
+      "typeName": "Militär snabbmatch"
     },
     {
       "id": "air-pistol-mark-bronze",
@@ -2653,7 +2717,8 @@
       "unlocksFollowingMedals": [],
       "yearIntroduced": 1900,
       "sortOrder": 90,
-      "tierName": "Brons"
+      "tierName": "Brons",
+      "typeName": "Luftpistolmärket"
     },
     {
       "id": "air-pistol-mark-silver",
@@ -2677,7 +2742,8 @@
       "unlocksFollowingMedals": [],
       "yearIntroduced": 1900,
       "sortOrder": 91,
-      "tierName": "Silver"
+      "tierName": "Silver",
+      "typeName": "Luftpistolmärket"
     },
     {
       "id": "air-pistol-mark-gold",
@@ -2701,7 +2767,8 @@
       "unlocksFollowingMedals": ["air-pistol-mark-annual"],
       "yearIntroduced": 1900,
       "sortOrder": 92,
-      "tierName": "Guld"
+      "tierName": "Guld",
+      "typeName": "Luftpistolmärket"
     },
     {
       "id": "air-pistol-mark-annual",
@@ -2735,7 +2802,8 @@
       ],
       "unlocksFollowingMedals": ["air-pistol-mark-annual-star-1"],
       "yearIntroduced": 1900,
-      "sortOrder": 93
+      "sortOrder": 93,
+      "typeName": "Luftpistolmärket"
     },
     {
       "id": "air-pistol-mark-annual-star-1",
@@ -2770,7 +2838,8 @@
       "unlocksFollowingMedals": ["air-pistol-mark-annual-star-2"],
       "yearIntroduced": 1900,
       "sortOrder": 94,
-      "tierName": "med en stjärna"
+      "tierName": "med en stjärna",
+      "typeName": "Luftpistolmärket"
     },
     {
       "id": "air-pistol-mark-annual-star-2",
@@ -2805,7 +2874,8 @@
       "unlocksFollowingMedals": ["air-pistol-mark-annual-star-3"],
       "yearIntroduced": 1900,
       "sortOrder": 95,
-      "tierName": "med två stjärnor"
+      "tierName": "med två stjärnor",
+      "typeName": "Luftpistolmärket"
     },
     {
       "id": "air-pistol-mark-annual-star-3",
@@ -2840,7 +2910,8 @@
       "unlocksFollowingMedals": ["air-pistol-mark-annual-wreath"],
       "yearIntroduced": 1900,
       "sortOrder": 96,
-      "tierName": "med tre stjärnor"
+      "tierName": "med tre stjärnor",
+      "typeName": "Luftpistolmärket"
     },
     {
       "id": "air-pistol-mark-annual-wreath",
@@ -2875,7 +2946,8 @@
       "unlocksFollowingMedals": ["air-pistol-mark-annual-wreath-star-1"],
       "yearIntroduced": 1900,
       "sortOrder": 97,
-      "tierName": "med krans"
+      "tierName": "med krans",
+      "typeName": "Luftpistolmärket"
     },
     {
       "id": "air-pistol-mark-annual-wreath-star-1",
@@ -2910,7 +2982,8 @@
       "unlocksFollowingMedals": ["air-pistol-mark-annual-wreath-star-2"],
       "yearIntroduced": 1900,
       "sortOrder": 98,
-      "tierName": "med krans och en stjärna"
+      "tierName": "med krans och en stjärna",
+      "typeName": "Luftpistolmärket"
     },
     {
       "id": "air-pistol-mark-annual-wreath-star-2",
@@ -2945,7 +3018,8 @@
       "unlocksFollowingMedals": ["air-pistol-mark-annual-wreath-star-3"],
       "yearIntroduced": 1900,
       "sortOrder": 99,
-      "tierName": "med krans och två stjärnor"
+      "tierName": "med krans och två stjärnor",
+      "typeName": "Luftpistolmärket"
     },
     {
       "id": "air-pistol-mark-annual-wreath-star-3",
@@ -2980,7 +3054,8 @@
       "unlocksFollowingMedals": [],
       "yearIntroduced": 1900,
       "sortOrder": 100,
-      "tierName": "med krans och tre stjärnor"
+      "tierName": "med krans och tre stjärnor",
+      "typeName": "Luftpistolmärket"
     },
     {
       "id": "lower-annual-mark-star-1",
@@ -3120,7 +3195,8 @@
       "unlocksFollowingMedals": ["lower-annual-mark-star-2"],
       "yearIntroduced": 1900,
       "sortOrder": 110,
-      "tierName": "med en stjärna"
+      "tierName": "med en stjärna",
+      "typeName": "Pistolskyttemärket"
     },
     {
       "id": "lower-annual-mark-star-2",
@@ -3260,7 +3336,8 @@
       "unlocksFollowingMedals": ["lower-annual-mark-star-3"],
       "yearIntroduced": 1900,
       "sortOrder": 111,
-      "tierName": "med två stjärnor"
+      "tierName": "med två stjärnor",
+      "typeName": "Pistolskyttemärket"
     },
     {
       "id": "lower-annual-mark-star-3",
@@ -3400,7 +3477,8 @@
       "unlocksFollowingMedals": ["higher-annual-mark-bronze"],
       "yearIntroduced": 1900,
       "sortOrder": 112,
-      "tierName": "med tre stjärnor"
+      "tierName": "med tre stjärnor",
+      "typeName": "Pistolskyttemärket"
     },
     {
       "id": "higher-annual-mark-bronze",
@@ -3540,7 +3618,8 @@
       "unlocksFollowingMedals": ["higher-annual-mark-silver"],
       "yearIntroduced": 1900,
       "sortOrder": 113,
-      "tierName": "Brons"
+      "tierName": "Brons",
+      "typeName": "Pistolskyttemärket"
     },
     {
       "id": "higher-annual-mark-silver",
@@ -3680,7 +3759,8 @@
       "unlocksFollowingMedals": ["higher-annual-mark-gold"],
       "yearIntroduced": 1900,
       "sortOrder": 114,
-      "tierName": "Silver"
+      "tierName": "Silver",
+      "typeName": "Pistolskyttemärket"
     },
     {
       "id": "higher-annual-mark-gold",
@@ -3820,7 +3900,8 @@
       "unlocksFollowingMedals": ["higher-annual-mark-gold-star-1"],
       "yearIntroduced": 1900,
       "sortOrder": 115,
-      "tierName": "Guld"
+      "tierName": "Guld",
+      "typeName": "Pistolskyttemärket"
     },
     {
       "id": "higher-annual-mark-gold-star-1",
@@ -3960,7 +4041,8 @@
       "unlocksFollowingMedals": ["higher-annual-mark-gold-star-2"],
       "yearIntroduced": 1900,
       "sortOrder": 116,
-      "tierName": "Guld med en stjärna"
+      "tierName": "Guld med en stjärna",
+      "typeName": "Pistolskyttemärket"
     },
     {
       "id": "higher-annual-mark-gold-star-2",
@@ -4100,7 +4182,8 @@
       "unlocksFollowingMedals": ["higher-annual-mark-gold-star-3"],
       "yearIntroduced": 1900,
       "sortOrder": 117,
-      "tierName": "Guld med två stjärnor"
+      "tierName": "Guld med två stjärnor",
+      "typeName": "Pistolskyttemärket"
     },
     {
       "id": "higher-annual-mark-gold-star-3",
@@ -4240,7 +4323,8 @@
       "unlocksFollowingMedals": ["higher-annual-mark-gold-wreath"],
       "yearIntroduced": 1900,
       "sortOrder": 118,
-      "tierName": "Guld med tre stjärnor"
+      "tierName": "Guld med tre stjärnor",
+      "typeName": "Pistolskyttemärket"
     },
     {
       "id": "higher-annual-mark-gold-wreath",
@@ -4380,7 +4464,8 @@
       "unlocksFollowingMedals": ["higher-annual-mark-gold-wreath-star-1"],
       "yearIntroduced": 1900,
       "sortOrder": 119,
-      "tierName": "Guld med krans"
+      "tierName": "Guld med krans",
+      "typeName": "Pistolskyttemärket"
     },
     {
       "id": "higher-annual-mark-gold-wreath-star-1",
@@ -4520,7 +4605,8 @@
       "unlocksFollowingMedals": ["higher-annual-mark-gold-wreath-star-2"],
       "yearIntroduced": 1900,
       "sortOrder": 120,
-      "tierName": "Guld med krans och en stjärna"
+      "tierName": "Guld med krans och en stjärna",
+      "typeName": "Pistolskyttemärket"
     },
     {
       "id": "higher-annual-mark-gold-wreath-star-2",
@@ -4660,7 +4746,8 @@
       "unlocksFollowingMedals": ["higher-annual-mark-gold-wreath-star-3"],
       "yearIntroduced": 1900,
       "sortOrder": 121,
-      "tierName": "Guld med krans och två stjärnor"
+      "tierName": "Guld med krans och två stjärnor",
+      "typeName": "Pistolskyttemärket"
     },
     {
       "id": "higher-annual-mark-gold-wreath-star-3",
@@ -4800,7 +4887,8 @@
       "unlocksFollowingMedals": ["higher-annual-mark-gold-enamel-wreath"],
       "yearIntroduced": 1900,
       "sortOrder": 122,
-      "tierName": "Guld med krans och tre stjärnor"
+      "tierName": "Guld med krans och tre stjärnor",
+      "typeName": "Pistolskyttemärket"
     },
     {
       "id": "higher-annual-mark-gold-enamel-wreath",
@@ -4942,7 +5030,8 @@
       ],
       "yearIntroduced": 1900,
       "sortOrder": 123,
-      "tierName": "Guld med emaljerad krans"
+      "tierName": "Guld med emaljerad krans",
+      "typeName": "Pistolskyttemärket"
     },
     {
       "id": "higher-annual-mark-gold-enamel-wreath-star-1",
@@ -5084,7 +5173,8 @@
       ],
       "yearIntroduced": 1900,
       "sortOrder": 124,
-      "tierName": "Guld med emaljerad krans och en stjärna"
+      "tierName": "Guld med emaljerad krans och en stjärna",
+      "typeName": "Pistolskyttemärket"
     },
     {
       "id": "higher-annual-mark-gold-enamel-wreath-star-2",
@@ -5226,7 +5316,8 @@
       ],
       "yearIntroduced": 1900,
       "sortOrder": 125,
-      "tierName": "Guld med emaljerad krans och två stjärnor"
+      "tierName": "Guld med emaljerad krans och två stjärnor",
+      "typeName": "Pistolskyttemärket"
     },
     {
       "id": "higher-annual-mark-gold-enamel-wreath-star-3",
@@ -5366,7 +5457,8 @@
       "unlocksFollowingMedals": [],
       "yearIntroduced": 1900,
       "sortOrder": 126,
-      "tierName": "Guld med emaljerad krans och tre stjärnor"
+      "tierName": "Guld med emaljerad krans och tre stjärnor",
+      "typeName": "Pistolskyttemärket"
     }
   ]
 }

@@ -15,9 +15,7 @@ export function useCanvasRenderer() {
   ) => {
     if (!layout || !medals || !statuses) return
 
-    // Create maps for quick lookup
-    const medalMap = {}
-    medals.forEach(m => { medalMap[m.id] = m })
+    // Full node lookup for geometry (all nodes)
     const nodeIndex = new Map((layout.medals || []).map(n => [n.medalId, n]))
 
     // Draw connections behind nodes
@@ -34,10 +32,12 @@ export function useCanvasRenderer() {
       drawConnection(ctx, x1, y1, x2, y2, conn.type, scale, conn.label)
     })
 
-    // Draw nodes
-    layout.medals?.forEach(medalNode => {
-      const medal = medalMap[medalNode.medalId]
-      if (!medal) return
+    // Draw only visible nodes (culled)
+    if (!Array.isArray(medals)) return
+
+    medals.forEach(medal => {
+      const medalNode = nodeIndex.get(medal.id)
+      if (!medalNode) return
 
       const x = (medalNode.x + panX) * scale + ctx.canvas.width / 2
       const y = (medalNode.y + panY) * scale + ctx.canvas.height / 2

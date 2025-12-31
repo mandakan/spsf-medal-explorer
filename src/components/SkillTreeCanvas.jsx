@@ -1,25 +1,26 @@
-import React, { useRef, useEffect, useLayoutEffect, useState, useCallback, useMemo } from 'react'
+import React, { useRef, useEffect, useLayoutEffect, useState, useCallback } from 'react'
 import { useMedalDatabase } from '../hooks/useMedalDatabase'
 import { useAllMedalStatuses } from '../hooks/useMedalCalculator'
 import { usePanZoom } from '../hooks/usePanZoom'
 import { useCanvasRenderer } from '../hooks/useCanvasRenderer'
-import { generateMedalLayout } from '../logic/canvasLayout'
 import { exportCanvasToPNG } from '../utils/canvasExport'
-import { clearThemeCache } from '../logic/canvasRenderer'
+import { clearThemeCache, getThemeColors } from '../logic/canvasRenderer'
 import { useNavigate, useLocation } from 'react-router-dom'
 import ReviewLegend from './ReviewLegend'
 import { useProfile } from '../hooks/useProfile'
 import ProfileSelector from './ProfileSelector'
 import ConfirmDialog from './ConfirmDialog'
 import Icon from './Icon'
+import { useSkillTreeLayoutPreset } from '../hooks/useSkillTreeLayoutPreset'
+import { useSkillTreeLayout } from '../hooks/useSkillTreeLayout'
 
 export default function SkillTreeCanvas({ legendDescribedById }) {
   const canvasRef = useRef(null)
   const { medalDatabase } = useMedalDatabase()
   const statuses = useAllMedalStatuses()
-  
+
   const { render } = useCanvasRenderer()
-  
+
   const [selectedMedal, setSelectedMedal] = useState(null)
   const [hoveredMedal, setHoveredMedal] = useState(null)
   const [badgeData, setBadgeData] = useState([])
@@ -27,11 +28,9 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   const location = useLocation()
   const isFullscreen = location.pathname.endsWith('/skill-tree/fullscreen')
   const fullscreenRef = useRef(null)
-  const layout = useMemo(() => {
-    if (!medalDatabase) return null
-    const medals = medalDatabase.getAllMedals()
-    return generateMedalLayout(medals)
-  }, [medalDatabase])
+
+  const { presetId, setPresetId } = useSkillTreeLayoutPreset()
+  const { layout } = useSkillTreeLayout(presetId)
 
   // Shared canvas/label padding constants
   const CANVAS_PAD = 24
@@ -230,8 +229,6 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
         }
       }
 
-      // Node label is drawn below the node; pill is above by design so no label-collision handling is needed.
-
       // Safety: if still too close to node center, nudge outward along the radial
       const dx = cx - toNode.x
       const dy = cy - toNode.y
@@ -253,14 +250,12 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     return badges
   }, [layout, getEffectiveTransform, getVisibleMedalsForCanvas, hoveredMedal, selectedMedal, statuses, showYearBadges])
 
-  // Badge overlay positions are computed in a layout effect to avoid ref access during render
-
   const draw = useCallback(() => {
     if (!canvasRef.current || !layout || !medalDatabase) return
 
     const canvas = canvasRef.current
     const ctx = canvas.getContext('2d')
-    
+
     // Resize canvas to match container size
     const rect = canvas.getBoundingClientRect()
     if (canvas.width !== Math.floor(rect.width) || canvas.height !== Math.floor(rect.height)) {
@@ -275,17 +270,75 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
 
     // Render skill tree with view culling for performance
     const allMedals = medalDatabase.getAllMedals()
-    const visibleMedals = getVisibleMedalsForCanvas(canvas)
-    const visibleIds = new Set(visibleMedals.map(m => m.medalId))
-    const filteredLayout = { ...layout, medals: visibleMedals }
-    const filteredMedals = allMedals.filter(m => visibleIds.has(m.id))
+    const visibleNodes = getVisibleMedalsForCanvas(canvas)
+    const visibleIds = new Set(visibleNodes.map(n => n.medalId))
+    const culledMedals = allMedals.filter(m => visibleIds.has(m.id))
 
     const { effScale, effPanX, effPanY } = getEffectiveTransform(canvas)
 
+    // Timeline overlay (grid + lane labels)
+    if (layout?.meta?.kind === 'timeline') {
+      const palette = getThemeColors(canvas) || {}
+      const width = canvas.width
+      const height = canvas.height
+
+      // Visible world-space range
+      const worldLeft = (-width / 2) / effScale - effPanX
+      const worldRight = (width / 2) / effScale - effPanX
+
+      const yearWidth = Number(layout.meta.yearWidth) || 220
+      const startYear = Math.floor(worldLeft / yearWidth)
+      const endYear = Math.ceil(worldRight / yearWidth)
+
+      // Grid lines
+      const gridColor = palette.connection || 'rgba(0,0,0,0.3)'
+      const labelColor = palette.text || '#111827'
+      const labelY = Math.max(12, (showLegend ? legendSafeTop + 12 : 12))
+
+      ctx.save()
+      ctx.lineWidth = 1
+      ctx.strokeStyle = gridColor
+      ctx.globalAlpha = 0.25
+      for (let yi = startYear; yi <= endYear; yi++) {
+        const worldX = yi * yearWidth
+        const screenX = (worldX + effPanX) * effScale + width / 2
+        ctx.beginPath()
+        ctx.moveTo(screenX, 0)
+        ctx.lineTo(screenX, height)
+        ctx.stroke()
+
+        // Year labels at top
+        ctx.globalAlpha = 0.8
+        ctx.fillStyle = labelColor
+        ctx.textAlign = 'center'
+        ctx.textBaseline = 'top'
+        ctx.font = '12px system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif'
+        ctx.fillText(`${yi} år`, screenX, labelY)
+        ctx.globalAlpha = 0.25
+      }
+      ctx.restore()
+
+      // Lane labels (follow world-space vertically)
+      const lanes = Array.isArray(layout.meta.lanes) ? layout.meta.lanes : []
+      if (lanes.length) {
+        ctx.save()
+        ctx.fillStyle = labelColor
+        ctx.textAlign = 'left'
+        ctx.textBaseline = 'middle'
+        ctx.font = '12px system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif'
+        for (const lane of lanes) {
+          const screenY = (lane.y + effPanY) * effScale + height / 2
+          if (screenY < -24 || screenY > height + 24) continue
+          ctx.fillText(String(lane.label || lane.type || ''), 8, screenY)
+        }
+        ctx.restore()
+      }
+    }
+
     render(
       ctx,
-      filteredMedals,
-      filteredLayout,
+      culledMedals,
+      layout,
       statuses,
       effPanX,
       effPanY,
@@ -293,8 +346,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
       selectedMedal,
       hoveredMedal
     )
-  }, [getVisibleMedalsForCanvas, getEffectiveTransform, layout, medalDatabase, statuses, selectedMedal, render, hoveredMedal])
-
+  }, [getVisibleMedalsForCanvas, getEffectiveTransform, layout, medalDatabase, statuses, selectedMedal, render, hoveredMedal, legendSafeTop, showLegend])
 
   const handleResetView = useCallback(() => {
     const el = canvasRef.current
@@ -861,6 +913,26 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                     >
                       {showYearBadges ? 'Dölj årsbrickor' : 'Visa årsbrickor'}
                     </button>
+                    <div role="group" aria-label="Visualisering" className="border-t border-border/60">
+                      <button
+                        role="menuitemradio"
+                        aria-checked={presetId === 'columns'}
+                        type="button"
+                        onClick={() => { setMenuOpen(false); setPresetId('columns'); handleResetView() }}
+                        className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                      >
+                        Visualisering: Standard (kolumner)
+                      </button>
+                      <button
+                        role="menuitemradio"
+                        aria-checked={presetId === 'timeline'}
+                        type="button"
+                        onClick={() => { setMenuOpen(false); setPresetId('timeline'); handleResetView() }}
+                        className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                      >
+                        Visualisering: Tidslinje
+                      </button>
+                    </div>
                     {(!currentProfile || isGuest) && (
                       <button
                         role="menuitem"
@@ -962,7 +1034,6 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
         )}
       </div>
 
-
       {isFullscreen && (
         <div
           id="skilltree-fullscreen"
@@ -1052,6 +1123,26 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                   >
                     {showYearBadges ? 'Dölj årsbrickor' : 'Visa årsbrickor'}
                   </button>
+                  <div role="group" aria-label="Visualisering" className="border-t border-border/60">
+                    <button
+                      role="menuitemradio"
+                      aria-checked={presetId === 'columns'}
+                      type="button"
+                      onClick={() => { setMenuOpen(false); setPresetId('columns'); handleResetView() }}
+                      className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                    >
+                      Visualisering: Standard (kolumner)
+                    </button>
+                    <button
+                      role="menuitemradio"
+                      aria-checked={presetId === 'timeline'}
+                      type="button"
+                      onClick={() => { setMenuOpen(false); setPresetId('timeline'); handleResetView() }}
+                      className="w-full text-left px-4 py-3 min-h-[44px] text-foreground hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                    >
+                      Visualisering: Tidslinje
+                    </button>
+                  </div>
                   {(!currentProfile || isGuest) && (
                     <button
                       role="menuitem"
