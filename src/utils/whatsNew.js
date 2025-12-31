@@ -33,3 +33,20 @@ export function hasNewWhatsNew() {
   if (!id) return false
   return getLastSeen() !== id
 }
+
+export function isProductionEnv() {
+  if (BUILD?.env) return BUILD.env === 'production'
+  if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV) {
+    return process.env.NODE_ENV === 'production'
+  }
+  try {
+    const hostname =
+      typeof window !== 'undefined' && window.location && window.location.hostname
+        ? window.location.hostname
+        : ''
+    if (!hostname) return false
+    return !(hostname === 'localhost' || hostname === '127.0.0.1')
+  } catch {
+    return false
+  }
+}

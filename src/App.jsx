@@ -15,7 +15,7 @@ import About from './pages/About'
 import MedalDetailModal from './components/MedalDetailModal'
 import RequireSavedProfile from './components/RequireSavedProfile'
 import WhatsNewOverlay from './components/WhatsNewOverlay'
-import { getBuildId, getLastSeen } from './utils/whatsNew'
+import { getBuildId, getLastSeen, isProductionEnv } from './utils/whatsNew'
 
 
 function MedalDetailOverlay() {
@@ -48,7 +48,7 @@ function AppRoutes() {
   useEffect(() => {
     if (bootedRef.current) return
     bootedRef.current = true
-    if (import.meta.env.MODE !== 'production') return
+    if (!isProductionEnv()) return
     const buildId = getBuildId()
     const last = getLastSeen()
     if (!buildId || last === buildId) return
