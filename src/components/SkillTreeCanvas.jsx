@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useLayoutEffect, useState, useCallback, useMemo } from 'react'
+import React, { useRef, useEffect, useLayoutEffect, useState, useCallback } from 'react'
 import { useMedalDatabase } from '../hooks/useMedalDatabase'
 import { useAllMedalStatuses } from '../hooks/useMedalCalculator'
 import { usePanZoom } from '../hooks/usePanZoom'
