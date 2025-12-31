@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { BrowserRouter, Routes, Route, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { MedalProvider } from './contexts/MedalContext.jsx'
 import { ProfileProvider } from './contexts/ProfileContext.jsx'
@@ -14,6 +14,8 @@ import DataBackup from './pages/DataBackup'
 import About from './pages/About'
 import MedalDetailModal from './components/MedalDetailModal'
 import RequireSavedProfile from './components/RequireSavedProfile'
+import WhatsNewOverlay from './components/WhatsNewOverlay'
+import { getBuildId, getLastSeen } from './utils/whatsNew'
 
 
 function MedalDetailOverlay() {
@@ -34,9 +36,28 @@ function MedalDetailOverlay() {
 
 function AppRoutes() {
   const location = useLocation()
+  const navigate = useNavigate()
   const background = location.state?.backgroundLocation
   const isMedalDetail = location.pathname.startsWith('/medals/')
-  const renderLocation = (isMedalDetail && background) ? background : location
+  const isWhatsNew = location.pathname === '/whats-new'
+  const isOverlayRoute = (isMedalDetail || isWhatsNew)
+  const renderLocation = (isOverlayRoute && background) ? background : location
+
+  // One-time boot: show "What's New" after version bump (production only)
+  const bootedRef = useRef(false)
+  useEffect(() => {
+    if (bootedRef.current) return
+    bootedRef.current = true
+    if (import.meta.env.MODE !== 'production') return
+    const buildId = getBuildId()
+    const last = getLastSeen()
+    if (!buildId || last === buildId) return
+    const timer = setTimeout(() => {
+      const state = { backgroundLocation: location }
+      navigate('/whats-new', { replace: true, state })
+    }, 700)
+    return () => clearTimeout(timer)
+  }, [location, navigate])
 
   return (
     <>
@@ -71,6 +92,9 @@ function AppRoutes() {
           <Route path="/medals/:id" element={<MedalDetailOverlay />} />
         </Routes>
       )}
+      <Routes>
+        <Route path="/whats-new" element={<WhatsNewOverlay />} />
+      </Routes>
     </>
   )
 }
