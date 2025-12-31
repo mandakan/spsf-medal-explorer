@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react'
+import React, { useEffect, useMemo, useRef, useCallback } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { getBuildId, getLastSeen, setLastSeen } from '../utils/whatsNew'
 import { getReleasesSince } from '../content/whatsNew'
@@ -12,6 +12,16 @@ export default function WhatsNewOverlay() {
   const items = useMemo(() => getReleasesSince(getLastSeen()), [])
   const dialogRef = useRef(null)
   const lastFocusedRef = useRef(null)
+
+  const handleClose = useCallback(() => {
+    if (buildId) setLastSeen(buildId)
+    if (background && background.pathname) {
+      const to = `${background.pathname}${background.search || ''}${background.hash || ''}`
+      navigate(to, { replace: true })
+    } else {
+      navigate(-1)
+    }
+  }, [buildId, background, navigate])
 
   // Focus management and trap
   useEffect(() => {
@@ -56,17 +66,8 @@ export default function WhatsNewOverlay() {
         lastFocusedRef.current.focus()
       }
     }
-  }, [])
+  }, [handleClose])
 
-  const handleClose = () => {
-    if (buildId) setLastSeen(buildId)
-    if (background && background.pathname) {
-      const to = `${background.pathname}${background.search || ''}${background.hash || ''}`
-      navigate(to, { replace: true })
-    } else {
-      navigate(-1)
-    }
-  }
 
   const onBackdropClick = (e) => {
     if (e.target === e.currentTarget) handleClose()
