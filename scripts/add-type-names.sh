@@ -51,10 +51,18 @@ jq --argjson map "$MAP" '
     | join(" ");
 
   .medals |= (map(
-    .typeName |= (if ((.typeName // "") | tostring | length) > 0
-                  then .typeName
-                  else ($map[.type] // (.type | tostring | titleize))
-                  end)
+    # Preserve existing non-empty typeName; otherwise compute from .type
+    (.type // "") as $rawtype
+    | ($rawtype | tostring) as $key
+    | .typeName =
+        (if ((.typeName // "") | tostring | length) > 0
+         then .typeName
+         else
+           (if ($key | length) == 0
+            then "Okänd"
+            else ($map[$key] // ($key | titleize))
+            end)
+         end)
   ))
 ' "$INPUT" > "$TMP"
 
