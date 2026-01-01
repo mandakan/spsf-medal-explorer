@@ -438,6 +438,7 @@
         {
           "type": "medal",
           "medalId": "pistol-mark-gold",
+          "yearOffset": 1,
           "description": "Måste uppnått pistolskyttemärket i guld"
         }
       ],
@@ -1155,7 +1156,8 @@
       "prerequisites": [
         {
           "type": "medal",
-          "medalId": "pistol-mark-gold"
+          "medalId": "pistol-mark-gold",
+          "yearOffset": 1
         }
       ],
       "requirements": [
@@ -1196,7 +1198,8 @@
       "prerequisites": [
         {
           "type": "medal",
-          "medalId": "championship-mark-bronze"
+          "medalId": "championship-mark-bronze",
+          "yearOffset": 1
         }
       ],
       "requirements": [
@@ -1223,7 +1226,8 @@
       "prerequisites": [
         {
           "type": "medal",
-          "medalId": "championship-mark-silver"
+          "medalId": "championship-mark-silver",
+          "yearOffset": 1
         }
       ],
       "requirements": [
@@ -2534,7 +2538,8 @@
       "prerequisites": [
         {
           "type": "medal",
-          "medalId": "military-match-mark-bronze"
+          "medalId": "military-match-mark-bronze",
+          "yearOffset": 1
         }
       ],
       "requirements": [
@@ -2579,7 +2584,8 @@
       "prerequisites": [
         {
           "type": "medal",
-          "medalId": "military-match-mark-silver"
+          "medalId": "military-match-mark-silver",
+          "yearOffset": 1
         }
       ],
       "requirements": [
