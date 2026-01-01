@@ -53,9 +53,47 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     }
     return { minX, minY, maxX, maxY }
   }, [layout])
-  const MIN_SCALE = 0.5
-  const MAX_SCALE = 12
+
+  const computeBaseTransform = useCallback((canvas, padding = 24, extraTop = 0) => {
+    if (!layout || !canvas) return { baseScale: 1, minX: 0, minY: 0 }
+    const width = canvas.width
+    const height = canvas.height
+    if (!width || !height) return { baseScale: 1, minX: 0, minY: 0 }
+    const medals = layout.medals || []
+    if (!medals.length) return { baseScale: 1, minX: 0, minY: 0 }
+
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity
+    for (let i = 0; i < medals.length; i++) {
+      const m = medals[i]
+      const r = m.radius || 20
+      if (m.x - r < minX) minX = m.x - r
+      if (m.y - r < minY) minY = m.y - r
+      if (m.x + r > maxX) maxX = m.x + r
+      if (m.y + r > maxY) maxY = m.y + r
+    }
+    const contentW = Math.max(1, maxX - minX)
+    const contentH = Math.max(1, maxY - minY)
+    const fitX = (width - padding * 2) / contentW
+    const fitY = (height - padding * 2 - Math.max(0, extraTop)) / contentH
+    const useHeightFit = layout?.meta?.kind === 'timeline'
+    const baseScale = Math.max(0.001, useHeightFit ? fitY : Math.min(fitX, fitY))
+    return { baseScale, minX, minY }
+  }, [layout])
+  const DESIRED_EFF_MIN = 0.5
+  const DESIRED_EFF_MAX = 12
   const ZOOM_STEP = 1.2
+
+  const computeDynamicBounds = () => {
+    const el = canvasRef.current
+    if (!el || !layout) return { min: DESIRED_EFF_MIN, max: DESIRED_EFF_MAX }
+    const { baseScale } = computeBaseTransform(el, CANVAS_PAD, legendSafeTop)
+    const safeBase = Math.max(0.001, baseScale)
+    const min = Math.max(0.001, DESIRED_EFF_MIN / safeBase)
+    const max = Math.max(min, DESIRED_EFF_MAX / safeBase)
+    return { min, max }
+  }
+  const { min: MIN_SCALE, max: MAX_SCALE } = computeDynamicBounds()
+
   const { panX, panY, scale, setScaleAbsolute, handleWheel, handlePointerDown, handlePointerMove, handlePointerUp, resetView } = usePanZoom(6, MIN_SCALE, MAX_SCALE, {
     getBounds: getWorldBounds,
     overscrollPx: 48,
@@ -96,32 +134,6 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   })()
   const showFsOnboarding = isFullscreen && !isProfileLoading && !currentProfile && !hasOnboardingChoice && !dismissedFsOnboarding
 
-  // Compute a base transform that anchors the layout's top-left to the canvas' top-left with padding,
-  // and auto-fits the layout into the viewport (mobile-first).
-  const computeBaseTransform = useCallback((canvas, padding = 24, extraTop = 0) => {
-    if (!layout || !canvas) return { baseScale: 1, minX: 0, minY: 0 }
-    const width = canvas.width
-    const height = canvas.height
-    if (!width || !height) return { baseScale: 1, minX: 0, minY: 0 }
-    const medals = layout.medals || []
-    if (!medals.length) return { baseScale: 1, minX: 0, minY: 0 }
-
-    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity
-    for (let i = 0; i < medals.length; i++) {
-      const m = medals[i]
-      const r = m.radius || 20
-      if (m.x - r < minX) minX = m.x - r
-      if (m.y - r < minY) minY = m.y - r
-      if (m.x + r > maxX) maxX = m.x + r
-      if (m.y + r > maxY) maxY = m.y + r
-    }
-    const contentW = Math.max(1, maxX - minX)
-    const contentH = Math.max(1, maxY - minY)
-    const fitX = (width - padding * 2) / contentW
-    const fitY = (height - padding * 2 - Math.max(0, extraTop)) / contentH
-    const baseScale = Math.max(0.001, Math.min(fitX, fitY))
-    return { baseScale, minX, minY }
-  }, [layout])
 
   // Effective transform combines the base (top-left anchored, auto-fit) with interactive pan/zoom.
   const getEffectiveTransform = useCallback((canvas, padding = CANVAS_PAD) => {
