@@ -11,7 +11,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "pages"
+  group: "pages-pr-${{ github.event.pull_request.number }}"
   cancel-in-progress: true
 
 jobs:
@@ -64,7 +64,6 @@ jobs:
         run: |
           mkdir -p site
           rsync -a --delete --filter='protect /pre/***' --filter='protect /pr/***' root/ site/
-
 
       - name: Compute PR app version (from git hash)
         id: prver
@@ -179,25 +178,30 @@ jobs:
         run: |
           set -e
           cd site
-          if [ ! -d .git ]; then
-            git init
-          fi
+
+          # Fail fast: we should be operating on a checkout of gh-pages.
+          # If this is missing, we risk overwriting the entire branch from an empty repo.
+          test -d .git || (echo "ERROR: expected 'site' to be a checkout of gh-pages (missing .git). Aborting." && exit 1)
+
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Ensure authenticated remote (update if it already exists)
           if git remote get-url origin >/dev/null 2>&1; then
             git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git
           else
             git remote add origin https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git
           fi
+
           git add -A
           if git diff --cached --quiet; then
             echo "No changes to commit."
           else
             git commit -m "pages store: add/update PR #${{ github.event.pull_request.number }} preview"
           fi
-          git branch -M gh-pages
-          git push -u origin gh-pages --force
 
+          git branch -M gh-pages
+          git push -u origin gh-pages
 
       - name: Comment preview URL
         uses: marocchino/sticky-pull-request-comment@v2

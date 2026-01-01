@@ -15,7 +15,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: 'pages'
+  group: 'pages-main'
   cancel-in-progress: true
 
 jobs:
@@ -71,7 +71,6 @@ jobs:
         run: |
           mkdir -p site
           rsync -a --delete --filter='protect /pre/***' --filter='protect /pr/***' root/ site/
-
 
       - name: Compute preview app version
         if: ${{ github.event_name != 'release' }}
@@ -211,4 +210,4 @@ jobs:
             git commit -m "pages store: update from deploy run ${{ github.run_number }}"
           fi
           git branch -M gh-pages
-          git push -u origin gh-pages --force
+          git push -u origin gh-pages
