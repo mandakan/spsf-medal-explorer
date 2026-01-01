@@ -73,6 +73,15 @@ jobs:
           rsync -a --delete --filter='protect /pre/***' --filter='protect /pr/***' root/ site/
 
 
+      - name: Compute preview app version
+        if: ${{ github.event_name != 'release' }}
+        id: previewver
+        shell: bash
+        run: |
+          set -euo pipefail
+          PKG_VER="$(node -p "require('./package.json').version")"
+          echo "version=${PKG_VER}-pre.${GITHUB_RUN_NUMBER}" >> "$GITHUB_OUTPUT"
+
       - name: Build preview application
         if: ${{ github.event_name != 'release' }}
         run: npm run build
@@ -80,6 +89,7 @@ jobs:
         env:
           VITE_BASE: /${{ github.event.repository.name }}/pre/
           BUILD_NUMBER: ${{ github.run_number }}
+          APP_VERSION: ${{ steps.previewver.outputs.version }}
 
       - name: Move preview under /pre
         if: ${{ github.event_name != 'release' }}
@@ -186,5 +196,3 @@ jobs:
           fi
           git branch -M gh-pages
           git push -u origin gh-pages --force
-
-

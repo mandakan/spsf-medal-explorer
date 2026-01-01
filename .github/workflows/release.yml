@@ -39,9 +39,21 @@ jobs:
         run: npm run test
         continue-on-error: false
 
+      - name: Compute app version from tag
+        id: appver
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG="${GITHUB_REF_NAME}"
+          VER="${TAG#v}"
+          echo "version=$VER" >> "$GITHUB_OUTPUT"
+
       - name: Build application
         run: npm run build
         continue-on-error: false
+        env:
+          APP_VERSION: ${{ steps.appver.outputs.version }}
+          BUILD_NUMBER: ${{ github.run_number }}
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
