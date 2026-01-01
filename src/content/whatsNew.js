@@ -4,26 +4,31 @@
  */
 export const releases = [
   {
-    id: '1.5.0',
-    date: '2025-01-01',
-    title: 'Snabbare sökning och ny medaljvy',
+    id: '0.9.2',
+    date: '2026-01-01',
+    title: 'Versionsnytt',
     highlights: [
-      'Ny vy för medaljer med förbättrad filtrering.',
-      'Sökningen är upp till 3× snabbare.',
-      'Tillgänglighetsförbättringar och buggrättningar.',
+      'Versionsinformation med förändringslogg tillagd.',
     ],
-    link: 'https://example.com/releases/v1.5.0',
+    link: 'https://github.com/mandakan/spsf-medal-explorer/releases/tag/v0.9.2',
   },
   {
-    id: '1.4.0',
-    date: '2024-12-10',
-    title: 'Feature-flaggor och förbättrad UX',
+    id: '0.9.1',
+    date: '2025-12-31',
+    title: 'Uppdateringar av märken för luftpistol',
     highlights: [
-      'Nya feature-flaggor för förhandsvisning.',
-      'Förbättrad tangentbordsnavigering och fokusmarkering.',
-      'Stabilitetsförbättringar.',
+      'Årsmärken för luftpistol korrigerade.',
     ],
-    link: 'https://example.com/releases/v1.4.0',
+    link: 'https://github.com/mandakan/spsf-medal-explorer/releases/tag/v0.9.1',
+  },
+  {
+    id: '0.9.0',
+    date: '2025-12-31',
+    title: 'Ny trädvy',
+    highlights: [
+      'Ny trädvy för märken med tidslinje per märkestyp.',
+    ],
+    link: 'https://github.com/mandakan/spsf-medal-explorer/releases/tag/v0.9.0',
   },
 ]
 
