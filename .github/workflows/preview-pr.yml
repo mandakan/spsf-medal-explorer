@@ -50,6 +50,20 @@ jobs:
             mkdir -p site
           fi
 
+      - name: Download latest release asset (site root)
+        uses: robinraju/release-downloader@v1
+        with:
+          latest: true
+          fileName: site-root.zip
+
+      - name: Unpack latest release into temp root
+        run: mkdir -p root && unzip -q site-root.zip -d root
+
+      - name: Merge root into site (preserve existing /pre and /pr)
+        run: |
+          mkdir -p site
+          rsync -a root/ site/
+
       - name: Build PR preview
         env:
           VITE_BASE: /${{ github.event.repository.name }}/pr/${{ github.event.pull_request.number }}/
