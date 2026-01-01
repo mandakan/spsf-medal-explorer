@@ -84,8 +84,8 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   const getDesiredEffBounds = React.useCallback(() => {
     const isTimeline = layout?.meta?.kind === 'timeline'
     return isTimeline
-      ? { min: 0.4, max: 5.5 }   // Timeline: allow a bit more zoom-out, lower zoom-in cap
-      : { min: 0.5, max: 12 }    // Columns: unchanged
+      ? { min: 0.2, max: 1.5 }   // Timeline: allow a bit more zoom-out, lower zoom-in cap
+      : { min: 0.5, max: 1.5 }    // Columns: unchanged
   }, [layout])
 
   const computeDynamicBounds = () => {
