@@ -79,17 +79,23 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     const baseScale = Math.max(0.001, useHeightFit ? fitY : Math.min(fitX, fitY))
     return { baseScale, minX, minY }
   }, [layout])
-  const DESIRED_EFF_MIN = 0.5
-  const DESIRED_EFF_MAX = 12
   const ZOOM_STEP = 1.2
+
+  const getDesiredEffBounds = React.useCallback(() => {
+    const isTimeline = layout?.meta?.kind === 'timeline'
+    return isTimeline
+      ? { min: 0.4, max: 5.5 }   // Timeline: allow a bit more zoom-out, lower zoom-in cap
+      : { min: 0.5, max: 12 }    // Columns: unchanged
+  }, [layout])
 
   const computeDynamicBounds = () => {
     const el = canvasRef.current
-    if (!el || !layout) return { min: DESIRED_EFF_MIN, max: DESIRED_EFF_MAX }
+    const { min: effMin, max: effMax } = getDesiredEffBounds()
+    if (!el || !layout) return { min: effMin, max: effMax }
     const { baseScale } = computeBaseTransform(el, CANVAS_PAD, legendSafeTop)
     const safeBase = Math.max(0.001, baseScale)
-    const min = Math.max(0.001, DESIRED_EFF_MIN / safeBase)
-    const max = Math.max(min, DESIRED_EFF_MAX / safeBase)
+    const min = Math.max(0.001, effMin / safeBase)
+    const max = Math.max(min, effMax / safeBase)
     return { min, max }
   }
   const { min: MIN_SCALE, max: MAX_SCALE } = computeDynamicBounds()
@@ -364,11 +370,13 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     const el = canvasRef.current
     if (!el || !layout) return
     const { baseScale } = computeBaseTransform(el, CANVAS_PAD, legendSafeTop)
-    const minEff = 0.8
-    const targetInteractive = minEff / Math.max(0.001, baseScale)
+    const { min: effMin, max: effMax } = getDesiredEffBounds()
+    const targetEff = (layout?.meta?.kind === 'timeline') ? 0.9 : 0.8
+    const clampedEff = Math.min(effMax, Math.max(effMin, targetEff))
+    const targetInteractive = clampedEff / Math.max(0.001, baseScale)
     resetView()
     setScaleAbsolute(targetInteractive)
-  }, [computeBaseTransform, layout, resetView, setScaleAbsolute, legendSafeTop])
+  }, [computeBaseTransform, layout, resetView, setScaleAbsolute, legendSafeTop, getDesiredEffBounds])
 
   // Zoom controls
   const clamp = (v, min, max) => Math.min(max, Math.max(min, v))
