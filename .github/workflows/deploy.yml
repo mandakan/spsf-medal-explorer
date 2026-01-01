@@ -48,12 +48,43 @@ jobs:
         run: npm run test
         continue-on-error: false
 
-      - name: Download latest release asset (site root)
-        id: dl_root
+      - name: Wait for site-root.zip on this release
+        if: github.event_name == 'release'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TAG="${{ github.event.release.tag_name }}"
+          for i in {1..30}; do
+            names="$(curl -sSf -H "Authorization: token ${GITHUB_TOKEN}" \
+              "https://api.github.com/repos/${{ github.repository }}/releases/tags/${TAG}" | jq -r '.assets[].name')"
+            if grep -qx 'site-root.zip' <<< "$names"; then
+              echo "Asset found"
+              exit 0
+            fi
+            echo "Asset not found yet, retry $i/30..."
+            sleep 2
+          done
+          echo "Timed out waiting for site-root.zip on ${TAG}"
+          exit 1
+
+      - name: Download release asset for this tag
+        if: github.event_name == 'release'
         uses: robinraju/release-downloader@v1
         with:
+          repository: ${{ github.repository }}
+          tag: ${{ github.event.release.tag_name }}
+          fileName: site-root.zip
+          out-file-path: .
+
+      - name: Download latest release asset (fallback)
+        if: github.event_name != 'release'
+        uses: robinraju/release-downloader@v1
+        with:
+          repository: ${{ github.repository }}
           latest: true
           fileName: site-root.zip
+          out-file-path: .
 
       - name: Prepare staging directory (out/)
         shell: bash

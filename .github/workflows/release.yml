@@ -54,6 +54,7 @@ jobs:
         env:
           APP_VERSION: ${{ steps.appver.outputs.version }}
           BUILD_NUMBER: ${{ github.run_number }}
+          VITE_BASE: /${{ github.event.repository.name }}/
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
@@ -81,25 +82,22 @@ jobs:
       - name: Package site root
         run: cd dist && zip -qr ../site-root.zip . && cd -
 
-      - name: Create Release with Auto-generated Notes
+      - name: Create or update DRAFT release and upload asset
         uses: softprops/action-gh-release@v2
         with:
-          # Tag from git push (automatic)
           tag_name: ${{ github.ref_name }}
-          
-          # Release name extracted from tag
           name: Release ${{ github.ref_name }}
-          
-          # Auto-generate release notes from commits and PRs
           generate_release_notes: true
-          
-          # Mark as prerelease if contains alpha/beta/rc
           prerelease: ${{ contains(github.ref_name, 'alpha') || contains(github.ref_name, 'beta') || contains(github.ref_name, 'rc') }}
-          
-          # Draft release for review before publishing (false = publish immediately)
-          draft: false
-
-          # Attach site root bundle for Pages deploy workflow
+          draft: true
           files: site-root.zip
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          draft: false
         env:
           GITHUB_TOKEN: ${{ github.token }}
