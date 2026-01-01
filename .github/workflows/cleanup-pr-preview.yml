@@ -34,17 +34,7 @@ jobs:
       - name: Create .nojekyll
         run: touch site/.nojekyll
 
-      - name: Upload artifact for deployment
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./site
-          name: github-pages
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
-        with:
-          artifact_name: github-pages
+      # Skipping Pages deployment in cleanup; main/PR workflows perform the actual deploy.
 
       - name: Persist site store to gh-pages
         env:
