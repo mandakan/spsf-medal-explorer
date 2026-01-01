@@ -11,7 +11,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "pages"
+  group: "pages-pr-${{ github.event.pull_request.number }}"
   cancel-in-progress: true
 
 jobs:
@@ -42,12 +42,44 @@ jobs:
         run: npm run test
 
       - name: Fetch site store (gh-pages)
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          set -e
-          if git ls-remote --exit-code --heads https://github.com/${{ github.repository }}.git gh-pages >/dev/null 2>&1; then
-            git clone --depth 1 --branch gh-pages https://github.com/${{ github.repository }}.git site
+          set -euo pipefail
+          rm -rf site
+
+          # Try to clone gh-pages. If it doesn't exist yet, create an empty gh-pages checkout.
+          if git clone --depth 1 --branch gh-pages "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" site; then
+            echo "Cloned gh-pages into site/"
           else
+            echo "gh-pages not found (or clone failed). Initializing new gh-pages checkout."
             mkdir -p site
+            cd site
+            git init
+            git checkout -b gh-pages
+            git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
+          fi
+
+      - name: Ensure site is at latest origin/gh-pages (no rebase)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          cd site
+
+          # Ensure authenticated remote (update if it already exists)
+          if git remote get-url origin >/dev/null 2>&1; then
+            git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
+          else
+            git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
+          fi
+
+          git fetch origin gh-pages || true
+          if git show-ref --verify --quiet refs/remotes/origin/gh-pages; then
+            git checkout -B gh-pages origin/gh-pages
+            git reset --hard origin/gh-pages
+          else
+            git checkout -B gh-pages
           fi
 
       - name: Download latest release asset (site root)
@@ -57,19 +89,52 @@ jobs:
           latest: true
           fileName: site-root.zip
 
+      - name: Create temp root dir
+        id: temproot
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT_DIR="$(mktemp -d)"
+          echo "ROOT_DIR=$ROOT_DIR" >> "$GITHUB_ENV"
+          echo "Created ROOT_DIR=$ROOT_DIR"
+
       - name: Unpack latest release into temp root
-        run: mkdir -p root && unzip -q site-root.zip -d root
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${ROOT_DIR:-}"
+          unzip -q site-root.zip -d "$ROOT_DIR"
 
       - name: Merge root into site (clean; preserve /pre and /pr)
+        shell: bash
         run: |
+          set -euo pipefail
+          test -n "${ROOT_DIR:-}"
           mkdir -p site
-          rsync -a --delete --filter='protect /pre/***' --filter='protect /pr/***' root/ site/
+          rsync -a --delete --filter='protect /pre/***' --filter='protect /pr/***' "${ROOT_DIR}/" site/
 
+      - name: Cleanup temp root dir
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -n "${ROOT_DIR:-}" ] && [ -d "${ROOT_DIR:-}" ]; then
+            rm -rf "$ROOT_DIR"
+          fi
+
+      - name: Compute PR app version (from git hash)
+        id: prver
+        shell: bash
+        run: |
+          set -euo pipefail
+          SHORT_SHA="$(git rev-parse --short HEAD)"
+          echo "version=pr-${{ github.event.pull_request.number }}-${SHORT_SHA}" >> "$GITHUB_OUTPUT"
 
       - name: Build PR preview
         env:
           VITE_BASE: /${{ github.event.repository.name }}/pr/${{ github.event.pull_request.number }}/
           BUILD_NUMBER: ${{ github.run_number }}
+          APP_VERSION: ${{ steps.prver.outputs.version }}
         run: npm run build
 
       - name: Place preview under /pr/<n>
@@ -93,7 +158,14 @@ jobs:
           <script>
           (function () {
             var parts = location.pathname.split('/').filter(Boolean);
-            var base = (parts[0] ? '/' + parts[0] + '/' : '/');
+
+            // For project pages, the first segment is the repo name.
+            // Example: /spsf-medal-explorer/pr/97/...
+            var repo = parts[0] || '';
+            var root = repo ? '/' + repo + '/' : '/';
+
+            // Compute base for /pre and /pr routes.
+            var base = root;
             var preIdx = parts.indexOf('pre');
             var prIdx = parts.indexOf('pr');
             if (preIdx >= 0) {
@@ -101,13 +173,22 @@ jobs:
             } else if (prIdx >= 0 && parts[prIdx + 1]) {
               base = '/' + parts.slice(0, prIdx + 2).join('/') + '/';
             }
-            fetch(base + 'index.html', { cache: 'no-store' })
-              .then(function (r) { if (!r.ok) throw new Error('missing'); return r.text(); })
-              .then(function (html) { document.open(); document.write(html); document.close(); })
-              .catch(function () {
-                var root = (parts[0] ? '/' + parts[0] + '/' : '/');
-                location.replace(root);
+
+            function tryFetchIndex(b) {
+              return fetch(b + 'index.html', { cache: 'no-store' }).then(function (r) {
+                if (!r.ok) throw new Error('missing');
+                return r.text();
               });
+            }
+
+            // Try computed base first. If that fails, try forcing project-page root + the rest of the path.
+            // This makes the fallback more robust if base computation is off.
+            var altBase = (repo && base.indexOf(root) !== 0) ? (root + parts.slice(1).join('/') + (location.pathname.endsWith('/') ? '' : '/') ) : null;
+
+            tryFetchIndex(base)
+              .catch(function () { return altBase ? tryFetchIndex(altBase) : Promise.reject(new Error('missing')); })
+              .then(function (html) { document.open(); document.write(html); document.close(); })
+              .catch(function () { location.replace(root); });
           })();
           </script>
           HTML
@@ -148,25 +229,73 @@ jobs:
             done
           fi
 
-      - name: Persist site store to gh-pages
+      - name: Persist site store to gh-pages (reset-based, guarded, retry)
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          set -e
-          cd site
-          git init
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A
-          if git diff --cached --quiet; then
-            echo "No changes to commit."
-          else
-            git commit -m "pages store: add/update PR #${{ github.event.pull_request.number }} preview"
-          fi
-          git branch -M gh-pages
-          git remote add origin https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git || true
-          git push -u origin gh-pages --force
+          set -euo pipefail
 
+          apply_changes() {
+            # Ensure we never commit workspace artifacts if they somehow ended up here
+            rm -rf site/root site/site-root.zip site/site || true
+
+            # Guards: these should never exist inside the gh-pages checkout
+            if [ -f "site/site-root.zip" ]; then
+              echo "ERROR: site/site-root.zip exists inside gh-pages checkout. Aborting."
+              exit 1
+            fi
+            if [ -d "site/site" ]; then
+              echo "ERROR: site/site directory exists inside gh-pages checkout. Aborting."
+              exit 1
+            fi
+          }
+
+          for i in 1 2 3 4 5; do
+            echo "Attempt $i: syncing and pushing gh-pages"
+
+            # Reset to latest remote state (no rebase)
+            cd site
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+
+            if git remote get-url origin >/dev/null 2>&1; then
+              git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
+            else
+              git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
+            fi
+
+            git fetch origin gh-pages || true
+            if git show-ref --verify --quiet refs/remotes/origin/gh-pages; then
+              git checkout -B gh-pages origin/gh-pages
+              git reset --hard origin/gh-pages
+            else
+              git checkout -B gh-pages
+            fi
+            cd ..
+
+            # Re-apply filesystem changes (root snapshot + PR preview already written into ./site)
+            apply_changes
+
+            cd site
+            git add -A
+            if git diff --cached --quiet; then
+              echo "No changes to commit."
+            else
+              git commit -m "pages store: add/update PR #${{ github.event.pull_request.number }} preview"
+            fi
+
+            if git push -u origin gh-pages; then
+              echo "Push succeeded"
+              exit 0
+            fi
+
+            echo "Push failed (attempt $i). Retrying..."
+            cd ..
+            sleep $((i * 2))
+          done
+
+          echo "ERROR: failed to push gh-pages after retries"
+          exit 1
 
       - name: Comment preview URL
         uses: marocchino/sticky-pull-request-comment@v2

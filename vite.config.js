@@ -18,7 +18,7 @@ const baseFromCI = process.env.VITE_BASE
 const base = baseFromCI != null && baseFromCI !== '' ? baseFromCI : (isCI ? (isUserOrOrgSite ? '/' : `/${repo}/`) : '/')
 
 const commit = execSync('git rev-parse --short HEAD').toString().trim()
- // buildNumber and buildTime are resolved inside the Vite config function to avoid requiring BUILD_NUMBER during preview
+// buildNumber and buildTime are resolved inside the Vite config function to avoid requiring BUILD_NUMBER during preview
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
@@ -28,11 +28,17 @@ export default defineConfig(({ command, mode }) => {
   }
   const buildTime = new Date().toISOString()
 
+  // Best practice: let CI/tag be the source of truth for release version.
+  // Fallback to package.json for local/dev builds.
+  const appVersion = (process.env.APP_VERSION && String(process.env.APP_VERSION).trim() !== '')
+    ? String(process.env.APP_VERSION).trim()
+    : pkg.version
+
   return {
     base,
     plugins: [react(), tailwindcss()],
     define: {
-      __APP_VERSION__: JSON.stringify(pkg.version),
+      __APP_VERSION__: JSON.stringify(appVersion),
       __BUILD_NUMBER__: JSON.stringify(buildNumber || 'dev'),
       __BUILD_COMMIT__: JSON.stringify(commit),
       __BUILD_TIME__: JSON.stringify(buildTime),
