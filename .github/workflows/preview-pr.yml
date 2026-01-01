@@ -42,12 +42,22 @@ jobs:
         run: npm run test
 
       - name: Fetch site store (gh-pages)
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          set -e
-          if git ls-remote --exit-code --heads https://github.com/${{ github.repository }}.git gh-pages >/dev/null 2>&1; then
-            git clone --depth 1 --branch gh-pages https://github.com/${{ github.repository }}.git site
+          set -euo pipefail
+          rm -rf site
+
+          # Try to clone gh-pages. If it doesn't exist yet, create an empty gh-pages checkout.
+          if git clone --depth 1 --branch gh-pages "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" site; then
+            echo "Cloned gh-pages into site/"
           else
+            echo "gh-pages not found (or clone failed). Initializing new gh-pages checkout."
             mkdir -p site
+            cd site
+            git init
+            git checkout -b gh-pages
+            git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
           fi
 
       - name: Download latest release asset (site root)
@@ -178,10 +188,6 @@ jobs:
         run: |
           set -e
           cd site
-
-          # Fail fast: we should be operating on a checkout of gh-pages.
-          # If this is missing, we risk overwriting the entire branch from an empty repo.
-          test -d .git || (echo "ERROR: expected 'site' to be a checkout of gh-pages (missing .git). Aborting." && exit 1)
 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
