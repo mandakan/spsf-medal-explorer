@@ -40,6 +40,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   // Legend visibility and reserved safe-top height must be defined before pan/zoom
   const [showLegend, setShowLegend] = useState(true)
   const [legendSafeTop, setLegendSafeTop] = useState(showLegend ? DEFAULT_LEGEND_SAFE_TOP_PX : 0)
+  const [canvasSize, setCanvasSize] = useState({ w: 0, h: 0 })
   const getWorldBounds = useCallback(() => {
     if (!layout || !layout.medals?.length) return { minX: 0, minY: 0, maxX: 0, maxY: 0 }
     let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity
@@ -53,9 +54,55 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     }
     return { minX, minY, maxX, maxY }
   }, [layout])
-  const MIN_SCALE = 0.5
-  const MAX_SCALE = 12
+
+  const computeBaseTransform = useCallback((canvas, padding = 24, extraTop = 0) => {
+    if (!layout || !canvas) return { baseScale: 1, minX: 0, minY: 0 }
+    const width = canvas.width
+    const height = canvas.height
+    if (!width || !height) return { baseScale: 1, minX: 0, minY: 0 }
+    const medals = layout.medals || []
+    if (!medals.length) return { baseScale: 1, minX: 0, minY: 0 }
+
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity
+    for (let i = 0; i < medals.length; i++) {
+      const m = medals[i]
+      const r = m.radius || 20
+      if (m.x - r < minX) minX = m.x - r
+      if (m.y - r < minY) minY = m.y - r
+      if (m.x + r > maxX) maxX = m.x + r
+      if (m.y + r > maxY) maxY = m.y + r
+    }
+    const contentW = Math.max(1, maxX - minX)
+    const contentH = Math.max(1, maxY - minY)
+    const fitX = (width - padding * 2) / contentW
+    const fitY = (height - padding * 2 - Math.max(0, extraTop)) / contentH
+    const useHeightFit = layout?.meta?.kind === 'timeline'
+    const baseScale = Math.max(0.001, useHeightFit ? fitY : Math.min(fitX, fitY))
+    return { baseScale, minX, minY }
+  }, [layout])
   const ZOOM_STEP = 1.2
+
+  const getDesiredEffBounds = React.useCallback(() => {
+    const isTimeline = layout?.meta?.kind === 'timeline'
+    return isTimeline
+      ? { min: 0.2, max: 1.5 }   // Timeline: allow a bit more zoom-out, lower zoom-in cap
+      : { min: 0.5, max: 1.5 }    // Columns: unchanged
+  }, [layout])
+
+  const computeDynamicBounds = useCallback(() => {
+    const { min: effMin, max: effMax } = getDesiredEffBounds()
+    const w = canvasSize.w
+    const h = canvasSize.h
+    if (!layout || !w || !h) return { min: effMin, max: effMax }
+    const mockCanvas = { width: w, height: h }
+    const { baseScale } = computeBaseTransform(mockCanvas, CANVAS_PAD, legendSafeTop)
+    const safeBase = Math.max(0.001, baseScale)
+    const min = Math.max(0.001, effMin / safeBase)
+    const max = Math.max(min, effMax / safeBase)
+    return { min, max }
+  }, [canvasSize, layout, getDesiredEffBounds, computeBaseTransform, legendSafeTop])
+  const { min: MIN_SCALE, max: MAX_SCALE } = computeDynamicBounds()
+
   const { panX, panY, scale, setScaleAbsolute, handleWheel, handlePointerDown, handlePointerMove, handlePointerUp, resetView } = usePanZoom(6, MIN_SCALE, MAX_SCALE, {
     getBounds: getWorldBounds,
     overscrollPx: 48,
@@ -96,32 +143,6 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   })()
   const showFsOnboarding = isFullscreen && !isProfileLoading && !currentProfile && !hasOnboardingChoice && !dismissedFsOnboarding
 
-  // Compute a base transform that anchors the layout's top-left to the canvas' top-left with padding,
-  // and auto-fits the layout into the viewport (mobile-first).
-  const computeBaseTransform = useCallback((canvas, padding = 24, extraTop = 0) => {
-    if (!layout || !canvas) return { baseScale: 1, minX: 0, minY: 0 }
-    const width = canvas.width
-    const height = canvas.height
-    if (!width || !height) return { baseScale: 1, minX: 0, minY: 0 }
-    const medals = layout.medals || []
-    if (!medals.length) return { baseScale: 1, minX: 0, minY: 0 }
-
-    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity
-    for (let i = 0; i < medals.length; i++) {
-      const m = medals[i]
-      const r = m.radius || 20
-      if (m.x - r < minX) minX = m.x - r
-      if (m.y - r < minY) minY = m.y - r
-      if (m.x + r > maxX) maxX = m.x + r
-      if (m.y + r > maxY) maxY = m.y + r
-    }
-    const contentW = Math.max(1, maxX - minX)
-    const contentH = Math.max(1, maxY - minY)
-    const fitX = (width - padding * 2) / contentW
-    const fitY = (height - padding * 2 - Math.max(0, extraTop)) / contentH
-    const baseScale = Math.max(0.001, Math.min(fitX, fitY))
-    return { baseScale, minX, minY }
-  }, [layout])
 
   // Effective transform combines the base (top-left anchored, auto-fit) with interactive pan/zoom.
   const getEffectiveTransform = useCallback((canvas, padding = CANVAS_PAD) => {
@@ -261,6 +282,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     if (canvas.width !== Math.floor(rect.width) || canvas.height !== Math.floor(rect.height)) {
       canvas.width = Math.floor(rect.width)
       canvas.height = Math.floor(rect.height)
+      setCanvasSize({ w: canvas.width, h: canvas.height })
     }
 
     // Clear canvas with computed background color to respect light/dark themes
@@ -352,20 +374,22 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     const el = canvasRef.current
     if (!el || !layout) return
     const { baseScale } = computeBaseTransform(el, CANVAS_PAD, legendSafeTop)
-    const minEff = 0.8
-    const targetInteractive = minEff / Math.max(0.001, baseScale)
+    const { min: effMin, max: effMax } = getDesiredEffBounds()
+    const targetEff = (layout?.meta?.kind === 'timeline') ? 0.9 : 0.8
+    const clampedEff = Math.min(effMax, Math.max(effMin, targetEff))
+    const targetInteractive = clampedEff / Math.max(0.001, baseScale)
     resetView()
     setScaleAbsolute(targetInteractive)
-  }, [computeBaseTransform, layout, resetView, setScaleAbsolute, legendSafeTop])
+  }, [computeBaseTransform, layout, resetView, setScaleAbsolute, legendSafeTop, getDesiredEffBounds])
 
   // Zoom controls
   const clamp = (v, min, max) => Math.min(max, Math.max(min, v))
   const handleZoomIn = useCallback(() => {
     setScaleAbsolute(clamp(scaleRef.current * ZOOM_STEP, MIN_SCALE, MAX_SCALE))
-  }, [setScaleAbsolute])
+  }, [setScaleAbsolute, MIN_SCALE, MAX_SCALE, ZOOM_STEP])
   const handleZoomOut = useCallback(() => {
     setScaleAbsolute(clamp(scaleRef.current / ZOOM_STEP, MIN_SCALE, MAX_SCALE))
-  }, [setScaleAbsolute])
+  }, [setScaleAbsolute, MIN_SCALE, MAX_SCALE, ZOOM_STEP])
 
   const toggleLegend = useCallback(() => {
     setShowLegend(prev => {
@@ -426,6 +450,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     if (w > 0 && h > 0 && (el.width !== w || el.height !== h)) {
       el.width = w
       el.height = h
+      setCanvasSize({ w, h })
     }
     setBadgeData(getYearsBadgeData(el))
   }, [getYearsBadgeData, panX, panY, scale, hoveredMedal, selectedMedal, layout])
@@ -449,6 +474,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
       if (w > 0 && h > 0 && (el.width !== w || el.height !== h)) {
         el.width = w
         el.height = h
+        setCanvasSize({ w, h })
       }
       draw()
       setBadgeData(getYearsBadgeData(el))
@@ -585,6 +611,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
         if (w > 0 && h > 0 && (el.width !== w || el.height !== h)) {
           el.width = w
           el.height = h
+          setCanvasSize({ w, h })
         }
         clearThemeCache()
         draw()

@@ -249,7 +249,7 @@ export function drawMedalNode(ctx, x, y, radius, medal, status, scale, forceLabe
 
   // Status ring (dotted for placeholders to mirror list)
   const ringColor = isPlaceholder ? palette.placeholder : statusColor
-  const ringWidth = Math.max(2, 3 * s)
+  const ringWidth = 3
   const canSave = typeof ctx.save === 'function'
   if (canSave) ctx.save()
   if (isPlaceholder && typeof ctx.setLineDash === 'function') {
@@ -281,7 +281,7 @@ export function drawMedalNode(ctx, x, y, radius, medal, status, scale, forceLabe
     ctx.translate(x, y)
     ctx.scale(iconScale, iconScale)
     ctx.translate(-12, -12)
-    ctx.lineWidth = Math.max(1.25, 2 * iconScale)
+    ctx.lineWidth = 2
     ctx.strokeStyle = ringColor
     ctx.lineCap = 'round'
     ctx.lineJoin = 'round'
@@ -382,7 +382,7 @@ export function drawConnection(ctx, x1, y1, x2, y2, type = 'prerequisite', scale
   const palette = getThemeColors(ctx?.canvas)
   void type
   ctx.strokeStyle = palette.connection
-  ctx.lineWidth = Math.max(0.5, 2 * Math.max(scale, 0.001))
+  ctx.lineWidth = 2
   ctx.beginPath()
   ctx.moveTo(x1, y1)
   ctx.lineTo(x2, y2)
@@ -390,7 +390,7 @@ export function drawConnection(ctx, x1, y1, x2, y2, type = 'prerequisite', scale
 
   // Arrowhead
   const angle = Math.atan2(y2 - y1, x2 - x1)
-  const arrowSize = Math.max(4, 10 * Math.max(scale, 0.001))
+  const arrowSize = 10
   
   ctx.beginPath()
   ctx.moveTo(x2, y2)
@@ -447,7 +447,7 @@ export function drawConnection(ctx, x1, y1, x2, y2, type = 'prerequisite', scale
     ctx.globalAlpha = prevAlpha
 
     ctx.strokeStyle = palette.accent
-    ctx.lineWidth = Math.max(0.5, 1.5 * Math.max(scale, 0.001))
+    ctx.lineWidth = 1.5
     ctx.beginPath()
     if (typeof ctx.arcTo === 'function') {
       ctx.moveTo(rx + r, ry)
