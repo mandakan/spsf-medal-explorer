@@ -57,28 +57,18 @@ jobs:
       - name: Download latest release asset (site root)
         id: dl_root
         uses: robinraju/release-downloader@v1
-        continue-on-error: true
         with:
           latest: true
           fileName: site-root.zip
 
       - name: Unpack latest release into temp root
-        if: hashFiles('site-root.zip') != ''
         run: mkdir -p root && unzip -q site-root.zip -d root
 
-      - name: Merge root into site (preserve /pre and /pr)
+      - name: Merge root into site (clean; preserve /pre and /pr)
         run: |
           mkdir -p site
-          if [ -d root ]; then
-            rsync -a --delete --exclude 'pre/' --exclude 'pr/' root/ site/
-          fi
+          rsync -a --delete --filter='protect /pre/***' --filter='protect /pr/***' root/ site/
 
-      - name: Ensure site root exists
-        run: |
-          if [ ! -f site/index.html ]; then
-            echo "No site root found. Create a release that attaches site-root.zip before deploying main."
-            exit 1
-          fi
 
       - name: Build preview application
         run: npm run build
@@ -111,9 +101,12 @@ jobs:
               base = '/' + parts.slice(0, prIdx + 2).join('/') + '/';
             }
             fetch(base + 'index.html', { cache: 'no-store' })
-              .then(function(r){return r.text()})
-              .then(function(html){ document.open(); document.write(html); document.close(); })
-              .catch(function(){ location.href = base; });
+              .then(function (r) { if (!r.ok) throw new Error('missing'); return r.text(); })
+              .then(function (html) { document.open(); document.write(html); document.close(); })
+              .catch(function () {
+                var root = (parts[0] ? '/' + parts[0] + '/' : '/');
+                location.replace(root);
+              });
           })();
           </script>
           HTML
@@ -135,9 +128,17 @@ jobs:
         run: |
           set -e
           cd site
-          git init
+          if [ ! -d .git ]; then
+            git init
+          fi
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          # Ensure authenticated remote (update if it already exists)
+          if git remote get-url origin >/dev/null 2>&1; then
+            git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git
+          else
+            git remote add origin https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git
+          fi
           git add -A
           if git diff --cached --quiet; then
             echo "No changes to commit."
@@ -145,7 +146,6 @@ jobs:
             git commit -m "pages store: update from deploy run ${{ github.run_number }}"
           fi
           git branch -M gh-pages
-          git remote add origin https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git || true
           git push -u origin gh-pages --force
 
       - name: Upload artifact for deployment

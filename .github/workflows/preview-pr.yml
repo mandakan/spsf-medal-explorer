@@ -53,27 +53,18 @@ jobs:
       - name: Download latest release asset (site root)
         id: dl_root
         uses: robinraju/release-downloader@v1
-        continue-on-error: true
         with:
           latest: true
           fileName: site-root.zip
 
       - name: Unpack latest release into temp root
-        if: hashFiles('site-root.zip') != ''
         run: mkdir -p root && unzip -q site-root.zip -d root
 
-      - name: Merge root into site (preserve existing /pre and /pr)
-        if: hashFiles('site-root.zip') != ''
+      - name: Merge root into site (clean; preserve /pre and /pr)
         run: |
           mkdir -p site
-          rsync -a root/ site/
+          rsync -a --delete --filter='protect /pre/***' --filter='protect /pr/***' root/ site/
 
-      - name: Ensure site root exists
-        run: |
-          if [ ! -f site/index.html ]; then
-            echo "No site root found. Create a release that attaches site-root.zip before PR previews can deploy."
-            exit 1
-          fi
 
       - name: Build PR preview
         env:
@@ -85,6 +76,10 @@ jobs:
         run: |
           mkdir -p site/pr/${{ github.event.pull_request.number }}
           rsync -a dist/ site/pr/${{ github.event.pull_request.number }}/
+
+      - name: Verify PR preview exists
+        run: |
+          test -f "site/pr/${{ github.event.pull_request.number }}/index.html"
 
       - name: Label PR manifest
         run: |
@@ -107,9 +102,12 @@ jobs:
               base = '/' + parts.slice(0, prIdx + 2).join('/') + '/';
             }
             fetch(base + 'index.html', { cache: 'no-store' })
-              .then(function(r){return r.text()})
-              .then(function(html){ document.open(); document.write(html); document.close(); })
-              .catch(function(){ location.href = base; });
+              .then(function (r) { if (!r.ok) throw new Error('missing'); return r.text(); })
+              .then(function (html) { document.open(); document.write(html); document.close(); })
+              .catch(function () {
+                var root = (parts[0] ? '/' + parts[0] + '/' : '/');
+                location.replace(root);
+              });
           })();
           </script>
           HTML
