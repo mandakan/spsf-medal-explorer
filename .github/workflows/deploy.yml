@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+  release:
+    types: [published]
   workflow_dispatch:
 
 permissions:
@@ -71,6 +73,7 @@ jobs:
 
 
       - name: Build preview application
+        if: ${{ github.event_name != 'release' }}
         run: npm run build
         continue-on-error: false
         env:
@@ -78,9 +81,11 @@ jobs:
           BUILD_NUMBER: ${{ github.run_number }}
 
       - name: Move preview under /pre
+        if: ${{ github.event_name != 'release' }}
         run: mkdir -p site/pre && rsync -a dist/ site/pre/
 
       - name: Label preview manifest
+        if: ${{ github.event_name != 'release' }}
         run: |
           sed -i 's/"name": "Skyttemärken"/"name": "Skyttemärken (Preview)"/' site/pre/manifest.json
           sed -i 's/"short_name": "Skyttemärken"/"short_name": "Skyttemärken (Preview)"/' site/pre/manifest.json
@@ -114,10 +119,14 @@ jobs:
       - name: Include LICENSE in build
         run: cp LICENSE site/LICENSE
 
-      - name: Stamp service worker version
+      - name: Stamp service worker version (root)
         run: |
-          sed -i "s/^const VERSION = .*/const VERSION = 'build-${{ github.run_number }}'/" site/service-worker.js || true
-          sed -i "s/^const VERSION = .*/const VERSION = 'build-${{ github.run_number }}'/" site/pre/service-worker.js || true
+          sed -i "s/^const VERSION = .*/const VERSION = 'build-${{ github.run_number }}'/" site/service-worker.js
+
+      - name: Stamp service worker version (preview)
+        if: ${{ github.event_name != 'release' }}
+        run: |
+          sed -i "s/^const VERSION = .*/const VERSION = 'build-${{ github.run_number }}'/" site/pre/service-worker.js
 
       - name: Create .nojekyll
         run: touch site/.nojekyll
