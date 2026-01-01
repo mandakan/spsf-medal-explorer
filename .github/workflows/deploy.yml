@@ -150,12 +150,12 @@ jobs:
       - name: Stamp service worker version (root in out/)
         run: |
           set -euo pipefail
-          sed -i "s/^const VERSION = .*/const VERSION = 'build-${{ github.run_number }}'/" out/service-worker.js
+          sed -i "s/^const VERSION = .*/const VERSION = 'build-${{ github.run_number }}'/" out/service-worker.js || true
 
       - name: Stamp service worker version (preview in out/pre)
         run: |
           set -euo pipefail
-          sed -i "s/^const VERSION = .*/const VERSION = 'build-${{ github.run_number }}'/" out/pre/service-worker.js
+          sed -i "s/^const VERSION = .*/const VERSION = 'build-${{ github.run_number }}'/" out/pre/service-worker.js || true
 
       - name: Clone gh-pages site store
         env:
@@ -202,43 +202,52 @@ jobs:
       - name: Commit and push site store to gh-pages
         env:
           GH_TOKEN: ${{ github.token }}
+          HUSKY: "0"
         run: |
           set -euo pipefail
-          cd site
 
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          ROOT="${GITHUB_WORKSPACE:-$PWD}"
+          SITE="$ROOT/site"
+          OUT="$ROOT/out"
 
-          if git remote get-url origin >/dev/null 2>&1; then
-            git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
+          # Ensure nested repo is trusted and configured
+          git config --global --add safe.directory "$SITE" || true
+          git -C "$SITE" config user.name "github-actions[bot]"
+          git -C "$SITE" config user.email "github-actions[bot]@users.noreply.github.com"
+
+          if git -C "$SITE" remote get-url origin >/dev/null 2>&1; then
+            git -C "$SITE" remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
           else
-            git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
+            git -C "$SITE" remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
           fi
 
-          git add -A
-          if git diff --cached --quiet; then
+          # Ensure we are on a local gh-pages branch tracking the remote
+          git -C "$SITE" fetch origin gh-pages
+          git -C "$SITE" checkout -B gh-pages origin/gh-pages
+
+          git -C "$SITE" add -A
+          if git -C "$SITE" diff --cached --quiet; then
             echo "No changes to commit."
           else
-            git commit -m "pages store: update from deploy run ${{ github.run_number }}"
+            git -C "$SITE" commit -m "pages store: update from deploy run ${{ github.run_number }}"
           fi
 
-          # Push with retry; on failure, reset to remote and re-sync out/ again
+          # Push with retry; on failure, reset only the site repo and re-sync from OUT
           for i in 1 2 3 4 5; do
-            if git push -u origin gh-pages; then
+            if git -C "$SITE" push origin HEAD:gh-pages; then
               echo "Push succeeded"
               exit 0
             fi
 
             echo "Push failed (attempt $i). Fetching, resetting, re-syncing, and retrying..."
-            git fetch origin gh-pages
-            git reset --hard origin/gh-pages
-            cd ..
-            rsync -a --delete --filter='protect /pr/***' out/ site/
-            cd site
+            git -C "$SITE" fetch origin gh-pages
+            git -C "$SITE" reset --hard origin/gh-pages
 
-            git add -A
-            if ! git diff --cached --quiet; then
-              git commit -m "pages store: update from deploy run ${{ github.run_number }} (retry $i)" || true
+            rsync -a --delete --filter='protect /pr/***' "$OUT/" "$SITE/"
+
+            git -C "$SITE" add -A
+            if ! git -C "$SITE" diff --cached --quiet; then
+              git -C "$SITE" commit -m "pages store: update from deploy run ${{ github.run_number }} (retry $i)" || true
             fi
 
             sleep $((i * 2))
