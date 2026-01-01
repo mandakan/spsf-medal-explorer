@@ -1,13 +1,23 @@
 import React, { useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { LINKS } from '../config/links'
 import { APP_INFO, CURRENT_RULEBOOK_VERSION } from '../config/appInfo'
 import Disclaimer from '../components/Disclaimer'
 import { BUILD } from '../config/buildInfo'
 import AdminFeatureFlagsDialog from '../components/AdminFeatureFlagsDialog'
+import { getReleaseId, getLastSeen } from '../utils/whatsNew'
+import { releases } from '../content/whatsNew'
 
 export default function About() {
   const base = (typeof document !== 'undefined' && document.querySelector('base')?.getAttribute('href')) || '/'
   const [adminOpen, setAdminOpen] = useState(false)
+  const location = useLocation()
+  const navigate = useNavigate()
+  const hasNew = (() => {
+    const releaseId = getReleaseId()
+    if (!releaseId) return false
+    return getLastSeen() !== releaseId
+  })()
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6">
@@ -105,6 +115,47 @@ export default function About() {
           <p className="mt-1 text-muted-foreground">
             Byggtid: <time dateTime={BUILD.timeISO}>{new Date(BUILD.timeISO).toLocaleString()}</time>
           </p>
+          <div className="mt-3">
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => navigate('/whats-new', { state: { backgroundLocation: location } })}
+              aria-label="Visa vad som är nytt"
+            >
+              {hasNew ? 'Visa nyheter (Ny)' : 'Visa nyheter'}
+            </button>
+          </div>
+        </section>
+
+        <section aria-labelledby="about-whatsnew" className="mt-8">
+          <h2 id="about-whatsnew" className="text-2xl font-semibold">Versionsnytt</h2>
+          <p className="mt-2 text-muted-foreground">
+            Kort sammanfattning av senaste ändringarna. Öppna modalen för en fokuserad vy.
+          </p>
+          <div className="mt-3 space-y-3">
+            {releases.map(rel => (
+              <article key={rel.id} className="rounded-lg border border-border p-3">
+                <h3 className="text-base font-semibold">{rel.title || 'Uppdatering'} • {rel.date} • {rel.id}</h3>
+                <ul className="mt-2 list-disc pl-5 space-y-1 text-sm">
+                  {(rel.highlights || []).map((h, idx) => (
+                    <li key={idx}>{h}</li>
+                  ))}
+                </ul>
+                {rel.link && (
+                  <p className="mt-2">
+                    <a
+                      className="text-primary underline underline-offset-2 hover:no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-bg-primary focus-visible:ring-primary"
+                      href={rel.link}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                    >
+                      Läs mer
+                    </a>
+                  </p>
+                )}
+              </article>
+            ))}
+          </div>
         </section>
 
         <section aria-labelledby="about-license" className="mt-8">
