@@ -67,6 +67,28 @@ jobs:
             git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
           fi
 
+      - name: Ensure site is at latest origin/gh-pages (no rebase)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          cd site
+
+          # Ensure authenticated remote (update if it already exists)
+          if git remote get-url origin >/dev/null 2>&1; then
+            git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
+          else
+            git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
+          fi
+
+          git fetch origin gh-pages || true
+          if git show-ref --verify --quiet refs/remotes/origin/gh-pages; then
+            git checkout -B gh-pages origin/gh-pages
+            git reset --hard origin/gh-pages
+          else
+            git checkout -B gh-pages
+          fi
+
       - name: Download latest release asset (site root)
         id: dl_root
         uses: robinraju/release-downloader@v1
@@ -221,49 +243,68 @@ jobs:
             done
           fi
 
-      - name: Persist site store to gh-pages
+      - name: Persist site store to gh-pages (reset-based, guarded, retry)
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          cd site
-          if [ ! -d .git ]; then
-            git init
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          # Ensure authenticated remote (update if it already exists)
-          if git remote get-url origin >/dev/null 2>&1; then
-            git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
-          else
-            git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
-          fi
 
-          # Ensure we're on a real branch (avoid detached HEAD)
-          git checkout -B gh-pages
+          apply_changes() {
+            # Ensure we never commit workspace artifacts if they somehow ended up here
+            rm -rf site/root site/site-root.zip site/site || true
 
-          # Ensure we never commit workspace artifacts if they somehow ended up here
-          rm -rf ./root ./site-root.zip || true
+            # Guards: these should never exist inside the gh-pages checkout
+            if [ -f "site/site-root.zip" ]; then
+              echo "ERROR: site/site-root.zip exists inside gh-pages checkout. Aborting."
+              exit 1
+            fi
+            if [ -d "site/site" ]; then
+              echo "ERROR: site/site directory exists inside gh-pages checkout. Aborting."
+              exit 1
+            fi
+          }
 
-          git add -A
-          if git diff --cached --quiet; then
-            echo "No changes to commit."
-          else
-            git commit -m "pages store: update from deploy run ${{ github.run_number }}"
-          fi
-
-          # Retry push in case another workflow updated gh-pages in the meantime
           for i in 1 2 3 4 5; do
-            git fetch origin gh-pages
-            if ! git rebase origin/gh-pages; then
-              git rebase --abort || true
+            echo "Attempt $i: syncing and pushing gh-pages"
+
+            cd site
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+
+            if git remote get-url origin >/dev/null 2>&1; then
+              git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
+            else
+              git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
+            fi
+
+            git fetch origin gh-pages || true
+            if git show-ref --verify --quiet refs/remotes/origin/gh-pages; then
+              git checkout -B gh-pages origin/gh-pages
+              git reset --hard origin/gh-pages
+            else
+              git checkout -B gh-pages
+            fi
+            cd ..
+
+            apply_changes
+
+            cd site
+            git add -A
+            if git diff --cached --quiet; then
+              echo "No changes to commit."
+            else
+              git commit -m "pages store: update from deploy run ${{ github.run_number }}"
             fi
 
             if git push -u origin gh-pages; then
               echo "Push succeeded"
-              break
+              exit 0
             fi
 
             echo "Push failed (attempt $i). Retrying..."
+            cd ..
             sleep $((i * 2))
           done
+
+          echo "ERROR: failed to push gh-pages after retries"
+          exit 1
