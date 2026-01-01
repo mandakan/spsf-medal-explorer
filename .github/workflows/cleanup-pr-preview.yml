@@ -1,0 +1,66 @@
+name: Cleanup PR Preview
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    steps:
+      - name: Fetch site store (gh-pages)
+        run: |
+          set -e
+          if git ls-remote --exit-code --heads https://github.com/${{ github.repository }}.git gh-pages >/dev/null 2>&1; then
+            git clone --depth 1 --branch gh-pages https://github.com/${{ github.repository }}.git site
+          else
+            echo "No gh-pages branch; nothing to clean." && exit 0
+          fi
+
+      - name: Remove preview folder
+        run: |
+          rm -rf "site/pr/${{ github.event.pull_request.number }}"
+
+      - name: Create .nojekyll
+        run: touch site/.nojekyll
+
+      - name: Upload artifact for deployment
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./site
+          name: github-pages
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages
+
+      - name: Persist site store to gh-pages
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -e
+          cd site
+          git init
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "pages store: remove PR #${{ github.event.pull_request.number }} preview"
+          fi
+          git branch -M gh-pages
+          git remote add origin https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git || true
+          git push -u origin gh-pages --force
