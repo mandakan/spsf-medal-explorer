@@ -1,0 +1,31 @@
+{
+  "_vendor-BUUgPIRM.js": {
+    "file": "assets/vendor-BUUgPIRM.js",
+    "name": "vendor",
+    "isDynamicEntry": true
+  },
+  "index.html": {
+    "file": "assets/index-DtK3cS4Q.js",
+    "name": "index",
+    "src": "index.html",
+    "isEntry": true,
+    "imports": [
+      "_vendor-BUUgPIRM.js"
+    ],
+    "dynamicImports": [
+      "src/data/medals.json",
+      "_vendor-BUUgPIRM.js",
+      "_vendor-BUUgPIRM.js",
+      "_vendor-BUUgPIRM.js"
+    ],
+    "css": [
+      "assets/index-DQylOSZ8.css"
+    ]
+  },
+  "src/data/medals.json": {
+    "file": "assets/medals-BZlpLe49.js",
+    "name": "medals",
+    "src": "src/data/medals.json",
+    "isDynamicEntry": true
+  }
+}
