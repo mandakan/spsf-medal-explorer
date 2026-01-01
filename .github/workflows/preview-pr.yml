@@ -179,9 +179,16 @@ jobs:
         run: |
           set -e
           cd site
-          git init
+          if [ ! -d .git ]; then
+            git init
+          fi
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git remote get-url origin >/dev/null 2>&1; then
+            git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git
+          else
+            git remote add origin https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git
+          fi
           git add -A
           if git diff --cached --quiet; then
             echo "No changes to commit."
@@ -189,7 +196,6 @@ jobs:
             git commit -m "pages store: add/update PR #${{ github.event.pull_request.number }} preview"
           fi
           git branch -M gh-pages
-          git remote add origin https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git || true
           git push -u origin gh-pages --force
 
 
