@@ -119,6 +119,35 @@ jobs:
       - name: Create .nojekyll
         run: touch site/.nojekyll
 
+      - name: Collect open PR numbers
+        id: openprs
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              per_page: 100
+            });
+            return data.map(pr => String(pr.number)).join(',');
+
+      - name: Prune closed PR previews
+        run: |
+          set -e
+          OPEN="${{ steps.openprs.outputs.result }}"
+          mkdir -p site/pr
+          if [ -d site/pr ]; then
+            for d in site/pr/*; do
+              [ -d "$d" ] || continue
+              num="$(basename "$d")"
+              case ",$OPEN," in
+                *,"$num",*) ;; # keep
+                *) echo "Removing closed PR preview $num"; rm -rf "$d";;
+              esac
+            done
+          fi
+
       - name: Persist site store to gh-pages
         env:
           GH_TOKEN: ${{ github.token }}
