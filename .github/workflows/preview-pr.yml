@@ -66,10 +66,19 @@ jobs:
           rsync -a --delete --filter='protect /pre/***' --filter='protect /pr/***' root/ site/
 
 
+      - name: Compute PR app version (from git hash)
+        id: prver
+        shell: bash
+        run: |
+          set -euo pipefail
+          SHORT_SHA="$(git rev-parse --short HEAD)"
+          echo "version=pr-${{ github.event.pull_request.number }}-${SHORT_SHA}" >> "$GITHUB_OUTPUT"
+
       - name: Build PR preview
         env:
           VITE_BASE: /${{ github.event.repository.name }}/pr/${{ github.event.pull_request.number }}/
           BUILD_NUMBER: ${{ github.run_number }}
+          APP_VERSION: ${{ steps.prver.outputs.version }}
         run: npm run build
 
       - name: Place preview under /pr/<n>
