@@ -1,26 +1,24 @@
-name: Deploy to GitHub Pages
+name: PR Preview
 
 on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
 
 permissions:
-  contents: read
+  contents: write
+  pull-requests: write
   pages: write
   id-token: write
 
 concurrency:
-  group: 'pages'
+  group: "pages"
   cancel-in-progress: true
 
 jobs:
-  build:
-    name: Build and Prepare Deployment
+  preview:
     runs-on: ubuntu-22.04
     timeout-minutes: 20
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -30,20 +28,18 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
-          cache: 'npm'
-          cache-dependency-path: 'package-lock.json'
+          node-version: "20.x"
+          cache: "npm"
+          cache-dependency-path: "package-lock.json"
 
       - name: Install dependencies
         run: npm ci --prefer-offline --no-audit
 
       - name: Run linting
         run: npm run lint
-        continue-on-error: false
 
       - name: Run tests
         run: npm run test
-        continue-on-error: false
 
       - name: Fetch site store (gh-pages)
         run: |
@@ -54,34 +50,21 @@ jobs:
             mkdir -p site
           fi
 
-      - name: Download latest release asset (site root)
-        uses: robinraju/release-downloader@v1
-        with:
-          latest: true
-          fileName: site-root.zip
-
-      - name: Unpack latest release into temp root
-        run: mkdir -p root && unzip -q site-root.zip -d root
-
-      - name: Merge root into site (preserve /pre and /pr)
-        run: |
-          mkdir -p site
-          rsync -a --delete --exclude 'pre/' --exclude 'pr/' root/ site/
-
-      - name: Build preview application
-        run: npm run build
-        continue-on-error: false
+      - name: Build PR preview
         env:
-          VITE_BASE: /${{ github.event.repository.name }}/pre/
+          VITE_BASE: /${{ github.event.repository.name }}/pr/${{ github.event.pull_request.number }}/
           BUILD_NUMBER: ${{ github.run_number }}
+        run: npm run build
 
-      - name: Move preview under /pre
-        run: mkdir -p site/pre && rsync -a dist/ site/pre/
-
-      - name: Label preview manifest
+      - name: Place preview under /pr/<n>
         run: |
-          sed -i 's/"name": "Skyttemärken"/"name": "Skyttemärken (Preview)"/' site/pre/manifest.json
-          sed -i 's/"short_name": "Skyttemärken"/"short_name": "Skyttemärken (Preview)"/' site/pre/manifest.json
+          mkdir -p site/pr/${{ github.event.pull_request.number }}
+          rsync -a dist/ site/pr/${{ github.event.pull_request.number }}/
+
+      - name: Label PR manifest
+        run: |
+          sed -i 's/"name": "Skyttemärken"/"name": "Skyttemärken (PR #${{ github.event.pull_request.number }})"/' site/pr/${{ github.event.pull_request.number }}/manifest.json
+          sed -i 's/"short_name": "Skyttemärken"/"short_name": "Skyttemärken (PR #${{ github.event.pull_request.number }})"/' site/pr/${{ github.event.pull_request.number }}/manifest.json
 
       - name: Create dynamic SPA 404
         run: |
@@ -106,13 +89,9 @@ jobs:
           </script>
           HTML
 
-      - name: Include LICENSE in build
-        run: cp LICENSE site/LICENSE
-
       - name: Stamp service worker version
         run: |
-          sed -i "s/^const VERSION = .*/const VERSION = 'build-${{ github.run_number }}'/" site/service-worker.js || true
-          sed -i "s/^const VERSION = .*/const VERSION = 'build-${{ github.run_number }}'/" site/pre/service-worker.js || true
+          sed -i "s/^const VERSION = .*/const VERSION = 'build-${{ github.run_number }}'/" site/pr/${{ github.event.pull_request.number }}/service-worker.js || true
 
       - name: Create .nojekyll
         run: touch site/.nojekyll
@@ -130,7 +109,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "No changes to commit."
           else
-            git commit -m "pages store: update from deploy run ${{ github.run_number }}"
+            git commit -m "pages store: add/update PR #${{ github.event.pull_request.number }} preview"
           fi
           git branch -M gh-pages
           git remote add origin https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git || true
@@ -139,20 +118,23 @@ jobs:
       - name: Upload artifact for deployment
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './site'
-          name: 'github-pages'
+          path: ./site
+          name: github-pages
 
-  deploy:
-    name: Deploy to GitHub Pages
-    needs: build
-    runs-on: ubuntu-22.04
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    
-    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
         with:
-          artifact_name: 'github-pages'
+          artifact_name: github-pages
+
+      - name: Comment preview URL
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          recreate: true
+          message: |
+            Preview ready:
+            ${{
+              github.event.repository.name.endsWith('.github.io')
+              && format('https://{0}/pr/{1}/', github.event.repository.name, github.event.pull_request.number)
+              || format('https://{0}.github.io/{1}/pr/{2}/', github.repository_owner, github.event.repository.name, github.event.pull_request.number)
+            }}

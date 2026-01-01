@@ -1,8 +1,8 @@
 const VERSION = 'v1.0.1'
 const BASE = new URL(self.registration.scope).pathname
-const CHANNEL = BASE.endsWith('/pre/') ? 'pre' : 'prod'
-const STATIC_CACHE = `static-cache-${CHANNEL}-${VERSION}`
-const API_CACHE = `api-cache-${CHANNEL}-${VERSION}`
+const SCOPE_KEY = (BASE.replace(/^\/|\/$/g, '').replace(/[^\w-]/g, '_')) || 'root'
+const STATIC_CACHE = `static-cache-${SCOPE_KEY}-${VERSION}`
+const API_CACHE = `api-cache-${SCOPE_KEY}-${VERSION}`
 
 const PRECACHE = [
   BASE,
