@@ -200,7 +200,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          set -e
+          set -euo pipefail
           cd site
           if [ ! -d .git ]; then
             git init
@@ -213,11 +213,15 @@ jobs:
           else
             git remote add origin https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git
           fi
+
+          # Ensure we're on a real branch (avoid detached HEAD)
+          git checkout -B gh-pages
+
           git add -A
           if git diff --cached --quiet; then
             echo "No changes to commit."
           else
             git commit -m "pages store: update from deploy run ${{ github.run_number }}"
           fi
-          git branch -M gh-pages
+
           git push -u origin gh-pages

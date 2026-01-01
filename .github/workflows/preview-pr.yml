@@ -186,7 +186,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          set -e
+          set -euo pipefail
           cd site
 
           git config user.name "github-actions[bot]"
@@ -199,6 +199,9 @@ jobs:
             git remote add origin https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git
           fi
 
+          # Ensure we're on a real branch (avoid detached HEAD)
+          git checkout -B gh-pages
+
           git add -A
           if git diff --cached --quiet; then
             echo "No changes to commit."
@@ -206,7 +209,6 @@ jobs:
             git commit -m "pages store: add/update PR #${{ github.event.pull_request.number }} preview"
           fi
 
-          git branch -M gh-pages
           git push -u origin gh-pages
 
       - name: Comment preview URL
