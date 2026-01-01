@@ -74,13 +74,38 @@ jobs:
           latest: true
           fileName: site-root.zip
 
+      - name: Create temp root dir
+        id: temproot
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT_DIR="$(mktemp -d)"
+          echo "ROOT_DIR=$ROOT_DIR" >> "$GITHUB_ENV"
+          echo "Created ROOT_DIR=$ROOT_DIR"
+
       - name: Unpack latest release into temp root
-        run: mkdir -p root && unzip -q site-root.zip -d root
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${ROOT_DIR:-}"
+          unzip -q site-root.zip -d "$ROOT_DIR"
 
       - name: Merge root into site (clean; preserve /pre and /pr)
+        shell: bash
         run: |
+          set -euo pipefail
+          test -n "${ROOT_DIR:-}"
           mkdir -p site
-          rsync -a --delete --filter='protect /pre/***' --filter='protect /pr/***' root/ site/
+          rsync -a --delete --filter='protect /pre/***' --filter='protect /pr/***' "${ROOT_DIR}/" site/
+
+      - name: Cleanup temp root dir
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -n "${ROOT_DIR:-}" ] && [ -d "${ROOT_DIR:-}" ]; then
+            rm -rf "$ROOT_DIR"
+          fi
 
       - name: Compute preview app version
         if: ${{ github.event_name != 'release' }}
@@ -209,13 +234,16 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           # Ensure authenticated remote (update if it already exists)
           if git remote get-url origin >/dev/null 2>&1; then
-            git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git
+            git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
           else
-            git remote add origin https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git
+            git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
           fi
 
           # Ensure we're on a real branch (avoid detached HEAD)
           git checkout -B gh-pages
+
+          # Ensure we never commit workspace artifacts if they somehow ended up here
+          rm -rf ./root ./site-root.zip || true
 
           git add -A
           if git diff --cached --quiet; then
@@ -224,4 +252,18 @@ jobs:
             git commit -m "pages store: update from deploy run ${{ github.run_number }}"
           fi
 
-          git push -u origin gh-pages
+          # Retry push in case another workflow updated gh-pages in the meantime
+          for i in 1 2 3 4 5; do
+            git fetch origin gh-pages
+            if ! git rebase origin/gh-pages; then
+              git rebase --abort || true
+            fi
+
+            if git push -u origin gh-pages; then
+              echo "Push succeeded"
+              break
+            fi
+
+            echo "Push failed (attempt $i). Retrying..."
+            sleep $((i * 2))
+          done
