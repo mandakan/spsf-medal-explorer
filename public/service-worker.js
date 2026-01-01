@@ -1,7 +1,8 @@
 const VERSION = 'v1.0.1'
 const BASE = new URL(self.registration.scope).pathname
-const STATIC_CACHE = `static-cache-${VERSION}`
-const API_CACHE = `api-cache-${VERSION}`
+const CHANNEL = BASE.endsWith('/pre/') ? 'pre' : 'prod'
+const STATIC_CACHE = `static-cache-${CHANNEL}-${VERSION}`
+const API_CACHE = `api-cache-${CHANNEL}-${VERSION}`
 
 const PRECACHE = [
   BASE,

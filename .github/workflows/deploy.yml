@@ -45,29 +45,64 @@ jobs:
         run: npm run test
         continue-on-error: false
 
-      - name: Build application
+      - name: Download latest release asset (site root)
+        uses: robinraju/release-downloader@v1
+        with:
+          latest: true
+          fileName: site-root.zip
+
+      - name: Unpack site root
+        run: mkdir -p site && unzip -q site-root.zip -d site
+
+      - name: Build preview application
         run: npm run build
         continue-on-error: false
         env:
-          VITE_BASE: /${{ github.event.repository.name }}/
+          VITE_BASE: /${{ github.event.repository.name }}/pre/
           BUILD_NUMBER: ${{ github.run_number }}
 
-      - name: Add SPA fallback
-        run: cp dist/index.html dist/404.html
+      - name: Move preview under /pre
+        run: mkdir -p site/pre && rsync -a dist/ site/pre/
+
+      - name: Label preview manifest
+        run: |
+          sed -i 's/"name": "Skyttemärken"/"name": "Skyttemärken (Preview)"/' site/pre/manifest.json
+          sed -i 's/"short_name": "Skyttemärken"/"short_name": "Skyttemärken (Preview)"/' site/pre/manifest.json
+
+      - name: Create dynamic SPA 404
+        run: |
+          cat > site/404.html <<'HTML'
+          <!doctype html><meta charset="utf-8"><meta name="robots" content="noindex"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+          <script>
+          (function () {
+            var parts = location.pathname.split('/').filter(Boolean);
+            var preIdx = parts.indexOf('pre');
+            var base = preIdx >= 0
+              ? '/' + parts.slice(0, preIdx + 1).join('/') + '/'
+              : (parts[0] ? '/' + parts[0] + '/' : '/');
+            fetch(base + 'index.html', { cache: 'no-store' })
+              .then(function(r){return r.text()})
+              .then(function(html){ document.open(); document.write(html); document.close(); })
+              .catch(function(){ location.href = base; });
+          })();
+          </script>
+          HTML
 
       - name: Include LICENSE in build
-        run: cp LICENSE dist/LICENSE
+        run: cp LICENSE site/LICENSE
 
       - name: Stamp service worker version
-        run: sed -i "s/^const VERSION = .*/const VERSION = 'build-${{ github.run_number }}'/" dist/service-worker.js
+        run: |
+          sed -i "s/^const VERSION = .*/const VERSION = 'build-${{ github.run_number }}'/" site/service-worker.js || true
+          sed -i "s/^const VERSION = .*/const VERSION = 'build-${{ github.run_number }}'/" site/pre/service-worker.js || true
 
       - name: Create .nojekyll
-        run: touch dist/.nojekyll
+        run: touch site/.nojekyll
 
       - name: Upload artifact for deployment
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './dist'
+          path: './site'
           name: 'github-pages'
 
   deploy:
