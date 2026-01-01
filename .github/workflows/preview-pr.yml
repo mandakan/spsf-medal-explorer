@@ -134,7 +134,7 @@ jobs:
           message: |
             Preview ready:
             ${{
-              github.event.repository.name.endsWith('.github.io')
+              endsWith(github.event.repository.name, '.github.io')
               && format('https://{0}/pr/{1}/', github.event.repository.name, github.event.pull_request.number)
               || format('https://{0}.github.io/{1}/pr/{2}/', github.repository_owner, github.event.repository.name, github.event.pull_request.number)
             }}
