@@ -21,7 +21,7 @@ export const timelineLayout = {
   defaultOptions: {
     yearWidth: 220,
     laneHeight: 260,
-    rowHeight: 70,
+    rowHeight: 130,
     radius: 22,
   },
   generator: (medals, options = {}) => {
