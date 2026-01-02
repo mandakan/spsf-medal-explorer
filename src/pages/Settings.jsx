@@ -3,7 +3,7 @@ import { useProfile } from '../hooks/useProfile'
 import BatchAchievementForm from '../components/BatchAchievementForm'
 import AchievementTimeline from '../components/AchievementTimeline'
 import StatisticsDashboard from '../components/StatisticsDashboard'
-import { UndoRedoProvider } from '../contexts/UndoRedoContext'
+import { UndoRedoProvider } from '../contexts/UndoRedoContext.jsx'
 import ProfilePromptBanner from '../components/ProfilePromptBanner'
 import FeatureGate from '../components/FeatureGate.jsx'
 
