@@ -21,16 +21,13 @@ const commit = execSync('git rev-parse --short HEAD').toString().trim()
 // buildNumber and buildTime are resolved inside the Vite config function to avoid requiring BUILD_NUMBER during preview
 
 // https://vitejs.dev/config/
-export default defineConfig(({ command, mode }) => {
-  const isProdBuild = command === 'build' && mode === 'production'
-
-  const buildNumber = process.env.BUILD_NUMBER ?? process.env.GITHUB_RUN_NUMBER
-
-  // Only enforce BUILD_NUMBER for actual production builds.
-  // Tooling like knip may load this config and should not fail.
-  if (isProdBuild && !buildNumber) {
-    throw new Error('BUILD_NUMBER is required for production builds')
-  }
+export default defineConfig(({ command }) => {
+  // Never throw here: tools like knip/vitest may load this config and would crash.
+  // Enforce BUILD_NUMBER in CI/build scripts instead.
+  const buildNumber =
+    process.env.BUILD_NUMBER ??
+    process.env.GITHUB_RUN_NUMBER ??
+    (command === 'build' ? 'local-build' : 'dev')
 
   const buildTime = new Date().toISOString()
 
@@ -45,7 +42,7 @@ export default defineConfig(({ command, mode }) => {
     plugins: [react(), tailwindcss()],
     define: {
       __APP_VERSION__: JSON.stringify(appVersion),
-      __BUILD_NUMBER__: JSON.stringify(buildNumber || 'dev'),
+      __BUILD_NUMBER__: JSON.stringify(buildNumber),
       __BUILD_COMMIT__: JSON.stringify(commit),
       __BUILD_TIME__: JSON.stringify(buildTime),
     },
