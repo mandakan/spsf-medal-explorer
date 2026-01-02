@@ -1,6 +1,6 @@
 export const STATUS_ORDER = ['locked', 'available', 'eligible', 'unlocked']
 
-export const STATUSES = {
+const STATUSES = {
   locked: {
     id: 'locked',
     label: 'Låst',
