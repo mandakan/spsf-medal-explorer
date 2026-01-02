@@ -13,7 +13,7 @@ import Disclaimer from './Disclaimer'
 import { LINKS } from '../config/links'
 import RequirementTree from './RequirementTree'
 import SectionCard from './SectionCard'
-import { StatusPill } from './StatusPill'
+import StatusPill from './StatusPill'
 import StatusIcon from './StatusIcon'
 import Icon from './Icon'
 

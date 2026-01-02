@@ -2,7 +2,7 @@ import React from 'react'
 import Icon from './Icon'
 import { getStatusProps } from '../config/statuses'
 
-export function StatusPill({ status, className = '', id, ...rest }) {
+export default function StatusPill({ status, className = '', id, ...rest }) {
   const s = getStatusProps(status)
   if (!s) return null
   return (
@@ -18,5 +18,3 @@ export function StatusPill({ status, className = '', id, ...rest }) {
     </span>
   )
 }
-
-export default StatusPill
