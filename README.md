@@ -4,6 +4,8 @@
 [![Test](https://github.com/mandakan/spsf-medal-explorer/actions/workflows/test.yml/badge.svg)](https://github.com/mandakan/spsf-medal-explorer/actions/workflows/test.yml)
 [![Build](https://github.com/mandakan/spsf-medal-explorer/actions/workflows/build.yml/badge.svg)](https://github.com/mandakan/spsf-medal-explorer/actions/workflows/build.yml)
 [![Deploy](https://github.com/mandakan/spsf-medal-explorer/actions/workflows/deploy.yml/badge.svg)](https://github.com/mandakan/spsf-medal-explorer/actions/workflows/deploy.yml)
+[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=mandakan/spsf-medal-explorer)](https://github.com/mandakan/spsf-medal-explorer/network/updates)
+[![CodeQL](https://github.com/mandakan/spsf-medal-explorer/actions/workflows/codeql.yml/badge.svg)](https://github.com/mandakan/spsf-medal-explorer/actions/workflows/codeql.yml)
 
 A mobile-first web app to explore and track progression through the Swedish Pistol Shooting Federation (SHB) medal system. Visualize prerequisites as an interactive skill tree, log achievements, and see what you can unlock next.
 
