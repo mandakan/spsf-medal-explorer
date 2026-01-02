@@ -1,5 +1,5 @@
 import React from 'react'
-import useOnboardingGate from '../hooks/useOnboardingGate'
+import { useOnboardingGate } from '../hooks/useOnboardingGate'
 import GuestModeBanner from './GuestModeBanner'
 import ProfilePromptBanner from './ProfilePromptBanner'
 import OnboardingChoiceBanner from './OnboardingChoiceBanner'
