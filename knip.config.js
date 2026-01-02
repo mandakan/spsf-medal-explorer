@@ -12,5 +12,8 @@ export default {
   },
 
   // Ignore build artifacts
-  ignore: ['dist/**', 'coverage/**', 'node_modules/**']
+  ignore: ['dist/**', 'coverage/**', 'node_modules/**'],
+
+  // Tailwind is used via CSS/@tailwindcss/vite; Knip may not detect it.
+  ignoreDependencies: ['tailwindcss']
 }
