@@ -1,7 +1,7 @@
 /** @type {import('knip').KnipConfig} */
 export default {
-  // Vite entrypoints
-  entry: ['index.html', 'src/main.jsx'],
+  // Vite entrypoints + service worker
+  entry: ['index.html', 'src/main.jsx', 'public/service-worker.js'],
 
   // Source files
   project: ['src/**/*.{js,jsx}'],
