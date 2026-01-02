@@ -39,5 +39,3 @@ export function useOnboardingGate() {
 
   return { isProfileLoading, showOnboarding, isGuest, chooseGuest, chooseSaved }
 }
-
-export default useOnboardingGate
