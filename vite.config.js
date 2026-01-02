@@ -22,10 +22,16 @@ const commit = execSync('git rev-parse --short HEAD').toString().trim()
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
+  const isProdBuild = command === 'build' && mode === 'production'
+
   const buildNumber = process.env.BUILD_NUMBER ?? process.env.GITHUB_RUN_NUMBER
-  if (command === 'build' && mode === 'production' && !buildNumber) {
+
+  // Only enforce BUILD_NUMBER for actual production builds.
+  // Tooling like knip may load this config and should not fail.
+  if (isProdBuild && !buildNumber) {
     throw new Error('BUILD_NUMBER is required for production builds')
   }
+
   const buildTime = new Date().toISOString()
 
   // Best practice: let CI/tag be the source of truth for release version.
