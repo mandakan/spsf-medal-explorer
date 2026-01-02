@@ -11,7 +11,7 @@ export function getStatusColorVar(status) {
   return STATUS_COLOR_VARS[status] || null
 }
 
-export function getStatusColorValue(
+function getStatusColorValue(
   status,
   root = typeof document !== 'undefined' ? document.documentElement : null
 ) {
