@@ -6,7 +6,7 @@ export const APP_INFO = {
   AUTHOR_NAME: 'Mathias A',
   LICENSE: 'MIT',
   // Map of year -> Skytteboken upplaga
-  RULEBOOK_VERSIONS: { 2024: 20, 2026: 21 },
+  RULEBOOK_VERSIONS: { 2024: 20 },
 }
 
 /**
