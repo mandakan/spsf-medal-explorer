@@ -5,7 +5,7 @@
 export const releases = [
   {
     id: '0.9.3',
-    date: '2026-01-02',
+    date: '2026-01-03',
     title: 'Användarguide',
     highlights: [
       'Interaktiv användarguide för medaljlistan',
