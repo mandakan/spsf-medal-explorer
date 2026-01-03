@@ -14,6 +14,18 @@ function resolveTarget(selector) {
   }
 }
 
+function getScrollParent(el) {
+  if (typeof window === 'undefined' || !el) return null
+  let node = el
+  while (node && node !== document.body) {
+    const style = window.getComputedStyle(node)
+    const overflowY = style.overflowY
+    if (overflowY === 'auto' || overflowY === 'scroll') return node
+    node = node.parentElement
+  }
+  return window
+}
+
 export default function OnboardingTourOverlay() {
   const { open, stepIndex, steps, complete, next, back } = useOnboardingTour()
   const step = steps?.[stepIndex] || null
@@ -137,18 +149,44 @@ export default function OnboardingTourOverlay() {
     }
   }, [open, handleClose])
 
-  // Target tracking
+  // Target tracking (including scroll inside scroll containers like the detail modal body)
   useEffect(() => {
     if (!open) return
+    if (typeof window === 'undefined') return
+
     updateTarget()
-    const onResize = () => updateTarget()
+
+    let raf = 0
+    const schedule = () => {
+      if (raf) return
+      raf = window.requestAnimationFrame(() => {
+        raf = 0
+        updateTarget()
+      })
+    }
+
+    const onResize = () => schedule()
     window.addEventListener('resize', onResize)
-    window.addEventListener('scroll', onResize, true)
+
+    const targetEl = resolveTarget(step?.target)
+    const scrollParent = targetEl ? getScrollParent(targetEl) : null
+
+    if (scrollParent && scrollParent !== window) {
+      scrollParent.addEventListener('scroll', schedule, { passive: true })
+    } else {
+      window.addEventListener('scroll', schedule, true)
+    }
+
     return () => {
       window.removeEventListener('resize', onResize)
-      window.removeEventListener('scroll', onResize, true)
+      if (scrollParent && scrollParent !== window) {
+        scrollParent.removeEventListener('scroll', schedule)
+      } else {
+        window.removeEventListener('scroll', schedule, true)
+      }
+      if (raf) window.cancelAnimationFrame(raf)
     }
-  }, [open, stepIndex, updateTarget])
+  }, [open, stepIndex, step?.target, updateTarget])
 
   // Auto-advance to next step when a specific selector becomes available (e.g. detail dialog opens).
   useEffect(() => {
