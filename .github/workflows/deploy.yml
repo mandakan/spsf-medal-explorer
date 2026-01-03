@@ -98,6 +98,19 @@ jobs:
         run: |
           set -euo pipefail
           unzip -q site-root.zip -d out
+          # Prevent the downloaded asset from ever being committed into gh-pages by accident
+          rm -f site-root.zip
+
+      - name: Debug root fingerprint (out/)
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -f out/index.html ]; then
+            echo "out/index.html sha256:"
+            sha256sum out/index.html
+          else
+            echo "out/index.html not found"
+          fi
 
       - name: Compute preview app version
         id: previewver
@@ -196,11 +209,13 @@ jobs:
           rm -rf site
           git clone --depth 1 --branch gh-pages "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" site
 
-      - name: Ensure gh-pages branch in site clone
+      - name: Ensure gh-pages branch in site clone (fast-forward to origin)
         run: |
           set -euo pipefail
           git -C site fetch origin gh-pages
           git -C site switch gh-pages || git -C site switch -c gh-pages --track origin/gh-pages
+          # Make sure we are exactly at origin/gh-pages to avoid push rejection
+          git -C site reset --hard origin/gh-pages
 
       - name: Collect open PR numbers
         id: openprs
@@ -257,8 +272,6 @@ jobs:
           else
             git -C "$SITE" remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
           fi
-
-          # Already on gh-pages branch from clone; avoid checkout/reset after rsync
 
           git -C "$SITE" add -A
           if git -C "$SITE" diff --cached --quiet; then
