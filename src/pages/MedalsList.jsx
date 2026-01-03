@@ -155,6 +155,7 @@ export default function MedalsList() {
   useEffect(() => {
     if (isProfileLoading) return
     if (location.pathname !== '/medals') return
+    if (tour?.open) return
     if (!tour?.canAutoStart?.()) return
 
     if (isProductionEnv()) {
