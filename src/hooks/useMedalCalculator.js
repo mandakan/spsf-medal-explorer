@@ -22,18 +22,6 @@ export function useMedalCalculator() {
 }
 
 /**
- * Hook to get medal status
- */
-function useMedalStatus(medalId) {
-  const calculator = useMedalCalculator()
-
-  return useMemo(() => {
-    if (!calculator) return null
-    return calculator.evaluateMedal(medalId)
-  }, [calculator, medalId])
-}
-
-/**
  * Hook to get all medal statuses
  */
 export function useAllMedalStatuses() {
