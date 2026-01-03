@@ -113,7 +113,7 @@ export default function CsvActivitiesPanel({ profile, updateProfile, upsertAchie
           Exportera aktiviteter (CSV)
         </button>
         <button onClick={handleDownloadTemplate} className="btn btn-secondary min-h-[44px]" aria-label="Ladda ned CSV-mall">
-          Ladda ned CSV‑mall
+          Ladda ned CSV-mall
         </button>
       </div>
 

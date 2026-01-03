@@ -22,6 +22,6 @@ export default {
     default: 'on',
     env: { production: 'preview' },
     title: 'Förhandsvisning',
-    message: 'CSV‑import/export är under utveckling. Gränssnittet kan ändras och vissa funktioner saknas.'
+    message: 'CSV-import/export är under utveckling. Gränssnittet kan ändras och vissa funktioner saknas.'
   }
 }
