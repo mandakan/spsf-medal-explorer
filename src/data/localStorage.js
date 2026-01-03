@@ -572,13 +572,24 @@ export class LocalStorageDataManager extends DataManager {
 
   _generateUserId() {
     try {
-      if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
-        return `user-${crypto.randomUUID()}`
+      if (typeof crypto !== 'undefined') {
+        if (typeof crypto.randomUUID === 'function') {
+          return `user-${crypto.randomUUID()}`
+        }
+        if (typeof crypto.getRandomValues === 'function') {
+          const bytes = new Uint8Array(16)
+          crypto.getRandomValues(bytes)
+          const hex = Array.from(bytes)
+            .map(b => b.toString(16).padStart(2, '0'))
+            .join('')
+          return `user-${hex}`
+        }
       }
     } catch {
-      // ignore
+      // ignore and fall through to non-cryptographic fallback
     }
-    return `user-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
+    // Fallback: no cryptographic randomness available; use timestamp-based ID
+    return `user-${Date.now()}`
   }
 
   _ensureUniqueId(id) {
