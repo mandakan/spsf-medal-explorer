@@ -42,7 +42,7 @@ export function downloadFile(data, filename, mimeType = 'application/octet-strea
  * Read a File/Blob into string (text).
  * Enforces a 50MB max size.
  */
-export function readFile(file, maxBytes = 50 * 1024 * 1024) {
+function readFile(file, maxBytes = 50 * 1024 * 1024) {
   return new Promise((resolve, reject) => {
     try {
       if (!file) {
