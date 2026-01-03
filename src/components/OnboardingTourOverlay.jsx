@@ -174,10 +174,13 @@ export default function OnboardingTourOverlay() {
     const maxWidth = 360
     const margin = 12
 
-    const preferredTop = targetRect.bottom + 10
+    const preferLeftOfTarget = step?.id === 'detail'
+    const preferredTop = preferLeftOfTarget ? targetRect.top : (targetRect.bottom + 10)
     const top = clamp(preferredTop, margin, vh - margin - 220)
 
-    const preferredLeft = targetRect.left
+    const preferredLeft = preferLeftOfTarget
+      ? (targetRect.left - 10 - maxWidth)
+      : targetRect.left
     const left = clamp(preferredLeft, margin, vw - margin - maxWidth)
 
     return {

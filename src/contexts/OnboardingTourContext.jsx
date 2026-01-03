@@ -34,13 +34,13 @@ const STEPS = [
     body: 'Tryck på ett märke i listan för att se detaljer. Lämna guiden öppen och tryck sedan Nästa.',
     target: '[data-tour="medal-row-0"]',
     requiresTarget: true,
-    autoAdvanceToNextOn: '[data-tour="medal-detail-title"]',
+    autoAdvanceToNextOn: '[data-tour="medal-detail-panel"]',
   },
   {
     id: 'detail',
     title: 'Detaljer',
     body: 'När detaljvyn är öppen ser du krav, förhandskrav och status. Tryck Nästa för att avsluta.',
-    target: '[data-tour="medal-detail-title"]',
+    target: '[data-tour="medal-detail-panel"]',
     requiresTarget: true,
   },
 ]

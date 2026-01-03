@@ -325,6 +325,7 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
       <div
         ref={panelRef}
         role="dialog"
+        data-tour="medal-detail-panel"
         aria-modal="true"
         aria-labelledby={titleId}
         aria-describedby={descId}
