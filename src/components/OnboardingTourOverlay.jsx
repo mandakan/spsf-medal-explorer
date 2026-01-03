@@ -156,11 +156,15 @@ export default function OnboardingTourOverlay() {
 
     updateTarget()
 
-    let raf = 0
+    // Re-measure after layout/animation settles (e.g. detail panel slides in).
+    const rafMeasure = window.requestAnimationFrame(() => updateTarget())
+    const timeoutMeasure = window.setTimeout(() => updateTarget(), 220)
+
+    let rafScroll = 0
     const schedule = () => {
-      if (raf) return
-      raf = window.requestAnimationFrame(() => {
-        raf = 0
+      if (rafScroll) return
+      rafScroll = window.requestAnimationFrame(() => {
+        rafScroll = 0
         updateTarget()
       })
     }
@@ -178,13 +182,16 @@ export default function OnboardingTourOverlay() {
     }
 
     return () => {
+      window.cancelAnimationFrame(rafMeasure)
+      window.clearTimeout(timeoutMeasure)
+
       window.removeEventListener('resize', onResize)
       if (scrollParent && scrollParent !== window) {
         scrollParent.removeEventListener('scroll', schedule)
       } else {
         window.removeEventListener('scroll', schedule, true)
       }
-      if (raf) window.cancelAnimationFrame(raf)
+      if (rafScroll) window.cancelAnimationFrame(rafScroll)
     }
   }, [open, stepIndex, step?.target, updateTarget])
 
