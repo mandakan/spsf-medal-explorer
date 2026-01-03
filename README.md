@@ -1,9 +1,9 @@
 # Medal Skill-Tree Explorer
 
 [![Lint](https://github.com/mandakan/spsf-medal-explorer/actions/workflows/lint.yml/badge.svg)](https://github.com/mandakan/spsf-medal-explorer/actions/workflows/lint.yml)
-[![Test](https://github.com/mandakan/spsf-medal-explorer/actions/workflows/test.yml/badge.svg)](https://github.com/mandakan/spsf-medal-explorer/actions/workflows/test.yml)
-[![Build](https://github.com/mandakan/spsf-medal-explorer/actions/workflows/build.yml/badge.svg)](https://github.com/mandakan/spsf-medal-explorer/actions/workflows/build.yml)
-[![Deploy](https://github.com/mandakan/spsf-medal-explorer/actions/workflows/deploy.yml/badge.svg)](https://github.com/mandakan/spsf-medal-explorer/actions/workflows/deploy.yml)
+[![Test](https://github.com/mandakan/spsf-medal-explorer/actions/workflows/test.yml/badge.svg)](https://github.com/mandakan/spsf-medal-explorer/actions/workflows/test.yml/badge.svg)
+[![Build](https://github.com/mandakan/spsf-medal-explorer/actions/workflows/build.yml/badge.svg)](https://github.com/mandakan/spsf-medal-explorer/actions/workflows/build.yml/badge.svg)
+[![Deploy](https://github.com/mandakan/spsf-medal-explorer/actions/workflows/deploy.yml/badge.svg)](https://github.com/mandakan/spsf-medal-explorer/actions/workflows/deploy.yml/badge.svg)
 ![react](https://img.shields.io/badge/react-%2320232a?logo=react)
 ![vite](https://img.shields.io/badge/vite-%23646cff?logo=vite&logoColor=61daf8)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
@@ -14,7 +14,7 @@ A mobile-first web app to explore and track progression through the Swedish Pist
 
 👉 Live demo (latest): https://mandakan.github.io/spsf-medal-explorer/pre/
 
-Note on data and privacy: All data is stored locally in your browser's localStorage. Nothing is uploaded or synced. Clearing site data or switching devices will erase your data — use Export to back up and Import to restore.
+Note on data and privacy: All data is stored locally in your browser's localStorage. Nothing is uploaded or synced. Clearing site data or switching devices will erase your data — use Export to back up and Import to restore. The app can also be installed and used offline, but data is still stored only on this device/browser.
 
 <a href="https://buymeacoffee.com/thias" target="_blank" rel="noopener"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="40"></a>
 
@@ -25,6 +25,7 @@ Note on data and privacy: All data is stored locally in your browser's localStor
 - Calculator determines unlocked/achievable medals based on inputs and prerequisites
 - List view with filtering, search, and status indicators
 - Local-first: data is stored in the browser; import/export supported
+- PWA support: installable on mobile/desktop with offline-capable app shell
 - Designed for mobile with gesture support (bottom sheet, swipe-to-dismiss)
 
 ## Features
@@ -54,6 +55,7 @@ Note on data and privacy: All data is stored locally in your browser's localStor
 - React + Vite
 - Jest (unit tests)
 - Tailwind (utility classes; dynamic color class helpers)
+- PWA: Web App Manifest + custom service worker (offline caching)
 - Local storage (no backend required in current version)
 
 ## Getting Started
@@ -110,6 +112,21 @@ Key modules
 - Import/Export
   - Export as JSON or CSV
   - Minimal PDF generation for a quick summary (no external libraries)
+
+## PWA (Install, Offline & Updates)
+
+Skyttemärken is a Progressive Web App (PWA). You can install it on your device and use it like an app.
+
+### Install
+- **Android (Chrome) / Desktop (Chrome, Edge):** choose **Install app** from the browser UI (often shown in the address bar or menu).
+- **iOS (Safari):** use **Share → Add to Home Screen**.
+
+### Offline use
+After you’ve opened the app once, the app shell and static assets are cached so the app can start and remain usable offline.  
+Your data is still stored locally in your browser (localStorage), so it stays on this device unless you export it.
+
+### Updates
+New versions are downloaded in the background. If you don’t see changes immediately after a deploy, refresh the page or fully close and reopen the installed app to load the latest version.
 
 ## Development Notes
 
@@ -306,7 +323,6 @@ npm test
 ## Contributing
 
 - Branch from main, add tests for core logic, and follow existing patterns
-- Keep logic pure and testable; UI should call into logic and hooks
 - Use descriptive names and document non-obvious decisions
 
 Basic workflow
