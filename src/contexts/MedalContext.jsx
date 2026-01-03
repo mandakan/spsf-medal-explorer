@@ -39,19 +39,9 @@ export function MedalProvider({ children }) {
     }
     init()
 
-    // Hot Module Replacement: rebuild database when data or loader changes during dev
-    if (import.meta.hot) {
-      import.meta.hot.accept('../data/medals.json', (mod) => {
-        if (!cancelled) {
-          init(mod?.default)
-        }
-      })
-      import.meta.hot.accept('../utils/medalDatabase', () => {
-        if (!cancelled) init()
-      })
+    return () => {
+      cancelled = true
     }
-
-    return () => { cancelled = true }
   }, [])
 
   return (
