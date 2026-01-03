@@ -73,7 +73,7 @@ export function readFile(file, maxBytes = 50 * 1024 * 1024) {
   })
 }
 
-export function formatFileSize(bytes) {
+function formatFileSize(bytes) {
   const units = ['B', 'KB', 'MB', 'GB']
   let i = 0
   let num = bytes

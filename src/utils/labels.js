@@ -1,4 +1,4 @@
-export const ACHIEVEMENT_TYPE_LABELS = {
+const ACHIEVEMENT_TYPE_LABELS = {
   precision_series: 'Precisionsserier',
   application_series: 'Tillämpningsserier',
   competition_result: 'Tävlingsresultat',

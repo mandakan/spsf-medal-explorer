@@ -1,4 +1,4 @@
-export const HEADERS = [
+const HEADERS = [
   'id','type','year','weaponGroup','points','date','timeSeconds','hits',
   'competitionName','competitionType','disciplineType','ppcClass','weapon','score',
   'teamName','position','eventName','notes','schema_version'
