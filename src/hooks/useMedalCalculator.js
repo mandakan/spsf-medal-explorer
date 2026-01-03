@@ -24,7 +24,7 @@ export function useMedalCalculator() {
 /**
  * Hook to get medal status
  */
-export function useMedalStatus(medalId) {
+function useMedalStatus(medalId) {
   const calculator = useMedalCalculator()
 
   return useMemo(() => {
