@@ -8,7 +8,7 @@ function idOf(medal) {
   return medal?.id || medal?.medalId
 }
 
-export function buildIdIndex(medals = []) {
+function buildIdIndex(medals = []) {
   const map = new Map()
   for (const m of medals) {
     const id = idOf(m)
@@ -17,7 +17,7 @@ export function buildIdIndex(medals = []) {
   return map
 }
 
-export function summarizeDataSet(data) {
+function summarizeDataSet(data) {
   const medals = data?.medals || []
   const idSet = new Set()
   let duplicates = 0
