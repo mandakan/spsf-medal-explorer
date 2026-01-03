@@ -17,6 +17,8 @@ import { useProfile } from '../hooks/useProfile'
 import { useOnboardingTour } from '../hooks/useOnboardingTour'
 import { getReleaseId, getLastSeen, isProductionEnv } from '../utils/whatsNew'
 
+const MANUAL_TOUR_KEY = 'app:onboardingTour:manualStart'
+
 export default function MedalsList() {
   const { medalDatabase } = useMedalDatabase()
   const navigate = useNavigate()
@@ -100,9 +102,9 @@ export default function MedalsList() {
     if (filters.reviewState) params.set('reviewState', filters.reviewState)
     if (query) params.set('search', query)
     if (sortBy && sortBy !== 'name') params.set('sort', sortBy)
-    const next = params.toString()
-    const curr = searchParams.toString()
-    if (next !== curr) {
+    const nextStr = params.toString()
+    const currStr = searchParams.toString()
+    if (nextStr !== currStr) {
       setSearchParams(params, { replace: true })
     }
   }, [filters, query, sortBy, setSearchParams, searchParams])
@@ -151,19 +153,8 @@ export default function MedalsList() {
 
   const hasUnderReview = useMemo(() => finalResults.some(m => m.reviewed !== true), [finalResults])
 
-  // Auto-start onboarding tour on first visit to /medals (after hydration and after "What's New" has been seen)
-  useEffect(() => {
-    if (isProfileLoading) return
-    if (location.pathname !== '/medals') return
+  const startGuideFromHere = useCallback(() => {
     if (tour?.open) return
-    if (!tour?.canAutoStart?.()) return
-
-    if (isProductionEnv()) {
-      const releaseId = getReleaseId()
-      const last = getLastSeen()
-      if (releaseId && last !== releaseId) return
-    }
-
     const needsReset = hasActiveFilters || query !== '' || sortBy !== 'name' || showFilters
     if (needsReset) {
       clearAllFilters()
@@ -172,11 +163,8 @@ export default function MedalsList() {
       setSortBy('name')
       setShowFilters(false)
     }
-
     tour.start()
   }, [
-    isProfileLoading,
-    location.pathname,
     tour,
     hasActiveFilters,
     query,
@@ -186,6 +174,53 @@ export default function MedalsList() {
     setQuery,
     setFilter,
   ])
+
+  // Manual start request (race-safe): consumed once when arriving at /medals.
+  useEffect(() => {
+    if (isProfileLoading) return
+    if (location.pathname !== '/medals') return
+    if (tour?.open) return
+
+    let requested = null
+    try {
+      requested = sessionStorage.getItem(MANUAL_TOUR_KEY)
+    } catch {
+      requested = null
+    }
+    if (requested !== 'medals') return
+
+    try {
+      sessionStorage.removeItem(MANUAL_TOUR_KEY)
+    } catch {
+      // ignore
+    }
+
+    startGuideFromHere()
+  }, [isProfileLoading, location.pathname, tour, startGuideFromHere])
+
+  // Auto-start onboarding tour on first visit to /medals (after hydration and after "What's New" has been seen)
+  useEffect(() => {
+    if (isProfileLoading) return
+    if (location.pathname !== '/medals') return
+    if (tour?.open) return
+
+    // If a manual start is pending, let the manual-start effect handle it.
+    try {
+      if (sessionStorage.getItem(MANUAL_TOUR_KEY) === 'medals') return
+    } catch {
+      // ignore
+    }
+
+    if (!tour?.canAutoStart?.()) return
+
+    if (isProductionEnv()) {
+      const releaseId = getReleaseId()
+      const last = getLastSeen()
+      if (releaseId && last !== releaseId) return
+    }
+
+    startGuideFromHere()
+  }, [isProfileLoading, location.pathname, tour, startGuideFromHere])
 
   if (isProfileLoading) {
     return null
@@ -198,7 +233,16 @@ export default function MedalsList() {
     <div className="space-y-6">
       <ProfileExperienceBanner idPrefix="medals-list" promptId="profile-picker-medals-list" />
       <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-3">
-        <h1 className="text-3xl font-bold text-foreground">Märken</h1>
+        <div className="flex items-baseline gap-3 flex-wrap">
+          <h1 className="text-3xl font-bold text-foreground">Märken</h1>
+          <button
+            type="button"
+            onClick={startGuideFromHere}
+            className="text-sm underline hover:no-underline text-muted-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary rounded"
+          >
+            Visa guide
+          </button>
+        </div>
 
         <div className="flex items-center gap-3">
           <div className="text-sm text-muted-foreground" aria-live="polite">
