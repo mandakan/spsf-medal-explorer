@@ -80,6 +80,7 @@ jobs:
       - name: Download latest release asset (fallback)
         if: github.event_name != 'release'
         uses: robinraju/release-downloader@v1
+        continue-on-error: true
         with:
           repository: ${{ github.repository }}
           latest: true
@@ -94,6 +95,7 @@ jobs:
           mkdir -p out
 
       - name: Unpack latest release into out/ (root)
+        if: ${{ hashFiles('site-root.zip') != '' }}
         shell: bash
         run: |
           set -euo pipefail
@@ -120,6 +122,21 @@ jobs:
           PKG_VER="$(node -p "require('./package.json').version")"
           echo "version=${PKG_VER}-pre.${GITHUB_RUN_NUMBER}" >> "$GITHUB_OUTPUT"
 
+      - name: Build root application (fallback when no asset)
+        if: ${{ hashFiles('site-root.zip') == '' }}
+        run: npm run build
+        continue-on-error: false
+        env:
+          VITE_BASE: /${{ github.event.repository.name }}/
+          BUILD_NUMBER: ${{ github.run_number }}
+          APP_VERSION: ${{ steps.previewver.outputs.version }}
+
+      - name: Move root into out/ (fallback)
+        if: ${{ hashFiles('site-root.zip') == '' }}
+        run: |
+          set -euo pipefail
+          rsync -a dist/ out/
+
       - name: Build preview application
         run: npm run build
         continue-on-error: false
@@ -137,8 +154,8 @@ jobs:
       - name: Label preview manifest
         run: |
           set -euo pipefail
-          sed -i 's/"name": "Skyttemärken"/"name": "Skyttemärken (Preview)"/' out/pre/manifest.json
-          sed -i 's/"short_name": "Skyttemärken"/"short_name": "Skyttemärken (Preview)"/' out/pre/manifest.json
+          sed -i 's/"name": "Skyttemärken"/"name": "Skyttemärken (Preview)"/' out/pre/manifest.json || true
+          sed -i 's/"short_name": "Skyttemärken"/"short_name": "Skyttemärken (Preview)"/' out/pre/manifest.json || true
 
       - name: Create dynamic SPA 404 (in out/)
         run: |
@@ -189,7 +206,7 @@ jobs:
       - name: Include LICENSE in out/
         run: |
           set -euo pipefail
-          cp LICENSE out/LICENSE
+          [ -f LICENSE ] && cp LICENSE out/LICENSE || true
 
       - name: Stamp service worker version (root in out/)
         run: |
@@ -250,6 +267,11 @@ jobs:
         run: |
           set -euo pipefail
           rsync -a --delete --filter='protect /pr/***' out/ site/
+
+      - name: Remove stray release artifacts from site repo
+        run: |
+          set -euo pipefail
+          rm -f site/site-root.zip || true
 
       - name: Commit and push site store to gh-pages
         env:
