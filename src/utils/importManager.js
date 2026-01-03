@@ -8,57 +8,6 @@
  * - resolveConflicts(existing, incoming)
  */
 
-function normalizeAchievementsContainer(parsed) {
-  if (Array.isArray(parsed)) {
-    return { achievements: parsed }
-  }
-  if (parsed && Array.isArray(parsed.achievements)) {
-    return parsed
-  }
-  // Try to detect profile export format
-  if (parsed && (Array.isArray(parsed.prerequisites) || Array.isArray(parsed.unlockedMedals))) {
-    return { ...parsed, achievements: parsed.achievements || parsed.prerequisites || [] }
-  }
-  return { achievements: [] }
-}
-
-function splitCsvLines(csv) {
-  // Split into lines, supporting CRLF/CR
-  return csv.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n').filter(Boolean)
-}
-
-function parseCsvRow(row) {
-  const out = []
-  let cur = ''
-  let inQuotes = false
-  for (let i = 0; i < row.length; i++) {
-    const ch = row[i]
-    if (inQuotes) {
-      if (ch === '"') {
-        if (row[i + 1] === '"') {
-          cur += '"'
-          i++
-        } else {
-          inQuotes = false
-        }
-      } else {
-        cur += ch
-      }
-    } else {
-      if (ch === ',') {
-        out.push(cur)
-        cur = ''
-      } else if (ch === '"') {
-        inQuotes = true
-      } else {
-        cur += ch
-      }
-    }
-  }
-  out.push(cur)
-  return out
-}
-
 export function parseProfileBackup(content) {
   let raw
   try {
