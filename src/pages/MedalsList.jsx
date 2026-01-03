@@ -10,16 +10,19 @@ import FilterPresets from '../components/FilterPresets'
 import QuickFilterChips from '../components/QuickFilterChips'
 import MedalList from '../components/MedalList'
 import MobileBottomSheet from '../components/MobileBottomSheet'
-import MedalDetailModal from '../components/MedalDetailModal'
-import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom'
 import ProfileExperienceBanner from '../components/ProfileExperienceBanner'
 import ReviewLegend from '../components/ReviewLegend'
 import { useProfile } from '../hooks/useProfile'
+import { useOnboardingTour } from '../hooks/useOnboardingTour'
+import { getReleaseId, getLastSeen, isProductionEnv } from '../utils/whatsNew'
+
+const MANUAL_TOUR_KEY = 'app:onboardingTour:manualStart'
 
 export default function MedalsList() {
   const { medalDatabase } = useMedalDatabase()
-  const { id: selectedMedalId } = useParams()
   const navigate = useNavigate()
+  const location = useLocation()
   const statuses = useAllMedalStatuses()
   const [sortBy, setSortBy] = useState('name')
   const [showFilters, setShowFilters] = useState(false)
@@ -27,6 +30,7 @@ export default function MedalsList() {
   const [searchParams, setSearchParams] = useSearchParams()
   const { currentProfile, hydrated } = useProfile()
   const isProfileLoading = !hydrated || typeof currentProfile === 'undefined'
+  const tour = useOnboardingTour()
 
   // Responsive, mobile-first list height (~70vh with a sensible minimum)
   const [listHeight, setListHeight] = useState(600)
@@ -98,9 +102,9 @@ export default function MedalsList() {
     if (filters.reviewState) params.set('reviewState', filters.reviewState)
     if (query) params.set('search', query)
     if (sortBy && sortBy !== 'name') params.set('sort', sortBy)
-    const next = params.toString()
-    const curr = searchParams.toString()
-    if (next !== curr) {
+    const nextStr = params.toString()
+    const currStr = searchParams.toString()
+    if (nextStr !== currStr) {
       setSearchParams(params, { replace: true })
     }
   }, [filters, query, sortBy, setSearchParams, searchParams])
@@ -149,6 +153,75 @@ export default function MedalsList() {
 
   const hasUnderReview = useMemo(() => finalResults.some(m => m.reviewed !== true), [finalResults])
 
+  const startGuideFromHere = useCallback(() => {
+    if (tour?.open) return
+    const needsReset = hasActiveFilters || query !== '' || sortBy !== 'name' || showFilters
+    if (needsReset) {
+      clearAllFilters()
+      setQuery('')
+      setFilter('search', '')
+      setSortBy('name')
+      setShowFilters(false)
+    }
+    tour.start()
+  }, [
+    tour,
+    hasActiveFilters,
+    query,
+    sortBy,
+    showFilters,
+    clearAllFilters,
+    setQuery,
+    setFilter,
+  ])
+
+  // Manual start request (race-safe): consumed once when arriving at /medals.
+  useEffect(() => {
+    if (isProfileLoading) return
+    if (location.pathname !== '/medals') return
+    if (tour?.open) return
+
+    let requested = null
+    try {
+      requested = sessionStorage.getItem(MANUAL_TOUR_KEY)
+    } catch {
+      requested = null
+    }
+    if (requested !== 'medals') return
+
+    try {
+      sessionStorage.removeItem(MANUAL_TOUR_KEY)
+    } catch {
+      // ignore
+    }
+
+    startGuideFromHere()
+  }, [isProfileLoading, location.pathname, tour, startGuideFromHere])
+
+  // Auto-start onboarding tour on first visit to /medals (after hydration and after "What's New" has been seen)
+  useEffect(() => {
+    if (isProfileLoading) return
+    if (location.pathname !== '/medals') return
+    if (tour?.open) return
+
+    // If a manual start is pending, let the manual-start effect handle it.
+    try {
+      if (sessionStorage.getItem(MANUAL_TOUR_KEY) === 'medals') return
+    } catch {
+      // ignore
+    }
+
+    if (!tour?.canAutoStart?.()) return
+
+    if (isProductionEnv()) {
+      const releaseId = getReleaseId()
+      const last = getLastSeen()
+      if (releaseId && last !== releaseId) return
+    }
+
+    startGuideFromHere()
+  }, [isProfileLoading, location.pathname, tour, startGuideFromHere])
+
   if (isProfileLoading) {
     return null
   }
@@ -160,7 +233,16 @@ export default function MedalsList() {
     <div className="space-y-6">
       <ProfileExperienceBanner idPrefix="medals-list" promptId="profile-picker-medals-list" />
       <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-3">
-        <h1 className="text-3xl font-bold text-foreground">Märken</h1>
+        <div className="flex items-baseline gap-3 flex-wrap">
+          <h1 className="text-3xl font-bold text-foreground">Märken</h1>
+          <button
+            type="button"
+            onClick={startGuideFromHere}
+            className="text-sm underline hover:no-underline text-muted-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary rounded"
+          >
+            Visa guide
+          </button>
+        </div>
 
         <div className="flex items-center gap-3">
           <div className="text-sm text-muted-foreground" aria-live="polite">
@@ -222,7 +304,6 @@ export default function MedalsList() {
         />
       </div>
 
-
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <div className="hidden lg:block lg:col-span-1 space-y-4">
           <FilterPanel
@@ -272,7 +353,13 @@ export default function MedalsList() {
             </div>
           ) : (
             <div className="border border-border rounded-md overflow-hidden" role="region" aria-label="Märkes-resultat">
-              <MedalList medals={finalResults} height={listHeight} itemSize={60} onSelect={(m) => navigate(`/medals/${m.id}`)} statusesById={statusesById} />
+              <MedalList
+                medals={finalResults}
+                height={listHeight}
+                itemSize={60}
+                onSelect={(m) => navigate(`/medals/${m.id}`, { state: { backgroundLocation: location } })}
+                statusesById={statusesById}
+              />
             </div>
           )}
         </div>
@@ -282,13 +369,6 @@ export default function MedalsList() {
         <div className="mt-4 lg:hidden" role="note" aria-label="Teckenförklaring">
           <ReviewLegend />
         </div>
-      )}
-
-      {selectedMedalId && (
-        <MedalDetailModal
-          medalId={selectedMedalId}
-          onClose={() => navigate('/medals')}
-        />
       )}
     </div>
   )

@@ -18,6 +18,15 @@ export default function Home() {
         <p className="text-lg text-muted-foreground">
           Dokumentera dina skyttemärken och medaljer med aktiviteter, utforska framtida märken och planera progression
         </p>
+
+        <div className="mt-6 flex justify-center">
+          <Link
+            to="/medals"
+            className="btn btn-secondary min-h-[44px] inline-flex items-center justify-center"
+          >
+            Visa snabbguide
+          </Link>
+        </div>
       </section>
 
       <Disclaimer

@@ -6,11 +6,12 @@ export const releases = [
   {
     id: '0.9.3',
     date: '2026-01-02',
-    title: 'Regelhänvisning',
+    title: 'Användarguide',
     highlights: [
+      'Interaktiv användarguide för medaljlistan',
       'Hänvisa till regelbok version 20 tillsvidare',
     ],
-    link: 'https://github.com/mandakan/spsf-medal-explorer/releases/tag/v0.9.2',
+    link: 'https://github.com/mandakan/spsf-medal-explorer/releases/tag/v0.9.3',
   },
   {
     id: '0.9.2',

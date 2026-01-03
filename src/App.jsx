@@ -5,6 +5,7 @@ import { ProfileProvider } from './contexts/ProfileContext.jsx'
 import { CalculatorProvider } from './contexts/CalculatorContext.jsx'
 import { UndoRedoProvider } from './contexts/UndoRedoContext.jsx'
 import { FeatureFlagsProvider } from './contexts/FeatureFlags.jsx'
+import { OnboardingTourProvider } from './contexts/OnboardingTourContext.jsx'
 import RootLayout from './layouts/RootLayout'
 import Home from './pages/Home'
 import SkillTree from './pages/SkillTree'
@@ -15,8 +16,8 @@ import About from './pages/About'
 import MedalDetailModal from './components/MedalDetailModal'
 import RequireSavedProfile from './components/RequireSavedProfile'
 import WhatsNewOverlay from './components/WhatsNewOverlay'
+import OnboardingTourOverlay from './components/OnboardingTourOverlay'
 import { getReleaseId, getLastSeen, isProductionEnv } from './utils/whatsNew'
-
 
 function MedalDetailOverlay() {
   const { id } = useParams()
@@ -40,8 +41,8 @@ function AppRoutes() {
   const background = location.state?.backgroundLocation
   const isMedalDetail = location.pathname.startsWith('/medals/')
   const isWhatsNew = location.pathname === '/whats-new'
-  const isOverlayRoute = (isMedalDetail || isWhatsNew)
-  const renderLocation = (isOverlayRoute && background) ? background : location
+  const isOverlayRoute = isMedalDetail || isWhatsNew
+  const renderLocation = isOverlayRoute && background ? background : location
 
   // One-time boot: show "What's New" after version bump (production only)
   const bootedRef = useRef(false)
@@ -88,6 +89,7 @@ function AppRoutes() {
           <Route path="whats-new" element={<WhatsNewOverlay />} />
         </Route>
       </Routes>
+
       {isMedalDetail && background && (
         <Routes>
           <Route path="/medals/:id" element={<MedalDetailOverlay />} />
@@ -98,6 +100,8 @@ function AppRoutes() {
           <Route path="/whats-new" element={<WhatsNewOverlay />} />
         </Routes>
       )}
+
+      <OnboardingTourOverlay />
     </>
   )
 }
@@ -121,9 +125,11 @@ function App() {
         <FeatureFlagsProvider>
           <CalculatorProvider>
             <UndoRedoProvider>
-              <BrowserRouter basename={base}>
-                <AppRoutes />
-              </BrowserRouter>
+              <OnboardingTourProvider>
+                <BrowserRouter basename={base}>
+                  <AppRoutes />
+                </BrowserRouter>
+              </OnboardingTourProvider>
             </UndoRedoProvider>
           </CalculatorProvider>
         </FeatureFlagsProvider>

@@ -1,7 +1,6 @@
 import React, { useMemo, useCallback, useRef, useState } from 'react'
 import StatusIcon from './StatusIcon'
 
-
 function Row({ data, index, style }) {
   const { medals, onSelect, statusesById } = data
   const medal = medals[index]
@@ -23,7 +22,6 @@ function Row({ data, index, style }) {
     ? `${name} • Plats­hållare`
     : `${name}${underReview ? ' • Under granskning' : ''}${isUnlocked && unlockedYear ? ' • Upplåst ' + unlockedYear : ''}`
 
-  // Left icon reflects progression status only (locked/available/eligible/unlocked).
   return (
     <div
       role="listitem"
@@ -36,6 +34,7 @@ function Row({ data, index, style }) {
       ].join(' ')}
       style={style}
       aria-label={ariaLabel}
+      data-tour={index === 0 ? 'medal-row-0' : undefined}
     >
       <div className="relative w-10 h-10 flex items-center justify-center rounded bg-bg-secondary flex-shrink-0" aria-hidden="true">
         <StatusIcon status={leadingStatus} className="w-2/3 h-2/3" />

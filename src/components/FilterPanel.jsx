@@ -12,7 +12,7 @@ export default function FilterPanel({
   onSortChange,
 }) {
   return (
-    <div className="card flex flex-col overflow-hidden max-h-[80dvh] sm:max-h-none">
+    <div className="card flex flex-col overflow-hidden max-h-[80dvh] sm:max-h-none" data-tour="filter-panel">
       <div className="p-4 flex justify-between items-center">
         <h3 className="font-bold text-foreground">Filter</h3>
         {hasActiveFilters && (
