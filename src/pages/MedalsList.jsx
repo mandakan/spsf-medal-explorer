@@ -164,8 +164,28 @@ export default function MedalsList() {
       if (releaseId && last !== releaseId) return
     }
 
+    const needsReset = hasActiveFilters || query !== '' || sortBy !== 'name' || showFilters
+    if (needsReset) {
+      clearAllFilters()
+      setQuery('')
+      setFilter('search', '')
+      setSortBy('name')
+      setShowFilters(false)
+    }
+
     tour.start()
-  }, [isProfileLoading, location.pathname, tour])
+  }, [
+    isProfileLoading,
+    location.pathname,
+    tour,
+    hasActiveFilters,
+    query,
+    sortBy,
+    showFilters,
+    clearAllFilters,
+    setQuery,
+    setFilter,
+  ])
 
   if (isProfileLoading) {
     return null
