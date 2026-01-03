@@ -9,16 +9,6 @@ export function getReleaseId() {
   return BUILD?.version || ''
 }
 
-/**
- * Create a stable build identifier from build metadata.
- * Example: "1.5.0+210"
- */
-function getBuildId() {
-  const version = BUILD?.version || ''
-  const build = BUILD?.number || ''
-  return [version, build].filter(Boolean).join('+')
-}
-
 export function getLastSeen() {
   try {
     return localStorage.getItem(WHATSNEW_STORAGE_KEY)
@@ -33,12 +23,6 @@ export function setLastSeen(id) {
   } catch {
     // ignore
   }
-}
-
-function hasNewWhatsNew() {
-  const id = getReleaseId()
-  if (!id) return false
-  return getLastSeen() !== id
 }
 
 export function isProductionEnv() {
