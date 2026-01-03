@@ -73,6 +73,14 @@ export default function OnboardingTourOverlay() {
     else next()
   }, [primaryDisabled, isLast, complete, next])
 
+  const handleBack = useCallback(() => {
+    if (typeof document !== 'undefined' && step?.id === 'detail') {
+      const closeBtn = resolveTarget('button[aria-label="Stäng medal-detaljer"]')
+      closeBtn?.click?.()
+    }
+    back()
+  }, [back, step?.id])
+
   // Focus management + trap
   useEffect(() => {
     if (!open) return
@@ -271,7 +279,7 @@ export default function OnboardingTourOverlay() {
             <button
               type="button"
               className="btn btn-secondary min-h-[44px]"
-              onClick={back}
+              onClick={handleBack}
               disabled={stepIndex === 0}
               aria-disabled={stepIndex === 0}
             >
