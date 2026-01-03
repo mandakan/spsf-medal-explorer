@@ -3,6 +3,18 @@
 
 ---
 
+## Status: historical design docs
+
+The documents in this folder are the original product/design/architecture specifications created early in the project.
+They are kept for historical context and to capture the initial intent, but they may not reflect the current implementation.
+
+For up-to-date behavior and architecture, prefer:
+- the repository root `README.md`
+- the source code in `src/` (especially `src/logic/`, `src/contexts/`, and `src/utils/`)
+- tests in `tests/`
+
+---
+
 ## 📋 What You Have
 
 A comprehensive set of **7 design documents** that form a complete product specification for building a mobile-first web app to explore and track Swedish shooting association (SHB) medal achievements.

@@ -105,6 +105,17 @@ Key modules
 - utils/exportManager.js: JSON/CSV export and minimal PDF fallback
 - contexts/UndoRedoContext.jsx: History and undo/redo support
 
+## Design docs (historical)
+
+The files in `docs/` are the original product/design/architecture documents created early in the project.
+They are kept for historical context and to capture the initial intent, but they may not reflect the current
+implementation.
+
+For up-to-date behavior and architecture, prefer:
+- this README (project structure + key modules)
+- the source code in `src/` (especially `src/logic/`, `src/contexts/`, and `src/utils/`)
+- tests in `tests/`
+
 ## Data & Persistence
 
 - Local-first: user profile, achievements, and unlocked medals are kept in browser storage
