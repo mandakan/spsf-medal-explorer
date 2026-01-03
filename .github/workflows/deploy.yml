@@ -86,7 +86,7 @@ jobs:
           mkdir -p out
 
       - name: Unpack latest release into out/ (root)
-        if: github.event_name == 'release' && ${{ hashFiles('site-root.zip') != '' }}
+        if: ${{ github.event_name == 'release' && hashFiles('site-root.zip') != '' }}
         shell: bash
         run: |
           set -euo pipefail
