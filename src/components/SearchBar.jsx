@@ -40,6 +40,7 @@ export default function SearchBar({
           aria-expanded={showSuggestions}
           aria-controls="search-suggestions"
           aria-haspopup="listbox"
+          data-tour="medals-search"
         />
         {value ? (
           <button

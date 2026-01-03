@@ -235,8 +235,6 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
 
   if (!medal) return null
 
-  // Status text and icon are rendered via StatusPill
-
   const mdComponents = {
     ul: (props) => <ul className="list-disc pl-5 my-2 space-y-1" {...props} />,
     ol: (props) => <ol className="list-decimal pl-5 my-2 space-y-1" {...props} />,
@@ -262,7 +260,6 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
     ),
     code: (props) => <code className="px-1 py-0.5 rounded bg-bg-secondary" {...props} />
   }
-
 
   // Focus trap inside the panel
   const handleKeyDown = (e) => {
@@ -309,7 +306,6 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
     })
   }
 
-
   const handleRemoveClick = () => {
     if (canRemove) {
       setShowBlockedInfo(false)
@@ -319,9 +315,6 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
       setShowBlockedInfo(true)
     }
   }
-
-
-  // StatusPill handles status styling
 
   return (
     <div
@@ -361,6 +354,7 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
               <div className="flex items-start gap-2 flex-wrap">
                 <h2
                   id={titleId}
+                  data-tour="medal-detail-title"
                   className="text-xl sm:text-2xl font-bold text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary break-words"
                   tabIndex={-1}
                 >
@@ -412,7 +406,6 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
                 linkUrl={LINKS.RULEBOOK}
               />
             </div>
-            {/* status pill moved to header */}
             {isPlaceholder && (
               <>
                 <p id={placeholderNoteId} className="sr-only">
@@ -487,7 +480,6 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
               </SectionCard>
             )}
 
-            {/* Prerequisites */}
             {!isPlaceholder && prereqItemsResolved.length > 0 && (
               <SectionCard
                 id={`prereq-${medal.id}`}
@@ -516,8 +508,6 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
                 </ul>
               </SectionCard>
             )}
-
-
 
             {underReview && (
               <div id={`under-review-note-${medal.id}`} className="mb-4 alert alert-warning">
@@ -616,7 +606,6 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
                 </ul>
               </SectionCard>
             )}
-
           </div>
 
           {/* Footer */}

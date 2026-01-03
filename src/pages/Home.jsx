@@ -1,13 +1,16 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useMedalDatabase } from '../hooks/useMedalDatabase'
 import Disclaimer from '../components/Disclaimer'
 import Icon from '../components/Icon'
 import { LINKS } from '../config/links'
 import { BUILD } from '../config/buildInfo'
+import { useOnboardingTour } from '../hooks/useOnboardingTour'
 
 export default function Home() {
   const { medalDatabase, loading } = useMedalDatabase()
+  const navigate = useNavigate()
+  const tour = useOnboardingTour()
 
   return (
     <div className="space-y-8">
@@ -18,6 +21,21 @@ export default function Home() {
         <p className="text-lg text-muted-foreground">
           Dokumentera dina skyttemärken och medaljer med aktiviteter, utforska framtida märken och planera progression
         </p>
+
+        <div className="mt-6 flex justify-center">
+          <button
+            type="button"
+            className="btn btn-secondary min-h-[44px]"
+            onClick={() => {
+              // No magic navigation: user stays on Home. This just opens the guide.
+              // The guide is most useful on /medals, but we keep this as a manual entry point.
+              tour.start()
+              navigate('/medals')
+            }}
+          >
+            Visa snabbguide
+          </button>
+        </div>
       </section>
 
       <Disclaimer

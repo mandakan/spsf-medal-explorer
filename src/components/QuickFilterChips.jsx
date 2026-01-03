@@ -1,12 +1,13 @@
 import React from 'react'
 
-function ChipButton({ active, onClick, children, ariaLabel }) {
+function ChipButton({ active, onClick, children, ariaLabel, dataTour }) {
   return (
     <button
       type="button"
       onClick={onClick}
       aria-pressed={active ? 'true' : 'false'}
       aria-label={ariaLabel}
+      data-tour={dataTour}
       className={[
         'inline-flex items-center px-4 py-2 rounded-full border text-sm min-h-[44px] shrink-0',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
@@ -28,7 +29,6 @@ export default function QuickFilterChips({
   controlsId,
   className = '',
 }) {
-
   const status = filters.status || null
 
   return (
@@ -37,11 +37,11 @@ export default function QuickFilterChips({
       role="toolbar"
       aria-label="Snabbfilter"
     >
-      {/* Status chips */}
       <ChipButton
         active={status === 'unlocked'}
         onClick={() => onToggle('status', 'unlocked')}
         ariaLabel="Filtrera på Upplåst"
+        dataTour="chip-unlocked"
       >
         Upplåst
       </ChipButton>
@@ -74,6 +74,7 @@ export default function QuickFilterChips({
         onClick={onOpenFilters}
         aria-haspopup="dialog"
         aria-controls={controlsId}
+        data-tour="open-filters"
         className="inline-flex items-center px-4 py-2 rounded-full border text-sm min-h-[44px] shrink-0 lg:hidden
                    bg-background text-foreground border-border hover:bg-bg-secondary
                    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"

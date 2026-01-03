@@ -10,16 +10,17 @@ import FilterPresets from '../components/FilterPresets'
 import QuickFilterChips from '../components/QuickFilterChips'
 import MedalList from '../components/MedalList'
 import MobileBottomSheet from '../components/MobileBottomSheet'
-import MedalDetailModal from '../components/MedalDetailModal'
-import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom'
 import ProfileExperienceBanner from '../components/ProfileExperienceBanner'
 import ReviewLegend from '../components/ReviewLegend'
 import { useProfile } from '../hooks/useProfile'
+import { useOnboardingTour } from '../hooks/useOnboardingTour'
+import { getReleaseId, getLastSeen, isProductionEnv } from '../utils/whatsNew'
 
 export default function MedalsList() {
   const { medalDatabase } = useMedalDatabase()
-  const { id: selectedMedalId } = useParams()
   const navigate = useNavigate()
+  const location = useLocation()
   const statuses = useAllMedalStatuses()
   const [sortBy, setSortBy] = useState('name')
   const [showFilters, setShowFilters] = useState(false)
@@ -27,6 +28,7 @@ export default function MedalsList() {
   const [searchParams, setSearchParams] = useSearchParams()
   const { currentProfile, hydrated } = useProfile()
   const isProfileLoading = !hydrated || typeof currentProfile === 'undefined'
+  const tour = useOnboardingTour()
 
   // Responsive, mobile-first list height (~70vh with a sensible minimum)
   const [listHeight, setListHeight] = useState(600)
@@ -149,6 +151,21 @@ export default function MedalsList() {
 
   const hasUnderReview = useMemo(() => finalResults.some(m => m.reviewed !== true), [finalResults])
 
+  // Auto-start onboarding tour on first visit to /medals (after hydration and after "What's New" has been seen)
+  useEffect(() => {
+    if (isProfileLoading) return
+    if (location.pathname !== '/medals') return
+    if (!tour?.canAutoStart?.()) return
+
+    if (isProductionEnv()) {
+      const releaseId = getReleaseId()
+      const last = getLastSeen()
+      if (releaseId && last !== releaseId) return
+    }
+
+    tour.start()
+  }, [isProfileLoading, location.pathname, tour])
+
   if (isProfileLoading) {
     return null
   }
@@ -222,7 +239,6 @@ export default function MedalsList() {
         />
       </div>
 
-
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <div className="hidden lg:block lg:col-span-1 space-y-4">
           <FilterPanel
@@ -272,7 +288,13 @@ export default function MedalsList() {
             </div>
           ) : (
             <div className="border border-border rounded-md overflow-hidden" role="region" aria-label="Märkes-resultat">
-              <MedalList medals={finalResults} height={listHeight} itemSize={60} onSelect={(m) => navigate(`/medals/${m.id}`)} statusesById={statusesById} />
+              <MedalList
+                medals={finalResults}
+                height={listHeight}
+                itemSize={60}
+                onSelect={(m) => navigate(`/medals/${m.id}`, { state: { backgroundLocation: location } })}
+                statusesById={statusesById}
+              />
             </div>
           )}
         </div>
@@ -282,13 +304,6 @@ export default function MedalsList() {
         <div className="mt-4 lg:hidden" role="note" aria-label="Teckenförklaring">
           <ReviewLegend />
         </div>
-      )}
-
-      {selectedMedalId && (
-        <MedalDetailModal
-          medalId={selectedMedalId}
-          onClose={() => navigate('/medals')}
-        />
       )}
     </div>
   )
