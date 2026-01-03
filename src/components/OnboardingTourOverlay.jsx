@@ -154,7 +154,8 @@ export default function OnboardingTourOverlay() {
     if (!open) return
     if (typeof window === 'undefined') return
 
-    updateTarget()
+    // Schedule initial measure to avoid setState synchronously in effect body.
+    const rafInitial = window.requestAnimationFrame(() => updateTarget())
 
     // Re-measure after layout/animation settles (e.g. detail panel slides in).
     const rafMeasure = window.requestAnimationFrame(() => updateTarget())
@@ -182,6 +183,7 @@ export default function OnboardingTourOverlay() {
     }
 
     return () => {
+      window.cancelAnimationFrame(rafInitial)
       window.cancelAnimationFrame(rafMeasure)
       window.clearTimeout(timeoutMeasure)
 

@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { OnboardingTourContext } from '../contexts/OnboardingTourContext'
+import { OnboardingTourContext } from '../contexts/OnboardingTourContextValue'
 
 export function useOnboardingTour() {
   const ctx = useContext(OnboardingTourContext)

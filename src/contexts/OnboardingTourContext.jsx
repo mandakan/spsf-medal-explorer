@@ -1,7 +1,6 @@
-import React, { createContext, useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
+import { OnboardingTourContext } from './OnboardingTourContextValue'
 import { getTourId, isTourSeen, setTourLastSeen } from '../utils/onboardingTour'
-
-export const OnboardingTourContext = createContext(null)
 
 const STEPS = [
   {
