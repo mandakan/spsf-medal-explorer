@@ -31,14 +31,16 @@ const STEPS = [
   {
     id: 'open',
     title: 'Öppna ett märke',
-    body: 'Tryck på ett märke för att se detaljer.',
+    body: 'Tryck på ett märke i listan för att se detaljer. Lämna guiden öppen och tryck sedan Nästa.',
     target: '[data-tour="medal-row-0"]',
+    requiresTarget: true,
   },
   {
     id: 'detail',
     title: 'Detaljer',
-    body: 'Här ser du krav, förhandskrav och status.',
+    body: 'När detaljvyn är öppen ser du krav, förhandskrav och status. Tryck Nästa för att avsluta.',
     target: '[data-tour="medal-detail-title"]',
+    requiresTarget: true,
   },
 ]
 

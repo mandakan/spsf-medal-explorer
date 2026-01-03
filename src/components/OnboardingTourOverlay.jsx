@@ -15,13 +15,14 @@ function resolveTarget(selector) {
 }
 
 export default function OnboardingTourOverlay() {
-  const { open, stepIndex, steps, close, complete, next, back } = useOnboardingTour()
+  const { open, stepIndex, steps, complete, next, back } = useOnboardingTour()
   const step = steps?.[stepIndex] || null
 
   const dialogRef = useRef(null)
   const lastFocusedRef = useRef(null)
 
   const [targetRect, setTargetRect] = useState(null)
+  const [hasTarget, setHasTarget] = useState(false)
 
   const updateTarget = useCallback(() => {
     if (!open) return
@@ -29,8 +30,10 @@ export default function OnboardingTourOverlay() {
     const el = resolveTarget(step?.target)
     if (!el) {
       setTargetRect(null)
+      setHasTarget(false)
       return
     }
+    setHasTarget(true)
     try {
       el.scrollIntoView({ block: 'center', inline: 'nearest' })
     } catch {
@@ -50,19 +53,25 @@ export default function OnboardingTourOverlay() {
   const isLast = stepIndex >= (steps?.length || 1) - 1
   const titleId = useMemo(() => `tour-title-${step?.id || stepIndex}`, [step?.id, stepIndex])
   const descId = useMemo(() => `tour-desc-${step?.id || stepIndex}`, [step?.id, stepIndex])
+  const hintId = useMemo(() => `tour-hint-${step?.id || stepIndex}`, [step?.id, stepIndex])
 
   const handleClose = useCallback(() => {
-    close()
-  }, [close])
+    // Close means abort and do not show again.
+    complete()
+  }, [complete])
 
   const handleSkip = useCallback(() => {
     complete()
   }, [complete])
 
+  const requiresTarget = !!step?.requiresTarget
+  const primaryDisabled = requiresTarget && !hasTarget
+
   const handlePrimary = useCallback(() => {
+    if (primaryDisabled) return
     if (isLast) complete()
     else next()
-  }, [isLast, complete, next])
+  }, [primaryDisabled, isLast, complete, next])
 
   // Focus management + trap
   useEffect(() => {
@@ -135,10 +144,6 @@ export default function OnboardingTourOverlay() {
 
   if (!open || !step) return null
 
-  const onBackdropMouseDown = (e) => {
-    if (e.target === e.currentTarget) handleClose()
-  }
-
   // Mobile-first: bottom sheet always. Desktop: if target exists, position near it.
   const desktopPopoverStyle = (() => {
     if (!targetRect) return null
@@ -178,7 +183,7 @@ export default function OnboardingTourOverlay() {
     : null
 
   return (
-    <div className="fixed inset-0 z-50" onMouseDown={onBackdropMouseDown} aria-hidden={false}>
+    <div className="fixed inset-0 z-50 pointer-events-none" aria-hidden={false}>
       {/* Spotlight (preferred) or plain scrim */}
       {spotlightStyle ? (
         <div aria-hidden="true" style={spotlightStyle} />
@@ -191,10 +196,11 @@ export default function OnboardingTourOverlay() {
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        aria-describedby={descId}
+        aria-describedby={primaryDisabled ? `${descId} ${hintId}` : descId}
         tabIndex={-1}
         className={[
           'card',
+          'pointer-events-auto',
           desktopPopoverStyle ? 'rounded-xl shadow-lg' : 'fixed inset-x-0 bottom-0 w-full max-h-[85vh] rounded-t-2xl shadow-lg',
           !desktopPopoverStyle
             ? 'md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-[min(90vw,520px)] md:rounded-xl'
@@ -212,8 +218,18 @@ export default function OnboardingTourOverlay() {
               <p id={descId} className="mt-1 text-sm text-muted-foreground">
                 {step.body}
               </p>
+              {primaryDisabled && (
+                <p id={hintId} className="mt-2 text-xs text-muted-foreground">
+                  Öppna en medalj för att fortsätta.
+                </p>
+              )}
             </div>
-            <button type="button" className="btn btn-muted min-h-[44px]" onClick={handleClose} aria-label="Stäng guiden">
+            <button
+              type="button"
+              className="btn btn-muted min-h-[44px]"
+              onClick={handleClose}
+              aria-label="Avsluta guiden"
+            >
               Stäng
             </button>
           </header>
@@ -237,7 +253,13 @@ export default function OnboardingTourOverlay() {
             >
               Tillbaka
             </button>
-            <button type="button" className="btn btn-primary min-h-[44px]" onClick={handlePrimary}>
+            <button
+              type="button"
+              className="btn btn-primary min-h-[44px]"
+              onClick={handlePrimary}
+              disabled={primaryDisabled}
+              aria-disabled={primaryDisabled}
+            >
               {isLast ? 'Klart' : 'Nästa'}
             </button>
           </div>
