@@ -31,18 +31,6 @@ function normalizeAchievementsContainer(parsed) {
   return { achievements: [] }
 }
 
-async function parseFile(file) {
-  const name = (file?.name || '').toLowerCase()
-  const text = await readFile(file)
-  if (name.endsWith('.json') || text.trim().startsWith('{') || text.trim().startsWith('[')) {
-    return parseJSON(text)
-  }
-  if (name.endsWith('.csv')) {
-    return parseCSV(text)
-  }
-  throw new Error('Unsupported file format. Please upload JSON or CSV.')
-}
-
 function parseJSON(content) {
   let parsed
   try {
@@ -129,58 +117,6 @@ function parseCSV(content) {
   }).filter(a => Object.values(a).some(v => v !== undefined && v !== ''))
 
   return { achievements }
-}
-
-function validateData(achievements) {
-  const result = {
-    valid: [],
-    invalid: [],
-    errorsByIndex: {},
-  }
-  const list = Array.isArray(achievements) ? achievements : (achievements?.achievements || [])
-  list.forEach((ach, idx) => {
-    const { valid, errors } = validateAchievementObj(ach)
-    if (valid) {
-      result.valid.push(ach)
-    } else {
-      result.invalid.push(ach)
-      result.errorsByIndex[idx] = errors && errors.length ? errors : ['Invalid achievement']
-    }
-  })
-  return result
-}
-
-function detectDuplicates(input) {
-  const list = Array.isArray(input) ? input : (input?.achievements || [])
-  if (detectDuplicateAchievements) {
-    return detectDuplicateAchievements(list)
-  }
-  // Fallback duplicate detection by composite key
-  const seen = new Set()
-  const dups = []
-  list.forEach(a => {
-    const key = `${a.type}|${a.medalId || ''}|${a.date || ''}|${a.points ?? ''}`
-    if (seen.has(key)) dups.push(a)
-    else seen.add(key)
-  })
-  return dups
-}
-
-function resolveConflicts(existing, incoming) {
-  const existingList = Array.isArray(existing) ? existing : (existing?.achievements || [])
-  const incomingList = Array.isArray(incoming) ? incoming : (incoming?.achievements || [])
-
-  const keyOf = a => a?.id || `${a.type}|${a.medalId || ''}|${a.date || ''}|${a.points ?? ''}`
-  const existingKeys = new Set(existingList.map(keyOf))
-  const merged = existingList.slice()
-  incomingList.forEach(a => {
-    const key = keyOf(a)
-    if (!existingKeys.has(key)) {
-      merged.push(a)
-      existingKeys.add(key)
-    }
-  })
-  return merged
 }
 
 export function parseProfileBackup(content) {

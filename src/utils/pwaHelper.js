@@ -14,17 +14,3 @@ export function registerPWA() {
     window.dispatchEvent(new CustomEvent('pwa:install-available'))
   })
 }
-
-async function promptInstall() {
-  if (!deferredInstallPrompt) return { outcome: 'dismissed' }
-  deferredInstallPrompt.prompt()
-  const choice = await deferredInstallPrompt.userChoice
-  deferredInstallPrompt = null
-  return choice
-}
-
-function onInstallAvailable(handler) {
-  const fn = () => handler()
-  window.addEventListener('pwa:install-available', fn)
-  return () => window.removeEventListener('pwa:install-available', fn)
-}

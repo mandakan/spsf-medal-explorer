@@ -68,15 +68,3 @@ export function sortMedals(medals, sortBy = 'name', statuses) {
       return arr
   }
 }
-
-function generateFilterSummary(filters) {
-  const parts = []
-  if (filters.status) parts.push(`Status: ${filters.status}`)
-  if (filters.tier) parts.push(`Tier: ${filters.tier}`)
-  if (filters.type) parts.push(`Type: ${filters.type}`)
-  if (filters.weaponGroup) parts.push(`Group: ${filters.weaponGroup}`)
-  if (filters.reviewState === 'reviewed') parts.push('Review: Reviewed')
-  if (filters.reviewState === 'under_review') parts.push('Review: Under review')
-  if (filters.search) parts.push(`Search: ${filters.search}`)
-  return parts.length > 0 ? parts.join(' • ') : 'No filters applied'
-}
