@@ -50,7 +50,7 @@ export function validateCompetition(values /* , medal */) {
   return errors
 }
 
-export function validateQualification(values /* , medal */) {
+function validateQualification(values /* , medal */) {
   const errors = {}
   if (!values.date) {
     errors.date = 'Date is required'
@@ -69,7 +69,7 @@ export function validateQualification(values /* , medal */) {
   return errors
 }
 
-export function validateTeamEvent(values /* , medal */) {
+function validateTeamEvent(values /* , medal */) {
   const errors = {}
   if (!values.date) {
     errors.date = 'Date is required'
@@ -89,7 +89,7 @@ export function validateTeamEvent(values /* , medal */) {
   return errors
 }
 
-export function validateEvent(values /* , medal */) {
+function validateEvent(values /* , medal */) {
   const errors = {}
   if (!values.date) {
     errors.date = 'Date is required'
@@ -105,7 +105,7 @@ export function validateEvent(values /* , medal */) {
   return errors
 }
 
-export function validateCustom(values /* , medal */) {
+function validateCustom(values /* , medal */) {
   const errors = {}
   if (!values.date) {
     errors.date = 'Date is required'

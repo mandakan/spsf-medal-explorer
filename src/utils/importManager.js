@@ -31,7 +31,7 @@ function normalizeAchievementsContainer(parsed) {
   return { achievements: [] }
 }
 
-export async function parseFile(file) {
+async function parseFile(file) {
   const name = (file?.name || '').toLowerCase()
   const text = await readFile(file)
   if (name.endsWith('.json') || text.trim().startsWith('{') || text.trim().startsWith('[')) {
@@ -43,7 +43,7 @@ export async function parseFile(file) {
   throw new Error('Unsupported file format. Please upload JSON or CSV.')
 }
 
-export function parseJSON(content) {
+function parseJSON(content) {
   let parsed
   try {
     parsed = typeof content === 'string' ? JSON.parse(content) : content
@@ -90,7 +90,7 @@ function parseCsvRow(row) {
   return out
 }
 
-export function parseCSV(content) {
+function parseCSV(content) {
   const lines = splitCsvLines(typeof content === 'string' ? content : '')
   if (!lines.length) return { achievements: [] }
 
@@ -131,7 +131,7 @@ export function parseCSV(content) {
   return { achievements }
 }
 
-export function validateData(achievements) {
+function validateData(achievements) {
   const result = {
     valid: [],
     invalid: [],
@@ -150,7 +150,7 @@ export function validateData(achievements) {
   return result
 }
 
-export function detectDuplicates(input) {
+function detectDuplicates(input) {
   const list = Array.isArray(input) ? input : (input?.achievements || [])
   if (detectDuplicateAchievements) {
     return detectDuplicateAchievements(list)
@@ -166,7 +166,7 @@ export function detectDuplicates(input) {
   return dups
 }
 
-export function resolveConflicts(existing, incoming) {
+function resolveConflicts(existing, incoming) {
   const existingList = Array.isArray(existing) ? existing : (existing?.achievements || [])
   const incomingList = Array.isArray(incoming) ? incoming : (incoming?.achievements || [])
 

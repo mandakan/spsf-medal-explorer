@@ -1,4 +1,4 @@
-export function normalize(str) {
+function normalize(str) {
   return (str || '').toString().toLowerCase()
 }
 
@@ -22,7 +22,7 @@ export function highlightText(text, term) {
   return s.replace(re, '<mark>$1</mark>')
 }
 
-export function getSuggestions(medals, input, limit = 5) {
+function getSuggestions(medals, input, limit = 5) {
   const lower = normalize(input)
   if (!lower) return []
   const set = new Set()

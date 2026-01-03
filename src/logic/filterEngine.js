@@ -1,4 +1,4 @@
-export function getMedalStatus(medalId, statuses) {
+function getMedalStatus(medalId, statuses) {
   if (!statuses) return 'locked'
   if (statuses.unlocked?.some(s => s.medalId === medalId)) return 'unlocked'
   if (statuses.eligible?.some(s => s.medalId === medalId)) return 'eligible'
@@ -69,7 +69,7 @@ export function sortMedals(medals, sortBy = 'name', statuses) {
   }
 }
 
-export function generateFilterSummary(filters) {
+function generateFilterSummary(filters) {
   const parts = []
   if (filters.status) parts.push(`Status: ${filters.status}`)
   if (filters.tier) parts.push(`Tier: ${filters.tier}`)

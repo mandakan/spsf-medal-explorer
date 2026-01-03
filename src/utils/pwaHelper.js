@@ -15,7 +15,7 @@ export function registerPWA() {
   })
 }
 
-export async function promptInstall() {
+async function promptInstall() {
   if (!deferredInstallPrompt) return { outcome: 'dismissed' }
   deferredInstallPrompt.prompt()
   const choice = await deferredInstallPrompt.userChoice
@@ -23,7 +23,7 @@ export async function promptInstall() {
   return choice
 }
 
-export function onInstallAvailable(handler) {
+function onInstallAvailable(handler) {
   const fn = () => handler()
   window.addEventListener('pwa:install-available', fn)
   return () => window.removeEventListener('pwa:install-available', fn)
