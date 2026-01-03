@@ -64,7 +64,7 @@ export function exportCsvTemplate(schemaVersion = '1') {
   return [header, example].join('\n')
 }
 
-export { HEADERS as ACHIEVEMENT_CSV_HEADERS }
+
 
 export function downloadCSV(csvString, filename = 'achievements.csv') {
   if (typeof document === 'undefined') return
