@@ -1,5 +1,3 @@
-let deferredInstallPrompt = null
-
 export function registerPWA() {
   if (typeof window === 'undefined') return
   if ('serviceWorker' in navigator && import.meta.env.PROD) {
@@ -10,7 +8,6 @@ export function registerPWA() {
 
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault()
-    deferredInstallPrompt = e
     window.dispatchEvent(new CustomEvent('pwa:install-available'))
   })
 }

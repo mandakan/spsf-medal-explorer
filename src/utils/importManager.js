@@ -8,15 +8,6 @@
  * - resolveConflicts(existing, incoming)
  */
 
-import { readFile } from './fileHandlers'
-
-/**
- * Prefer existing project validator logic if available.
- * Use static imports to avoid mixed static/dynamic import warnings and ensure consistent bundling.
- */
-import { detectDuplicateAchievements } from '../logic/achievementValidator.js'
-import { validateAchievement as validateAchievementObj } from '../validators/universalValidator.js'
-
 function normalizeAchievementsContainer(parsed) {
   if (Array.isArray(parsed)) {
     return { achievements: parsed }
@@ -29,16 +20,6 @@ function normalizeAchievementsContainer(parsed) {
     return { ...parsed, achievements: parsed.achievements || parsed.prerequisites || [] }
   }
   return { achievements: [] }
-}
-
-function parseJSON(content) {
-  let parsed
-  try {
-    parsed = typeof content === 'string' ? JSON.parse(content) : content
-  } catch {
-    throw new Error('Invalid JSON')
-  }
-  return normalizeAchievementsContainer(parsed)
 }
 
 function splitCsvLines(csv) {
@@ -76,47 +57,6 @@ function parseCsvRow(row) {
   }
   out.push(cur)
   return out
-}
-
-function parseCSV(content) {
-  const lines = splitCsvLines(typeof content === 'string' ? content : '')
-  if (!lines.length) return { achievements: [] }
-
-  const header = parseCsvRow(lines[0]).map(h => h.trim().toLowerCase())
-  const rows = lines.slice(1)
-  const achievements = rows.map(line => {
-    const cols = parseCsvRow(line)
-    const get = key => {
-      const idx = header.indexOf(key)
-      return idx >= 0 ? cols[idx] : ''
-    }
-    // Expected headers: Medal,Type,DisciplineType,PPCClass,Date,Score,Position,Weapon,Team,Notes,Status
-    const score = get('score')
-    const date = get('date') || undefined
-    const year = date ? Number(String(date).slice(0, 4)) : undefined
-
-    const WG = ['A', 'B', 'C', 'R']
-    const wgRaw = (get('weapon') || '').toString().toUpperCase()
-    const weaponGroup = WG.includes(wgRaw) ? wgRaw : (wgRaw ? 'A' : undefined)
-
-    return {
-      id: undefined,
-      medalId: get('medal') || undefined,
-      type: get('type') || undefined,
-      disciplineType: get('disciplinetype') || undefined,
-      ppcClass: get('ppcclass') || undefined,
-      date,
-      year,
-      score: score !== '' ? Number(score) : undefined,
-      position: get('position') || undefined,
-      weaponGroup,
-      team: get('team') || undefined,
-      notes: get('notes') || undefined,
-      status: get('status') || undefined,
-    }
-  }).filter(a => Object.values(a).some(v => v !== undefined && v !== ''))
-
-  return { achievements }
 }
 
 export function parseProfileBackup(content) {
