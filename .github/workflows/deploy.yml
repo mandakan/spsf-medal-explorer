@@ -77,14 +77,6 @@ jobs:
           fileName: site-root.zip
           out-file-path: .
 
-      - name: Download latest release asset (fallback)
-        if: github.event_name != 'release'
-        uses: robinraju/release-downloader@v1
-        with:
-          repository: ${{ github.repository }}
-          latest: true
-          fileName: site-root.zip
-          out-file-path: .
 
       - name: Prepare staging directory (out/)
         shell: bash
@@ -94,6 +86,7 @@ jobs:
           mkdir -p out
 
       - name: Unpack latest release into out/ (root)
+        if: github.event_name == 'release' && ${{ hashFiles('site-root.zip') != '' }}
         shell: bash
         run: |
           set -euo pipefail
@@ -102,6 +95,7 @@ jobs:
           rm -f site-root.zip
 
       - name: Debug root fingerprint (out/)
+        if: github.event_name == 'release'
         shell: bash
         run: |
           set -euo pipefail
@@ -120,6 +114,8 @@ jobs:
           PKG_VER="$(node -p "require('./package.json').version")"
           echo "version=${PKG_VER}-pre.${GITHUB_RUN_NUMBER}" >> "$GITHUB_OUTPUT"
 
+
+
       - name: Build preview application
         run: npm run build
         continue-on-error: false
@@ -137,64 +133,12 @@ jobs:
       - name: Label preview manifest
         run: |
           set -euo pipefail
-          sed -i 's/"name": "Skyttemärken"/"name": "Skyttemärken (Preview)"/' out/pre/manifest.json
-          sed -i 's/"short_name": "Skyttemärken"/"short_name": "Skyttemärken (Preview)"/' out/pre/manifest.json
+          sed -i 's/"name": "Skyttemärken"/"name": "Skyttemärken (Preview)"/' out/pre/manifest.json || true
+          sed -i 's/"short_name": "Skyttemärken"/"short_name": "Skyttemärken (Preview)"/' out/pre/manifest.json || true
 
-      - name: Create dynamic SPA 404 (in out/)
-        run: |
-          set -euo pipefail
-          cat > out/404.html <<'HTML'
-          <!doctype html><meta charset="utf-8"><meta name="robots" content="noindex"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-          <script>
-          (function () {
-            var parts = location.pathname.split('/').filter(Boolean);
 
-            // For project pages, the first segment is the repo name.
-            // Example: /spsf-medal-explorer/pr/97/...
-            var repo = parts[0] || '';
-            var root = repo ? '/' + repo + '/' : '/';
 
-            // Compute base for /pre and /pr routes.
-            var base = root;
-            var preIdx = parts.indexOf('pre');
-            var prIdx = parts.indexOf('pr');
-            if (preIdx >= 0) {
-              base = '/' + parts.slice(0, preIdx + 1).join('/') + '/';
-            } else if (prIdx >= 0 && parts[prIdx + 1]) {
-              base = '/' + parts.slice(0, prIdx + 2).join('/') + '/';
-            }
 
-            function tryFetchIndex(b) {
-              return fetch(b + 'index.html', { cache: 'no-store' }).then(function (r) {
-                if (!r.ok) throw new Error('missing');
-                return r.text();
-              });
-            }
-
-            var altBase = (repo && base.indexOf(root) !== 0) ? (root + parts.slice(1).join('/') + (location.pathname.endsWith('/') ? '' : '/') ) : null;
-
-            tryFetchIndex(base)
-              .catch(function () { return altBase ? tryFetchIndex(altBase) : Promise.reject(new Error('missing')); })
-              .then(function (html) { document.open(); document.write(html); document.close(); })
-              .catch(function () { location.replace(root); });
-          })();
-          </script>
-          HTML
-
-      - name: Create .nojekyll (in out/)
-        run: |
-          set -euo pipefail
-          touch out/.nojekyll
-
-      - name: Include LICENSE in out/
-        run: |
-          set -euo pipefail
-          cp LICENSE out/LICENSE
-
-      - name: Stamp service worker version (root in out/)
-        run: |
-          set -euo pipefail
-          sed -i "s/^const VERSION = .*/const VERSION = 'build-${{ github.run_number }}'/" out/service-worker.js || true
 
       - name: Stamp service worker version (preview in out/pre)
         run: |
@@ -246,10 +190,23 @@ jobs:
             done
           fi
 
-      - name: Sync out/ into site/ (preserve /pr)
+      - name: Sync out/ into site/ (preserve /pr) [release]
+        if: github.event_name == 'release'
         run: |
           set -euo pipefail
           rsync -a --delete --filter='protect /pr/***' out/ site/
+
+      - name: Sync preview only into site/pre [non-release]
+        if: github.event_name != 'release'
+        run: |
+          set -euo pipefail
+          mkdir -p site/pre
+          rsync -a --delete out/pre/ site/pre/
+
+      - name: Remove stray release artifacts from site repo
+        run: |
+          set -euo pipefail
+          rm -f site/site-root.zip || true
 
       - name: Commit and push site store to gh-pages
         env:
