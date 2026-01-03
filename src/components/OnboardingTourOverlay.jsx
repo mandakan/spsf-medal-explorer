@@ -142,6 +142,25 @@ export default function OnboardingTourOverlay() {
     }
   }, [open, stepIndex, updateTarget])
 
+  // Auto-advance to next step when a specific selector becomes available (e.g. detail dialog opens).
+  useEffect(() => {
+    if (!open) return
+    if (isLast) return
+    if (typeof document === 'undefined') return
+    const selector = step?.autoAdvanceToNextOn
+    if (!selector) return
+
+    const check = () => {
+      const el = resolveTarget(selector)
+      if (el) next()
+    }
+
+    check()
+    const obs = new MutationObserver(() => check())
+    obs.observe(document.body, { childList: true, subtree: true })
+    return () => obs.disconnect()
+  }, [open, isLast, step?.autoAdvanceToNextOn, next])
+
   if (!open || !step) return null
 
   // Mobile-first: bottom sheet always. Desktop: if target exists, position near it.
@@ -201,7 +220,9 @@ export default function OnboardingTourOverlay() {
         className={[
           'card',
           'pointer-events-auto',
-          desktopPopoverStyle ? 'rounded-xl shadow-lg' : 'fixed inset-x-0 bottom-0 w-full max-h-[85vh] rounded-t-2xl shadow-lg',
+          desktopPopoverStyle
+            ? 'rounded-xl shadow-lg'
+            : 'fixed inset-x-0 bottom-0 w-full max-h-[85vh] rounded-t-2xl shadow-lg',
           !desktopPopoverStyle
             ? 'md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-[min(90vw,520px)] md:rounded-xl'
             : '',

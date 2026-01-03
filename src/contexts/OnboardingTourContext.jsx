@@ -34,6 +34,7 @@ const STEPS = [
     body: 'Tryck på ett märke i listan för att se detaljer. Lämna guiden öppen och tryck sedan Nästa.',
     target: '[data-tour="medal-row-0"]',
     requiresTarget: true,
+    autoAdvanceToNextOn: '[data-tour="medal-detail-title"]',
   },
   {
     id: 'detail',
