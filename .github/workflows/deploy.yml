@@ -15,15 +15,131 @@ permissions:
   id-token: write
 
 concurrency:
-  group: 'pages-main'
+  group: 'pages-deploy'
   cancel-in-progress: true
 
 jobs:
-  build:
-    name: Build and Prepare Deployment
+  release-to-root:
+    name: Release -> /
+    if: github.event_name == 'release'
     runs-on: ubuntu-22.04
     timeout-minutes: 20
+    steps:
+      - name: Checkout code at tag
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          ref: ${{ github.event.release.tag_name }}
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm run test
+
+      - name: Build (prod, root)
+        env:
+          VITE_BASE: /${{ github.event.repository.name }}/
+        run: npm run build
+
+      - name: Clone gh-pages
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          rm -rf site
+          git clone --depth 1 --branch gh-pages "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" site
+          git -C site fetch origin gh-pages
+          git -C site switch gh-pages || git -C site switch -c gh-pages --track origin/gh-pages
+          git -C site reset --hard origin/gh-pages
+          git config --global --add safe.directory "$PWD/site" || true
+          git -C site config user.name "github-actions[bot]"
+          git -C site config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Prune closed PR previews
+        id: openprs
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              per_page: 100
+            });
+            return data.map(pr => String(pr.number)).join(',');
+      - name: Apply PR preview pruning
+        run: |
+          set -euo pipefail
+          OPEN="${{ steps.openprs.outputs.result }}"
+          mkdir -p site/pr
+          if [ -d site/pr ]; then
+            for d in site/pr/*; do
+              [ -d "$d" ] || continue
+              num="$(basename "$d")"
+              case ",$OPEN," in
+                *,"$num",*) ;; # keep
+                *) echo "Removing closed PR preview $num"; rm -rf "$d";;
+              esac
+            done
+          fi
+
+      - name: Deploy built root to gh-pages /
+        run: |
+          set -euo pipefail
+          # Sync dist -> site root, but preserve /pre, /pr, CNAME, .nojekyll
+          rsync -a --delete \
+            --filter='protect /pre/***' \
+            --filter='protect /pr/***' \
+            --filter='protect /CNAME' \
+            --filter='protect /.nojekyll' \
+            dist/ site/
+
+      - name: Commit and push (root)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          for i in 1 2 3 4 5; do
+            git -C site add -A
+            if git -C site diff --cached --quiet; then
+              echo "No changes to commit."
+            else
+              git -C site commit -m "deploy: release ${{ github.event.release.tag_name }} to / (run ${{ github.run_number }})" || true
+            fi
+            if git -C site push origin HEAD:gh-pages; then
+              echo "Push succeeded"
+              exit 0
+            fi
+            echo "Push failed (attempt $i). Re-syncing and retrying..."
+            git -C site fetch origin gh-pages
+            git -C site reset --hard origin/gh-pages
+            rsync -a --delete \
+              --filter='protect /pre/***' \
+              --filter='protect /pr/***' \
+              --filter='protect /CNAME' \
+              --filter='protect /.nojekyll' \
+              dist/ site/
+            sleep $((i * 2))
+          done
+          echo "ERROR: failed to push gh-pages after retries"
+          exit 1
+
+  main-to-pre:
+    name: main -> /pre
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -40,146 +156,32 @@ jobs:
       - name: Install dependencies
         run: npm ci --prefer-offline --no-audit
 
-      - name: Run linting
+      - name: Lint
         run: npm run lint
-        continue-on-error: false
 
-      - name: Run tests
+      - name: Test
         run: npm run test
-        continue-on-error: false
 
-      - name: Wait for site-root.zip on this release
-        if: github.event_name == 'release'
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          TAG="${{ github.event.release.tag_name }}"
-          for i in {1..30}; do
-            names="$(curl -sSf -H "Authorization: token ${GITHUB_TOKEN}" \
-              "https://api.github.com/repos/${{ github.repository }}/releases/tags/${TAG}" | jq -r '.assets[].name')"
-            if grep -qx 'site-root.zip' <<< "$names"; then
-              echo "Asset found"
-              exit 0
-            fi
-            echo "Asset not found yet, retry $i/30..."
-            sleep 2
-          done
-          echo "Timed out waiting for site-root.zip on ${TAG}"
-          exit 1
-
-      - name: Download release asset for this tag
-        if: github.event_name == 'release'
-        uses: robinraju/release-downloader@v1
-        with:
-          repository: ${{ github.repository }}
-          tag: ${{ github.event.release.tag_name }}
-          fileName: site-root.zip
-          out-file-path: .
-
-
-      - name: Prepare staging directory (out/)
-        shell: bash
-        run: |
-          set -euo pipefail
-          rm -rf out
-          mkdir -p out
-
-      - name: Unpack latest release into out/ (root)
-        if: ${{ github.event_name == 'release' && hashFiles('site-root.zip') != '' }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          unzip -q site-root.zip -d out
-          # Prevent the downloaded asset from ever being committed into gh-pages by accident
-          rm -f site-root.zip
-
-          # If the zip contains a single top-level directory, unwrap it into out/
-          first="$(find out -mindepth 1 -maxdepth 1 -type d | head -n1 || true)"
-          count="$(find out -mindepth 1 -maxdepth 1 | wc -l | tr -d ' ')"
-          if [ -n "${first:-}" ] && [ "${count:-0}" = "1" ]; then
-            echo "Unwrapping $(basename "$first") into out/"
-            rsync -a "$first"/ out/
-            rm -rf "$first"
-          fi
-
-          # If a nested 'site/' directory exists, flatten it into out/
-          if [ -d out/site ]; then
-            echo "Flattening nested 'site/' directory into out/"
-            rsync -a out/site/ out/
-            rm -rf out/site
-          fi
-
-      - name: Debug root fingerprint (out/)
-        if: github.event_name == 'release'
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [ -f out/index.html ]; then
-            echo "out/index.html sha256:"
-            sha256sum out/index.html
-          else
-            echo "out/index.html not found"
-          fi
-          echo "Top-level in out/:"
-          ls -la out | sed -n '1,200p'
-
-      - name: Compute preview app version
-        id: previewver
-        shell: bash
-        run: |
-          set -euo pipefail
-          PKG_VER="$(node -p "require('./package.json').version")"
-          echo "version=${PKG_VER}-pre.${GITHUB_RUN_NUMBER}" >> "$GITHUB_OUTPUT"
-
-
-
-      - name: Build preview application
-        run: npm run build
-        continue-on-error: false
+      - name: Build (preview, /pre)
         env:
           VITE_BASE: /${{ github.event.repository.name }}/pre/
-          BUILD_NUMBER: ${{ github.run_number }}
-          APP_VERSION: ${{ steps.previewver.outputs.version }}
+        run: npm run build
 
-      - name: Move preview into out/pre
-        run: |
-          set -euo pipefail
-          mkdir -p out/pre
-          rsync -a dist/ out/pre/
-
-      - name: Label preview manifest
-        run: |
-          set -euo pipefail
-          sed -i 's/"name": "Skyttemärken"/"name": "Skyttemärken (Preview)"/' out/pre/manifest.json || true
-          sed -i 's/"short_name": "Skyttemärken"/"short_name": "Skyttemärken (Preview)"/' out/pre/manifest.json || true
-
-
-
-
-
-      - name: Stamp service worker version (preview in out/pre)
-        run: |
-          set -euo pipefail
-          sed -i "s/^const VERSION = .*/const VERSION = 'build-${{ github.run_number }}'/" out/pre/service-worker.js || true
-
-      - name: Clone gh-pages site store
+      - name: Clone gh-pages
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           rm -rf site
           git clone --depth 1 --branch gh-pages "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" site
-
-      - name: Ensure gh-pages branch in site clone (fast-forward to origin)
-        run: |
-          set -euo pipefail
           git -C site fetch origin gh-pages
           git -C site switch gh-pages || git -C site switch -c gh-pages --track origin/gh-pages
-          # Make sure we are exactly at origin/gh-pages to avoid push rejection
           git -C site reset --hard origin/gh-pages
+          git config --global --add safe.directory "$PWD/site" || true
+          git -C site config user.name "github-actions[bot]"
+          git -C site config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Collect open PR numbers
+      - name: Prune closed PR previews
         id: openprs
         uses: actions/github-script@v7
         with:
@@ -191,8 +193,7 @@ jobs:
               per_page: 100
             });
             return data.map(pr => String(pr.number)).join(',');
-
-      - name: Prune closed PR previews (in site store)
+      - name: Apply PR preview pruning
         run: |
           set -euo pipefail
           OPEN="${{ steps.openprs.outputs.result }}"
@@ -208,85 +209,34 @@ jobs:
             done
           fi
 
-      - name: Sync out/ into site/ (preserve /pr) [release]
-        if: github.event_name == 'release'
-        run: |
-          set -euo pipefail
-          rsync -a --delete --filter='protect /pr/***' out/ site/
-
-      - name: Sync preview only into site/pre [non-release]
-        if: github.event_name != 'release'
+      - name: Deploy built preview to gh-pages /pre
         run: |
           set -euo pipefail
           mkdir -p site/pre
-          rsync -a --delete out/pre/ site/pre/
+          rsync -a --delete dist/ site/pre/
 
-      - name: Remove stray release artifacts from site repo
-        run: |
-          set -euo pipefail
-          rm -f site/site-root.zip || true
-
-      - name: Sanity clean tree in site repo
-        run: |
-          set -euo pipefail
-          # Remove any accidentally copied build directories
-          rm -rf site/out site/dist
-          # If content ended up in a nested 'site/' directory, flatten it into gh-pages root
-          if [ -d site/site ]; then
-            echo "Flattening nested site/ into gh-pages root"
-            rsync -a site/site/ site/
-            rm -rf site/site
-          fi
-
-      - name: Commit and push site store to gh-pages
+      - name: Commit and push (/pre)
         env:
           GH_TOKEN: ${{ github.token }}
-          HUSKY: "0"
         run: |
           set -euo pipefail
-
-          ROOT="${GITHUB_WORKSPACE:-$PWD}"
-          SITE="$ROOT/site"
-          OUT="$ROOT/out"
-
-          # Ensure nested repo is trusted and configured
-          git config --global --add safe.directory "$SITE" || true
-          git -C "$SITE" config user.name "github-actions[bot]"
-          git -C "$SITE" config user.email "github-actions[bot]@users.noreply.github.com"
-
-          if git -C "$SITE" remote get-url origin >/dev/null 2>&1; then
-            git -C "$SITE" remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
-          else
-            git -C "$SITE" remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
-          fi
-
-          git -C "$SITE" add -A
-          if git -C "$SITE" diff --cached --quiet; then
-            echo "No changes to commit."
-          else
-            git -C "$SITE" commit -m "pages store: update from deploy run ${{ github.run_number }}"
-          fi
-
-          # Push with retry; on failure, reset only the site repo and re-sync from OUT
           for i in 1 2 3 4 5; do
-            if git -C "$SITE" push origin HEAD:gh-pages; then
+            git -C site add -A
+            if git -C site diff --cached --quiet; then
+              echo "No changes to commit."
+            else
+              git -C site commit -m "deploy: main to /pre (run ${{ github.run_number }})" || true
+            fi
+            if git -C site push origin HEAD:gh-pages; then
               echo "Push succeeded"
               exit 0
             fi
-
-            echo "Push failed (attempt $i). Fetching, resetting, re-syncing, and retrying..."
-            git -C "$SITE" fetch origin gh-pages
-            git -C "$SITE" reset --hard origin/gh-pages
-
-            rsync -a --delete --filter='protect /pr/***' "$OUT/" "$SITE/"
-
-            git -C "$SITE" add -A
-            if ! git -C "$SITE" diff --cached --quiet; then
-              git -C "$SITE" commit -m "pages store: update from deploy run ${{ github.run_number }} (retry $i)" || true
-            fi
-
+            echo "Push failed (attempt $i). Re-syncing and retrying..."
+            git -C site fetch origin gh-pages
+            git -C site reset --hard origin/gh-pages
+            mkdir -p site/pre
+            rsync -a --delete dist/ site/pre/
             sleep $((i * 2))
           done
-
           echo "ERROR: failed to push gh-pages after retries"
           exit 1
