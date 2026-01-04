@@ -62,6 +62,9 @@ jobs:
           APP_VERSION: ${{ steps.prver.outputs.version }}
         run: npm run build
 
+      - name: Add Pages helpers into dist
+        run: bash scripts/add-pages-helpers.sh dist
+
       - name: Place preview under /pr/<n>
         run: |
           set -euo pipefail

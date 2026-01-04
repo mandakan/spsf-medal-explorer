@@ -64,6 +64,9 @@ jobs:
           APP_VERSION: ${{ steps.ver.outputs.app_version }}
         run: npm run build
 
+      - name: Add Pages helpers into dist
+        run: bash scripts/add-pages-helpers.sh dist
+
       - name: Clone gh-pages
         env:
           GH_TOKEN: ${{ github.token }}
@@ -198,6 +201,9 @@ jobs:
           VITE_BASE: /${{ github.event.repository.name }}/pre/
           APP_VERSION: ${{ steps.ver.outputs.app_version }}
         run: npm run build
+
+      - name: Add Pages helpers into dist
+        run: bash scripts/add-pages-helpers.sh dist
 
       - name: Clone gh-pages
         env:
