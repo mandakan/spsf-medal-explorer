@@ -1,22 +1,22 @@
 {
-  "_vendor-Dr_HwTYe.js": {
-    "file": "assets/vendor-Dr_HwTYe.js",
+  "_vendor-DJLIR2LL.js": {
+    "file": "assets/vendor-DJLIR2LL.js",
     "name": "vendor",
     "isDynamicEntry": true
   },
   "index.html": {
-    "file": "assets/index-DAGJGSl1.js",
+    "file": "assets/index-D1Sq2r27.js",
     "name": "index",
     "src": "index.html",
     "isEntry": true,
     "imports": [
-      "_vendor-Dr_HwTYe.js"
+      "_vendor-DJLIR2LL.js"
     ],
     "dynamicImports": [
       "src/data/medals.json",
-      "_vendor-Dr_HwTYe.js",
-      "_vendor-Dr_HwTYe.js",
-      "_vendor-Dr_HwTYe.js"
+      "_vendor-DJLIR2LL.js",
+      "_vendor-DJLIR2LL.js",
+      "_vendor-DJLIR2LL.js"
     ],
     "css": [
       "assets/index-BPmacVir.css"
