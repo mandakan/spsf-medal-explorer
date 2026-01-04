@@ -25,8 +25,6 @@
     });
   }
 
-  // Try computed base first. If that fails, try forcing project-page root + the rest of the path.
-  // This makes the fallback more robust if base computation is off.
   var altBase = (repo && base.indexOf(root) !== 0) ? (root + parts.slice(1).join('/') + (location.pathname.endsWith('/') ? '' : '/') ) : null;
 
   tryFetchIndex(base)
