@@ -115,25 +115,31 @@ jobs:
         run: |
           set -euo pipefail
           for i in 1 2 3 4 5; do
-            git -C site add -A
-            if git -C site diff --cached --quiet; then
-              echo "No changes to commit."
-            else
-              git -C site commit -m "deploy: release ${{ github.event.release.tag_name }} to / (run ${{ github.run_number }})"
-            fi
-            if git -C site push origin HEAD:gh-pages; then
-              echo "Push succeeded"
-              exit 0
-            fi
-            echo "Push failed (attempt $i). Re-syncing and retrying..."
+            # Refresh to latest remote before applying changes
             git -C site fetch origin gh-pages
             git -C site reset --hard origin/gh-pages
+
+            # Re-apply build output to root while preserving protected paths
             rsync -a --delete \
               --filter='protect /pre/***' \
               --filter='protect /pr/***' \
               --filter='protect /CNAME' \
               --filter='protect /.nojekyll' \
               dist/ site/
+
+            git -C site add -A
+            if git -C site diff --cached --quiet; then
+              echo "No changes to commit."
+            else
+              git -C site commit -m "deploy: release ${{ github.event.release.tag_name }} to / (run ${{ github.run_number }})"
+            fi
+
+            if git -C site push origin HEAD:gh-pages; then
+              echo "Push succeeded"
+              exit 0
+            fi
+
+            echo "Push failed (attempt $i). Retrying after backoff..."
             sleep $((i * 2))
           done
           echo "ERROR: failed to push gh-pages after retries"
@@ -225,21 +231,27 @@ jobs:
         run: |
           set -euo pipefail
           for i in 1 2 3 4 5; do
+            # Refresh to latest remote before applying changes
+            git -C site fetch origin gh-pages
+            git -C site reset --hard origin/gh-pages
+
+            # Re-apply build output into /pre
+            mkdir -p site/pre
+            rsync -a --delete dist/ site/pre/
+
             git -C site add -A
             if git -C site diff --cached --quiet; then
               echo "No changes to commit."
             else
               git -C site commit -m "deploy: main to /pre (run ${{ github.run_number }})"
             fi
+
             if git -C site push origin HEAD:gh-pages; then
               echo "Push succeeded"
               exit 0
             fi
-            echo "Push failed (attempt $i). Re-syncing and retrying..."
-            git -C site fetch origin gh-pages
-            git -C site reset --hard origin/gh-pages
-            mkdir -p site/pre
-            rsync -a --delete dist/ site/pre/
+
+            echo "Push failed (attempt $i). Retrying after backoff..."
             sleep $((i * 2))
           done
           echo "ERROR: failed to push gh-pages after retries"
