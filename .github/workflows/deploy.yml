@@ -65,6 +65,10 @@ jobs:
           git config --global --add safe.directory "$PWD/site" || true
           git -C site config user.name "github-actions[bot]"
           git -C site config user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Prune closed PR previews
         id: openprs
@@ -115,7 +119,7 @@ jobs:
             if git -C site diff --cached --quiet; then
               echo "No changes to commit."
             else
-              git -C site commit -m "deploy: release ${{ github.event.release.tag_name }} to / (run ${{ github.run_number }})" || true
+              git -C site commit -m "deploy: release ${{ github.event.release.tag_name }} to / (run ${{ github.run_number }})"
             fi
             if git -C site push origin HEAD:gh-pages; then
               echo "Push succeeded"
@@ -225,7 +229,7 @@ jobs:
             if git -C site diff --cached --quiet; then
               echo "No changes to commit."
             else
-              git -C site commit -m "deploy: main to /pre (run ${{ github.run_number }})" || true
+              git -C site commit -m "deploy: main to /pre (run ${{ github.run_number }})"
             fi
             if git -C site push origin HEAD:gh-pages; then
               echo "Push succeeded"
