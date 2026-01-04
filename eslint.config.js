@@ -51,9 +51,15 @@ export default defineConfig([
       jest,
     },
     languageOptions: {
+      ecmaVersion: 2020,
       globals: {
         ...globals.node,
         ...globals.jest,
+      },
+      parserOptions: {
+        ecmaVersion: 'latest',
+        ecmaFeatures: { jsx: true },
+        sourceType: 'module',
       },
     },
   },
