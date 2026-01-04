@@ -1,13 +1,18 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { useMedalDatabase } from '../hooks/useMedalDatabase'
 import Disclaimer from '../components/Disclaimer'
 import Icon from '../components/Icon'
 import { LINKS } from '../config/links'
 import { BUILD } from '../config/buildInfo'
+import { requestManualTourStart } from '../utils/onboardingTour'
 
 export default function Home() {
   const { medalDatabase, loading } = useMedalDatabase()
+
+  const handleStartQuickGuide = useCallback(() => {
+    requestManualTourStart('medals')
+  }, [])
 
   return (
     <div className="space-y-8">
@@ -22,6 +27,7 @@ export default function Home() {
         <div className="mt-6 flex justify-center">
           <Link
             to="/medals"
+            onClick={handleStartQuickGuide}
             className="btn btn-secondary min-h-[44px] inline-flex items-center justify-center"
           >
             Visa snabbguide
