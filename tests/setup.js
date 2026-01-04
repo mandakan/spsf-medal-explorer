@@ -1,9 +1,18 @@
 import '@testing-library/jest-dom'
+import { TextDecoder, TextEncoder } from 'node:util'
 
 const originalWarn = console.warn
 const originalError = console.error
 
 beforeAll(() => {
+  // Polyfill for libraries (e.g. react-router) that expect Web TextEncoder/TextDecoder
+  if (typeof globalThis.TextEncoder === 'undefined') {
+    globalThis.TextEncoder = TextEncoder
+  }
+  if (typeof globalThis.TextDecoder === 'undefined') {
+    globalThis.TextDecoder = TextDecoder
+  }
+
   jest.spyOn(console, 'warn').mockImplementation((...args) => {
     const msg = args[0] && String(args[0])
     if (msg && msg.includes('React Router Future Flag Warning')) return
