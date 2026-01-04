@@ -47,9 +47,21 @@ jobs:
       - name: Test
         run: npm run test
 
+      - name: Compute release version (strip v-prefix)
+        id: ver
+        shell: bash
+        run: |
+          set -euo pipefail
+          RAW_TAG="${{ github.event.release.tag_name }}"
+          APP_VERSION="${RAW_TAG#v}"
+          echo "app_version=${APP_VERSION}" >> "$GITHUB_OUTPUT"
+          echo "Release tag: ${RAW_TAG}"
+          echo "App version: ${APP_VERSION}"
+
       - name: Build (prod, root)
         env:
           VITE_BASE: /${{ github.event.repository.name }}/
+          APP_VERSION: ${{ steps.ver.outputs.app_version }}
         run: npm run build
 
       - name: Clone gh-pages
@@ -65,10 +77,6 @@ jobs:
           git config --global --add safe.directory "$PWD/site" || true
           git -C site config user.name "github-actions[bot]"
           git -C site config user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Prune closed PR previews
         id: openprs
@@ -103,6 +111,7 @@ jobs:
           set -euo pipefail
           # Sync dist -> site root, but preserve /pre, /pr, CNAME, .nojekyll
           rsync -a --delete \
+            --filter='protect .git/***' \
             --filter='protect /pre/***' \
             --filter='protect /pr/***' \
             --filter='protect /CNAME' \
@@ -121,6 +130,7 @@ jobs:
 
             # Re-apply build output to root while preserving protected paths
             rsync -a --delete \
+              --filter='protect .git/***' \
               --filter='protect /pre/***' \
               --filter='protect /pr/***' \
               --filter='protect /CNAME' \
@@ -172,9 +182,21 @@ jobs:
       - name: Test
         run: npm run test
 
+      - name: Compute preview version
+        id: ver
+        shell: bash
+        run: |
+          set -euo pipefail
+          PKG_VERSION="$(node -p "require('./package.json').version")"
+          SHA="$(git rev-parse --short HEAD)"
+          APP_VERSION="${PKG_VERSION}-pre.${{ github.run_number }}+${SHA}"
+          echo "app_version=${APP_VERSION}" >> "$GITHUB_OUTPUT"
+          echo "App version: ${APP_VERSION}"
+
       - name: Build (preview, /pre)
         env:
           VITE_BASE: /${{ github.event.repository.name }}/pre/
+          APP_VERSION: ${{ steps.ver.outputs.app_version }}
         run: npm run build
 
       - name: Clone gh-pages
