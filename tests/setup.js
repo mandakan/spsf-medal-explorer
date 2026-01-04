@@ -1,4 +1,14 @@
 import '@testing-library/jest-dom'
+import { TextDecoder, TextEncoder } from 'node:util'
+
+// Polyfill for libraries (e.g. react-router) that expect Web TextEncoder/TextDecoder.
+// Must run at module load time (not in beforeAll), because some deps access TextEncoder during import.
+if (typeof globalThis.TextEncoder === 'undefined') {
+  globalThis.TextEncoder = TextEncoder
+}
+if (typeof globalThis.TextDecoder === 'undefined') {
+  globalThis.TextDecoder = TextDecoder
+}
 
 const originalWarn = console.warn
 const originalError = console.error
