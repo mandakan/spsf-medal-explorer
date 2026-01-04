@@ -3,6 +3,12 @@ import { BUILD } from '../config/buildInfo'
 const KEY = 'app:onboardingTour:lastSeen'
 
 /**
+ * Session key used to request a manual onboarding tour start on a specific page.
+ * Consumed once by the target page.
+ */
+export const MANUAL_TOUR_KEY = 'app:onboardingTour:manualStart'
+
+/**
  * Onboarding tour identity.
  * Keep separate from BUILD.version so we can iterate onboarding without forcing a release bump.
  * Bump this when steps/copy/targets change in a way that should re-run onboarding.
@@ -34,4 +40,13 @@ export function setTourLastSeen(id) {
 
 export function isTourSeen(id = getTourId()) {
   return getTourLastSeen() === id
+}
+
+export function requestManualTourStart(page) {
+  try {
+    sessionStorage.setItem(MANUAL_TOUR_KEY, page)
+    return true
+  } catch {
+    return false
+  }
 }

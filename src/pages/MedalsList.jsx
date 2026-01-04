@@ -16,8 +16,7 @@ import ReviewLegend from '../components/ReviewLegend'
 import { useProfile } from '../hooks/useProfile'
 import { useOnboardingTour } from '../hooks/useOnboardingTour'
 import { getReleaseId, getLastSeen, isProductionEnv } from '../utils/whatsNew'
-
-const MANUAL_TOUR_KEY = 'app:onboardingTour:manualStart'
+import { MANUAL_TOUR_KEY } from '../utils/onboardingTour'
 
 export default function MedalsList() {
   const { medalDatabase } = useMedalDatabase()

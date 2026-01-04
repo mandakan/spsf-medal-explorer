@@ -4,6 +4,15 @@
  */
 export const releases = [
   {
+    id: '0.9.4',
+    date: '2026-01-04',
+    title: 'Buggfixar',
+    highlights: [
+      'Mindre buggfixar',
+    ],
+    link: 'https://github.com/mandakan/spsf-medal-explorer/releases/tag/v0.9.4',
+  },
+  {
     id: '0.9.3',
     date: '2026-01-03',
     title: 'Användarguide',
