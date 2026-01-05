@@ -1565,7 +1565,7 @@
       "displayName": "Skidskyttemärket Brons",
       "color": "#CD7F32",
       "icon": "skis-bronze",
-      "requirements_original": "Prov för skidskyttemärke, som förekommer i valörerna brons, silver och guld, får avläggas endast av den, som tidigare uppfyllt fordringarna för pistolskyttemärke i brons.\n\nFöljande stipulationer gäller:\n\nSkidlöpning på snitslad bana 3 x 2 km. Utrustning och andra bestämmelser för skjutning enligt SHB kap. K.\n\nSkjutning sker på tre skjutstationer efter 2, 4 och 6 km mot ett av förbundets godkända mål för skidskytte.\n\n- mot gamla olympiska skidskyttetavlan. 6 skott på varje skjutstation. Avstånd 25m. Skjutställning stående, stödhand tillåten. Stavstöd eller annan form av stöd får inte användas.\n\n- mot 5-pricksmål. 5 skott på varje skjutstation. Avstånd 20 m. Skjutställning stående, stödhand tillåten. Stavstöd eller annan form av stöd får inte användas.\n\nMärke kan även tas vid tävling.\n\n**Poängberäkning**\n\n|Mål|Träff inom ring|Skjutpoäng|\n|-|-|-|\n|Gamla olympiska skidskyttetavlan|1 och 2|0|\n||3|1|\n||4|2|\n||utanför ring|3|\n|5-prickstavlan märkestagning|Ej träffad prick eller prick som ej fallit|2|\n|5-prickstavlan|Ej träffad prick|1|\n\n\nResultatet utgörs av summan av löppoäng och skjutpoäng. Tiden för skjutningen inräknas i åktiden.\n\nFör varje hel minuts åktid erhålls en poäng. Vid tävling varje hel minut ger ½ poäng.\n\nSilvermärket kan erövras direkt eller genom att fordringarna för bronsmärket uppfylls under tre år.\n\nFör att erhålla guldmärket skall skytt under ett föregående år ha erövrat silvermärket. Guldmärke kan även erövras av skytt, som under tre år uppfyller fordringarna för silvermärke.\n\nDen som under kalenderåret uppnår lägst 47 års ålder erhåller silvermär­ ke för bronspoäng och guldmärke för silverpoäng.\n\nSkytt i sådan ålder som innehar silvermärket är, efter att ha fullgjort bronsmärkesfordringarna under 3 år, berättigad att erhålla guldmärket.\n\nBanan läggs lämpligen i anslutning till skjutbanan. Skidskyttemärke i brons och silver bör kunna lösas omedelbart efter avlagt prov.\n\n*Anm.: Prov för guldmärke och årtalsmärken får ersättas av sådan placering vid riks-, nationell, landsdels- eller kretstävling i skidskytte som berättigar till standardmedalj i brons.*",
+      "requirements_original": "Prov för skidskyttemärke, som förekommer i valörerna brons, silver och guld, får avläggas endast av den, som tidigare uppfyllt fordringarna för pistolskyttemärke i brons.\n\nFöljande stipulationer gäller:\n\nSkidlöpning på snitslad bana 3 x 2 km. Utrustning och andra bestämmelser för skjutning enligt SHB kap. K.\n\nSkjutning sker på tre skjutstationer efter 2, 4 och 6 km mot ett av förbundets godkända mål för skidskytte.\n\n- mot gamla olympiska skidskyttetavlan. 6 skott på varje skjutstation. Avstånd 25m. Skjutställning stående, stödhand tillåten. Stavstöd eller annan form av stöd får inte användas.\n\n- mot 5-pricksmål. 5 skott på varje skjutstation. Avstånd 20 m. Skjutställning stående, stödhand tillåten. Stavstöd eller annan form av stöd får inte användas.\n\nMärke kan även tas vid tävling.\n\n**Poängberäkning**\n\n|Mål|Träff inom ring|Skjutpoäng|\n|-|-|-|\n|Gamla olympiska skidskyttetavlan|1 och 2|0|\n||3|1|\n||4|2|\n||utanför ring|3|\n|5-prickstavlan märkestagning|Ej träffad prick eller prick som ej fallit|2|\n|5-prickstavlan|Ej träffad prick|1|\n\n|Poängfordran|Herrar|Damer|\n|-|-|-|\n|För bronsmärke, högst|55|61|\n|För silvermärke, högst|50|56|\n|För guldmärke, högst|45|51|\n\n\\nResultatet utgörs av summan av löppoäng och skjutpoäng. Tiden för skjutningen inräknas i åktiden.\n\nFör varje hel minuts åktid erhålls en poäng. Vid tävling varje hel minut ger ½ poäng.\n\nSilvermärket kan erövras direkt eller genom att fordringarna för bronsmärket uppfylls under tre år.\n\nFör att erhålla guldmärket skall skytt under ett föregående år ha erövrat silvermärket. Guldmärke kan även erövras av skytt, som under tre år uppfyller fordringarna för silvermärke.\n\nDen som under kalenderåret uppnår lägst 47 års ålder erhåller silvermär­ ke för bronspoäng och guldmärke för silverpoäng.\n\nSkytt i sådan ålder som innehar silvermärket är, efter att ha fullgjort bronsmärkesfordringarna under 3 år, berättigad att erhålla guldmärket.\n\nBanan läggs lämpligen i anslutning till skjutbanan. Skidskyttemärke i brons och silver bör kunna lösas omedelbart efter avlagt prov.\n\n*Anm.: Prov för guldmärke och årtalsmärken får ersättas av sådan placering vid riks-, nationell, landsdels- eller kretstävling i skidskytte som berättigar till standardmedalj i brons.*",
       "prerequisites": [
         {
           "type": "medal",
@@ -1594,28 +1594,67 @@
     },
     {
       "id": "skis-mark-silver",
+      "status": "under_review",
       "type": "skis_mark",
       "tier": "silver",
       "name": "Skidskyttemärket",
       "displayName": "Skidskyttemärket Silver",
       "color": "#C0C0C0",
       "icon": "skis-silver",
+      "requirements_original": "Prov för skidskyttemärke, som förekommer i valörerna brons, silver och guld, får avläggas endast av den, som tidigare uppfyllt fordringarna för pistolskyttemärke i brons.\n\nFöljande stipulationer gäller:\n\nSkidlöpning på snitslad bana 3 x 2 km. Utrustning och andra bestämmelser för skjutning enligt SHB kap. K.\n\nSkjutning sker på tre skjutstationer efter 2, 4 och 6 km mot ett av förbundets godkända mål för skidskytte.\n\n- mot gamla olympiska skidskyttetavlan. 6 skott på varje skjutstation. Avstånd 25m. Skjutställning stående, stödhand tillåten. Stavstöd eller annan form av stöd får inte användas.\n\n- mot 5-pricksmål. 5 skott på varje skjutstation. Avstånd 20 m. Skjutställning stående, stödhand tillåten. Stavstöd eller annan form av stöd får inte användas.\n\nMärke kan även tas vid tävling.\n\n**Poängberäkning**\n\n|Mål|Träff inom ring|Skjutpoäng|\n|-|-|-|\n|Gamla olympiska skidskyttetavlan|1 och 2|0|\n||3|1|\n||4|2|\n||utanför ring|3|\n|5-prickstavlan märkestagning|Ej träffad prick eller prick som ej fallit|2|\n|5-prickstavlan|Ej träffad prick|1|\n\n|Poängfordran|Herrar|Damer|\n|-|-|-|\n|För bronsmärke, högst|55|61|\n|För silvermärke, högst|50|56|\n|För guldmärke, högst|45|51|\n\n\\nResultatet utgörs av summan av löppoäng och skjutpoäng. Tiden för skjutningen inräknas i åktiden.\n\nFör varje hel minuts åktid erhålls en poäng. Vid tävling varje hel minut ger ½ poäng.\n\nSilvermärket kan erövras direkt eller genom att fordringarna för bronsmärket uppfylls under tre år.\n\nFör att erhålla guldmärket skall skytt under ett föregående år ha erövrat silvermärket. Guldmärke kan även erövras av skytt, som under tre år uppfyller fordringarna för silvermärke.\n\nDen som under kalenderåret uppnår lägst 47 års ålder erhåller silvermär­ ke för bronspoäng och guldmärke för silverpoäng.\n\nSkytt i sådan ålder som innehar silvermärket är, efter att ha fullgjort bronsmärkesfordringarna under 3 år, berättigad att erhålla guldmärket.\n\nBanan läggs lämpligen i anslutning till skjutbanan. Skidskyttemärke i brons och silver bör kunna lösas omedelbart efter avlagt prov.\n\n*Anm.: Prov för guldmärke och årtalsmärken får ersättas av sådan placering vid riks-, nationell, landsdels- eller kretstävling i skidskytte som berättigar till standardmedalj i brons.*",
       "prerequisites": [
         {
           "type": "medal",
-          "medalId": "skis-mark-bronze"
+          "medalId": "pistol-mark-bronze"
         }
       ],
       "requirements": [
         {
-          "type": "skis_shooting_course",
-          "description": "Skidlöpning på snitslad bana 3 x 2 km med skjutstationer",
-          "minAchievements": 1,
-          "timeWindowYears": 1,
-          "maxPoints": {
-            "male": 50,
-            "female": 56
-          }
+          "or": [
+            {
+              "type": "sustained_achievement",
+              "description": "Under tre år, oavsett om i följd eller ej, uppfyllt fordringarna för skidskytteskyttemärket i brons (inklusive det första)",
+              "yearsOfAchievement": 3,
+              "references": [
+                {
+                  "medalId": "skis-mark-bronze",
+                  "description": "Ånyo uppfyllt fordringarna för skidskytteskyttemärket i brons"
+                }
+              ]
+            },
+            {
+              "type": "skis_shooting_course",
+              "description": "Skidlöpning på snitslad bana 3 x 2 km med skjutstationer",
+              "minAchievements": 1,
+              "timeWindowYears": 1,
+              "maxPoints": {
+                "male": 50,
+                "female": 56
+              },
+              "ageCategories": [
+                {
+                  "name": "under_47",
+                  "ageMin": 0,
+                  "ageMax": 46,
+                  "description": "Under 47 år",
+                  "maxPoints": {
+                    "male": 50,
+                    "female": 56
+                  }
+                },
+                {
+                  "name": "age_47_plus",
+                  "ageMin": 47,
+                  "ageMax": 999,
+                  "description": "47 år och äldre",
+                  "maxPoints": {
+                    "male": 55,
+                    "female": 61
+                  }
+                }
+              ]
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["skis-mark-gold"],
@@ -1626,12 +1665,14 @@
     },
     {
       "id": "skis-mark-gold",
+      "status": "under_review",
       "type": "skis_mark",
       "tier": "gold",
       "name": "Skidskyttemärket",
       "displayName": "Skidskyttemärket Guld",
       "color": "#FFD700",
       "icon": "skis-gold",
+      "requirements_original": "Prov för skidskyttemärke, som förekommer i valörerna brons, silver och guld, får avläggas endast av den, som tidigare uppfyllt fordringarna för pistolskyttemärke i brons.\n\nFöljande stipulationer gäller:\n\nSkidlöpning på snitslad bana 3 x 2 km. Utrustning och andra bestämmelser för skjutning enligt SHB kap. K.\n\nSkjutning sker på tre skjutstationer efter 2, 4 och 6 km mot ett av förbundets godkända mål för skidskytte.\n\n- mot gamla olympiska skidskyttetavlan. 6 skott på varje skjutstation. Avstånd 25m. Skjutställning stående, stödhand tillåten. Stavstöd eller annan form av stöd får inte användas.\n\n- mot 5-pricksmål. 5 skott på varje skjutstation. Avstånd 20 m. Skjutställning stående, stödhand tillåten. Stavstöd eller annan form av stöd får inte användas.\n\nMärke kan även tas vid tävling.\n\n**Poängberäkning**\n\n|Mål|Träff inom ring|Skjutpoäng|\n|-|-|-|\n|Gamla olympiska skidskyttetavlan|1 och 2|0|\n||3|1|\n||4|2|\n||utanför ring|3|\n|5-prickstavlan märkestagning|Ej träffad prick eller prick som ej fallit|2|\n|5-prickstavlan|Ej träffad prick|1|\n\n|Poängfordran|Herrar|Damer|\n|-|-|-|\n|För bronsmärke, högst|55|61|\n|För silvermärke, högst|50|56|\n|För guldmärke, högst|45|51|\n\n\\nResultatet utgörs av summan av löppoäng och skjutpoäng. Tiden för skjutningen inräknas i åktiden.\n\nFör varje hel minuts åktid erhålls en poäng. Vid tävling varje hel minut ger ½ poäng.\n\nSilvermärket kan erövras direkt eller genom att fordringarna för bronsmärket uppfylls under tre år.\n\nFör att erhålla guldmärket skall skytt under ett föregående år ha erövrat silvermärket. Guldmärke kan även erövras av skytt, som under tre år uppfyller fordringarna för silvermärke.\n\nDen som under kalenderåret uppnår lägst 47 års ålder erhåller silvermär­ ke för bronspoäng och guldmärke för silverpoäng.\n\nSkytt i sådan ålder som innehar silvermärket är, efter att ha fullgjort bronsmärkesfordringarna under 3 år, berättigad att erhålla guldmärket.\n\nBanan läggs lämpligen i anslutning till skjutbanan. Skidskyttemärke i brons och silver bör kunna lösas omedelbart efter avlagt prov.\n\n*Anm.: Prov för guldmärke och årtalsmärken får ersättas av sådan placering vid riks-, nationell, landsdels- eller kretstävling i skidskytte som berättigar till standardmedalj i brons.*",
       "prerequisites": [
         {
           "type": "medal",
@@ -1641,14 +1682,51 @@
       ],
       "requirements": [
         {
-          "type": "skis_shooting_course",
-          "description": "Skidlöpning på snitslad bana 3 x 2 km med skjutstationer",
-          "minAchievements": 1,
-          "timeWindowYears": 1,
-          "maxPoints": {
-            "male": 45,
-            "female": 51
-          }
+          "or": [
+            {
+              "type": "sustained_achievement",
+              "description": "Under tre år, oavsett om i följd eller ej, uppfyllt fordringarna för skidskytteskyttemärket i silver (inklusive det första)",
+              "yearsOfAchievement": 3,
+              "references": [
+                {
+                  "medalId": "skis-mark-silver",
+                  "description": "Ånyo uppfyllt fordringarna för skidskytteskyttemärket i silver"
+                }
+              ]
+            },
+            {
+              "type": "skis_shooting_course",
+              "description": "Skidlöpning på snitslad bana 3 x 2 km med skjutstationer",
+              "minAchievements": 1,
+              "timeWindowYears": 1,
+              "maxPoints": {
+                "male": 45,
+                "female": 51
+              },
+              "ageCategories": [
+                {
+                  "name": "under_47",
+                  "ageMin": 0,
+                  "ageMax": 46,
+                  "description": "Under 47 år",
+                  "maxPoints": {
+                    "male": 45,
+                    "female": 51
+                  }
+                },
+                {
+                  "name": "age_47_plus",
+                  "ageMin": 47,
+                  "ageMax": 999,
+                  "description": "47 år och äldre",
+                  "maxPoints": {
+                    "male": 50,
+                    "female": 56
+                  }
+                }
+              ]
+            }
+          ]
         }
       ],
       "unlocksFollowingMedals": ["skis-mark-gold-star-1"],
@@ -1659,6 +1737,7 @@
     },
     {
       "id": "skis-mark-gold-star-1",
+      "status": "under_review",
       "type": "skis_mark",
       "tier": "star_1",
       "name": "Skidskyttemärket",
@@ -1686,6 +1765,7 @@
     },
     {
       "id": "skis-mark-gold-star-2",
+      "status": "under_review",
       "type": "skis_mark",
       "tier": "star_2",
       "name": "Skidskyttemärket",
@@ -1713,6 +1793,7 @@
     },
     {
       "id": "skis-mark-gold-star-3",
+      "status": "under_review",
       "type": "skis_mark",
       "tier": "star_3",
       "name": "Skidskyttemärket",
@@ -1740,6 +1821,7 @@
     },
     {
       "id": "skis-mark-gold-enamel",
+      "status": "under_review",
       "type": "skis_mark",
       "tier": "gold_enamel",
       "name": "Skidskyttemärket",
@@ -1767,6 +1849,7 @@
     },
     {
       "id": "skis-mark-gold-enamel-star-1",
+      "status": "under_review",
       "type": "skis_mark",
       "tier": "gold_enamel_star_1",
       "name": "Skidskyttemärket",
@@ -1794,6 +1877,7 @@
     },
     {
       "id": "skis-mark-gold-enamel-star-2",
+      "status": "under_review",
       "type": "skis_mark",
       "tier": "gold_enamel_star_2",
       "name": "Skidskyttemärket",
@@ -1821,6 +1905,7 @@
     },
     {
       "id": "skis-mark-gold-enamel-star-3",
+      "status": "under_review",
       "type": "skis_mark",
       "tier": "gold_enamel_star_3",
       "name": "Skidskyttemärket",
