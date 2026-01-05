@@ -34,6 +34,7 @@ export function parseProfileBackup(content) {
     createdDate: p.createdDate || new Date().toISOString(),
     lastModified: p.lastModified || new Date().toISOString(),
     dateOfBirth: typeof p.dateOfBirth === 'string' ? p.dateOfBirth : '',
+    sex: typeof p.sex === 'string' ? p.sex.trim().toLowerCase() : '',
     unlockedMedals: Array.isArray(p.unlockedMedals) ? p.unlockedMedals : [],
     prerequisites: achievements,
     features: {

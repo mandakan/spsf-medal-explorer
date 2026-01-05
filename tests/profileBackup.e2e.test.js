@@ -49,6 +49,7 @@ describe('Export → Restore profile roundtrip', () => {
 
     expect(restored.userId).not.toBe(saved.userId)
     expect(restored.displayName).toBe('Roundtrip')
+    expect(restored.sex).toBe('male')
     expect(restored.unlockedMedals.length).toBe(1)
     expect(restored.prerequisites.length).toBe(2)
 
@@ -82,6 +83,30 @@ describe('Export → Restore profile roundtrip', () => {
 
     expect(restored.userId).toBe('user-target')
     expect(restored.displayName).toBe('New Name')
+    expect(restored.sex).toBe('female')
     expect(restored.prerequisites.length).toBe(1)
+  })
+  
+  test('restore rejects invalid sex', async () => {
+    const dm = new LocalStorageDataManager()
+    const backup = {
+      kind: 'profile-backup',
+      version: '1.0',
+      exportedAt: new Date().toISOString(),
+      profile: {
+        userId: 'user-invalid-sex',
+        displayName: 'Invalid Sex',
+        createdDate: '2024-01-01T00:00:00.000Z',
+        lastModified: '2024-01-02T00:00:00.000Z',
+        dateOfBirth: '2000-01-01',
+        sex: 'x',
+        unlockedMedals: [],
+        prerequisites: [],
+        features: { allowManualUnlock: false, enforceCurrentYearForSustained: false },
+        notifications: false,
+      },
+    }
+    const parsed = parseProfileBackup(JSON.stringify(backup))
+    await expect(dm.restoreProfile(parsed, { strategy: 'new-id' })).rejects.toThrow()
   })
 })
