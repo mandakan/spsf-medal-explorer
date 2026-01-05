@@ -23,6 +23,7 @@ describe('Export → Restore profile roundtrip', () => {
       userId: 'user-initial',
       displayName: 'Roundtrip',
       dateOfBirth: '2000-02-02',
+      sex: 'male',
       prerequisites: [
         { id: 'a1', type: 'precision_series', year: 2023, weaponGroup: 'A', points: 40 },
         { id: 'a2', type: 'precision_series', year: 2024, weaponGroup: 'B', points: 46 },
@@ -63,6 +64,7 @@ describe('Export → Restore profile roundtrip', () => {
       userId: 'user-target',
       displayName: 'Will be overwritten',
       dateOfBirth: '1999-01-01',
+      sex: 'female',
       prerequisites: [],
       unlockedMedals: [],
       features: { allowManualUnlock: false, enforceCurrentYearForSustained: false },

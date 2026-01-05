@@ -48,6 +48,8 @@ describe('MedalCalculator', () => {
     medalDb = new MedalDatabase(medalData)
     profile = new UserProfile({
       displayName: 'Test User',
+      dateOfBirth: '2000-01-01',
+      sex: 'male',
       unlockedMedals: [],
       prerequisites: []
     })
