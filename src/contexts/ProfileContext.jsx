@@ -41,18 +41,18 @@ function getProfileOverrideFromURL() {
   }
 }
 
-function createGuestProfile() {
+function createGuestProfile({ sex }) {
   return new UserProfile({
     userId: 'guest',
     displayName: 'Gästläge',
     // Use a stable local date so getFullYear() is 1975 in all timezones
     dateOfBirth: '1975-01-02',
+    sex,
     unlockedMedals: [],
     prerequisites: [],
     isGuest: true,
   })
 }
-
 
 export function ProfileProvider({ children }) {
   const [storage] = useState(() => new LocalStorageDataManager())
@@ -76,10 +76,9 @@ export function ProfileProvider({ children }) {
     }
   }, [storage])
 
-
-  const startExplorerMode = useCallback(() => {
+  const startExplorerMode = useCallback((sex) => {
     try { window.localStorage.setItem(ONBOARDING_KEY, 'guest') } catch (e) { void e }
-    setCurrentProfile(createGuestProfile())
+    setCurrentProfile(createGuestProfile({ sex }))
   }, [])
 
   // Bootstrap: load profiles, decide initial profile, then mark hydrated
@@ -104,9 +103,13 @@ export function ProfileProvider({ children }) {
           } else if (allProfiles.length > 0) {
             selected = [...allProfiles].sort((a, b) => new Date(b.lastModified) - new Date(a.lastModified))[0]
           } else {
+            // No implicit guest profile anymore; user must explicitly create/select with required fields.
             try {
               const choice = window.localStorage.getItem(ONBOARDING_KEY)
-              if (choice === 'guest') selected = createGuestProfile()
+              if (choice === 'guest') {
+                // keep null; UI must prompt for required sex before starting guest mode
+                selected = null
+              }
             } catch (e) { void e }
           }
         }
@@ -128,14 +131,14 @@ export function ProfileProvider({ children }) {
     return () => { let _ = (cancelled = true) }
   }, [storage])
 
-
   const createProfile = useCallback(
-    async (displayName, dateOfBirth) => {
+    async (displayName, dateOfBirth, sex) => {
       try {
         setLoading(true)
         const newProfile = new UserProfile({
           displayName,
           dateOfBirth,
+          sex,
         })
         const saved = await storage.saveUserProfile(newProfile)
         setCurrentProfile(saved)
@@ -481,13 +484,14 @@ export function ProfileProvider({ children }) {
   )
 
   const convertGuestToSaved = useCallback(
-    async (displayName, dateOfBirth = '') => {
+    async (displayName, dateOfBirth = '', sex) => {
       if (!currentProfile?.isGuest) return null
       const saved = new UserProfile({
         ...currentProfile,
         userId: undefined,
         displayName: displayName || 'Profil',
         dateOfBirth,
+        sex,
         isGuest: false,
       })
       const persisted = await storage.saveUserProfile(saved)

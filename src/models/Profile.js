@@ -5,6 +5,9 @@ export const DEFAULT_PROFILE_FEATURES = {
   allowManualUnlock: true,
   enforceCurrentYearForSustained: false,
 }
+
+export const VALID_PROFILE_SEX = ['male', 'female']
+
 export class UserProfile {
   constructor(data) {
     this.userId = data.userId || `user-${Date.now()}`
@@ -12,6 +15,7 @@ export class UserProfile {
     this.createdDate = data.createdDate || new Date().toISOString()
     this.lastModified = data.lastModified || new Date().toISOString()
     this.dateOfBirth = data.dateOfBirth || ''
+    this.sex = data.sex
     this.unlockedMedals = data.unlockedMedals || []
     this.prerequisites = data.prerequisites || []
     this.features = {

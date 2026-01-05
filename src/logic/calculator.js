@@ -491,6 +491,80 @@ export class MedalCalculator {
     }
   }
 
+  checkRunningShootingCourseRequirement(req, index, opts = {}) {
+    const all = (this.profile.prerequisites || []).filter(a => a.type === 'running_shooting_course')
+    const endYear = (opts && typeof opts.endYear === 'number') ? opts.endYear : null
+    if (endYear == null) {
+      return {
+        type: 'running_shooting_course',
+        index,
+        isMet: false,
+        description: req.description,
+        reason: 'end_year_required',
+        windowYear: null
+      }
+    }
+
+    const sex = this.profile?.sex
+    if (sex !== 'male' && sex !== 'female') {
+      throw new Error('Profile sex is required for running_shooting_course requirements')
+    }
+
+    const age = this.getAgeAtYear(endYear)
+    if (age == null) {
+      throw new Error('Profile dateOfBirth is required for running_shooting_course requirements')
+    }
+
+    const pickCategory = () => {
+      const cats = Array.isArray(req.ageCategories) ? req.ageCategories : []
+      if (!cats.length) return null
+      return cats.find(c => {
+        const min = typeof c.ageMin === 'number' ? c.ageMin : 0
+        const max = typeof c.ageMax === 'number' ? c.ageMax : 999
+        return age >= min && age <= max
+      }) || null
+    }
+
+    const category = pickCategory()
+    const maxPoints =
+      (category?.maxPoints && typeof category.maxPoints === 'object' ? category.maxPoints[sex] : undefined) ??
+      (req?.maxPoints && typeof req.maxPoints === 'object' ? req.maxPoints[sex] : undefined)
+
+    if (!Number.isFinite(maxPoints)) {
+      throw new Error('running_shooting_course requirement is missing maxPoints for profile sex')
+    }
+
+    let achievements = all
+    const tw = req.timeWindowYears
+    if (tw === 1) {
+      achievements = all.filter(a => a.year === endYear)
+    } else if (typeof tw === 'number' && tw > 1) {
+      const start0 = endYear - tw + 1
+      const start = Math.max(start0, Number.isFinite(opts.minStartYear) ? opts.minStartYear : start0)
+      achievements = all.filter(a => (a.year ?? 0) >= start && (a.year ?? 0) <= endYear)
+    } else {
+      achievements = all.filter(a => a.year === endYear)
+    }
+
+    const candidates = achievements.filter(a => typeof a.points === 'number' && Number.isFinite(a.points) && a.points <= maxPoints)
+    const required = req.minAchievements ?? 1
+    const progress = { current: candidates.length, required }
+    const met = progress.current >= required
+
+    return {
+      type: 'running_shooting_course',
+      index,
+      isMet: met,
+      progress,
+      description: req.description,
+      windowYear: met ? endYear : null,
+      maxPoints,
+      sex,
+      age,
+      ...(category?.name ? { ageCategory: category.name } : {})
+    }
+  }
+
   filterByPrecisionSeriesThreshold(list, req) {
     const thresholds = {
       A: req.pointThresholds?.A?.min ?? 0,
@@ -559,6 +633,9 @@ export class MedalCalculator {
         break
       case 'application_series':
         leaf = this.checkApplicationSeriesRequirement(req, -1, opts)
+        break
+      case 'running_shooting_course':
+        leaf = this.checkRunningShootingCourseRequirement(req, -1, opts)
         break
       case 'sustained_achievement':
         leaf = this.checkSustainedAchievementRequirement(req, -1, medal, opts)

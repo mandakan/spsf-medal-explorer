@@ -11,6 +11,16 @@ export function detectMedalFormType(medal) {
   const nameStr = String(medal.displayName || medal.name || '').toLowerCase()
   const tierStr = String(medal.tier || '').toLowerCase()
 
+  // Running shooting heuristics
+  if (
+    typeStr.includes('running') ||
+    typeStr.includes('run') ||
+    /spring/.test(nameStr) ||
+    /springskytte/.test(nameStr)
+  ) {
+    return 'running_shooting'
+  }
+
   // Competition heuristics (series/tiers gold/silver/bronze)
   if (
     medalsType === 'serie' ||
@@ -51,6 +61,7 @@ export function detectMedalFormType(medal) {
   const reqs = Array.isArray(medal.requirements) ? medal.requirements : []
   if (reqs.length) {
     const types = reqs.map(r => String(r?.type || '').toLowerCase())
+    if (types.includes('running_shooting_course')) return 'running_shooting'
     if (types.includes('precision_series')) return 'competition'
     if (types.some(t => t.includes('qualification'))) return 'qualification'
   }
@@ -81,7 +92,9 @@ export function mapFormToAchievement({ medal, medalType, formData }) {
 
   // Decide internal storage type
   let storageType = 'custom'
-  if (medalType === 'competition') {
+  if (medalType === 'running_shooting') {
+    storageType = 'running_shooting_course'
+  } else if (medalType === 'competition') {
     const hasPrecisionSeries = Array.isArray(medal?.requirements) && medal.requirements.some(r => (r?.type || '').toLowerCase() === 'precision_series')
     storageType = hasPrecisionSeries ? 'precision_series' : 'competition_result'
   } else if (medalType === 'qualification') {
@@ -107,6 +120,12 @@ export function mapFormToAchievement({ medal, medalType, formData }) {
   }
 
   switch (storageType) {
+    case 'running_shooting_course':
+      return {
+        ...base,
+        points: Number(formData?.points ?? formData?.score ?? 0),
+        courseName: formData?.courseName || '',
+      }
     case 'precision_series':
       return {
         ...base,
