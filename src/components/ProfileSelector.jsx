@@ -4,7 +4,7 @@ import MobileBottomSheet from './MobileBottomSheet'
 import ProfileImportDialog from './ProfileImportDialog'
 
 export default function ProfileSelector({ mode = 'picker', open = false, onClose, id = 'profile-picker', forceCreate = false, convertGuest = false }) {
-  const { profiles, currentProfile, loading, createProfile, updateProfile, selectProfile, deleteProfile, convertGuestToSaved } =
+  const { profiles, currentProfile, loading, createProfile, updateProfile, selectProfile, deleteProfile, convertGuestToSaved, startExplorerMode } =
     useProfile()
 
   const [showModal, setShowModal] = useState(false)
@@ -12,6 +12,7 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
   const [editingProfile, setEditingProfile] = useState(null)
   const [newProfileName, setNewProfileName] = useState('')
   const [newDateOfBirth, setNewDateOfBirth] = useState('')
+  const [newSex, setNewSex] = useState('')
   const [showImport, setShowImport] = useState(false)
   const isPicker = mode === 'picker'
 
@@ -22,7 +23,7 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!newProfileName.trim() || !newDateOfBirth) return
+    if (!newProfileName.trim() || !newDateOfBirth || !newSex) return
 
     try {
       if (effectiveModalMode === 'edit' && effectiveEditingProfile) {
@@ -30,14 +31,16 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
           ...editingProfile,
           displayName: newProfileName.trim(),
           dateOfBirth: newDateOfBirth,
+          sex: newSex,
         })
       } else if (convertGuest && currentProfile?.isGuest) {
-        await convertGuestToSaved(newProfileName.trim(), newDateOfBirth)
+        await convertGuestToSaved(newProfileName.trim(), newDateOfBirth, newSex)
       } else {
-        await createProfile(newProfileName.trim(), newDateOfBirth)
+        await createProfile(newProfileName.trim(), newDateOfBirth, newSex)
       }
       setNewProfileName('')
       setNewDateOfBirth('')
+      setNewSex('')
       setEditingProfile(null)
       setShowModal(false)
       onClose?.()
@@ -66,6 +69,12 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
     return age
   }
 
+  const sexLabel = (sex) => {
+    if (sex === 'female') return 'Kvinna'
+    if (sex === 'male') return 'Man'
+    return '—'
+  }
+
   return (
     <>
       {isPicker ? (
@@ -81,7 +90,7 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
                     }}
                     className="btn btn-muted flex-1 justify-start text-left"
                   >
-                    {profile.displayName} (Ålder {computeAge(profile.dateOfBirth) ?? '—'})
+                    {profile.displayName} (Ålder {computeAge(profile.dateOfBirth) ?? '—'} • {sexLabel(profile.sex)})
                   </button>
                   <button
                     onClick={() => {
@@ -89,6 +98,7 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
                       setEditingProfile(profile)
                       setNewProfileName(profile.displayName || '')
                       setNewDateOfBirth(profile.dateOfBirth || '')
+                      setNewSex(profile.sex || '')
                       setShowModal(true)
                     }}
                     className="btn btn-secondary"
@@ -114,6 +124,7 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
                 setEditingProfile(null)
                 setNewProfileName('')
                 setNewDateOfBirth('')
+                setNewSex('')
                 setShowModal(true)
               }}
               className="btn btn-primary min-h-[44px]"
@@ -127,6 +138,19 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
               aria-controls="profile-import-dialog"
             >
               Importera profil
+            </button>
+            <button
+              onClick={() => {
+                setModalMode('guest')
+                setEditingProfile(null)
+                setNewProfileName('Gästläge')
+                setNewDateOfBirth('1975-01-02')
+                setNewSex('')
+                setShowModal(true)
+              }}
+              className="btn btn-muted min-h-[44px]"
+            >
+              Fortsätt i gästläge
             </button>
           </div>
         </MobileBottomSheet>
@@ -143,7 +167,7 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
                         onClick={() => selectProfile(profile.userId)}
                         className="btn btn-muted flex-1 justify-start text-left"
                       >
-                        {profile.displayName} (Age {computeAge(profile.dateOfBirth) ?? '—'})
+                        {profile.displayName} (Age {computeAge(profile.dateOfBirth) ?? '—'} • {sexLabel(profile.sex)})
                       </button>
                       <button
                         onClick={() => {
@@ -151,6 +175,7 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
                           setEditingProfile(profile)
                           setNewProfileName(profile.displayName || '')
                           setNewDateOfBirth(profile.dateOfBirth || '')
+                          setNewSex(profile.sex || '')
                           setShowModal(true)
                         }}
                         className="btn btn-secondary"
@@ -174,6 +199,7 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
                     setEditingProfile(null)
                     setNewProfileName('')
                     setNewDateOfBirth('')
+                    setNewSex('')
                     setShowModal(true)
                   }}
                   className="btn btn-primary min-h-[44px]"
@@ -196,6 +222,9 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
               <p className="text-text-secondary text-sm">
                 Ålder: {computeAge(currentProfile.dateOfBirth) ?? '—'}
               </p>
+              <p className="text-text-secondary text-sm">
+                Kön: {sexLabel(currentProfile.sex)}
+              </p>
             </div>
           )}
         </div>
@@ -213,7 +242,7 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
           >
             <form onSubmit={handleSubmit} className="p-6 space-y-5">
               <h2 id="create-profile-title" className="text-2xl font-bold text-text-primary">
-                {effectiveModalMode === 'edit' ? 'Ändra profil' : 'Skapa ny profil'}
+                {effectiveModalMode === 'edit' ? 'Ändra profil' : (modalMode === 'guest' ? 'Gästläge' : 'Skapa ny profil')}
               </h2>
 
               <div className="space-y-2">
@@ -224,7 +253,7 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
                   onChange={(e) => setNewProfileName(e.target.value)}
                   className="input"
                   placeholder="Ditt namn"
-                  disabled={loading}
+                  disabled={loading || modalMode === 'guest'}
                   required
                 />
               </div>
@@ -236,19 +265,60 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
                   value={newDateOfBirth}
                   onChange={(e) => setNewDateOfBirth(e.target.value)}
                   className="input"
-                  disabled={loading}
+                  disabled={loading || modalMode === 'guest'}
                   required
                 />
-                <p className="text-xs text-text-secondary">Används för att beräkna åldersberoende krav (tex gränser för precisionsserier)</p>
+                <p className="text-xs text-text-secondary">Används för att beräkna åldersberoende krav enligt regelboken.</p>
               </div>
+
+              <fieldset className="space-y-2">
+                <legend className="block text-sm font-medium text-text-secondary">
+                  Kön (enligt regelboken) <span aria-hidden="true">*</span>
+                </legend>
+                <p className="text-xs text-text-secondary">
+                  Används endast för att beräkna medaljkrav enligt regelboken.
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <label className="btn btn-muted justify-start text-left min-h-[44px]">
+                    <input
+                      type="radio"
+                      name="sex"
+                      value="female"
+                      checked={newSex === 'female'}
+                      onChange={(e) => setNewSex(e.target.value)}
+                      disabled={loading}
+                      className="mr-2"
+                      required
+                    />
+                    Kvinna
+                  </label>
+                  <label className="btn btn-muted justify-start text-left min-h-[44px]">
+                    <input
+                      type="radio"
+                      name="sex"
+                      value="male"
+                      checked={newSex === 'male'}
+                      onChange={(e) => setNewSex(e.target.value)}
+                      disabled={loading}
+                      className="mr-2"
+                      required
+                    />
+                    Man
+                  </label>
+                </div>
+              </fieldset>
 
               <div className="flex items-center justify-end gap-3 pt-2">
                 <button
                   type="submit"
                   className="btn btn-primary disabled:opacity-50"
-                  disabled={loading}
+                  disabled={loading || !newSex}
                 >
-                  {effectiveModalMode === 'edit' ? 'Spara' : (convertGuest && currentProfile?.isGuest ? 'Spara framsteg' : 'Skapa')}
+                  {effectiveModalMode === 'edit'
+                    ? 'Spara'
+                    : (modalMode === 'guest'
+                        ? 'Starta gästläge'
+                        : (convertGuest && currentProfile?.isGuest ? 'Spara framsteg' : 'Skapa'))}
                 </button>
                 <button
                   type="button"
@@ -259,6 +329,28 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
                   Avbryt
                 </button>
               </div>
+
+              {modalMode === 'guest' && (
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    className="btn btn-primary w-full min-h-[44px]"
+                    disabled={loading || !newSex}
+                    onClick={async () => {
+                      if (!newSex) return
+                      try {
+                        await startExplorerMode(newSex)
+                        setShowModal(false)
+                        onClose?.()
+                      } catch (e) {
+                        console.error(e)
+                      }
+                    }}
+                  >
+                    Starta gästläge
+                  </button>
+                </div>
+              )}
             </form>
           </div>
         </div>

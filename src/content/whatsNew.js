@@ -4,6 +4,15 @@
  */
 export const releases = [
   {
+    id: '0.9.5',
+    date: '2026-01-04',
+    title: 'Lägg till kön i profil',
+    highlights: [
+      'Ett fåtal märken särskiljer kraven för män och kvinnor så profilen måste hålla den informationen',
+    ],
+    link: 'https://github.com/mandakan/spsf-medal-explorer/releases/tag/v0.9.5',
+  },
+  {
     id: '0.9.4',
     date: '2026-01-04',
     title: 'Buggfixar',

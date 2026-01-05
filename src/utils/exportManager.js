@@ -175,6 +175,7 @@ export async function toProfileBackup(profile, { version = '1.0' } = {}) {
       createdDate: profile?.createdDate || safeDateISO(),
       lastModified: profile?.lastModified || safeDateISO(),
       dateOfBirth: profile?.dateOfBirth || '',
+      sex: profile?.sex || '',
       unlockedMedals: ensureArray(profile?.unlockedMedals),
       prerequisites: ensureArray(profile?.prerequisites),
       features: {

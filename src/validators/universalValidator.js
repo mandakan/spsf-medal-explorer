@@ -102,5 +102,16 @@ export function validateAchievement(achievement) {
       }
     }
   }
+  if (type === 'running_shooting_course') {
+    const pts = achievement.points
+    if (typeof pts !== 'number' || Number.isNaN(pts) || pts < 0) {
+      errors.push('Points required for running shooting course')
+    }
+    if (!achievement.date || Number.isNaN(new Date(achievement.date).getTime())) {
+      errors.push('Date required for running shooting course')
+    } else if (isFutureDate(achievement.date)) {
+      errors.push('Date cannot be in the future')
+    }
+  }
   return { valid: errors.length === 0, errors }
 }

@@ -1,5 +1,5 @@
 import { DataManager } from './dataManager'
-import { UserProfile, DEFAULT_PROFILE_FEATURES } from '../models/Profile'
+import { UserProfile, DEFAULT_PROFILE_FEATURES, VALID_PROFILE_SEX } from '../models/Profile'
 
 /**
  * LocalStorage-based data manager for POC phase
@@ -87,6 +87,7 @@ export class LocalStorageDataManager extends DataManager {
       data.profiles[index] = {
         ...data.profiles[index],
         ...profile,
+        sex: profile.sex,
         features,
         userId: data.profiles[index].userId, // never change id
       }
@@ -98,6 +99,7 @@ export class LocalStorageDataManager extends DataManager {
         createdDate: now,
         lastModified: now,
         dateOfBirth: profile.dateOfBirth,
+        sex: profile.sex,
         unlockedMedals: Array.isArray(profile.unlockedMedals) ? profile.unlockedMedals : [],
         prerequisites: Array.isArray(profile.prerequisites) ? profile.prerequisites : [],
         notifications: Boolean(profile.notifications),
@@ -182,6 +184,11 @@ export class LocalStorageDataManager extends DataManager {
         return `${base}|${(ach.teamName || '').toLowerCase()}|${String(ach.position ?? '').trim()}`
       case 'event':
         return `${base}|${(ach.eventName || '').toLowerCase()}`
+      case 'running_shooting_course': {
+        const date = String(ach.date || '').toLowerCase()
+        const pts = String(ach.points ?? '').trim()
+        return `${base}|${date}|${pts}`
+      }
       default:
         return null
     }
@@ -340,8 +347,6 @@ export class LocalStorageDataManager extends DataManager {
     await this.saveUserProfile(profile)
   }
 
-
-
   /**
    * Validate profile structure per docs/02-Data-Model.md
    */
@@ -352,6 +357,10 @@ export class LocalStorageDataManager extends DataManager {
     if (!Array.isArray(profile.unlockedMedals)) return false
     if (!Array.isArray(profile.prerequisites)) return false
     if (!this._isValidDob(profile.dateOfBirth)) return false
+
+    if (!profile.sex || typeof profile.sex !== 'string') return false
+    if (!VALID_PROFILE_SEX.includes(profile.sex)) return false
+
     // Optional features validation
     if (profile.features != null) {
       if (typeof profile.features !== 'object') return false
@@ -450,6 +459,23 @@ export class LocalStorageDataManager extends DataManager {
           }
         }
       }
+
+      if (achievement.type === 'running_shooting_course') {
+        if (!achievement.date || Number.isNaN(new Date(achievement.date).getTime())) {
+          reasons.push('date must be a valid ISO date')
+        } else {
+          const d = new Date(achievement.date)
+          const today = new Date()
+          today.setHours(0, 0, 0, 0)
+          d.setHours(0, 0, 0, 0)
+          if (d.getTime() > today.getTime()) {
+            reasons.push('date cannot be in the future')
+          }
+        }
+        if (typeof achievement.points !== 'number' || !Number.isFinite(achievement.points) || achievement.points < 0) {
+          reasons.push('points must be a non-negative number')
+        }
+      }
     }
 
     const ok = reasons.length === 0
@@ -514,8 +540,6 @@ export class LocalStorageDataManager extends DataManager {
       throw error
     }
   }
-
-
 
   _isValidDob(dob) {
     if (!dob || typeof dob !== 'string') return false
@@ -621,6 +645,7 @@ export class LocalStorageDataManager extends DataManager {
       createdDate: profile.createdDate || now,
       lastModified: now,
       dateOfBirth: profile.dateOfBirth || '',
+      sex: profile.sex,
       unlockedMedals: Array.isArray(profile.unlockedMedals) ? profile.unlockedMedals : [],
       prerequisites: Array.isArray(profile.prerequisites) ? profile.prerequisites : [],
       notifications: !!profile.notifications,
