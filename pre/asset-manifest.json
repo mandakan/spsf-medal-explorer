@@ -5,7 +5,7 @@
     "isDynamicEntry": true
   },
   "index.html": {
-    "file": "assets/index-D0vZ0EmS.js",
+    "file": "assets/index-BIYFS7Bp.js",
     "name": "index",
     "src": "index.html",
     "isEntry": true,
@@ -23,7 +23,7 @@
     ]
   },
   "src/data/medals.json": {
-    "file": "assets/medals-BZlpLe49.js",
+    "file": "assets/medals-BhuBhagp.js",
     "name": "medals",
     "src": "src/data/medals.json",
     "isDynamicEntry": true
