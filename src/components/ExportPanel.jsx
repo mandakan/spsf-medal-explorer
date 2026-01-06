@@ -19,7 +19,7 @@ export default function ExportPanel({ profile }) {
       switch (exportFormat) {
         case 'json': {
           data = await exportManager.toProfileBackup(profile, { version: '1.0' })
-          filename = `profil-${dateStr}.json`
+          filename = `medal-backup-${dateStr}.json`
           mime = 'application/json'
           break
         }
@@ -44,8 +44,8 @@ export default function ExportPanel({ profile }) {
       setSuccess(true)
       setTimeout(() => setSuccess(false), 3000)
     } catch (err) {
-      console.error('Export-fel:', err)
-      setError(err.message || 'Export misslyckades')
+      console.error('Backup-fel:', err)
+      setError(err.message || 'Säkerhetskopieringen misslyckades')
     } finally {
       setLoading(false)
     }
@@ -54,13 +54,13 @@ export default function ExportPanel({ profile }) {
   return (
     <div className="card p-6">
       <h2 className="text-xl font-bold text-foreground mb-6">
-        Exporta profil
+        Säkerhetskopiera profil
       </h2>
 
       {/* Format Selection */}
       <fieldset className="mb-6 space-y-3">
         <legend className="text-sm font-medium text-foreground mb-3">
-          Export-format
+          Backup-format
         </legend>
 
         {['json', 'csv', 'pdf'].map((fmt) => (
@@ -90,20 +90,20 @@ export default function ExportPanel({ profile }) {
         ))}
       </fieldset>
 
-      {/* Export Button */}
+      {/* Backup Button */}
       <button
         onClick={() => handleExport(format)}
         disabled={loading}
         className="btn btn-primary w-full min-h-[44px]"
-        aria-label={`Export as ${format.toUpperCase()}`}
+        aria-label={`Säkerhetskopiera som ${format.toUpperCase()}`}
       >
-        {loading ? 'Exporterar...' : `Exporta som ${format.toUpperCase()}`}
+        {loading ? 'Skapar säkerhetskopia...' : `Säkerhetskopiera som ${format.toUpperCase()}`}
       </button>
 
       {success && (
         <div className="alert alert-success mt-4 flex items-center gap-2" role="status" aria-live="polite">
           <span aria-hidden="true">✓</span>
-          <span>Exporten lyckades!</span>
+          <span>Säkerhetskopieringen lyckades!</span>
         </div>
       )}
 
@@ -120,7 +120,7 @@ export default function ExportPanel({ profile }) {
 function getFormatDescription(format) {
   switch (format) {
     case 'json':
-      return '(Komplett profil-backup)'
+      return '(Komplett säkerhetskopia)'
     case 'csv':
       return '(Spreadsheet-kompatibel)'
     case 'pdf':

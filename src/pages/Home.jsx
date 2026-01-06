@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useMedalDatabase } from '../hooks/useMedalDatabase'
 import Disclaimer from '../components/Disclaimer'
 import Icon from '../components/Icon'
+import BackupButton from '../components/BackupButton'
 import { LINKS } from '../config/links'
 import { BUILD } from '../config/buildInfo'
 import { requestManualTourStart } from '../utils/onboardingTour'
@@ -51,6 +52,11 @@ export default function Home() {
         variant="info"
         linkUrl={LINKS.RULEBOOK}
       />
+
+      {/* Backup Button Section */}
+      <section>
+        <BackupButton />
+      </section>
 
       <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Link

@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import { useProfile } from '../hooks/useProfile'
+import RestorePreviewDialog from './RestorePreviewDialog'
+import { parseProfileBackup } from '../utils/importManager'
 
 export default function ProfileImportDialog({
   id = 'profile-import-dialog',
@@ -11,6 +13,8 @@ export default function ProfileImportDialog({
   const [strategy, setStrategy] = useState('new-id')
   const [error, setError] = useState(null)
   const [busy, setBusy] = useState(false)
+  const [showPreview, setShowPreview] = useState(false)
+  const [parsedBackup, setParsedBackup] = useState(null)
 
   if (!open) return null
 
@@ -29,16 +33,41 @@ export default function ProfileImportDialog({
       setError(null)
       if (!importText.trim()) {
         setError('Klistra in JSON eller välj en fil.')
+        setBusy(false)
         return
       }
+
+      // Parse backup to show preview
+      const parsed = parseProfileBackup(importText)
+      setParsedBackup(parsed)
+      setShowPreview(true)
+      setBusy(false)
+    } catch (err) {
+      setError(err.message || 'Kunde inte läsa säkerhetskopian')
+      setBusy(false)
+    }
+  }
+
+  const handleRestore = async () => {
+    try {
+      setBusy(true)
+      setError(null)
       await restoreProfileFromBackup(importText, { strategy })
       setImportText('')
+      setShowPreview(false)
+      setParsedBackup(null)
       onClose?.()
     } catch (err) {
       setError(err.message || 'Import misslyckades')
+      setShowPreview(false)
     } finally {
       setBusy(false)
     }
+  }
+
+  const handleCancelPreview = () => {
+    setShowPreview(false)
+    setParsedBackup(null)
   }
 
   return (
@@ -52,7 +81,7 @@ export default function ProfileImportDialog({
       >
         <form onSubmit={onSubmit} className="p-6 space-y-5">
           <h2 id={`${id}-title`} className="text-2xl font-bold text-text-primary">
-            Importera profil (backup)
+            Importera profil (säkerhetskopia)
           </h2>
 
           {error && (
@@ -119,7 +148,7 @@ export default function ProfileImportDialog({
               className="btn btn-primary min-h-[44px] disabled:opacity-50"
               disabled={busy}
             >
-              Importera profil
+              Förhandsgranska
             </button>
             <button
               type="button"
@@ -132,6 +161,15 @@ export default function ProfileImportDialog({
           </div>
         </form>
       </div>
+
+      {/* Restore Preview Dialog */}
+      {showPreview && parsedBackup && (
+        <RestorePreviewDialog
+          backup={parsedBackup}
+          onRestore={handleRestore}
+          onCancel={handleCancelPreview}
+        />
+      )}
     </div>
   )
 }
