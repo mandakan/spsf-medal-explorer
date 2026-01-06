@@ -47,6 +47,17 @@ jobs:
       - name: Test
         run: npm run test
 
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium webkit
+
+      - name: Build application for E2E tests
+        run: npm run build
+        env:
+          BUILD_NUMBER: ${{ github.run_number }}
+
+      - name: Run E2E tests
+        run: npm run test:e2e
+
       - name: Compute release version (strip v-prefix)
         id: ver
         shell: bash
@@ -184,6 +195,17 @@ jobs:
 
       - name: Test
         run: npm run test
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium webkit
+
+      - name: Build application for E2E tests
+        run: npm run build
+        env:
+          BUILD_NUMBER: ${{ github.run_number }}
+
+      - name: Run E2E tests
+        run: npm run test:e2e
 
       - name: Compute preview version
         id: ver

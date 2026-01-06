@@ -39,6 +39,17 @@ jobs:
       - name: Run tests
         run: npm run test
 
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium webkit
+
+      - name: Build application for E2E tests
+        run: npm run build
+        env:
+          BUILD_NUMBER: ${{ github.run_number }}
+
+      - name: Run E2E tests
+        run: npm run test:e2e
+
       - name: Clone gh-pages site store
         env:
           GH_TOKEN: ${{ github.token }}

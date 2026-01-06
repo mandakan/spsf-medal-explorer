@@ -46,11 +46,22 @@ export default function OnboardingTourOverlay() {
       return
     }
     setHasTarget(true)
+
+    // Scroll into view only if element is not already visible
     try {
-      el.scrollIntoView({ block: 'center', inline: 'nearest' })
+      const r = el.getBoundingClientRect()
+      const vh = window.innerHeight
+      const isInBottomHalf = r.bottom > vh / 2
+
+      // For bottom elements, don't scroll; they should stay in place
+      // For other elements, center them
+      if (!isInBottomHalf && (r.top < 0 || r.bottom > vh)) {
+        el.scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'smooth' })
+      }
     } catch {
       // ignore
     }
+
     const r = el.getBoundingClientRect()
     setTargetRect({
       top: r.top,
@@ -218,7 +229,16 @@ export default function OnboardingTourOverlay() {
 
   if (!open || !step) return null
 
-  // Mobile-first: bottom sheet always. Desktop: if target exists, position near it.
+  // Detect if target is in bottom half of screen (for mobile positioning)
+  const targetInBottomHalf = (() => {
+    if (!targetRect) return false
+    if (typeof window === 'undefined') return false
+    const vh = window.innerHeight
+    return targetRect.bottom > vh / 2
+  })()
+
+  // Mobile-first: bottom sheet by default, but top sheet if target is in bottom half.
+  // Desktop: if target exists, position near it.
   const desktopPopoverStyle = (() => {
     if (!targetRect) return null
     if (typeof window === 'undefined') return null
@@ -249,18 +269,19 @@ export default function OnboardingTourOverlay() {
   const spotlightStyle = targetRect
     ? {
         position: 'fixed',
-        top: Math.max(0, targetRect.top - 6),
-        left: Math.max(0, targetRect.left - 6),
-        width: Math.max(0, targetRect.width + 12),
-        height: Math.max(0, targetRect.height + 12),
-        borderRadius: 12,
+        top: Math.max(0, targetRect.top - 8),
+        left: Math.max(0, targetRect.left - 8),
+        width: Math.max(0, targetRect.width + 16),
+        height: Math.max(0, targetRect.height + 16),
+        borderRadius: 16,
         boxShadow: '0 0 0 9999px rgba(0,0,0,0.55)',
         pointerEvents: 'none',
+        zIndex: 65,
       }
     : null
 
   return (
-    <div className="fixed inset-0 z-50 pointer-events-none" aria-hidden={false}>
+    <div className="fixed inset-0 z-[70] pointer-events-none" aria-hidden={false}>
       {/* Spotlight (preferred) or plain scrim */}
       {spotlightStyle ? (
         <div aria-hidden="true" style={spotlightStyle} />
@@ -278,17 +299,20 @@ export default function OnboardingTourOverlay() {
         className={[
           'card',
           'pointer-events-auto',
+          'z-[70]',
           desktopPopoverStyle
             ? 'rounded-xl shadow-lg'
+            : targetInBottomHalf
+            ? 'fixed inset-x-0 top-0 w-full max-h-[85vh] rounded-b-2xl shadow-lg'
             : 'fixed inset-x-0 bottom-0 w-full max-h-[85vh] rounded-t-2xl shadow-lg',
           !desktopPopoverStyle
             ? 'md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-[min(90vw,520px)] md:rounded-xl'
             : '',
           'outline-none',
         ].join(' ')}
-        style={desktopPopoverStyle || undefined}
+        style={desktopPopoverStyle || (targetInBottomHalf ? { paddingTop: 'env(safe-area-inset-top)' } : undefined)}
       >
-        <div className="p-4 sm:p-6">
+        <div className={targetInBottomHalf ? 'p-4 sm:p-6 pt-2' : 'p-4 sm:p-6'}>
           <header className="flex items-start justify-between gap-4">
             <div className="min-w-0">
               <h2 id={titleId} className="text-lg sm:text-xl font-semibold text-foreground">

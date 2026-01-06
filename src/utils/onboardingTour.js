@@ -15,11 +15,20 @@ export const MANUAL_TOUR_KEY = 'app:onboardingTour:manualStart'
  */
 export const ONBOARDING_TOUR_ID = 'v1'
 
-export function getTourId() {
-  // Keep stable across builds unless we explicitly bump ONBOARDING_TOUR_ID.
+/**
+ * Tour-specific version IDs
+ */
+export const TOUR_VERSIONS = {
+  medals: 'v1',
+  'tree-view': 'v1',
+}
+
+export function getTourId(tourType = 'medals') {
+  // Keep stable across builds unless we explicitly bump version for specific tour.
   // BUILD is imported to ensure this module is bundled consistently with app config.
   void BUILD
-  return ONBOARDING_TOUR_ID
+  const version = TOUR_VERSIONS[tourType] || ONBOARDING_TOUR_ID
+  return `${tourType}-${version}`
 }
 
 export function getTourLastSeen() {
