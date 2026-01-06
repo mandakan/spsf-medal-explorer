@@ -10,6 +10,7 @@ export const releases = [
     highlights: [
       'Skidskyttemärken är tillagda för granskning',
       'Ett fåtal märken särskiljer kraven för män och kvinnor så profilen måste hålla den informationen',
+      'Interaktiv användarguide för trädvyn med stöd för mobil och helskärmsläge',
     ],
     link: 'https://github.com/mandakan/spsf-medal-explorer/releases/tag/v0.9.5',
   },
