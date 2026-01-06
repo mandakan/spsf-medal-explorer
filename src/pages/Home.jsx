@@ -10,8 +10,12 @@ import { requestManualTourStart } from '../utils/onboardingTour'
 export default function Home() {
   const { medalDatabase, loading } = useMedalDatabase()
 
-  const handleStartQuickGuide = useCallback(() => {
+  const handleStartMedalsGuide = useCallback(() => {
     requestManualTourStart('medals')
+  }, [])
+
+  const handleStartTreeGuide = useCallback(() => {
+    requestManualTourStart('tree-view')
   }, [])
 
   return (
@@ -24,13 +28,20 @@ export default function Home() {
           Dokumentera dina skyttemärken och medaljer med aktiviteter, utforska framtida märken och planera progression
         </p>
 
-        <div className="mt-6 flex justify-center">
+        <div className="mt-6 flex justify-center gap-3 flex-wrap">
           <Link
             to="/medals"
-            onClick={handleStartQuickGuide}
+            onClick={handleStartMedalsGuide}
             className="btn btn-secondary min-h-[44px] inline-flex items-center justify-center"
           >
-            Visa snabbguide
+            Visa märkeslista-guide
+          </Link>
+          <Link
+            to="/skill-tree"
+            onClick={handleStartTreeGuide}
+            className="btn btn-secondary min-h-[44px] inline-flex items-center justify-center"
+          >
+            Visa trädvy-guide
           </Link>
         </div>
       </section>

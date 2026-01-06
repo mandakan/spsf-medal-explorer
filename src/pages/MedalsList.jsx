@@ -162,7 +162,7 @@ export default function MedalsList() {
       setSortBy('name')
       setShowFilters(false)
     }
-    tour.start()
+    tour.start('medals')
   }, [
     tour,
     hasActiveFilters,
