@@ -1084,6 +1084,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
               <button
                 type="button"
                 ref={menuButtonRef}
+                data-tour="tree-actions"
                 aria-haspopup="menu"
                 aria-controls={menuId}
                 aria-expanded={menuOpen}
@@ -1210,7 +1211,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
             className="absolute left-3 bottom-3 sm:left-4 sm:bottom-4 z-[60]"
             style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
           >
-            <div className="inline-flex flex-col gap-2">
+            <div className="inline-flex flex-col gap-2" data-tour="zoom-controls">
               <button
                 type="button"
                 aria-label="Zooma in"
@@ -1315,6 +1316,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
             <div className="relative h-full">
               <canvas
                 ref={setCanvasRef}
+                data-tour="tree-canvas"
                 role="img"
                 aria-label="Interaktiv träd-vy-canvas"
                 aria-describedby={['skilltree-help-fs', showLegend ? 'skilltree-legend-fs' : null, legendDescribedById].filter(Boolean).join(' ')}
@@ -1334,6 +1336,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
               {showLegend && (
                 <div
                   ref={legendFsRef}
+                  data-tour="tree-legend"
                   className="absolute left-3 right-3 top-3 sm:left-4 sm:right-auto sm:top-4 z-[40] overflow-x-auto whitespace-nowrap rounded-md border border-border/60 bg-background/80 backdrop-blur-sm shadow-md px-3 py-1.5"
                   style={{ marginTop: 'env(safe-area-inset-top)' }}
                   role="note"

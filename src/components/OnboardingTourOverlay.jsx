@@ -276,12 +276,12 @@ export default function OnboardingTourOverlay() {
         borderRadius: 16,
         boxShadow: '0 0 0 9999px rgba(0,0,0,0.55)',
         pointerEvents: 'none',
-        zIndex: 55,
+        zIndex: 65,
       }
     : null
 
   return (
-    <div className="fixed inset-0 z-50 pointer-events-none" aria-hidden={false}>
+    <div className="fixed inset-0 z-[70] pointer-events-none" aria-hidden={false}>
       {/* Spotlight (preferred) or plain scrim */}
       {spotlightStyle ? (
         <div aria-hidden="true" style={spotlightStyle} />
@@ -299,6 +299,7 @@ export default function OnboardingTourOverlay() {
         className={[
           'card',
           'pointer-events-auto',
+          'z-[70]',
           desktopPopoverStyle
             ? 'rounded-xl shadow-lg'
             : targetInBottomHalf

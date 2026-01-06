@@ -34,10 +34,11 @@ export default function SkillTree() {
     tour.start('tree-view')
   }, [tour])
 
-  // Manual start request (race-safe): consumed once when arriving at /skill-tree
+  // Manual start request (race-safe): consumed once when arriving at /skill-tree or /skill-tree/fullscreen
   useEffect(() => {
     if (isProfileLoading) return
-    if (location.pathname !== '/skill-tree') return
+    const isTreeView = location.pathname === '/skill-tree' || location.pathname === '/skill-tree/fullscreen'
+    if (!isTreeView) return
     if (tour?.open) return
 
     let requested = null
@@ -54,13 +55,19 @@ export default function SkillTree() {
       // ignore
     }
 
-    startGuideFromHere()
+    // Small delay to ensure DOM is ready after potential fullscreen redirect
+    const timer = setTimeout(() => {
+      startGuideFromHere()
+    }, 100)
+
+    return () => clearTimeout(timer)
   }, [isProfileLoading, location.pathname, tour, startGuideFromHere])
 
   // Auto-start onboarding tour on first visit to /skill-tree (after hydration and after "What's New" has been seen)
   useEffect(() => {
     if (isProfileLoading) return
-    if (location.pathname !== '/skill-tree') return
+    const isTreeView = location.pathname === '/skill-tree' || location.pathname === '/skill-tree/fullscreen'
+    if (!isTreeView) return
     if (tour?.open) return
 
     // If a manual start is pending, let the manual-start effect handle it.
@@ -78,7 +85,12 @@ export default function SkillTree() {
       if (releaseId && last !== releaseId) return
     }
 
-    startGuideFromHere()
+    // Small delay to ensure DOM is ready after potential fullscreen redirect
+    const timer = setTimeout(() => {
+      startGuideFromHere()
+    }, 100)
+
+    return () => clearTimeout(timer)
   }, [isProfileLoading, location.pathname, tour, startGuideFromHere])
 
   if (isProfileLoading) {
