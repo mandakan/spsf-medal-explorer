@@ -8,6 +8,10 @@ const STORES = {
   METADATA: 'metadata',
 }
 
+// Debug logging flag - set to true during development to enable verbose console logging
+// Default: false to avoid production console noise
+const DEBUG = false
+
 /**
  * IndexedDB implementation of DataManager
  * Provides async storage with 50MB+ capacity
@@ -250,6 +254,11 @@ export class IndexedDBManager extends DataManager {
     rows,
     { updateById = true, matchNaturalKey = false, addNew = true, dryRun = true } = {}
   ) {
+    // Early return for empty input
+    if (!rows || rows.length === 0) {
+      return { added: 0, updated: 0, skipped: 0, failed: 0, errors: [] }
+    }
+
     const profile = await this.getUserProfile(userId)
     if (!profile) throw new Error('Profile not found')
     this._ensureAchievementIds(profile)
@@ -276,19 +285,23 @@ export class IndexedDBManager extends DataManager {
             Array.isArray(this._lastValidationReasons) && this._lastValidationReasons.length
               ? this._lastValidationReasons.join('; ')
               : 'Invalid achievement structure'
-          console.groupCollapsed(`[IndexedDBManager] Validation failed for row #${i + 1}`)
-          console.error('Reason:', reasonText)
-          console.log('Record:', rec)
-          console.groupEnd()
+          if (DEBUG) {
+            console.groupCollapsed(`[IndexedDBManager] Validation failed for row #${i + 1}`)
+            console.error('Reason:', reasonText)
+            console.log('Record:', rec)
+            console.groupEnd()
+          }
           result.failed++
           result.errors.push({ record: rec, row: i + 1, error: reasonText })
           continue
         }
       } catch (e) {
-        console.groupCollapsed(`[IndexedDBManager] Exception validating row #${i + 1}`)
-        console.error(e)
-        console.log('Record:', rec)
-        console.groupEnd()
+        if (DEBUG) {
+          console.groupCollapsed(`[IndexedDBManager] Exception validating row #${i + 1}`)
+          console.error(e)
+          console.log('Record:', rec)
+          console.groupEnd()
+        }
         result.failed++
         result.errors.push({ record: rec, row: i + 1, error: e?.message || 'Validation failed' })
         continue
@@ -297,18 +310,21 @@ export class IndexedDBManager extends DataManager {
       let target = null
       if (updateById && rec.id && byId.has(rec.id)) {
         target = byId.get(rec.id)
-        console.debug('[IndexedDBManager] Matched by id', { row: i + 1, id: rec.id })
+        if (DEBUG) console.debug('[IndexedDBManager] Matched by id', { row: i + 1, id: rec.id })
       } else if (matchNaturalKey) {
         const k = this.buildNaturalKey(rec)
         if (k) {
           if (byKey.has(k)) {
-            console.debug('[IndexedDBManager] Matched by natural key', { row: i + 1, key: k })
+            if (DEBUG)
+              console.debug('[IndexedDBManager] Matched by natural key', { row: i + 1, key: k })
             target = byKey.get(k)
           } else {
-            console.debug('[IndexedDBManager] No match by natural key', { row: i + 1, key: k })
+            if (DEBUG)
+              console.debug('[IndexedDBManager] No match by natural key', { row: i + 1, key: k })
           }
         } else {
-          console.debug('[IndexedDBManager] No natural key for record', { row: i + 1 })
+          if (DEBUG)
+            console.debug('[IndexedDBManager] No natural key for record', { row: i + 1 })
         }
       }
 
@@ -317,7 +333,8 @@ export class IndexedDBManager extends DataManager {
         if (idx >= 0) {
           next[idx] = { ...rec, id: target.id }
           result.updated++
-          console.info('[IndexedDBManager] Updated achievement', { row: i + 1, id: target.id })
+          if (DEBUG)
+            console.info('[IndexedDBManager] Updated achievement', { row: i + 1, id: target.id })
         }
         continue
       }
@@ -326,10 +343,10 @@ export class IndexedDBManager extends DataManager {
         const id = rec.id && !byId.has(rec.id) ? rec.id : this._generateAchievementId()
         next.push({ ...rec, id })
         result.added++
-        console.info('[IndexedDBManager] Added achievement', { row: i + 1, id })
+        if (DEBUG) console.info('[IndexedDBManager] Added achievement', { row: i + 1, id })
       } else {
         result.skipped++
-        console.info('[IndexedDBManager] Skipped (addNew=false)', { row: i + 1 })
+        if (DEBUG) console.info('[IndexedDBManager] Skipped (addNew=false)', { row: i + 1 })
       }
     }
 
@@ -555,7 +572,7 @@ export class IndexedDBManager extends DataManager {
 
     const ok = reasons.length === 0
     this._lastValidationReasons = reasons
-    if (!ok) {
+    if (!ok && DEBUG) {
       try {
         console.groupCollapsed('[IndexedDBManager] validateAchievement failed')
         console.error('Reasons:', reasons)
@@ -574,6 +591,13 @@ export class IndexedDBManager extends DataManager {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(dob)) return false
     const d = new Date(dob)
     if (Number.isNaN(d.getTime())) return false
+
+    // Verify the date didn't roll over (e.g., 2024-02-30 becomes March 1)
+    const [year, month, day] = dob.split('-').map(Number)
+    if (d.getFullYear() !== year || d.getMonth() + 1 !== month || d.getDate() !== day) {
+      return false
+    }
+
     return true
   }
 
