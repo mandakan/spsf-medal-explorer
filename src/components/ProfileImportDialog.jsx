@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useProfile } from '../hooks/useProfile'
 import RestorePreviewDialog from './RestorePreviewDialog'
 import { parseProfileBackup } from '../utils/importManager'
@@ -19,6 +19,8 @@ export default function ProfileImportDialog({
   const [parsedBackup, setParsedBackup] = useState(null)
   const [validationStatus, setValidationStatus] = useState(null)
   const [showAdvanced, setShowAdvanced] = useState(false)
+  const [selectedFileName, setSelectedFileName] = useState(null)
+  const fileInputRef = useRef(null)
 
   // Real-time validation when text changes
   useEffect(() => {
@@ -31,14 +33,29 @@ export default function ProfileImportDialog({
     setValidationStatus(result)
   }, [importText])
 
+  // Reset state when dialog is closed
+  useEffect(() => {
+    if (!open) {
+      setSelectedFileName(null)
+      setImportText('')
+      setValidationStatus(null)
+      setShowAdvanced(false)
+    }
+  }, [open])
+
   if (!open) return null
 
   const onFileChange = (e) => {
     const file = e.target.files?.[0]
     if (!file) return
+    setSelectedFileName(file.name)
     const reader = new FileReader()
     reader.onload = () => setImportText(String(reader.result || ''))
     reader.readAsText(file)
+  }
+
+  const handleFileButtonClick = () => {
+    fileInputRef.current?.click()
   }
 
   const onSubmit = async (e) => {
@@ -106,15 +123,43 @@ export default function ProfileImportDialog({
           )}
 
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-text-secondary" htmlFor={`${id}-file`}>Välj säkerhetskopia</label>
+            <label className="block text-sm font-medium text-text-secondary">Välj säkerhetskopia</label>
+
+            {/* Hidden native file input */}
             <input
+              ref={fileInputRef}
               id={`${id}-file`}
               type="file"
               accept=".json,application/json"
               onChange={onFileChange}
-              className="input text-sm file:mr-3 file:px-3 file:py-2 file:rounded-md file:bg-primary file:text-primary-foreground hover:file:bg-primary-hover file:cursor-pointer"
+              className="sr-only"
               disabled={busy}
             />
+
+            {/* Custom file button in Swedish */}
+            <button
+              type="button"
+              onClick={handleFileButtonClick}
+              disabled={busy}
+              className="
+                w-full min-h-[44px] px-4 py-2
+                bg-bg-secondary border-2 border-border rounded-lg
+                hover:bg-bg-tertiary hover:border-primary
+                focus-visible:outline-none focus-visible:ring-2
+                focus-visible:ring-primary focus-visible:ring-offset-2
+                transition-colors
+                flex items-center gap-3
+                disabled:opacity-50 disabled:cursor-not-allowed
+              "
+            >
+              <Icon name="Upload" className="w-5 h-5 text-muted-foreground" aria-hidden="true" />
+              <span className="flex-1 text-left text-sm">
+                {selectedFileName || 'Välj fil att återställa från...'}
+              </span>
+              {selectedFileName && (
+                <Icon name="CheckCircle" className="w-5 h-5 text-green-600 dark:text-green-400" aria-hidden="true" />
+              )}
+            </button>
           </div>
 
           {/* Advanced Options Toggle */}
@@ -140,7 +185,7 @@ export default function ProfileImportDialog({
               value={importText}
               onChange={(e) => setImportText(e.target.value)}
               className="textarea min-h-[8rem]"
-              placeholder='{"kind":"profile-backup","version":"1.0","profile":{...}}'
+              placeholder="Klistra in JSON-innehållet från din säkerhetskopia här..."
               disabled={busy}
               aria-describedby={validationStatus ? `${id}-validation-status` : undefined}
             />
