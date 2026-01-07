@@ -15,7 +15,17 @@ export function isShareSupported() {
 export function isFileShareSupported() {
   if (!isShareSupported()) return false
 
-  // If canShare exists, use it to test
+  // CRITICAL: Desktop browsers don't support file sharing even if canShare returns true
+  // Only mobile browsers (iOS Safari, Android Chrome) support file sharing
+  const userAgent = navigator.userAgent || ''
+  const isMobile = /Android|iPhone|iPad|iPod/.test(userAgent)
+
+  if (!isMobile) {
+    // Desktop browsers don't support file sharing
+    return false
+  }
+
+  // On mobile, check if canShare supports files
   if (navigator.canShare) {
     try {
       const testFile = new File(['test'], 'test.txt', { type: 'text/plain' })
@@ -25,8 +35,7 @@ export function isFileShareSupported() {
     }
   }
 
-  // If canShare doesn't exist, assume file sharing is supported
-  // (we'll handle errors during actual sharing)
+  // If canShare doesn't exist on mobile, assume support
   return true
 }
 

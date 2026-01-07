@@ -23,6 +23,15 @@ describe('shareManager', () => {
   })
 
   describe('isFileShareSupported', () => {
+    const originalUserAgent = global.navigator.userAgent
+
+    afterEach(() => {
+      Object.defineProperty(global.navigator, 'userAgent', {
+        value: originalUserAgent,
+        writable: true
+      })
+    })
+
     it('should return false when navigator.share is not supported', () => {
       const originalShare = global.navigator.share
       delete global.navigator.share
@@ -30,17 +39,34 @@ describe('shareManager', () => {
       global.navigator.share = originalShare
     })
 
-    it('should return true when both share and canShare support files', () => {
+    it('should return false on desktop browsers', () => {
       global.navigator.share = jest.fn()
       global.navigator.canShare = jest.fn().mockReturnValue(true)
+      Object.defineProperty(global.navigator, 'userAgent', {
+        value: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
+        writable: true
+      })
+      expect(isFileShareSupported()).toBe(false)
+    })
+
+    it('should return true on mobile when both share and canShare support files', () => {
+      global.navigator.share = jest.fn()
+      global.navigator.canShare = jest.fn().mockReturnValue(true)
+      Object.defineProperty(global.navigator, 'userAgent', {
+        value: 'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X)',
+        writable: true
+      })
       expect(isFileShareSupported()).toBe(true)
     })
 
-    it('should return true when canShare does not exist (fallback)', () => {
+    it('should return true on mobile when canShare does not exist (fallback)', () => {
       global.navigator.share = jest.fn()
       const originalCanShare = global.navigator.canShare
       delete global.navigator.canShare
-      // When canShare doesn't exist, we assume support and handle errors during sharing
+      Object.defineProperty(global.navigator, 'userAgent', {
+        value: 'Mozilla/5.0 (Linux; Android 11) AppleWebKit/537.36',
+        writable: true
+      })
       expect(isFileShareSupported()).toBe(true)
       global.navigator.canShare = originalCanShare
     })
@@ -48,6 +74,10 @@ describe('shareManager', () => {
     it('should return false when canShare returns false for files', () => {
       global.navigator.share = jest.fn()
       global.navigator.canShare = jest.fn().mockReturnValue(false)
+      Object.defineProperty(global.navigator, 'userAgent', {
+        value: 'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X)',
+        writable: true
+      })
       expect(isFileShareSupported()).toBe(false)
     })
 
@@ -56,14 +86,32 @@ describe('shareManager', () => {
       global.navigator.canShare = jest.fn().mockImplementation(() => {
         throw new Error('Test error')
       })
+      Object.defineProperty(global.navigator, 'userAgent', {
+        value: 'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X)',
+        writable: true
+      })
       expect(isFileShareSupported()).toBe(false)
     })
   })
 
   describe('shareFile', () => {
+    const originalUserAgent = global.navigator.userAgent
+
     beforeEach(() => {
       global.navigator.share = jest.fn()
       global.navigator.canShare = jest.fn().mockReturnValue(true)
+      // Set mobile user agent for shareFile tests
+      Object.defineProperty(global.navigator, 'userAgent', {
+        value: 'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X)',
+        writable: true
+      })
+    })
+
+    afterEach(() => {
+      Object.defineProperty(global.navigator, 'userAgent', {
+        value: originalUserAgent,
+        writable: true
+      })
     })
 
     it('should throw error when file sharing is not supported', async () => {
