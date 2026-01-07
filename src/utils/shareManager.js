@@ -14,15 +14,20 @@ export function isShareSupported() {
  */
 export function isFileShareSupported() {
   if (!isShareSupported()) return false
-  if (!navigator.canShare) return false
 
-  try {
-    // Check if we can share files by testing with a sample file
-    const testFile = new File(['test'], 'test.txt', { type: 'text/plain' })
-    return navigator.canShare({ files: [testFile] })
-  } catch {
-    return false
+  // If canShare exists, use it to test
+  if (navigator.canShare) {
+    try {
+      const testFile = new File(['test'], 'test.txt', { type: 'text/plain' })
+      return navigator.canShare({ files: [testFile] })
+    } catch {
+      return false
+    }
   }
+
+  // If canShare doesn't exist, assume file sharing is supported
+  // (we'll handle errors during actual sharing)
+  return true
 }
 
 /**
@@ -50,13 +55,21 @@ export async function shareFile(blob, filename) {
 
     return { success: true }
   } catch (error) {
+    // Log detailed error info for debugging
+    console.error('Share failed:', {
+      name: error.name,
+      message: error.message,
+      error: error
+    })
+
     // User cancelled the share - not an error
     if (error.name === 'AbortError') {
       return { success: false, cancelled: true }
     }
 
     // Other errors (permission denied, etc.)
-    throw error
+    // Throw with detailed error info
+    throw new Error(`Delning misslyckades: ${error.name} - ${error.message}`)
   }
 }
 

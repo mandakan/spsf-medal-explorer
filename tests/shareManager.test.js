@@ -36,11 +36,12 @@ describe('shareManager', () => {
       expect(isFileShareSupported()).toBe(true)
     })
 
-    it('should return false when canShare does not exist', () => {
+    it('should return true when canShare does not exist (fallback)', () => {
       global.navigator.share = jest.fn()
       const originalCanShare = global.navigator.canShare
       delete global.navigator.canShare
-      expect(isFileShareSupported()).toBe(false)
+      // When canShare doesn't exist, we assume support and handle errors during sharing
+      expect(isFileShareSupported()).toBe(true)
       global.navigator.canShare = originalCanShare
     })
 

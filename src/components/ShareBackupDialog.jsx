@@ -16,6 +16,16 @@ export default function ShareBackupDialog({ blob, filename, onClose, onComplete 
   const canShare = isFileShareSupported()
   const shareMessage = getShareMessage()
 
+  // Debug logging
+  useEffect(() => {
+    console.log('ShareBackupDialog:', {
+      canShare,
+      hasNavigatorShare: !!navigator.share,
+      hasCanShare: !!navigator.canShare,
+      userAgent: navigator.userAgent
+    })
+  }, [canShare])
+
   // Use ref to avoid stale closures
   const onCloseRef = useRef(onClose)
 
