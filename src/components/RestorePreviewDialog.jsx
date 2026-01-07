@@ -24,7 +24,7 @@ export default function RestorePreviewDialog({
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/50 z-40"
+        className="fixed inset-0 bg-black/50 z-[2000]"
         onClick={onCancel}
         aria-hidden="true"
       />
@@ -36,11 +36,11 @@ export default function RestorePreviewDialog({
         aria-labelledby="restore-preview-title"
         className="
           fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-          w-[90%] max-w-lg
+          w-[90vw] max-w-lg
           bg-bg-primary
           border-2 border-border
           rounded-xl shadow-2xl
-          p-6 z-50
+          p-6 z-[2001]
         "
       >
         {/* Title */}
