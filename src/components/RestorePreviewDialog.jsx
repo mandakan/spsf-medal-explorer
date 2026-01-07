@@ -1,5 +1,7 @@
 import { useMemo } from 'react'
 import { createPortal } from 'react-dom'
+import { validateBackup } from '../utils/backupValidator'
+import Icon from './Icon'
 
 /**
  * Preview backup contents before restoring
@@ -11,14 +13,19 @@ export default function RestorePreviewDialog({
   onRestore,
   onCancel
 }) {
-  // Extract metadata
-  const metadata = useMemo(() => {
+  // Extract metadata and validation
+  const { metadata, validation } = useMemo(() => {
     const date = backup.exportedAt || backup.profile?.lastModified || backup.profile?.createdDate
     const version = backup.version || '1.0'
     const achievementCount = backup.profile?.prerequisites?.length || 0
     const medalCount = backup.profile?.unlockedMedals?.length || 0
 
-    return { date, version, achievementCount, medalCount }
+    const validation = validateBackup(backup)
+
+    return {
+      metadata: { date, version, achievementCount, medalCount },
+      validation
+    }
   }, [backup])
 
   const dialogContent = (
@@ -76,6 +83,34 @@ export default function RestorePreviewDialog({
             Se till att du har en säkerhetskopia av dina nuvarande framsteg innan du återställer.
           </p>
         </div>
+
+        {/* Validation Warnings */}
+        {validation.warnings.length > 0 && (
+          <div
+            className="mb-6 p-4 rounded-lg bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800"
+            role="status"
+            aria-live="polite"
+          >
+            <div className="flex items-start gap-2 mb-2">
+              <Icon
+                name="AlertTriangle"
+                className="w-5 h-5 shrink-0 text-blue-600 dark:text-blue-400 mt-0.5"
+                aria-hidden="true"
+              />
+              <h3 className="font-semibold text-blue-800 dark:text-blue-200">
+                Varningar vid import
+              </h3>
+            </div>
+            <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1 ml-7">
+              {validation.warnings.map((warning, index) => (
+                <li key={index}>• {warning}</li>
+              ))}
+            </ul>
+            <p className="text-sm text-blue-700 dark:text-blue-300 mt-3 ml-7">
+              Du kan fortfarande importera säkerhetskopian.
+            </p>
+          </div>
+        )}
 
         {/* Backup Details */}
         <div className="mb-6 space-y-3">

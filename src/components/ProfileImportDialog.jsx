@@ -1,7 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useProfile } from '../hooks/useProfile'
 import RestorePreviewDialog from './RestorePreviewDialog'
 import { parseProfileBackup } from '../utils/importManager'
+import { quickValidate } from '../utils/backupValidator'
+import Icon from './Icon'
 
 export default function ProfileImportDialog({
   id = 'profile-import-dialog',
@@ -15,6 +17,18 @@ export default function ProfileImportDialog({
   const [busy, setBusy] = useState(false)
   const [showPreview, setShowPreview] = useState(false)
   const [parsedBackup, setParsedBackup] = useState(null)
+  const [validationStatus, setValidationStatus] = useState(null)
+
+  // Real-time validation when text changes
+  useEffect(() => {
+    if (!importText.trim()) {
+      setValidationStatus(null)
+      return
+    }
+
+    const result = quickValidate(importText)
+    setValidationStatus(result)
+  }, [importText])
 
   if (!open) return null
 
@@ -111,7 +125,47 @@ export default function ProfileImportDialog({
               className="textarea min-h-[8rem]"
               placeholder='{"kind":"profile-backup","version":"1.0","profile":{...}}'
               disabled={busy}
+              aria-describedby={validationStatus ? `${id}-validation-status` : undefined}
             />
+
+            {/* Validation Status Badge */}
+            {validationStatus && (
+              <div
+                id={`${id}-validation-status`}
+                role="status"
+                aria-live="polite"
+                className={`
+                  flex items-start gap-2 p-3 rounded-lg text-sm
+                  ${validationStatus.status === 'valid' ? 'bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800' : ''}
+                  ${validationStatus.status === 'warning' ? 'bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-800' : ''}
+                  ${validationStatus.status === 'error' ? 'bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800' : ''}
+                `}
+              >
+                <Icon
+                  name={
+                    validationStatus.status === 'valid' ? 'CheckCircle' :
+                    validationStatus.status === 'warning' ? 'AlertTriangle' :
+                    'XCircle'
+                  }
+                  className={`
+                    w-5 h-5 shrink-0 mt-0.5
+                    ${validationStatus.status === 'valid' ? 'text-green-600 dark:text-green-400' : ''}
+                    ${validationStatus.status === 'warning' ? 'text-yellow-600 dark:text-yellow-400' : ''}
+                    ${validationStatus.status === 'error' ? 'text-red-600 dark:text-red-400' : ''}
+                  `}
+                  aria-hidden="true"
+                />
+                <span
+                  className={`
+                    ${validationStatus.status === 'valid' ? 'text-green-800 dark:text-green-200' : ''}
+                    ${validationStatus.status === 'warning' ? 'text-yellow-800 dark:text-yellow-200' : ''}
+                    ${validationStatus.status === 'error' ? 'text-red-800 dark:text-red-200' : ''}
+                  `}
+                >
+                  {validationStatus.message}
+                </span>
+              </div>
+            )}
           </div>
 
           <fieldset className="space-y-2">
@@ -142,18 +196,19 @@ export default function ProfileImportDialog({
             </div>
           </fieldset>
 
-          <div className="flex items-center justify-end gap-3 pt-2">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3 pt-2">
             <button
               type="submit"
-              className="btn btn-primary min-h-[44px] disabled:opacity-50"
-              disabled={busy}
+              className="btn btn-primary min-h-[44px] disabled:opacity-50 order-1 sm:order-2"
+              disabled={busy || !importText.trim() || validationStatus?.status === 'error'}
+              aria-describedby={validationStatus?.status === 'error' ? `${id}-validation-status` : undefined}
             >
               Förhandsgranska
             </button>
             <button
               type="button"
               onClick={onClose}
-              className="btn btn-secondary min-h-[44px]"
+              className="btn btn-secondary min-h-[44px] order-2 sm:order-1"
               disabled={busy}
             >
               Avbryt
