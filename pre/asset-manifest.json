@@ -1,25 +1,24 @@
 {
-  "_vendor-C7g9AVzu.js": {
-    "file": "assets/vendor-C7g9AVzu.js",
+  "_vendor-pMPPAmzw.js": {
+    "file": "assets/vendor-pMPPAmzw.js",
     "name": "vendor",
     "isDynamicEntry": true
   },
   "index.html": {
-    "file": "assets/index-DXiaR-cH.js",
+    "file": "assets/index-XgXFVDny.js",
     "name": "index",
     "src": "index.html",
     "isEntry": true,
     "imports": [
-      "_vendor-C7g9AVzu.js"
+      "_vendor-pMPPAmzw.js"
     ],
     "dynamicImports": [
       "src/data/medals.json",
-      "_vendor-C7g9AVzu.js",
-      "_vendor-C7g9AVzu.js",
-      "_vendor-C7g9AVzu.js"
+      "_vendor-pMPPAmzw.js",
+      "_vendor-pMPPAmzw.js"
     ],
     "css": [
-      "assets/index-Z_wOBwRG.css"
+      "assets/index-DYQIRzLV.css"
     ]
   },
   "src/data/medals.json": {
