@@ -1,0 +1,30 @@
+{
+  "_vendor-C5OkWj-a.js": {
+    "file": "assets/vendor-C5OkWj-a.js",
+    "name": "vendor",
+    "isDynamicEntry": true
+  },
+  "index.html": {
+    "file": "assets/index-DH_0JcD6.js",
+    "name": "index",
+    "src": "index.html",
+    "isEntry": true,
+    "imports": [
+      "_vendor-C5OkWj-a.js"
+    ],
+    "dynamicImports": [
+      "src/data/medals.json",
+      "_vendor-C5OkWj-a.js",
+      "_vendor-C5OkWj-a.js"
+    ],
+    "css": [
+      "assets/index-5dd-oou9.css"
+    ]
+  },
+  "src/data/medals.json": {
+    "file": "assets/medals-BhuBhagp.js",
+    "name": "medals",
+    "src": "src/data/medals.json",
+    "isDynamicEntry": true
+  }
+}
