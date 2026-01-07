@@ -1,5 +1,8 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
+
+// Auto-dismiss timeout in milliseconds
+const AUTO_DISMISS_TIMEOUT = 8000
 
 /**
  * Success modal after backup creation
@@ -8,20 +11,27 @@ import { createPortal } from 'react-dom'
  * Uses Portal to escape parent DOM constraints
  */
 export default function BackupConfirmation({ filename, onClose }) {
-  // Auto-dismiss after 8 seconds
+  // Use ref to avoid unnecessary re-renders from onClose changes
+  const onCloseRef = useRef(onClose)
+
   useEffect(() => {
-    const timer = setTimeout(onClose, 8000)
-    return () => clearTimeout(timer)
+    onCloseRef.current = onClose
   }, [onClose])
+
+  // Auto-dismiss after timeout
+  useEffect(() => {
+    const timer = setTimeout(() => onCloseRef.current(), AUTO_DISMISS_TIMEOUT)
+    return () => clearTimeout(timer)
+  }, [])
 
   // Close on Escape key
   useEffect(() => {
     const handleEscape = (e) => {
-      if (e.key === 'Escape') onClose()
+      if (e.key === 'Escape') onCloseRef.current()
     }
     window.addEventListener('keydown', handleEscape)
     return () => window.removeEventListener('keydown', handleEscape)
-  }, [onClose])
+  }, [])
 
   const dialogContent = (
     <>

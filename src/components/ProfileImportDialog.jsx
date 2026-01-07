@@ -125,6 +125,11 @@ export default function ProfileImportDialog({
           <div className="space-y-2">
             <label className="block text-sm font-medium text-text-secondary">Välj säkerhetskopia</label>
 
+            {/* Helper text for accessibility */}
+            <p id={`${id}-file-hint`} className="text-xs text-muted-foreground">
+              Endast JSON-filer (.json) accepteras
+            </p>
+
             {/* Hidden native file input */}
             <input
               ref={fileInputRef}
@@ -134,6 +139,7 @@ export default function ProfileImportDialog({
               onChange={onFileChange}
               className="sr-only"
               disabled={busy}
+              aria-describedby={`${id}-file-hint`}
             />
 
             {/* Custom file button in Swedish */}
@@ -141,6 +147,7 @@ export default function ProfileImportDialog({
               type="button"
               onClick={handleFileButtonClick}
               disabled={busy}
+              aria-describedby={`${id}-file-hint`}
               className="
                 w-full min-h-[44px] px-4 py-2
                 bg-bg-secondary border-2 border-border rounded-lg
