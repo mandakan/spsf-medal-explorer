@@ -1,6 +1,7 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { BackupContext } from './backupContext.js'
 import { useStorage } from '../hooks/useStorage'
+import { PROFILE_DATA_CHANGED_EVENT } from './ProfileContext.jsx'
 import { shouldShowReminder as calculateShouldShowReminder, calculateDismissUntilDate } from '../utils/backupScheduler'
 
 /**
@@ -104,10 +105,18 @@ export function BackupProvider({ children }) {
     }
   }, [manager])
 
-  /**
-   * Calculate if reminder should show based on current state
-   */
-  const shouldShowReminder = useCallback(() => {
+  // Listen for profile data changes (Issue 1: Decoupled from ProfileContext)
+  useEffect(() => {
+    const handleDataChanged = () => {
+      markDataChanged()
+    }
+
+    window.addEventListener(PROFILE_DATA_CHANGED_EVENT, handleDataChanged)
+    return () => window.removeEventListener(PROFILE_DATA_CHANGED_EVENT, handleDataChanged)
+  }, [markDataChanged])
+
+  // Issue 3: Use useMemo for performance instead of calling function on every render
+  const shouldShowReminderValue = useMemo(() => {
     return calculateShouldShowReminder({
       lastBackupDate,
       lastDataChange,
@@ -122,7 +131,7 @@ export function BackupProvider({ children }) {
     reminderFrequency,
     reminderDismissedUntil,
     isLoading,
-    shouldShowReminder: shouldShowReminder(),
+    shouldShowReminder: shouldShowReminderValue,
     markBackupCreated,
     markDataChanged,
     updateReminderFrequency,

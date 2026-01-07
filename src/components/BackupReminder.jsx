@@ -29,8 +29,10 @@ export default function BackupReminder() {
 
       downloadFile(data, filename, 'application/json')
 
-      // Mark backup as created
-      await markBackupCreated()
+      // Issue 2: Mark backup as created (non-critical - don't fail if this fails)
+      await markBackupCreated().catch((error) => {
+        console.error('Failed to mark backup as created:', error)
+      })
     } catch (error) {
       console.error('Backup error:', error)
     } finally {

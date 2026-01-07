@@ -3,7 +3,15 @@ import { ProfileContext } from './profileContext.js'
 import { UserProfile } from '../models/Profile'
 import { parseProfileBackup } from '../utils/importManager'
 import { useStorage } from '../hooks/useStorage'
-import { useBackup } from '../hooks/useBackup'
+
+// Custom event for data changes (decoupled from BackupContext)
+export const PROFILE_DATA_CHANGED_EVENT = 'profile:dataChanged'
+
+function emitDataChanged() {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent(PROFILE_DATA_CHANGED_EVENT))
+  }
+}
 
 const ONBOARDING_KEY = 'app:onboardingChoice'
 
@@ -57,7 +65,6 @@ function createGuestProfile({ sex }) {
 
 export function ProfileProvider({ children }) {
   const { manager: storage, migrating } = useStorage()
-  const { markDataChanged } = useBackup()
   const [currentProfile, setCurrentProfile] = useState(undefined)
   const [profiles, setProfiles] = useState([])
   const [loading, setLoading] = useState(false)
@@ -236,7 +243,7 @@ export function ProfileProvider({ children }) {
           prerequisites: [...(p?.prerequisites || []), achievement],
           lastModified: new Date().toISOString(),
         }))
-        await markDataChanged()
+        emitDataChanged()
         return achievement
       }
       try {
@@ -245,7 +252,7 @@ export function ProfileProvider({ children }) {
         // Reload current profile
         const updated = await storage.getUserProfile(currentProfile.userId)
         setCurrentProfile(updated)
-        await markDataChanged()
+        emitDataChanged()
         return saved
       } catch (err) {
         setError(err.message)
@@ -254,7 +261,7 @@ export function ProfileProvider({ children }) {
         setLoading(false)
       }
     },
-    [currentProfile, storage, markDataChanged]
+    [currentProfile, storage]
   )
 
   const updateAchievement = useCallback(
@@ -268,7 +275,7 @@ export function ProfileProvider({ children }) {
           if (idx !== -1) list[idx] = { ...list[idx], ...updatedAchievement }
           return { ...p, prerequisites: list, lastModified: new Date().toISOString() }
         })
-        await markDataChanged()
+        emitDataChanged()
         return updatedAchievement
       }
       try {
@@ -281,7 +288,7 @@ export function ProfileProvider({ children }) {
         const nextProfile = { ...profile, prerequisites: list, lastModified: new Date().toISOString() }
         const saved = await storage.saveUserProfile(nextProfile)
         setCurrentProfile(saved)
-        await markDataChanged()
+        emitDataChanged()
         return saved.prerequisites[idx]
       } catch (err) {
         setError(err.message)
@@ -290,7 +297,7 @@ export function ProfileProvider({ children }) {
         setLoading(false)
       }
     },
-    [currentProfile, storage, markDataChanged]
+    [currentProfile, storage]
   )
 
   const removeAchievement = useCallback(
@@ -303,7 +310,7 @@ export function ProfileProvider({ children }) {
           prerequisites: (p?.prerequisites || []).filter(a => a.id !== achievementId),
           lastModified: new Date().toISOString(),
         }))
-        await markDataChanged()
+        emitDataChanged()
         return true
       }
       try {
@@ -313,7 +320,7 @@ export function ProfileProvider({ children }) {
         const nextProfile = { ...profile, prerequisites: list, lastModified: new Date().toISOString() }
         const saved = await storage.saveUserProfile(nextProfile)
         setCurrentProfile(saved)
-        await markDataChanged()
+        emitDataChanged()
         return true
       } catch (err) {
         setError(err.message)
@@ -322,7 +329,7 @@ export function ProfileProvider({ children }) {
         setLoading(false)
       }
     },
-    [currentProfile, storage, markDataChanged]
+    [currentProfile, storage]
   )
 
   const unlockMedal = useCallback(
@@ -348,7 +355,7 @@ export function ProfileProvider({ children }) {
           }
         })
         if (wasUpdated) {
-          await markDataChanged()
+          emitDataChanged()
         }
         return true
       }
@@ -367,7 +374,7 @@ export function ProfileProvider({ children }) {
         const nextProfile = { ...profile, unlockedMedals: [...list, entry], lastModified: new Date().toISOString() }
         const saved = await storage.saveUserProfile(nextProfile)
         setCurrentProfile(saved)
-        await markDataChanged()
+        emitDataChanged()
         return true
       } catch (err) {
         setError(err.message)
@@ -376,7 +383,7 @@ export function ProfileProvider({ children }) {
         setLoading(false)
       }
     },
-    [currentProfile, storage, markDataChanged]
+    [currentProfile, storage]
   )
 
   const lockMedal = useCallback(

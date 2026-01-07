@@ -34,7 +34,7 @@ describe('BackupReminder', () => {
     mockBackupContext = {
       shouldShowReminder: true,
       dismissReminder: jest.fn(),
-      markBackupCreated: jest.fn()
+      markBackupCreated: jest.fn().mockResolvedValue(undefined)
     }
 
     mockProfileContext = {
@@ -82,7 +82,6 @@ describe('BackupReminder', () => {
 
       exportManager.toProfileBackup.mockResolvedValue(mockBackupData)
       fileHandlers.downloadFile.mockImplementation(() => {})
-      mockBackupContext.markBackupCreated.mockResolvedValue(undefined)
 
       render(<BackupReminder />)
 
