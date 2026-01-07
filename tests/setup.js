@@ -10,6 +10,13 @@ if (typeof globalThis.TextDecoder === 'undefined') {
   globalThis.TextDecoder = TextDecoder
 }
 
+// Polyfill for structuredClone (needed for fake-indexeddb)
+if (typeof globalThis.structuredClone === 'undefined') {
+  globalThis.structuredClone = (obj) => {
+    return JSON.parse(JSON.stringify(obj))
+  }
+}
+
 const originalWarn = console.warn
 const originalError = console.error
 

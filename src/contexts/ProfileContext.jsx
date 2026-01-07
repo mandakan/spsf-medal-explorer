@@ -1,8 +1,8 @@
 import React, { useState, useCallback, useEffect } from 'react'
 import { ProfileContext } from './profileContext.js'
-import { LocalStorageDataManager } from '../data/localStorage'
 import { UserProfile } from '../models/Profile'
 import { parseProfileBackup } from '../utils/importManager'
+import { useStorage } from '../hooks/useStorage'
 
 const ONBOARDING_KEY = 'app:onboardingChoice'
 
@@ -55,7 +55,7 @@ function createGuestProfile({ sex }) {
 }
 
 export function ProfileProvider({ children }) {
-  const [storage] = useState(() => new LocalStorageDataManager())
+  const { manager: storage, migrating } = useStorage()
   const [currentProfile, setCurrentProfile] = useState(undefined)
   const [profiles, setProfiles] = useState([])
   const [loading, setLoading] = useState(false)
@@ -83,6 +83,9 @@ export function ProfileProvider({ children }) {
 
   // Bootstrap: load profiles, decide initial profile, then mark hydrated
   useEffect(() => {
+    // Wait for storage to be ready
+    if (!storage || migrating) return
+
     let cancelled = false
     ;(async () => {
       try {
@@ -128,8 +131,10 @@ export function ProfileProvider({ children }) {
         }
       }
     })()
-    return () => { let _ = (cancelled = true) }
-  }, [storage])
+    return () => {
+      let _ = (cancelled = true)
+    }
+  }, [storage, migrating])
 
   const createProfile = useCallback(
     async (displayName, dateOfBirth, sex) => {
