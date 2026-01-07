@@ -1,22 +1,13 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
 import { useMedalDatabase } from '../hooks/useMedalDatabase'
 import Disclaimer from '../components/Disclaimer'
 import Icon from '../components/Icon'
 import { LINKS } from '../config/links'
 import { BUILD } from '../config/buildInfo'
-import { requestManualTourStart } from '../utils/onboardingTour'
 
 export default function Home() {
   const { medalDatabase, loading } = useMedalDatabase()
-
-  const handleStartMedalsGuide = useCallback(() => {
-    requestManualTourStart('medals')
-  }, [])
-
-  const handleStartTreeGuide = useCallback(() => {
-    requestManualTourStart('tree-view')
-  }, [])
 
   return (
     <div className="space-y-8">
@@ -27,23 +18,6 @@ export default function Home() {
         <p className="text-lg text-muted-foreground">
           Dokumentera dina skyttemärken och medaljer med aktiviteter, utforska framtida märken och planera progression
         </p>
-
-        <div className="mt-6 flex justify-center gap-3 flex-wrap">
-          <Link
-            to="/medals"
-            onClick={handleStartMedalsGuide}
-            className="btn btn-secondary min-h-[44px] inline-flex items-center justify-center"
-          >
-            Visa märkeslista-guide
-          </Link>
-          <Link
-            to="/skill-tree"
-            onClick={handleStartTreeGuide}
-            className="btn btn-secondary min-h-[44px] inline-flex items-center justify-center"
-          >
-            Visa trädvy-guide
-          </Link>
-        </div>
       </section>
 
       <Disclaimer
