@@ -1,14 +1,21 @@
 import { IndexedDBManager } from '../src/data/indexedDBManager'
 
+function deleteDb(name) {
+  return new Promise((resolve) => {
+    const req = indexedDB.deleteDatabase(name)
+    req.onsuccess = () => resolve()
+    req.onerror = () => resolve()
+    req.onblocked = () => resolve()
+  })
+}
+
 describe('IndexedDBManager', () => {
   let manager
 
   beforeEach(async () => {
-    // Clear all databases before each test
+    // Clear all databases before each test (await deletion to avoid flakiness)
     const databases = await indexedDB.databases()
-    for (const db of databases) {
-      indexedDB.deleteDatabase(db.name)
-    }
+    await Promise.all((databases || []).map((db) => (db?.name ? deleteDb(db.name) : Promise.resolve())))
 
     manager = new IndexedDBManager()
     await manager.init()

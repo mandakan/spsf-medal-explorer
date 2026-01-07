@@ -214,14 +214,14 @@ describe('migrationManager', () => {
       10000
     )
 
-    it('handles migration failure gracefully', async () => {
-      // Setup invalid data that will fail migration
+    it('treats corrupted localStorage as empty and migrates 0 profiles', async () => {
+      // LocalStorageDataManager auto-recovers corrupted storage by reinitializing it.
       localStorage.setItem('medal-app-data', 'invalid-json')
 
       const result = await migrateFromLocalStorage()
 
-      expect(result.success).toBe(false)
-      expect(result.error).toBeTruthy()
+      expect(result.success).toBe(true)
+      expect(result.profilesMigrated).toBe(0)
     })
 
     it(
