@@ -9,7 +9,6 @@ import { useBackup } from '../hooks/useBackup'
  * WCAG 2.1 AA compliant with proper ARIA attributes
  */
 export default function ShareBackupDialog({ blob, filename, onClose, onComplete }) {
-  const [sharing, setSharing] = useState(false)
   const [error, setError] = useState(null)
   const { markBackupCreated } = useBackup()
 
@@ -45,24 +44,27 @@ export default function ShareBackupDialog({ blob, filename, onClose, onComplete 
   }, [])
 
   const handleShare = async () => {
+    // CRITICAL: Call navigator.share() IMMEDIATELY to preserve user gesture
+    // Any async operations before this will cause "Permission denied"
+    let result
     try {
-      setSharing(true)
-      setError(null)
+      result = await shareFile(blob, filename)
+    } catch (err) {
+      // Share failed - show error
+      setError(err.message || 'Delning misslyckades')
+      return
+    }
 
-      const result = await shareFile(blob, filename)
-
-      if (result.success) {
+    // Now safe to do React state updates after share completes
+    if (result.success) {
+      try {
         await markBackupCreated()
         if (onComplete) onComplete()
-      } else if (result.cancelled) {
-        // User cancelled - not an error, just stop loading
-        // Don't close dialog, allow them to try again
+      } catch (err) {
+        setError(err.message || 'Kunde inte markera säkerhetskopia som skapad')
       }
-    } catch (err) {
-      setError(err.message || 'Delning misslyckades')
-    } finally {
-      setSharing(false)
     }
+    // If cancelled, do nothing - user can try again
   }
 
   const handleDownload = async () => {
@@ -218,12 +220,10 @@ export default function ShareBackupDialog({ blob, filename, onClose, onComplete 
           {canShare && (
             <button
               onClick={handleShare}
-              disabled={sharing}
               className="
                 w-full py-3 rounded-lg font-medium
                 bg-primary text-primary-foreground
                 hover:bg-primary/90
-                disabled:opacity-50 disabled:cursor-not-allowed
                 focus-visible:outline-none focus-visible:ring-2
                 focus-visible:ring-offset-2 focus-visible:ring-primary
                 flex items-center justify-center gap-2
@@ -244,7 +244,7 @@ export default function ShareBackupDialog({ blob, filename, onClose, onComplete 
                   d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
                 />
               </svg>
-              {sharing ? 'Delar...' : 'Dela till molnet'}
+              Dela till molnet
             </button>
           )}
 
