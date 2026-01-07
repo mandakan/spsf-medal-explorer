@@ -35,13 +35,21 @@ export default function RestorePreviewDialog({
         role="dialog"
         aria-modal="true"
         aria-labelledby="restore-preview-title"
+        style={{
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: 'min(90vw, 32rem)',
+          maxHeight: '90vh',
+          overflow: 'auto',
+          zIndex: 2001
+        }}
         className="
-          fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-          w-[90vw] max-w-lg
           bg-bg-primary
           border-2 border-border
           rounded-xl shadow-2xl
-          p-6 z-[2001]
+          p-6
         "
       >
         {/* Title */}
