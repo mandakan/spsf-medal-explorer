@@ -45,12 +45,12 @@ export function validateBackup(backup) {
     warnings.push('Kön saknas i profilen')
   }
 
-  const hasData =
+  const hasAchievements =
     (backup.profile.prerequisites && backup.profile.prerequisites.length > 0) ||
     (backup.profile.unlockedMedals && backup.profile.unlockedMedals.length > 0)
 
-  if (!hasData) {
-    warnings.push('Säkerhetskopian innehåller ingen data')
+  if (!hasAchievements) {
+    warnings.push('Profilen har inga upplåsta märken eller aktiviteter än')
   }
 
   // Return status based on warnings
