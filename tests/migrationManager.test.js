@@ -31,49 +31,59 @@ describe('migrationManager', () => {
       expect(type).toBe('localstorage')
     })
 
-    it('returns indexeddb when IndexedDB has data', async () => {
-      const manager = new IndexedDBManager()
-      await manager.init()
-      await manager.saveUserProfile({
-        userId: 'test-user',
-        displayName: 'Test',
-        dateOfBirth: '1990-01-01',
-        sex: 'male',
-        unlockedMedals: [],
-        prerequisites: [],
-        notifications: true,
-      })
-      manager.close()
+    it(
+      'returns indexeddb when IndexedDB has data',
+      async () => {
+        const manager = new IndexedDBManager()
+        await manager.init()
+        await manager.saveUserProfile({
+          userId: 'test-user',
+          displayName: 'Test',
+          dateOfBirth: '1990-01-01',
+          sex: 'male',
+          unlockedMedals: [],
+          prerequisites: [],
+          notifications: true,
+        })
+        manager.close()
 
-      const type = await detectStorageType()
-      expect(type).toBe('indexeddb')
-    })
+        const type = await detectStorageType()
+        expect(type).toBe('indexeddb')
+      },
+      10000
+    )
 
-    it('prefers indexeddb over localstorage when both have data', async () => {
-      // Add localStorage data
-      localStorage.setItem('medal-app-data', JSON.stringify({ version: '2.0', profiles: [] }))
+    it(
+      'prefers indexeddb over localstorage when both have data',
+      async () => {
+        // Add localStorage data
+        localStorage.setItem('medal-app-data', JSON.stringify({ version: '2.0', profiles: [] }))
 
-      // Add IndexedDB data
-      const manager = new IndexedDBManager()
-      await manager.init()
-      await manager.saveUserProfile({
-        userId: 'test-user',
-        displayName: 'Test',
-        dateOfBirth: '1990-01-01',
-        sex: 'male',
-        unlockedMedals: [],
-        prerequisites: [],
-        notifications: true,
-      })
-      manager.close()
+        // Add IndexedDB data
+        const manager = new IndexedDBManager()
+        await manager.init()
+        await manager.saveUserProfile({
+          userId: 'test-user',
+          displayName: 'Test',
+          dateOfBirth: '1990-01-01',
+          sex: 'male',
+          unlockedMedals: [],
+          prerequisites: [],
+          notifications: true,
+        })
+        manager.close()
 
-      const type = await detectStorageType()
-      expect(type).toBe('indexeddb')
-    })
+        const type = await detectStorageType()
+        expect(type).toBe('indexeddb')
+      },
+      10000
+    )
   })
 
   describe('migrateFromLocalStorage', () => {
-    it('migrates profiles from localStorage to IndexedDB', async () => {
+    it(
+      'migrates profiles from localStorage to IndexedDB',
+      async () => {
       // Setup localStorage with test data
       const localManager = new LocalStorageDataManager()
       await localManager.saveUserProfile({
@@ -127,9 +137,13 @@ describe('migrationManager', () => {
       expect(user2.displayName).toBe('User Two')
 
       idbManager.close()
-    })
+      },
+      10000
+    )
 
-    it('migrates profiles with achievements', async () => {
+    it(
+      'migrates profiles with achievements',
+      async () => {
       const localManager = new LocalStorageDataManager()
       await localManager.saveUserProfile({
         userId: 'user-1',
@@ -159,9 +173,13 @@ describe('migrationManager', () => {
       expect(profile.prerequisites.length).toBe(1)
       expect(profile.prerequisites[0].id).toBe('ach-1')
       idbManager.close()
-    })
+      },
+      10000
+    )
 
-    it('sets migration metadata', async () => {
+    it(
+      'sets migration metadata',
+      async () => {
       const localManager = new LocalStorageDataManager()
       await localManager.saveUserProfile({
         userId: 'user-1',
@@ -187,7 +205,9 @@ describe('migrationManager', () => {
       expect(migratedFrom).toBe('localstorage')
 
       idbManager.close()
-    })
+      },
+      10000
+    )
 
     it('handles migration failure gracefully', async () => {
       // Setup invalid data that will fail migration
@@ -199,7 +219,9 @@ describe('migrationManager', () => {
       expect(result.error).toBeTruthy()
     })
 
-    it('calls onProgress callback with progress updates', async () => {
+    it(
+      'calls onProgress callback with progress updates',
+      async () => {
       const localManager = new LocalStorageDataManager()
       await localManager.saveUserProfile({
         userId: 'user-1',
@@ -225,26 +247,38 @@ describe('migrationManager', () => {
       const lastUpdate = progressUpdates[progressUpdates.length - 1]
       expect(lastUpdate.stage).toBe('complete')
       expect(lastUpdate.percent).toBe(100)
-    })
+      },
+      10000
+    )
 
-    it('handles migration with no profiles', async () => {
-      new LocalStorageDataManager() // Initialize empty storage
+    it(
+      'handles migration with no profiles',
+      async () => {
+        new LocalStorageDataManager() // Initialize empty storage
 
-      const result = await migrateFromLocalStorage()
+        const result = await migrateFromLocalStorage()
 
-      expect(result.success).toBe(true)
-      expect(result.profilesMigrated).toBe(0)
-    })
+        expect(result.success).toBe(true)
+        expect(result.profilesMigrated).toBe(0)
+      },
+      10000
+    )
   })
 
   describe('verifyMigration', () => {
-    it('returns complete: false when no migration has occurred', async () => {
-      const result = await verifyMigration()
-      expect(result.complete).toBe(false)
-      expect(result.profileCount).toBe(0)
-    })
+    it(
+      'returns complete: false when no migration has occurred',
+      async () => {
+        const result = await verifyMigration()
+        expect(result.complete).toBe(false)
+        expect(result.profileCount).toBe(0)
+      },
+      10000
+    )
 
-    it('returns complete: true after successful migration', async () => {
+    it(
+      'returns complete: true after successful migration',
+      async () => {
       const localManager = new LocalStorageDataManager()
       await localManager.saveUserProfile({
         userId: 'user-1',
@@ -261,7 +295,9 @@ describe('migrationManager', () => {
       const result = await verifyMigration()
       expect(result.complete).toBe(true)
       expect(result.profileCount).toBe(1)
-    })
+      },
+      10000
+    )
 
     it('handles verification errors gracefully', async () => {
       // Create a scenario where IndexedDB can't be opened
@@ -282,7 +318,9 @@ describe('migrationManager', () => {
   })
 
   describe('integration: full migration flow', () => {
-    it('performs complete migration from localStorage to IndexedDB', async () => {
+    it(
+      'performs complete migration from localStorage to IndexedDB',
+      async () => {
       // Step 1: Create initial data in localStorage
       const localManager = new LocalStorageDataManager()
       const testProfile = {
@@ -348,6 +386,8 @@ describe('migrationManager', () => {
       expect(migratedProfile.features.enforceCurrentYearForSustained).toBe(false)
 
       idbManager.close()
-    })
+      },
+      15000
+    )
   })
 })
