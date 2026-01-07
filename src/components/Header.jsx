@@ -14,8 +14,6 @@ const navItems = [
   { path: '/help', label: 'Hjälp' }
 ]
 
-const MANUAL_TOUR_KEY = 'app:onboardingTour:manualStart'
-
 export default function Header() {
   const location = useLocation()
   const navigate = useNavigate()
