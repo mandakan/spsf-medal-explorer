@@ -14,6 +14,7 @@ import MedalsList from './pages/MedalsList'
 import Settings from './pages/Settings'
 import DataBackup from './pages/DataBackup'
 import About from './pages/About'
+import Help from './pages/Help'
 import MedalDetailModal from './components/MedalDetailModal'
 import RequireSavedProfile from './components/RequireSavedProfile'
 import WhatsNewOverlay from './components/WhatsNewOverlay'
@@ -87,6 +88,7 @@ function AppRoutes() {
             }
           />
           <Route path="about" element={<About />} />
+          <Route path="help" element={<Help />} />
           <Route path="whats-new" element={<WhatsNewOverlay />} />
         </Route>
       </Routes>
