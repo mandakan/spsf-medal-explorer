@@ -3,7 +3,6 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import ProfileSelector from './ProfileSelector'
 import { useProfile } from '../hooks/useProfile'
 import Icon from './Icon'
-import { useOnboardingTour } from '../hooks/useOnboardingTour'
 
 const navItems = [
   { path: '/skill-tree', label: 'Märkesträd' },
@@ -21,7 +20,6 @@ export default function Header() {
   const open = openedAtPath === location.pathname
   const { currentProfile } = useProfile()
   const [profilePickerOpen, setProfilePickerOpen] = useState(false)
-  const tour = useOnboardingTour()
 
   const profileInitials = currentProfile?.displayName
     ? currentProfile.displayName.trim().split(/\s+/).map(s => s[0]).slice(0, 2).join('').toUpperCase()
@@ -42,17 +40,8 @@ export default function Header() {
     setOpenedAtPath(null)
     setProfilePickerOpen(false)
 
-    // Contextual behavior based on current page
-    if (location.pathname === '/medals') {
-      // Start medals guide immediately
-      tour.start()
-    } else if (location.pathname === '/skill-tree' || location.pathname === '/skill-tree/fullscreen') {
-      // Start tree-view guide immediately
-      tour.start()
-    } else {
-      // Navigate to help page for all other pages
-      navigate('/help')
-    }
+    // Always navigate to help page
+    navigate('/help')
   }
 
   return (
