@@ -27,5 +27,5 @@ export async function exportProfileBackupToJson(dataManager, userId) {
  */
 export async function importProfileBackupFromJson(dataManager, jsonString, { strategy = 'new-id' } = {}) {
   const parsed = parseProfileBackup(jsonString)
-  return dataManager.restoreProfile(parsed, { strategy })
+  return dataManager.restoreProfile(parsed.profile, { strategy })
 }

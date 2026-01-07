@@ -3,107 +3,55 @@ import * as exportManager from '../utils/exportManager'
 import { downloadFile } from '../utils/fileHandlers'
 
 export default function ExportPanel({ profile }) {
-  const [format, setFormat] = useState('json')
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState(null)
 
-  const handleExport = async (exportFormat) => {
+  const handleBackup = async () => {
     try {
       setLoading(true)
       setError(null)
-      let data, filename, mime
 
       const dateStr = new Date().toISOString().split('T')[0]
+      const data = await exportManager.toProfileBackup(profile, { version: '1.0' })
+      const filename = `medal-backup-${dateStr}.json`
 
-      switch (exportFormat) {
-        case 'json': {
-          data = await exportManager.toProfileBackup(profile, { version: '1.0' })
-          filename = `profil-${dateStr}.json`
-          mime = 'application/json'
-          break
-        }
-        case 'csv': {
-          const achievements = profile?.achievements ?? profile?.prerequisites ?? []
-          data = await exportManager.toCSV(achievements)
-          filename = `aktiviteter-${dateStr}.csv`
-          mime = 'text/csv'
-          break
-        }
-        case 'pdf': {
-          data = await exportManager.toPDF(profile)
-          filename = `märkes-rapport-${dateStr}.pdf`
-          mime = 'application/pdf'
-          break
-        }
-        default:
-          throw new Error('Felaktigt export-format')
-      }
-
-      downloadFile(data, filename, mime)
+      downloadFile(data, filename, 'application/json')
       setSuccess(true)
       setTimeout(() => setSuccess(false), 3000)
     } catch (err) {
-      console.error('Export-fel:', err)
-      setError(err.message || 'Export misslyckades')
+      console.error('Backup-fel:', err)
+      setError(err.message || 'Säkerhetskopieringen misslyckades')
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className="card p-6">
-      <h2 className="text-xl font-bold text-foreground mb-6">
-        Exporta profil
+    <div>
+      <h2 className="text-lg font-semibold text-foreground mb-3">
+        Säkerhetskopiera profil
       </h2>
 
-      {/* Format Selection */}
-      <fieldset className="mb-6 space-y-3">
-        <legend className="text-sm font-medium text-foreground mb-3">
-          Export-format
-        </legend>
+      <p className="text-sm text-muted-foreground mb-4">
+        Ladda ner en komplett säkerhetskopia av din profil som en JSON-fil.
+        Innehåller alla dina aktiviteter och upplåsta märken.
+      </p>
 
-        {['json', 'csv', 'pdf'].map((fmt) => (
-          <div key={fmt} className="flex items-center">
-            <input
-              id={`format-${fmt}`}
-              type="radio"
-              name="format"
-              value={fmt}
-              checked={format === fmt}
-              onChange={(e) => setFormat(e.target.value)}
-              className="
-                w-5 h-5 rounded
-                bg-field border border-field
-                focus-visible:ring-2 focus-visible:ring-primary
-                focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary
-              "
-              aria-label={`Choose ${fmt.toUpperCase()} format`}
-            />
-            <label
-              htmlFor={`format-${fmt}`}
-              className="ml-3 text-base font-medium text-foreground cursor-pointer"
-            >
-              {fmt.toUpperCase()} {getFormatDescription(fmt)}
-            </label>
-          </div>
-        ))}
-      </fieldset>
-
-      {/* Export Button */}
+      {/* Backup Button */}
       <button
-        onClick={() => handleExport(format)}
+        onClick={handleBackup}
         disabled={loading}
         className="btn btn-primary w-full min-h-[44px]"
-        aria-label={`Export as ${format.toUpperCase()}`}
+        aria-label="Säkerhetskopiera profil"
       >
-        {loading ? 'Exporterar...' : `Exporta som ${format.toUpperCase()}`}
+        {loading ? 'Skapar säkerhetskopia...' : 'Säkerhetskopiera profil'}
       </button>
 
       {success && (
         <div className="alert alert-success mt-4 flex items-center gap-2" role="status" aria-live="polite">
           <span aria-hidden="true">✓</span>
-          <span>Exporten lyckades!</span>
+          <span>Säkerhetskopieringen lyckades!</span>
         </div>
       )}
 
@@ -115,17 +63,4 @@ export default function ExportPanel({ profile }) {
       )}
     </div>
   )
-}
-
-function getFormatDescription(format) {
-  switch (format) {
-    case 'json':
-      return '(Komplett profil-backup)'
-    case 'csv':
-      return '(Spreadsheet-kompatibel)'
-    case 'pdf':
-      return '(Utskriftsvänlig rapport)'
-    default:
-      return ''
-  }
 }

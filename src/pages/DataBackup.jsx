@@ -32,7 +32,7 @@ export default function DataBackup() {
 
   return (
     <div className="max-w-6xl mx-auto p-4">
-      <h1 className="section-title mb-4">Data &amp; Backup</h1>
+      <h1 className="section-title mb-4">Data &amp; Säkerhetskopia</h1>
 
       {(error || localError) && (
         <div className="alert alert-error mb-4" role="alert" aria-live="assertive">
@@ -43,7 +43,7 @@ export default function DataBackup() {
       {!canUse ? (
         <div className="card p-6">
           <p className="text-muted-foreground">
-            Välj eller skapa en profil för att importera/exportera aktiviteter.
+            Välj eller skapa en profil för att säkerhetskopiera/återställa data.
           </p>
           <div className="mt-4">
             <Link to="/settings" className="btn btn-primary min-h-[44px]">Till Inställningar</Link>
@@ -56,9 +56,9 @@ export default function DataBackup() {
           </div>
 
           <div className="card p-4">
-            <h2 className="text-lg font-semibold text-foreground mb-3">Importera profil (backup)</h2>
+            <h2 className="text-lg font-semibold text-foreground mb-3">Återställ från säkerhetskopia</h2>
             <p className="text-sm text-muted-foreground mb-4">
-              Återställ en hel profil från en JSON-backup. Du kan skapa en ny profil eller ersätta en profil med samma ID.
+              Återställ en hel profil från en säkerhetskopia. Du kan skapa en ny profil eller ersätta en profil med samma ID.
             </p>
             <button
               onClick={() => setImportProfileOpen(true)}
@@ -66,16 +66,16 @@ export default function DataBackup() {
               aria-haspopup="dialog"
               aria-controls="profile-import-dialog"
             >
-              Importera profil
+              Återställ från säkerhetskopia
             </button>
           </div>
 
           <div className="card p-4">
-            <h2 className="text-lg font-semibold text-foreground mb-3">Share</h2>
+            <h2 className="text-lg font-semibold text-foreground mb-3">Dela profil</h2>
             <p className="text-sm text-muted-foreground mb-4">
               Skapa en QR-kod som innehåller profilen för att dela eller göra backup.
             </p>
-            <button onClick={openShare} className="btn btn-primary min-h-[44px]" aria-label="Open share dialog">
+            <button onClick={openShare} className="btn btn-primary min-h-[44px]" aria-label="Öppna delningsdialog">
               Dela via QR-kod
             </button>
           </div>
