@@ -71,11 +71,11 @@ export default function DataBackup() {
           </div>
 
           <div className="card p-4">
-            <h2 className="text-lg font-semibold text-foreground mb-3">Share</h2>
+            <h2 className="text-lg font-semibold text-foreground mb-3">Dela profil</h2>
             <p className="text-sm text-muted-foreground mb-4">
               Skapa en QR-kod som innehåller profilen för att dela eller göra backup.
             </p>
-            <button onClick={openShare} className="btn btn-primary min-h-[44px]" aria-label="Open share dialog">
+            <button onClick={openShare} className="btn btn-primary min-h-[44px]" aria-label="Öppna delningsdialog">
               Dela via QR-kod
             </button>
           </div>
