@@ -18,6 +18,7 @@ export default function ProfileImportDialog({
   const [showPreview, setShowPreview] = useState(false)
   const [parsedBackup, setParsedBackup] = useState(null)
   const [validationStatus, setValidationStatus] = useState(null)
+  const [showAdvanced, setShowAdvanced] = useState(false)
 
   // Real-time validation when text changes
   useEffect(() => {
@@ -105,7 +106,7 @@ export default function ProfileImportDialog({
           )}
 
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-text-secondary" htmlFor={`${id}-file`}>Välj fil</label>
+            <label className="block text-sm font-medium text-text-secondary" htmlFor={`${id}-file`}>Välj säkerhetskopia</label>
             <input
               id={`${id}-file`}
               type="file"
@@ -116,8 +117,24 @@ export default function ProfileImportDialog({
             />
           </div>
 
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-text-secondary" htmlFor={`${id}-textarea`}>Eller klistra in JSON</label>
+          {/* Advanced Options Toggle */}
+          <button
+            type="button"
+            onClick={() => setShowAdvanced(!showAdvanced)}
+            className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-2 transition-colors"
+            disabled={busy}
+          >
+            <Icon
+              name={showAdvanced ? 'ChevronDown' : 'ChevronRight'}
+              className="w-4 h-4"
+              aria-hidden="true"
+            />
+            <span>{showAdvanced ? 'Dölj avancerade alternativ' : 'Visa avancerade alternativ'}</span>
+          </button>
+
+          {showAdvanced && (
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-text-secondary" htmlFor={`${id}-textarea`}>Klistra in JSON</label>
             <textarea
               id={`${id}-textarea`}
               value={importText}
@@ -166,7 +183,8 @@ export default function ProfileImportDialog({
                 </span>
               </div>
             )}
-          </div>
+            </div>
+          )}
 
           <fieldset className="space-y-2">
             <legend className="block text-sm font-medium text-text-secondary">Metod</legend>

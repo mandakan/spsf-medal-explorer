@@ -45,13 +45,8 @@ export function validateBackup(backup) {
     warnings.push('Kön saknas i profilen')
   }
 
-  const hasAchievements =
-    (backup.profile.prerequisites && backup.profile.prerequisites.length > 0) ||
-    (backup.profile.unlockedMedals && backup.profile.unlockedMedals.length > 0)
-
-  if (!hasAchievements) {
-    warnings.push('Profilen har inga upplåsta märken eller aktiviteter än')
-  }
+  // Note: Empty prerequisites/medals arrays are valid for fresh profiles
+  // No warning needed for profiles without achievements
 
   // Return status based on warnings
   if (warnings.length === 0) {
