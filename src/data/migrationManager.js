@@ -80,6 +80,15 @@ export async function migrateFromLocalStorage(onProgress) {
       throw new Error('Migration verification failed: profile count mismatch')
     }
 
+    // Clean up old localStorage data after successful migration
+    try {
+      localStorage.removeItem('medal-app-data')
+      await idbManager.setMetadata('localstorage_cleaned', true)
+    } catch (cleanupError) {
+      // Log but don't fail migration if cleanup fails
+      console.warn('[migrationManager] Failed to clean up localStorage:', cleanupError)
+    }
+
     onProgress?.({ stage: 'complete', percent: 100 })
 
     return {

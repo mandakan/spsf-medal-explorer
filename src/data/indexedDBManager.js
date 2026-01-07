@@ -164,14 +164,30 @@ export class IndexedDBManager extends DataManager {
   }
 
   /**
+   * Generate a unique achievement ID
+   * Uses crypto.randomUUID if available for better uniqueness
+   */
+  _generateAchievementId() {
+    try {
+      if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+        return `achievement-${crypto.randomUUID()}`
+      }
+    } catch {
+      // Fall through to timestamp-based approach
+    }
+    // Fallback: timestamp + high-entropy random string
+    return `achievement-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`
+  }
+
+  /**
    * Ensure all achievements have an id (migration helper)
    */
   _ensureAchievementIds(profile) {
     let changed = false
     profile.prerequisites = Array.isArray(profile.prerequisites) ? profile.prerequisites : []
-    profile.prerequisites.forEach((a, i) => {
+    profile.prerequisites.forEach((a) => {
       if (!a.id) {
-        a.id = `achievement-${Date.now()}-${i}-${Math.random().toString(36).slice(2, 8)}`
+        a.id = this._generateAchievementId()
         changed = true
       }
     })
@@ -307,10 +323,7 @@ export class IndexedDBManager extends DataManager {
       }
 
       if (addNew) {
-        const id =
-          rec.id && !byId.has(rec.id)
-            ? rec.id
-            : `achievement-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+        const id = rec.id && !byId.has(rec.id) ? rec.id : this._generateAchievementId()
         next.push({ ...rec, id })
         result.added++
         console.info('[IndexedDBManager] Added achievement', { row: i + 1, id })
@@ -344,7 +357,7 @@ export class IndexedDBManager extends DataManager {
       throw new Error(reasons)
     }
 
-    const id = achievement.id || `achievement-${Date.now()}`
+    const id = achievement.id || this._generateAchievementId()
     const normalized = { ...achievement, id }
 
     profile.prerequisites = Array.isArray(profile.prerequisites) ? profile.prerequisites : []
@@ -574,11 +587,6 @@ export class IndexedDBManager extends DataManager {
     return age
   }
 
-  _defaultDob() {
-    // Reasonable default for migrated profiles; user can edit later
-    return '2000-01-01'
-  }
-
   _generateUserId() {
     try {
       if (typeof crypto !== 'undefined') {
@@ -601,12 +609,16 @@ export class IndexedDBManager extends DataManager {
     return `user-${Date.now()}`
   }
 
+  /**
+   * Ensure a user ID is unique by checking existence
+   * Optimized to use getUserProfile instead of loading all profiles
+   */
   async _ensureUniqueId(id) {
-    const profiles = await this.getAllProfiles()
     const base = id && typeof id === 'string' && id.trim() ? id.trim() : this._generateUserId()
     let next = base
     let i = 1
-    while (profiles.some((p) => p.userId === next)) {
+    // Check if ID exists, increment suffix until unique
+    while (await this.getUserProfile(next)) {
       next = `${base}-${i++}`
     }
     return next
@@ -699,6 +711,7 @@ export class IndexedDBManager extends DataManager {
         request.onerror = () => reject(request.error)
 
         tx.onerror = () => reject(tx.error)
+        tx.onabort = () => reject(new Error('Transaction aborted'))
       } catch (error) {
         reject(error)
       }
