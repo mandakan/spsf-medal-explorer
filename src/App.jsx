@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react'
 import { BrowserRouter, Routes, Route, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { MedalProvider } from './contexts/MedalContext.jsx'
 import { ProfileProvider } from './contexts/ProfileContext.jsx'
+import { BackupProvider } from './contexts/BackupContext.jsx'
 import { CalculatorProvider } from './contexts/CalculatorContext.jsx'
 import { UndoRedoProvider } from './contexts/UndoRedoContext.jsx'
 import { FeatureFlagsProvider } from './contexts/FeatureFlags.jsx'
@@ -122,17 +123,19 @@ function App() {
   return (
     <MedalProvider>
       <ProfileProvider>
-        <FeatureFlagsProvider>
-          <CalculatorProvider>
-            <UndoRedoProvider>
-              <OnboardingTourProvider>
-                <BrowserRouter basename={base}>
-                  <AppRoutes />
-                </BrowserRouter>
-              </OnboardingTourProvider>
-            </UndoRedoProvider>
-          </CalculatorProvider>
-        </FeatureFlagsProvider>
+        <BackupProvider>
+          <FeatureFlagsProvider>
+            <CalculatorProvider>
+              <UndoRedoProvider>
+                <OnboardingTourProvider>
+                  <BrowserRouter basename={base}>
+                    <AppRoutes />
+                  </BrowserRouter>
+                </OnboardingTourProvider>
+              </UndoRedoProvider>
+            </CalculatorProvider>
+          </FeatureFlagsProvider>
+        </BackupProvider>
       </ProfileProvider>
     </MedalProvider>
   )

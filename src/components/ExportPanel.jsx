@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import * as exportManager from '../utils/exportManager'
 import { downloadFile } from '../utils/fileHandlers'
+import { useBackup } from '../hooks/useBackup'
 
 export default function ExportPanel({ profile }) {
+  const { markBackupCreated } = useBackup()
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState(null)
@@ -17,6 +19,10 @@ export default function ExportPanel({ profile }) {
       const filename = `medal-backup-${dateStr}.json`
 
       downloadFile(data, filename, 'application/json')
+
+      // Mark backup as created in the system
+      await markBackupCreated()
+
       setSuccess(true)
       setTimeout(() => setSuccess(false), 3000)
     } catch (err) {
