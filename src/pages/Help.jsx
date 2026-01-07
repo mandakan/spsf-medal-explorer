@@ -1,35 +1,22 @@
 import React, { useCallback } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import Icon from '../components/Icon'
 import { requestManualTourStart } from '../utils/onboardingTour'
-import { useOnboardingTour } from '../hooks/useOnboardingTour'
 
 export default function Help() {
   const navigate = useNavigate()
-  const location = useLocation()
-  const tour = useOnboardingTour()
 
   const handleStartMedalsGuide = useCallback(() => {
-    if (location.pathname === '/medals') {
-      // Already on medals page, start immediately
-      tour.start()
-    } else {
-      // Navigate and request manual start
-      requestManualTourStart('medals')
-      navigate('/medals')
-    }
-  }, [location.pathname, navigate, tour])
+    // Request manual start and navigate to medals page
+    requestManualTourStart('medals')
+    navigate('/medals')
+  }, [navigate])
 
   const handleStartTreeGuide = useCallback(() => {
-    if (location.pathname === '/skill-tree' || location.pathname === '/skill-tree/fullscreen') {
-      // Already on tree page, start immediately
-      tour.start()
-    } else {
-      // Navigate and request manual start
-      requestManualTourStart('tree-view')
-      navigate('/skill-tree')
-    }
-  }, [location.pathname, navigate, tour])
+    // Request manual start and navigate to tree page
+    requestManualTourStart('tree-view')
+    navigate('/skill-tree')
+  }, [navigate])
 
   return (
     <div className="space-y-8">
