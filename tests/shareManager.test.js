@@ -87,23 +87,21 @@ describe('shareManager', () => {
             name: 'test.json',
             type: 'application/json'
           })
-        ]),
-        title: 'Säkerhetskopia',
-        text: 'Säkerhetskopia av mina märkesframsteg'
+        ])
       })
     })
 
-    it('should use custom title when provided', async () => {
+    it('should share file without title or text for compatibility', async () => {
       global.navigator.share = jest.fn().mockResolvedValue(undefined)
       const blob = new Blob(['test'], { type: 'application/json' })
 
-      await shareFile(blob, 'test.json', 'Custom Title')
+      await shareFile(blob, 'test.json')
 
-      expect(global.navigator.share).toHaveBeenCalledWith(
-        expect.objectContaining({
-          title: 'Custom Title'
-        })
-      )
+      // Verify no title or text is included (Android compatibility)
+      const shareCall = global.navigator.share.mock.calls[0][0]
+      expect(shareCall.title).toBeUndefined()
+      expect(shareCall.text).toBeUndefined()
+      expect(shareCall.files).toBeDefined()
     })
 
     it('should handle user cancellation gracefully', async () => {
@@ -137,9 +135,7 @@ describe('shareManager', () => {
           expect.objectContaining({
             type: 'application/json'
           })
-        ]),
-        title: 'Säkerhetskopia',
-        text: 'Säkerhetskopia av mina märkesframsteg'
+        ])
       })
     })
   })

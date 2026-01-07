@@ -39,7 +39,7 @@ export default function ShareBackupDialog({ blob, filename, onClose, onComplete 
       setSharing(true)
       setError(null)
 
-      const result = await shareFile(blob, filename, 'Säkerhetskopia')
+      const result = await shareFile(blob, filename)
 
       if (result.success) {
         await markBackupCreated()

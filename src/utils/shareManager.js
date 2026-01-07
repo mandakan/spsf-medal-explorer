@@ -29,11 +29,10 @@ export function isFileShareSupported() {
  * Share backup file via native share sheet
  * @param {Blob} blob - File data
  * @param {string} filename - Filename for the shared file
- * @param {string} [title='Säkerhetskopia'] - Share title (Swedish)
  * @returns {Promise<{success: boolean, cancelled?: boolean}>} Share result
  * @throws {Error} If sharing not supported or other error occurs
  */
-export async function shareFile(blob, filename, title = 'Säkerhetskopia') {
+export async function shareFile(blob, filename) {
   if (!isFileShareSupported()) {
     throw new Error('Fildelning stöds inte på den här enheten')
   }
@@ -43,10 +42,10 @@ export async function shareFile(blob, filename, title = 'Säkerhetskopia') {
   })
 
   try {
+    // Note: Many browsers don't support title/text when sharing files
+    // Only include the files array to maximize compatibility
     await navigator.share({
-      files: [file],
-      title: title,
-      text: 'Säkerhetskopia av mina märkesframsteg'
+      files: [file]
     })
 
     return { success: true }
