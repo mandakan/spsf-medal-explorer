@@ -29,18 +29,23 @@ export function parseProfileBackup(content) {
     : []
 
   return {
-    userId: typeof p.userId === 'string' ? p.userId.trim() : '',
-    displayName: typeof p.displayName === 'string' ? p.displayName : '',
-    createdDate: p.createdDate || new Date().toISOString(),
-    lastModified: p.lastModified || new Date().toISOString(),
-    dateOfBirth: typeof p.dateOfBirth === 'string' ? p.dateOfBirth : '',
-    sex: typeof p.sex === 'string' ? p.sex.trim().toLowerCase() : '',
-    unlockedMedals: Array.isArray(p.unlockedMedals) ? p.unlockedMedals : [],
-    prerequisites: achievements,
-    features: {
-      allowManualUnlock: !!(p.features && p.features.allowManualUnlock),
-      enforceCurrentYearForSustained: !!(p.features && p.features.enforceCurrentYearForSustained),
-    },
-    notifications: !!p.notifications,
+    kind: raw.kind,
+    version: raw.version,
+    exportedAt: raw.exportedAt,
+    profile: {
+      userId: typeof p.userId === 'string' ? p.userId.trim() : '',
+      displayName: typeof p.displayName === 'string' ? p.displayName : '',
+      createdDate: p.createdDate || new Date().toISOString(),
+      lastModified: p.lastModified || new Date().toISOString(),
+      dateOfBirth: typeof p.dateOfBirth === 'string' ? p.dateOfBirth : '',
+      sex: typeof p.sex === 'string' ? p.sex.trim().toLowerCase() : '',
+      unlockedMedals: Array.isArray(p.unlockedMedals) ? p.unlockedMedals : [],
+      prerequisites: achievements,
+      features: {
+        allowManualUnlock: !!(p.features && p.features.allowManualUnlock),
+        enforceCurrentYearForSustained: !!(p.features && p.features.enforceCurrentYearForSustained),
+      },
+      notifications: !!p.notifications,
+    }
   }
 }

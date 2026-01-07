@@ -432,7 +432,7 @@ export function ProfileProvider({ children }) {
       try {
         setLoading(true)
         const parsed = parseProfileBackup(jsonOrObj)
-        const saved = await storage.restoreProfile(parsed, options)
+        const saved = await storage.restoreProfile(parsed.profile, options)
         setCurrentProfile(saved)
         setLastProfileId(saved.userId)
         await loadProfiles()
