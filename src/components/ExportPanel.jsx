@@ -1,13 +1,14 @@
 import { useState } from 'react'
 import * as exportManager from '../utils/exportManager'
-import { downloadFile } from '../utils/fileHandlers'
-import { useBackup } from '../hooks/useBackup'
+import ShareBackupDialog from './ShareBackupDialog'
 
 export default function ExportPanel({ profile }) {
-  const { markBackupCreated } = useBackup()
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState(null)
+  const [showShareDialog, setShowShareDialog] = useState(false)
+  const [backupBlob, setBackupBlob] = useState(null)
+  const [backupFilename, setBackupFilename] = useState('')
 
   const handleBackup = async () => {
     try {
@@ -15,22 +16,26 @@ export default function ExportPanel({ profile }) {
       setError(null)
 
       const dateStr = new Date().toISOString().split('T')[0]
-      const data = await exportManager.toProfileBackup(profile, { version: '1.0' })
+      const jsonString = await exportManager.toProfileBackup(profile, { version: '1.0' })
       const filename = `medal-backup-${dateStr}.json`
+      const blob = new Blob([jsonString], { type: 'application/json;charset=utf-8' })
 
-      downloadFile(data, filename, 'application/json')
-
-      // Mark backup as created in the system
-      await markBackupCreated()
-
-      setSuccess(true)
-      setTimeout(() => setSuccess(false), 3000)
+      // Show dialog instead of immediate download
+      setBackupBlob(blob)
+      setBackupFilename(filename)
+      setShowShareDialog(true)
     } catch (err) {
       console.error('Backup-fel:', err)
       setError(err.message || 'Säkerhetskopieringen misslyckades')
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleShareComplete = () => {
+    setShowShareDialog(false)
+    setSuccess(true)
+    setTimeout(() => setSuccess(false), 3000)
   }
 
   return (
@@ -66,6 +71,15 @@ export default function ExportPanel({ profile }) {
           <span aria-hidden="true">✕</span>
           <span>{error}</span>
         </div>
+      )}
+
+      {showShareDialog && backupBlob && (
+        <ShareBackupDialog
+          blob={backupBlob}
+          filename={backupFilename}
+          onClose={() => setShowShareDialog(false)}
+          onComplete={handleShareComplete}
+        />
       )}
     </div>
   )
