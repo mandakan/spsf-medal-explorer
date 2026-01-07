@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { createPortal } from 'react-dom'
 
 /**
  * Preview backup contents before restoring
@@ -20,7 +21,7 @@ export default function RestorePreviewDialog({
     return { date, version, achievementCount, medalCount }
   }, [backup])
 
-  return (
+  const dialogContent = (
     <>
       {/* Backdrop */}
       <div
@@ -145,4 +146,6 @@ export default function RestorePreviewDialog({
       </div>
     </>
   )
+
+  return createPortal(dialogContent, document.body)
 }
