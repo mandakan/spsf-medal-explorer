@@ -1,9 +1,11 @@
 import { useEffect } from 'react'
+import { createPortal } from 'react-dom'
 
 /**
  * Success modal after backup creation
  * Shows filename and educational tips
  * WCAG 2.1 AA compliant with proper ARIA
+ * Uses Portal to escape parent DOM constraints
  */
 export default function BackupConfirmation({ filename, onClose }) {
   // Auto-dismiss after 8 seconds
@@ -21,11 +23,11 @@ export default function BackupConfirmation({ filename, onClose }) {
     return () => window.removeEventListener('keydown', handleEscape)
   }, [onClose])
 
-  return (
+  const dialogContent = (
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/50 z-40"
+        className="fixed inset-0 bg-black/50 z-[2000]"
         onClick={onClose}
         aria-hidden="true"
       />
@@ -35,13 +37,21 @@ export default function BackupConfirmation({ filename, onClose }) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="backup-confirmation-title"
+        style={{
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: 'min(90vw, 28rem)',
+          maxHeight: '90vh',
+          overflow: 'auto',
+          zIndex: 2001
+        }}
         className="
-          fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-          w-[90%] max-w-md
           bg-bg-primary
           border-2 border-border
           rounded-xl shadow-2xl
-          p-6 z-50
+          p-6
         "
       >
         {/* Success Icon */}
@@ -127,4 +137,6 @@ export default function BackupConfirmation({ filename, onClose }) {
       </div>
     </>
   )
+
+  return createPortal(dialogContent, document.body)
 }
