@@ -13,7 +13,7 @@ export default function RestorePreviewDialog({
 }) {
   // Extract metadata
   const metadata = useMemo(() => {
-    const date = backup.profile?.lastModified || backup.exportedAt || 'Unknown'
+    const date = backup.exportedAt || backup.profile?.lastModified || backup.profile?.createdDate
     const version = backup.version || '1.0'
     const achievementCount = backup.profile?.prerequisites?.length || 0
     const medalCount = backup.profile?.unlockedMedals?.length || 0
@@ -86,19 +86,27 @@ export default function RestorePreviewDialog({
           <div className="grid grid-cols-2 gap-4">
             <div className="p-3 rounded-lg bg-bg-secondary border border-border">
               <p className="text-xs text-muted-foreground mb-1">
-                Datum för säkerhetskopia
+                Skapad
               </p>
               <p className="font-semibold text-foreground">
-                {new Date(metadata.date).toLocaleDateString('sv-SE')}
+                {metadata.date
+                  ? new Date(metadata.date).toLocaleDateString('sv-SE', {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })
+                  : 'Okänt datum'}
               </p>
             </div>
 
             <div className="p-3 rounded-lg bg-bg-secondary border border-border">
               <p className="text-xs text-muted-foreground mb-1">
-                App-version
+                Format
               </p>
               <p className="font-semibold text-foreground">
-                {metadata.version}
+                v{metadata.version}
               </p>
             </div>
 
