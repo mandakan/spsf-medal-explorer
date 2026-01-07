@@ -22,14 +22,20 @@ export async function detectStorageType() {
  * @returns {Promise<boolean>}
  */
 async function checkIndexedDBData() {
+  let manager
   try {
-    const manager = new IndexedDBManager()
+    manager = new IndexedDBManager()
     await manager.init()
     const profiles = await manager.getAllProfiles()
-    manager.close()
     return profiles && profiles.length > 0
   } catch {
     return false
+  } finally {
+    try {
+      manager?.close?.()
+    } catch {
+      // ignore close errors
+    }
   }
 }
 
@@ -39,6 +45,7 @@ async function checkIndexedDBData() {
  * @returns {Promise<{success: boolean, profilesMigrated?: number, error?: string}>}
  */
 export async function migrateFromLocalStorage(onProgress) {
+  let idbManager
   try {
     onProgress?.({ stage: 'loading', percent: 0 })
 
@@ -49,7 +56,7 @@ export async function migrateFromLocalStorage(onProgress) {
     onProgress?.({ stage: 'saving', percent: 33 })
 
     // Save to IndexedDB
-    const idbManager = new IndexedDBManager()
+    idbManager = new IndexedDBManager()
     await idbManager.init()
 
     for (let i = 0; i < profiles.length; i++) {
@@ -84,6 +91,12 @@ export async function migrateFromLocalStorage(onProgress) {
       success: false,
       error: error.message,
     }
+  } finally {
+    try {
+      idbManager?.close?.()
+    } catch {
+      // ignore close errors
+    }
   }
 }
 
@@ -92,14 +105,13 @@ export async function migrateFromLocalStorage(onProgress) {
  * @returns {Promise<{complete: boolean, profileCount: number}>}
  */
 export async function verifyMigration() {
+  let idbManager
   try {
-    const idbManager = new IndexedDBManager()
+    idbManager = new IndexedDBManager()
     await idbManager.init()
 
     const migrationComplete = await idbManager.getMetadata('migration_complete')
     const profiles = await idbManager.getAllProfiles()
-
-    idbManager.close()
 
     return {
       complete: !!migrationComplete,
@@ -109,6 +121,12 @@ export async function verifyMigration() {
     return {
       complete: false,
       profileCount: 0,
+    }
+  } finally {
+    try {
+      idbManager?.close?.()
+    } catch {
+      // ignore close errors
     }
   }
 }

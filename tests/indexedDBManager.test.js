@@ -1,4 +1,3 @@
-import 'fake-indexeddb/auto'
 import { IndexedDBManager } from '../src/data/indexedDBManager'
 
 describe('IndexedDBManager', () => {
@@ -228,9 +227,9 @@ describe('IndexedDBManager', () => {
     })
 
     it('rejects invalid restore strategy', async () => {
-      await expect(
-        manager.restoreProfile(backupProfile, { strategy: 'invalid' })
-      ).rejects.toThrow('Invalid restore strategy')
+      await expect(manager.restoreProfile(backupProfile, { strategy: 'invalid' })).rejects.toThrow(
+        'Invalid restore strategy'
+      )
     })
   })
 
@@ -274,9 +273,7 @@ describe('IndexedDBManager', () => {
     })
 
     it('adds new achievements when dryRun is false', async () => {
-      const achievements = [
-        { type: 'precision_series', year: 2025, weaponGroup: 'A', points: 25 },
-      ]
+      const achievements = [{ type: 'precision_series', year: 2025, weaponGroup: 'A', points: 25 }]
 
       const result = await manager.upsertAchievements(testProfile.userId, achievements, {
         dryRun: false,
@@ -310,9 +307,7 @@ describe('IndexedDBManager', () => {
   describe('database lifecycle', () => {
     it('throws error when transaction attempted without init', async () => {
       const uninitializedManager = new IndexedDBManager()
-      await expect(uninitializedManager.getAllProfiles()).rejects.toThrow(
-        'Database not initialized'
-      )
+      await expect(uninitializedManager.getAllProfiles()).rejects.toThrow('Database not initialized')
     })
 
     it('closes database connection', () => {
