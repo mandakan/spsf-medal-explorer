@@ -51,9 +51,16 @@ export async function shareFile(blob, filename) {
     throw new Error('Fildelning stöds inte på den här enheten')
   }
 
+  // Android Chrome is picky about MIME types - use text/plain for better compatibility
+  // Even though it's JSON, many apps accept text/plain but reject application/json
   const file = new File([blob], filename, {
-    type: blob.type || 'application/json'
+    type: 'text/plain'
   })
+
+  // Double-check that we can actually share this specific file
+  if (navigator.canShare && !navigator.canShare({ files: [file] })) {
+    throw new Error('Den här filtypen kan inte delas på din enhet')
+  }
 
   try {
     // Note: Many browsers don't support title/text when sharing files
@@ -68,7 +75,10 @@ export async function shareFile(blob, filename) {
     console.error('Share failed:', {
       name: error.name,
       message: error.message,
-      error: error
+      error: error,
+      fileType: file.type,
+      fileSize: file.size,
+      fileName: file.name
     })
 
     // User cancelled the share - not an error

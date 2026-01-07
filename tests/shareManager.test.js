@@ -134,7 +134,7 @@ describe('shareManager', () => {
         files: expect.arrayContaining([
           expect.objectContaining({
             name: 'test.json',
-            type: 'application/json'
+            type: 'text/plain' // Always use text/plain for Android compatibility
           })
         ])
       })
@@ -173,7 +173,7 @@ describe('shareManager', () => {
       await expect(shareFile(blob, 'test.json')).rejects.toThrow('Permission denied')
     })
 
-    it('should use blob type or default to application/json', async () => {
+    it('should always use text/plain type for Android compatibility', async () => {
       global.navigator.share = jest.fn().mockResolvedValue(undefined)
       const blobWithoutType = new Blob(['test'])
 
@@ -182,7 +182,7 @@ describe('shareManager', () => {
       expect(global.navigator.share).toHaveBeenCalledWith({
         files: expect.arrayContaining([
           expect.objectContaining({
-            type: 'application/json'
+            type: 'text/plain' // Always text/plain regardless of input blob type
           })
         ])
       })
