@@ -45,7 +45,7 @@ describe('Export → Restore profile roundtrip', () => {
 
     // Restore using new-id strategy
     const parsed = parseProfileBackup(backupJson)
-    const restored = await dm.restoreProfile(parsed, { strategy: 'new-id' })
+    const restored = await dm.restoreProfile(parsed.profile, { strategy: 'new-id' })
 
     expect(restored.userId).not.toBe(saved.userId)
     expect(restored.displayName).toBe('Roundtrip')
@@ -78,8 +78,8 @@ describe('Export → Restore profile roundtrip', () => {
     })
 
     const parsed = parseProfileBackup(backupJson)
-    parsed.userId = 'user-target' // ensure id matches
-    const restored = await dm.restoreProfile(parsed, { strategy: 'overwrite' })
+    parsed.profile.userId = 'user-target' // ensure id matches
+    const restored = await dm.restoreProfile(parsed.profile, { strategy: 'overwrite' })
 
     expect(restored.userId).toBe('user-target')
     expect(restored.displayName).toBe('New Name')
