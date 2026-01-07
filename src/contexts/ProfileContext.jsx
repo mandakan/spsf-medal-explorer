@@ -4,6 +4,15 @@ import { UserProfile } from '../models/Profile'
 import { parseProfileBackup } from '../utils/importManager'
 import { useStorage } from '../hooks/useStorage'
 
+// Custom event for data changes (decoupled from BackupContext)
+export const PROFILE_DATA_CHANGED_EVENT = 'profile:dataChanged'
+
+function emitDataChanged() {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent(PROFILE_DATA_CHANGED_EVENT))
+  }
+}
+
 const ONBOARDING_KEY = 'app:onboardingChoice'
 
 const LAST_PROFILE_KEY = 'app:lastProfileId'
@@ -234,6 +243,7 @@ export function ProfileProvider({ children }) {
           prerequisites: [...(p?.prerequisites || []), achievement],
           lastModified: new Date().toISOString(),
         }))
+        emitDataChanged()
         return achievement
       }
       try {
@@ -242,6 +252,7 @@ export function ProfileProvider({ children }) {
         // Reload current profile
         const updated = await storage.getUserProfile(currentProfile.userId)
         setCurrentProfile(updated)
+        emitDataChanged()
         return saved
       } catch (err) {
         setError(err.message)
@@ -264,6 +275,7 @@ export function ProfileProvider({ children }) {
           if (idx !== -1) list[idx] = { ...list[idx], ...updatedAchievement }
           return { ...p, prerequisites: list, lastModified: new Date().toISOString() }
         })
+        emitDataChanged()
         return updatedAchievement
       }
       try {
@@ -276,6 +288,7 @@ export function ProfileProvider({ children }) {
         const nextProfile = { ...profile, prerequisites: list, lastModified: new Date().toISOString() }
         const saved = await storage.saveUserProfile(nextProfile)
         setCurrentProfile(saved)
+        emitDataChanged()
         return saved.prerequisites[idx]
       } catch (err) {
         setError(err.message)
@@ -297,6 +310,7 @@ export function ProfileProvider({ children }) {
           prerequisites: (p?.prerequisites || []).filter(a => a.id !== achievementId),
           lastModified: new Date().toISOString(),
         }))
+        emitDataChanged()
         return true
       }
       try {
@@ -306,6 +320,7 @@ export function ProfileProvider({ children }) {
         const nextProfile = { ...profile, prerequisites: list, lastModified: new Date().toISOString() }
         const saved = await storage.saveUserProfile(nextProfile)
         setCurrentProfile(saved)
+        emitDataChanged()
         return true
       } catch (err) {
         setError(err.message)
@@ -322,11 +337,13 @@ export function ProfileProvider({ children }) {
       if (!currentProfile) throw new Error('No profile selected')
       if (!medalId) throw new Error('medalId is required')
       if (currentProfile.isGuest) {
+        let wasUpdated = false
         setCurrentProfile(p => {
           const list = Array.isArray(p?.unlockedMedals) ? [...p.unlockedMedals] : []
           if (list.some(m => m.medalId === medalId)) {
             return p
           }
+          wasUpdated = true
           const entry = {
             medalId,
             unlockedDate: unlockedDate || new Date().toISOString().slice(0, 10),
@@ -337,6 +354,9 @@ export function ProfileProvider({ children }) {
             lastModified: new Date().toISOString(),
           }
         })
+        if (wasUpdated) {
+          emitDataChanged()
+        }
         return true
       }
       try {
@@ -354,6 +374,7 @@ export function ProfileProvider({ children }) {
         const nextProfile = { ...profile, unlockedMedals: [...list, entry], lastModified: new Date().toISOString() }
         const saved = await storage.saveUserProfile(nextProfile)
         setCurrentProfile(saved)
+        emitDataChanged()
         return true
       } catch (err) {
         setError(err.message)
