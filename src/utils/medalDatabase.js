@@ -38,9 +38,70 @@ export function validatePrerequisites(data) {
 }
 
 /**
- * Load the normalized medals dataset (name + tierName).
+ * Merge multiple medal files into single dataset structure
+ * Exported for testing purposes
+ * @param {Array<{path: string, data: object}>} files - Array of file objects with path and data
+ * @returns {{version: string, medals: Array}} Merged medal dataset
+ */
+export function mergeAndValidateMedalFiles(files) {
+  const allMedals = []
+  const fileTypes = new Set()
+
+  for (const { path, data } of files) {
+    // Validate file structure
+    if (!data.type || !Array.isArray(data.medals)) {
+      throw new Error(`Invalid medal file structure in ${path}: missing 'type' or 'medals' array`)
+    }
+
+    // Check for duplicate types
+    if (fileTypes.has(data.type)) {
+      throw new Error(`Duplicate medal type '${data.type}' found in ${path}`)
+    }
+    fileTypes.add(data.type)
+
+    // Validate all medals in file have correct type
+    for (const medal of data.medals) {
+      if (medal.type !== data.type) {
+        throw new Error(
+          `Medal ${medal.id} in ${path} has type '${medal.type}' but file is for '${data.type}'`
+        )
+      }
+    }
+
+    allMedals.push(...data.medals)
+  }
+
+  // Return standard format expected by MedalDatabase
+  return {
+    version: '1.0',
+    medals: allMedals
+  }
+}
+
+
+/**
+ * Load all medal data files and merge into single dataset.
+ *
+ * Loading strategy:
+ * 1. In browser (Vite): Uses import.meta.glob to load all *.medals.json files
+ * 2. In tests (Jest): Uses dynamic imports with explicit file list
+ * 3. Both environments load from the same split medal files
+ *
+ * @returns {Promise<{version: string, medals: Array}>} Medal dataset
  */
 export async function loadBestAvailableData() {
-  const base = await import('../data/medals.json')
-  return base.default || base
+  // In test environment (Jest), use Node-compatible loader
+  // eslint-disable-next-line no-undef
+  const isTest = typeof process !== 'undefined' && process.env.NODE_ENV === 'test'
+
+  if (isTest) {
+    // Jest environment: use Node-compatible loader
+    const { loadMedalDataNode } = await import('./medalLoader.node.js')
+    return loadMedalDataNode()
+  }
+
+  // Browser/Vite environment: use import.meta.glob
+  const { loadAllMedalFiles, mergeAndValidateMedalFiles } = await import('./medalLoader.vite.js')
+  const medalFiles = await loadAllMedalFiles()
+  return mergeAndValidateMedalFiles(medalFiles)
 }

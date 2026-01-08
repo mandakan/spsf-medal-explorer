@@ -1,5 +1,5 @@
 import { Medal, MedalDatabase } from '../src/models/Medal'
-import medalsData from '../src/data/medals.json'
+import { loadBestAvailableData } from '../src/utils/medalDatabase'
 
 function collectRequirementLeaves(spec, acc = []) {
   if (!spec) return acc
@@ -34,7 +34,8 @@ function collectRequirementLeaves(spec, acc = []) {
 describe('Medal Database', () => {
   let medalDb
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    const medalsData = await loadBestAvailableData()
     medalDb = new MedalDatabase(medalsData)
   })
 

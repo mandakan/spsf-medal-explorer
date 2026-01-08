@@ -1,7 +1,12 @@
-
-const medalsData = require('../../data/medals.json')
+import { loadBestAvailableData } from '../../utils/medalDatabase'
 
 describe('Medals base dataset integrity', () => {
+  let medalsData
+
+  beforeAll(async () => {
+    medalsData = await loadBestAvailableData()
+  })
+
   test('has version and non-empty medals array', () => {
     expect(typeof medalsData.version).toBe('string')
     expect(Array.isArray(medalsData.medals)).toBe(true)
