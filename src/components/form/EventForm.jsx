@@ -1,8 +1,7 @@
 import React from 'react'
 import { useAchievementForm } from '../../hooks/useAchievementForm'
-import { validateEvent } from '../../validators/universalValidator'
 
-export default function EventForm({ medal, onSubmit, loading }) {
+export default function EventForm({ onSubmit, loading }) {
   const { values, errors, handleChange, handleSubmit } = useAchievementForm({
     initialValues: {
       date: new Date().toISOString().split('T')[0],
@@ -10,7 +9,13 @@ export default function EventForm({ medal, onSubmit, loading }) {
       eventName: '',
       notes: '',
     },
-    validate: (vals) => validateEvent(vals, medal),
+    validate: (vals) => {
+      const errs = {}
+      if (!vals.date) errs.date = 'Datum krävs'
+      if (!vals.weaponGroup) errs.weaponGroup = 'Vapengrupp krävs'
+      if (!vals.eventName?.trim()) errs.eventName = 'Händelsenamn krävs'
+      return errs
+    },
     onSubmit,
   })
 

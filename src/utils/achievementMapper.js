@@ -91,20 +91,25 @@ export function mapFormToAchievement({ medal, medalType, formData }) {
   const weaponGroup = WG.includes(wgRaw) ? wgRaw : 'A'
 
   // Decide internal storage type
-  let storageType = 'custom'
-  if (medalType === 'running_shooting') {
-    storageType = 'running_shooting_course'
-  } else if (medalType === 'competition') {
-    const hasPrecisionSeries = Array.isArray(medal?.requirements) && medal.requirements.some(r => (r?.type || '').toLowerCase() === 'precision_series')
-    storageType = hasPrecisionSeries ? 'precision_series' : 'competition_result'
-  } else if (medalType === 'qualification') {
-    storageType = 'qualification_result'
-  } else if (medalType === 'team_event') {
-    storageType = 'team_event'
-  } else if (medalType === 'event') {
-    storageType = 'event'
-  } else {
-    storageType = 'custom'
+  // If formData specifies achievementType (from type-specific forms), use that directly
+  let storageType = formData?.achievementType || 'custom'
+
+  // Otherwise, fall back to medal-type detection
+  if (!formData?.achievementType) {
+    if (medalType === 'running_shooting') {
+      storageType = 'running_shooting_course'
+    } else if (medalType === 'competition') {
+      const hasPrecisionSeries = Array.isArray(medal?.requirements) && medal.requirements.some(r => (r?.type || '').toLowerCase() === 'precision_series')
+      storageType = hasPrecisionSeries ? 'precision_series' : 'competition_result'
+    } else if (medalType === 'qualification') {
+      storageType = 'qualification_result'
+    } else if (medalType === 'team_event') {
+      storageType = 'team_event'
+    } else if (medalType === 'event') {
+      storageType = 'event'
+    } else {
+      storageType = 'custom'
+    }
   }
 
   const base = {
@@ -129,7 +134,20 @@ export function mapFormToAchievement({ medal, medalType, formData }) {
     case 'precision_series':
       return {
         ...base,
-        points: Number(formData?.score ?? 0),
+        points: Number(formData?.points ?? formData?.score ?? 0),
+        competitionName: formData?.competitionName || '',
+      }
+    case 'application_series':
+      return {
+        ...base,
+        hits: Number(formData?.hits ?? 0),
+        timeSeconds: Number(formData?.timeSeconds ?? 0),
+        competitionName: formData?.competitionName || '',
+      }
+    case 'speed_shooting_series':
+      return {
+        ...base,
+        points: Number(formData?.points ?? formData?.score ?? 0),
         competitionName: formData?.competitionName || '',
       }
     case 'standard_medal':
@@ -146,6 +164,22 @@ export function mapFormToAchievement({ medal, medalType, formData }) {
         competitionType: String(formData?.competitionType || '').toLowerCase(),
         disciplineType: String(formData?.disciplineType || '').toLowerCase(),
         ppcClass: formData?.ppcClass || '',
+      }
+    case 'competition_performance':
+      return {
+        ...base,
+        points: Number(formData?.points ?? formData?.score ?? 0),
+        score: Number(formData?.score ?? 0),
+        scorePercent: Number(formData?.scorePercent ?? 0),
+        maxScore: Number(formData?.maxScore ?? 0),
+        competitionName: formData?.competitionName || '',
+        disciplineType: String(formData?.disciplineType || '').toLowerCase(),
+      }
+    case 'air_pistol_precision':
+      return {
+        ...base,
+        points: Number(formData?.points ?? formData?.score ?? 0),
+        seriesName: formData?.seriesName || formData?.competitionName || '',
       }
     case 'qualification_result':
       return {

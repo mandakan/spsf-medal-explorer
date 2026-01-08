@@ -658,6 +658,12 @@ export class MedalCalculator {
       case 'speed_shooting_series':
         leaf = this.checkSpeedShootingSeriesRequirement(req, -1, opts)
         break
+      case 'competition_performance':
+        leaf = this.checkCompetitionPerformanceRequirement(req, -1, opts)
+        break
+      case 'air_pistol_precision':
+        leaf = this.checkAirPistolPrecisionRequirement(req, -1, opts)
+        break
       default:
         leaf = {
           type: req.type,
@@ -1306,6 +1312,221 @@ export class MedalCalculator {
         R: req.pointThresholds?.R?.min
       }
     }
+  }
+
+  checkCompetitionPerformanceRequirement(req, index, opts = {}) {
+    const all = (this.profile.prerequisites || []).filter(a => a.type === 'competition_performance')
+
+    // If evaluating with a fixed end year, constrain the data to that year/window
+    if (opts.endYear != null) {
+      let achievements = all
+      const tw = req.timeWindowYears
+      if (tw === 1) {
+        achievements = all.filter(a => a.year === opts.endYear)
+      } else if (typeof tw === 'number' && tw > 1) {
+        const start0 = opts.endYear - tw + 1
+        const start = Math.max(start0, Number.isFinite(opts.minStartYear) ? opts.minStartYear : start0)
+        achievements = all.filter(a => (a.year ?? 0) >= start && (a.year ?? 0) <= opts.endYear)
+      } else {
+        achievements = all.filter(a => a.year === opts.endYear)
+      }
+
+      const candidates = this.filterByCompetitionPerformanceThreshold(achievements, req)
+      const required = req.minCompetitions ?? req.minAchievements ?? 1
+      const progress = { current: candidates.length, required }
+      const met = progress.current >= required
+
+      return {
+        type: 'competition_performance',
+        index,
+        isMet: met,
+        progress,
+        description: req.description,
+        windowYear: met ? opts.endYear : null,
+        disciplineType: req.disciplineType
+      }
+    }
+
+    // Default path: pick the best calendar year or block
+    const applyThresholds = (list) => this.filterByCompetitionPerformanceThreshold(list, req)
+
+    let candidates = []
+    let windowYear = null
+
+    if (req.timeWindowYears === 1) {
+      const byYear = this.groupBy(all, a => a.year)
+      let bestYear = null
+      let bestMatches = []
+      Object.entries(byYear).forEach(([year, list]) => {
+        const matches = applyThresholds(list)
+        if (matches.length > bestMatches.length) {
+          bestMatches = matches
+          bestYear = Number(year)
+        }
+      })
+      candidates = bestMatches
+      windowYear = bestYear
+    } else if (typeof req.timeWindowYears === 'number' && req.timeWindowYears > 1) {
+      const years = Array.from(new Set(all.map(a => a.year).filter(y => typeof y === 'number'))).sort((a, b) => a - b)
+      let bestEndYear = null
+      let bestMatches = []
+      for (const endYear of years) {
+        const startYear = endYear - req.timeWindowYears + 1
+        const inBlock = all.filter(a => (a.year ?? 0) >= startYear && (a.year ?? 0) <= endYear)
+        const matches = applyThresholds(inBlock)
+        if (matches.length > bestMatches.length) {
+          bestMatches = matches
+          bestEndYear = endYear
+        }
+      }
+      candidates = bestMatches
+      windowYear = bestEndYear
+    } else {
+      candidates = applyThresholds(all)
+    }
+
+    const required = req.minCompetitions ?? req.minAchievements ?? 1
+    const progress = { current: candidates.length, required }
+    const met = progress.current >= required
+
+    return {
+      type: 'competition_performance',
+      index,
+      isMet: met,
+      progress,
+      description: req.description,
+      windowYear: met ? windowYear : null,
+      disciplineType: req.disciplineType
+    }
+  }
+
+  checkAirPistolPrecisionRequirement(req, index, opts = {}) {
+    const all = (this.profile.prerequisites || []).filter(a => a.type === 'air_pistol_precision')
+
+    // If evaluating with a fixed end year, constrain the data to that year/window
+    if (opts.endYear != null) {
+      let achievements = all
+      const tw = req.timeWindowYears
+      if (tw === 1) {
+        achievements = all.filter(a => a.year === opts.endYear)
+      } else if (typeof tw === 'number' && tw > 1) {
+        const start0 = opts.endYear - tw + 1
+        const start = Math.max(start0, Number.isFinite(opts.minStartYear) ? opts.minStartYear : start0)
+        achievements = all.filter(a => (a.year ?? 0) >= start && (a.year ?? 0) <= opts.endYear)
+      } else {
+        achievements = all.filter(a => a.year === opts.endYear)
+      }
+
+      const candidates = this.filterByAirPistolThreshold(achievements, req)
+      const required = req.minSeries ?? req.minAchievements ?? 1
+      const progress = { current: candidates.length, required }
+      const met = progress.current >= required
+
+      return {
+        type: 'air_pistol_precision',
+        index,
+        isMet: met,
+        progress,
+        description: req.description,
+        windowYear: met ? opts.endYear : null,
+        minPointsPerSeries: req.minPointsPerSeries
+      }
+    }
+
+    // Default path: pick the best calendar year or block
+    const applyThresholds = (list) => this.filterByAirPistolThreshold(list, req)
+
+    let candidates = []
+    let windowYear = null
+
+    if (req.timeWindowYears === 1) {
+      const byYear = this.groupBy(all, a => a.year)
+      let bestYear = null
+      let bestMatches = []
+      Object.entries(byYear).forEach(([year, list]) => {
+        const matches = applyThresholds(list)
+        if (matches.length > bestMatches.length) {
+          bestMatches = matches
+          bestYear = Number(year)
+        }
+      })
+      candidates = bestMatches
+      windowYear = bestYear
+    } else if (typeof req.timeWindowYears === 'number' && req.timeWindowYears > 1) {
+      const years = Array.from(new Set(all.map(a => a.year).filter(y => typeof y === 'number'))).sort((a, b) => a - b)
+      let bestEndYear = null
+      let bestMatches = []
+      for (const endYear of years) {
+        const startYear = endYear - req.timeWindowYears + 1
+        const inBlock = all.filter(a => (a.year ?? 0) >= startYear && (a.year ?? 0) <= endYear)
+        const matches = applyThresholds(inBlock)
+        if (matches.length > bestMatches.length) {
+          bestMatches = matches
+          bestEndYear = endYear
+        }
+      }
+      candidates = bestMatches
+      windowYear = bestEndYear
+    } else {
+      candidates = applyThresholds(all)
+    }
+
+    const required = req.minSeries ?? req.minAchievements ?? 1
+    const progress = { current: candidates.length, required }
+    const met = progress.current >= required
+
+    return {
+      type: 'air_pistol_precision',
+      index,
+      isMet: met,
+      progress,
+      description: req.description,
+      windowYear: met ? windowYear : null,
+      minPointsPerSeries: req.minPointsPerSeries
+    }
+  }
+
+  filterByCompetitionPerformanceThreshold(list, req) {
+    return (list || []).filter(a => {
+      // Must match discipline type if specified
+      if (req.disciplineType && a.disciplineType !== req.disciplineType) {
+        return false
+      }
+
+      // For running/skiing: check maxPoints (lower is better)
+      if (req.maxPoints) {
+        const sex = this.profile.sex || 'male'
+        const maxAllowed = req.maxPoints[sex]
+        if (typeof maxAllowed === 'number' && typeof a.points === 'number') {
+          return a.points <= maxAllowed
+        }
+        return false
+      }
+
+      // For field: check pointThresholdPercent (higher is better, percentage of max)
+      if (req.pointThresholdPercent) {
+        const group = a.weaponGroup || 'A'
+        const minPercent = req.pointThresholdPercent[group]?.min ?? 0
+        if (typeof a.scorePercent === 'number') {
+          return a.scorePercent >= minPercent
+        }
+        // Fallback: if we have score and maxScore, calculate percentage
+        if (typeof a.score === 'number' && typeof a.maxScore === 'number' && a.maxScore > 0) {
+          const percent = (a.score / a.maxScore) * 100
+          return percent >= minPercent
+        }
+        return false
+      }
+
+      return true
+    })
+  }
+
+  filterByAirPistolThreshold(list, req) {
+    const minPoints = req.minPointsPerSeries ?? 0
+    return (list || []).filter(a => {
+      return typeof a.points === 'number' && a.points >= minPoints
+    })
   }
 
   filterBySpeedShootingThreshold(list, req) {

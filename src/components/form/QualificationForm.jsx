@@ -1,8 +1,7 @@
 import React from 'react'
 import { useAchievementForm } from '../../hooks/useAchievementForm'
-import { validateQualification } from '../../validators/universalValidator'
 
-export default function QualificationForm({ medal, onSubmit, loading }) {
+export default function QualificationForm({ onSubmit, loading }) {
   const { values, errors, handleChange, handleSubmit } = useAchievementForm({
     initialValues: {
       date: new Date().toISOString().split('T')[0],
@@ -11,7 +10,17 @@ export default function QualificationForm({ medal, onSubmit, loading }) {
       score: '',
       notes: '',
     },
-    validate: (vals) => validateQualification(vals, medal),
+    validate: (vals) => {
+      const errs = {}
+      if (!vals.date) errs.date = 'Date is required'
+      if (!vals.weaponGroup) errs.weaponGroup = 'Weapon group is required'
+      if (!vals.weapon?.trim()) errs.weapon = 'Weapon is required'
+      const score = Number(vals.score)
+      if (!Number.isFinite(score) || score < 0) {
+        errs.score = 'Enter a valid score'
+      }
+      return errs
+    },
     onSubmit,
   })
 

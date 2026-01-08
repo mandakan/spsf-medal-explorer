@@ -5,6 +5,7 @@ import { useMedalCalculator } from '../hooks/useMedalCalculator'
 import { useProfile } from '../hooks/useProfile'
 import UnlockMedalDialog from './UnlockMedalDialog'
 import RemoveMedalDialog from './RemoveMedalDialog'
+import AchievementEntryDialog from './AchievementEntryDialog'
 import { useUnlockGuard } from '../hooks/useUnlockGuard'
 const Markdown = lazy(() => import('react-markdown'))
 import remarkGfm from 'remark-gfm'
@@ -25,6 +26,7 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
   const allowManual = !!currentProfile?.features?.allowManualUnlock
   const medal = medalDatabase?.getMedalById(medalId)
   const [unlockOpen, setUnlockOpen] = useState(false)
+  const [achievementEntryOpen, setAchievementEntryOpen] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
   const originalId = medal ? `medal-req-original-${medal.id}` : undefined
@@ -610,13 +612,28 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
           </div>
 
           {/* Footer */}
-          <div className="flex gap-3 p-4 sm:p-6 border-t border-border pb-[calc(env(safe-area-inset-bottom)+1rem)]">
+          <div className="flex flex-wrap gap-3 p-4 sm:p-6 border-t border-border pb-[calc(env(safe-area-inset-bottom)+1rem)]">
             <button
               onClick={onClose}
               className="flex-1 min-h-[44px] px-4 py-2 rounded-md bg-background text-foreground hover:bg-bg-secondary ring-1 ring-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
             >
               Stäng
             </button>
+
+            {/* Log Achievement button - show for non-locked, non-placeholder medals */}
+            {currentProfile && !isPlaceholder && status?.status !== 'locked' && (
+              <button
+                type="button"
+                onClick={() => setAchievementEntryOpen(true)}
+                aria-haspopup="dialog"
+                className="flex-1 min-h-[44px] px-4 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-secondary"
+              >
+                <span className="flex items-center justify-center gap-2">
+                  <Icon name="Plus" className="w-5 h-5" />
+                  Logga aktivitet
+                </span>
+              </button>
+            )}
 
             {status?.status === 'unlocked' && currentProfile && !isPlaceholder && (
               <div className="flex-1 flex items-center gap-2">
@@ -686,6 +703,12 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
         onClose={() => setShowBlockedInfo(false)}
         variant="blocked"
         blockingMedals={blockingMedals}
+      />
+
+      <AchievementEntryDialog
+        medal={medal}
+        open={achievementEntryOpen}
+        onClose={() => setAchievementEntryOpen(false)}
       />
     </div>
   )

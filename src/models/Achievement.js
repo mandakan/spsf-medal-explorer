@@ -56,5 +56,17 @@ export class Achievement {
     this.hits = typeof data.hits === 'number'
       ? data.hits
       : (data.hits != null && data.hits !== '' ? Number(data.hits) : undefined)
+
+    // Competition performance fields
+    this.scorePercent = typeof data.scorePercent === 'number'
+      ? data.scorePercent
+      : (data.scorePercent != null && data.scorePercent !== '' ? Number(data.scorePercent) : undefined)
+    this.maxScore = typeof data.maxScore === 'number'
+      ? data.maxScore
+      : (data.maxScore != null && data.maxScore !== '' ? Number(data.maxScore) : undefined)
+
+    // Air pistol precision fields
+    this.seriesName = data.seriesName
+    this.courseName = data.courseName
   }
 }
