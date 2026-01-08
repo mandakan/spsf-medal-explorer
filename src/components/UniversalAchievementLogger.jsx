@@ -38,13 +38,18 @@ const achievementTypeLabels = {
 
 /**
  * Extract achievement types from medal requirements recursively
+ * @param {object} requirements - Medal requirements object
+ * @param {number} maxDepth - Maximum recursion depth (default: 20)
+ * @returns {string[]} Array of achievement type strings
  */
-function extractAchievementTypes(requirements) {
+function extractAchievementTypes(requirements, maxDepth = 20) {
   if (!requirements) return []
   const types = new Set()
 
-  function traverse(node) {
+  function traverse(node, depth = 0) {
     if (!node || typeof node !== 'object') return
+    // Prevent stack overflow on malformed data
+    if (depth >= maxDepth) return
 
     // If node has a type, add it
     if (node.type && typeof node.type === 'string') {
@@ -54,12 +59,12 @@ function extractAchievementTypes(requirements) {
       }
     }
 
-    // Recursively traverse nested requirements
+    // Recursively traverse nested requirements with depth tracking
     if (node.and && Array.isArray(node.and)) {
-      node.and.forEach(traverse)
+      node.and.forEach(child => traverse(child, depth + 1))
     }
     if (node.or && Array.isArray(node.or)) {
-      node.or.forEach(traverse)
+      node.or.forEach(child => traverse(child, depth + 1))
     }
   }
 

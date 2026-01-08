@@ -11,9 +11,9 @@ export default function EventForm({ onSubmit, loading }) {
     },
     validate: (vals) => {
       const errs = {}
-      if (!vals.date) errs.date = 'Date is required'
-      if (!vals.weaponGroup) errs.weaponGroup = 'Weapon group is required'
-      if (!vals.eventName?.trim()) errs.eventName = 'Event name is required'
+      if (!vals.date) errs.date = 'Datum krävs'
+      if (!vals.weaponGroup) errs.weaponGroup = 'Vapengrupp krävs'
+      if (!vals.eventName?.trim()) errs.eventName = 'Händelsenamn krävs'
       return errs
     },
     onSubmit,

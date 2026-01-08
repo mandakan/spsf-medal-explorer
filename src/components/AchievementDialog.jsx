@@ -180,7 +180,7 @@ function FormContent({
         }
         case 'competition_performance': {
           const dt = String(row.disciplineType || '').toLowerCase()
-          if (!DISCIPLINE_TYPES.includes(dt)) {
+          if (!['field', 'precision', 'military_fast'].includes(dt)) {
             errs.push('Välj giltig gren (field, running, precision)')
             fields.disciplineType = true
           }
@@ -227,7 +227,7 @@ function FormContent({
       }
       return { errs, fields }
     }
-  }, [WG, COMP_TYPES, APP_TIME_OPTIONS, COMP_DISCIPLINE_TYPES, DISCIPLINE_TYPES])
+  }, [WG, COMP_TYPES, APP_TIME_OPTIONS, COMP_DISCIPLINE_TYPES])
 
   const onSubmit = (addAnother = false) => {
     const { errs, fields } = validate(form)
