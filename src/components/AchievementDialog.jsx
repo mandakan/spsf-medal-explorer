@@ -170,8 +170,8 @@ function FormContent({
           }
           // Validate seriesCount if provided (optional for Mästarmärket requirements)
           if (row.seriesCount != null && row.seriesCount !== '') {
-            const sc = Number(row.seriesCount)
-            if (!Number.isFinite(sc) || ![6, 7, 10].includes(sc)) {
+            const seriesCount = Number(row.seriesCount)
+            if (!Number.isFinite(seriesCount) || ![6, 7, 10].includes(seriesCount)) {
               errs.push('Antal serier måste vara 6, 7 eller 10')
               fields.seriesCount = true
             }

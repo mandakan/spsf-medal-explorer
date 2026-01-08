@@ -1098,6 +1098,10 @@ export class MedalCalculator {
       } else if (req.seriesBasedThresholds) {
         // Thresholds based on number of series shot (e.g., 6, 7, or 10 series)
         matches = list.filter(a => {
+          // Filter by competitionType if specified
+          if (req.competitionType && a.competitionType !== req.competitionType) {
+            return false
+          }
           const seriesCount = String(a.seriesCount || '')
           const g = a.weaponGroup || 'A'
           const thresholdSet = req.seriesBasedThresholds[seriesCount]
