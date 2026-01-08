@@ -1,6 +1,6 @@
 import { BUILD } from '../config/buildInfo'
 
-const KEY = 'app:onboardingTour:lastSeen'
+const KEY_PREFIX = 'app:onboardingTour:seen:'
 
 /**
  * Session key used to request a manual onboarding tour start on a specific page.
@@ -31,9 +31,10 @@ export function getTourId(tourType = 'medals') {
   return `${tourType}-${version}`
 }
 
-export function getTourLastSeen() {
+export function getTourLastSeen(tourType = 'medals') {
   try {
-    return localStorage.getItem(KEY)
+    const id = getTourId(tourType)
+    return localStorage.getItem(KEY_PREFIX + id)
   } catch {
     return null
   }
@@ -41,14 +42,18 @@ export function getTourLastSeen() {
 
 export function setTourLastSeen(id) {
   try {
-    if (id) localStorage.setItem(KEY, id)
+    if (id) localStorage.setItem(KEY_PREFIX + id, 'true')
   } catch {
     // ignore
   }
 }
 
 export function isTourSeen(id = getTourId()) {
-  return getTourLastSeen() === id
+  try {
+    return localStorage.getItem(KEY_PREFIX + id) === 'true'
+  } catch {
+    return false
+  }
 }
 
 export function requestManualTourStart(page) {
