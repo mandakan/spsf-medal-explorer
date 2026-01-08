@@ -14,6 +14,37 @@ import Icon from './Icon'
 import { useSkillTreeLayoutPreset } from '../hooks/useSkillTreeLayoutPreset'
 import { useSkillTreeLayout } from '../hooks/useSkillTreeLayout'
 
+/**
+ * Renders lane labels for timeline view as DOM overlay
+ * @param {Array} laneLabels - Array of label objects with {id, line1, line2, top}
+ */
+function LaneLabels({ laneLabels }) {
+  if (!laneLabels || laneLabels.length === 0) return null
+
+  return (
+    <div className="pointer-events-none absolute inset-0">
+      {laneLabels.map(label => (
+        <div
+          key={label.id}
+          role="note"
+          aria-label={`${label.line1} ${label.line2}`.replace('-', '')}
+          className="absolute left-0 text-xs leading-tight font-medium text-text-primary bg-background/95 backdrop-blur-sm px-1.5 py-0.5 rounded-r border-r border-t border-b border-border/60 shadow-sm"
+          style={{
+            top: `${label.top}px`,
+            transform: 'translateY(-50%)',
+            zIndex: 5,
+            maxWidth: '115px'
+          }}
+          title={`${label.line1} ${label.line2}`.replace('-', '')}
+        >
+          <div className="whitespace-nowrap">{label.line1}</div>
+          {label.line2 && <div className="whitespace-nowrap">{label.line2}</div>}
+        </div>
+      ))}
+    </div>
+  )
+}
+
 export default function SkillTreeCanvas({ legendDescribedById }) {
   const canvasRef = useRef(null)
   const { medalDatabase } = useMedalDatabase()
@@ -24,6 +55,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   const [selectedMedal, setSelectedMedal] = useState(null)
   const [hoveredMedal, setHoveredMedal] = useState(null)
   const [badgeData, setBadgeData] = useState([])
+  const [laneLabels, setLaneLabels] = useState([])
   const navigate = useNavigate()
   const location = useLocation()
   const isFullscreen = location.pathname.endsWith('/skill-tree/fullscreen')
@@ -36,7 +68,10 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   const CANVAS_PAD = 24
   const LABEL_HALF_PX = 80           // approximate half-width of label text area
   const LABEL_BOTTOM_PX = 56         // reserve for up to two lines of label text at bottom
-  const DEFAULT_LEGEND_SAFE_TOP_PX = 72
+  const LANE_LABEL_WIDTH = 120       // reserved width for timeline lane labels on left
+  const TIMELINE_TOP_PAD = 40        // minimal top padding for timeline year labels (reduced to save space)
+  const TIMELINE_BOTTOM_PAD = 100    // extra bottom padding for timeline to clear zoom controls
+  const DEFAULT_LEGEND_SAFE_TOP_PX = 52
   // Legend visibility and reserved safe-top height must be defined before pan/zoom
   const [showLegend, setShowLegend] = useState(true)
   const [legendSafeTop, setLegendSafeTop] = useState(showLegend ? DEFAULT_LEGEND_SAFE_TOP_PX : 0)
@@ -103,20 +138,27 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   }, [canvasSize, layout, getDesiredEffBounds, computeBaseTransform, legendSafeTop])
   const { min: MIN_SCALE, max: MAX_SCALE } = computeDynamicBounds()
 
+  // Dynamic padding: extra left padding for timeline lane labels
+  const contentPadding = React.useMemo(() => {
+    const isTimeline = layout?.meta?.kind === 'timeline'
+    return {
+      left: (isTimeline ? LANE_LABEL_WIDTH : LABEL_HALF_PX) + CANVAS_PAD,
+      top: (isTimeline ? TIMELINE_TOP_PAD : CANVAS_PAD) + legendSafeTop,
+      right: LABEL_HALF_PX + CANVAS_PAD,
+      bottom: (isTimeline ? TIMELINE_BOTTOM_PAD : LABEL_BOTTOM_PX) + CANVAS_PAD
+    }
+  }, [layout, legendSafeTop])
+
   const { panX, panY, scale, setScaleAbsolute, handleWheel, handlePointerDown, handlePointerMove, handlePointerUp, resetView } = usePanZoom(6, MIN_SCALE, MAX_SCALE, {
     getBounds: getWorldBounds,
     overscrollPx: 48,
-    contentPaddingPx: {
-      left: LABEL_HALF_PX + CANVAS_PAD,
-      top: CANVAS_PAD + legendSafeTop,
-      right: LABEL_HALF_PX + CANVAS_PAD,
-      bottom: LABEL_BOTTOM_PX + CANVAS_PAD
-    }
+    contentPaddingPx: contentPadding
   })
   const [isDragging, setIsDragging] = useState(false)
   const closeBtnRef = useRef(null)
   const prevFocusRef = useRef(null)
   const didInitViewRef = useRef(false)
+  const pointerDownPos = useRef({ x: 0, y: 0 })
 
   // Keep latest interactive scale without causing re-renders
   const scaleRef = useRef(scale)
@@ -151,15 +193,16 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     const height = canvas?.height || 0
     const effScale = Math.max(0.001, baseScale * scale)
     // Compute base pan using the effective scale so the top-left stays anchored at padding
-    // Include label half-width so the left-most label stays inside canvas padding.
-    const extraLeftWorld = LABEL_HALF_PX / effScale
+    // Include label half-width (or lane label width for timeline) so the left-most label stays inside canvas padding.
+    const isTimeline = layout?.meta?.kind === 'timeline'
+    const extraLeftWorld = (isTimeline ? LANE_LABEL_WIDTH : LABEL_HALF_PX) / effScale
     const extraTopWorld = Math.max(0, legendSafeTop) / effScale
     const basePanX = (padding - width / 2) / effScale - (minX - extraLeftWorld)
     const basePanY = (padding - height / 2) / effScale - (minY - extraTopWorld)
     const effPanX = panX + basePanX
     const effPanY = panY + basePanY
     return { effScale, effPanX, effPanY, baseScale }
-  }, [computeBaseTransform, panX, panY, scale, legendSafeTop])
+  }, [computeBaseTransform, panX, panY, scale, legendSafeTop, layout])
 
   // Determine which medals are visible in the current viewport for culling
   const getVisibleMedalsForCanvas = useCallback((canvas, margin = 120) => {
@@ -190,6 +233,8 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   const getYearsBadgeData = useCallback((canvas) => {
     if (!canvas || !layout) return []
     if (!showYearBadges) return []
+    // Skip year badges in timeline view since the X-axis already represents years
+    if (layout?.meta?.kind === 'timeline') return []
     const { effScale, effPanX, effPanY } = getEffectiveTransform(canvas)
     const width = canvas.width
     const height = canvas.height
@@ -271,6 +316,43 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     return badges
   }, [layout, getEffectiveTransform, getVisibleMedalsForCanvas, hoveredMedal, selectedMedal, statuses, showYearBadges])
 
+  // Lane labels for timeline view (DOM overlay for better accessibility)
+  const getLaneLabelsData = useCallback((canvas) => {
+    if (!canvas || !layout) return []
+    if (layout?.meta?.kind !== 'timeline') return []
+
+    const { effScale, effPanY } = getEffectiveTransform(canvas)
+    const height = canvas.height
+    const lanes = Array.isArray(layout.meta.lanes) ? layout.meta.lanes : []
+    const labels = []
+
+    for (const lane of lanes) {
+      const screenY = (lane.y + effPanY) * effScale + height / 2
+      // Skip lanes that are off-screen
+      if (screenY < -50 || screenY > height + 50) continue
+
+      const text = String(lane.label || lane.type || '')
+
+      // Smart line breaking: split before "märket" if present, add hyphen per Swedish grammar
+      let line1 = text
+      let line2 = ''
+      const markerIndex = text.toLowerCase().lastIndexOf('märket')
+      if (markerIndex > 0) {
+        line1 = text.substring(0, markerIndex).trim() + '-'
+        line2 = text.substring(markerIndex).trim()
+      }
+
+      labels.push({
+        id: lane.type || `lane-${labels.length}`,
+        line1,
+        line2,
+        top: screenY
+      })
+    }
+
+    return labels
+  }, [layout, getEffectiveTransform])
+
   const draw = useCallback(() => {
     if (!canvasRef.current || !layout || !medalDatabase) return
 
@@ -315,13 +397,15 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
       // Grid lines
       const gridColor = palette.connection || 'rgba(0,0,0,0.3)'
       const labelColor = palette.text || '#111827'
-      const labelY = Math.max(12, (showLegend ? legendSafeTop + 12 : 12))
+      // Position year labels just below the legend with minimal gap
+      const labelY = showLegend ? legendSafeTop + 6 : 12
 
       ctx.save()
       ctx.lineWidth = 1
       ctx.strokeStyle = gridColor
       ctx.globalAlpha = 0.25
-      for (let yi = startYear; yi <= endYear; yi++) {
+      // Only render year lines from year 0 onwards
+      for (let yi = Math.max(0, startYear); yi <= endYear; yi++) {
         const worldX = yi * yearWidth
         const screenX = (worldX + effPanX) * effScale + width / 2
         ctx.beginPath()
@@ -340,21 +424,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
       }
       ctx.restore()
 
-      // Lane labels (follow world-space vertically)
-      const lanes = Array.isArray(layout.meta.lanes) ? layout.meta.lanes : []
-      if (lanes.length) {
-        ctx.save()
-        ctx.fillStyle = labelColor
-        ctx.textAlign = 'left'
-        ctx.textBaseline = 'middle'
-        ctx.font = '12px system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif'
-        for (const lane of lanes) {
-          const screenY = (lane.y + effPanY) * effScale + height / 2
-          if (screenY < -24 || screenY > height + 24) continue
-          ctx.fillText(String(lane.label || lane.type || ''), 8, screenY)
-        }
-        ctx.restore()
-      }
+      // Lane labels are now rendered as DOM overlay (see getLaneLabelsData)
     }
 
     render(
@@ -439,7 +509,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     return () => cancelAnimationFrame(raf)
   }, [draw])
 
-  // Compute badge overlay positions in layout effect to stay in sync with canvas
+  // Compute badge overlay positions and lane labels in layout effect to stay in sync with canvas
   useLayoutEffect(() => {
     const el = canvasRef.current
     if (!el) return
@@ -453,7 +523,8 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
       setCanvasSize({ w, h })
     }
     setBadgeData(getYearsBadgeData(el))
-  }, [getYearsBadgeData, panX, panY, scale, hoveredMedal, selectedMedal, layout])
+    setLaneLabels(getLaneLabelsData(el))
+  }, [getYearsBadgeData, getLaneLabelsData, panX, panY, scale, hoveredMedal, selectedMedal, layout])
 
   // Initialize view to the same target as "Återställ vy" once when layout is ready
   useEffect(() => {
@@ -478,6 +549,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
       }
       draw()
       setBadgeData(getYearsBadgeData(el))
+      setLaneLabels(getLaneLabelsData(el))
 
       if (showLegend) {
         const legendEl = isFullscreen ? legendFsRef.current : legendRef.current
@@ -489,7 +561,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     }
     window.addEventListener('resize', onResize)
     return () => window.removeEventListener('resize', onResize)
-  }, [draw, getYearsBadgeData, isFullscreen, showLegend])
+  }, [draw, getYearsBadgeData, getLaneLabelsData, isFullscreen, showLegend])
 
   // Native wheel listener (passive: false) to prevent page scroll/zoom during canvas zoom gestures.
   useEffect(() => {
@@ -569,6 +641,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
         if (!el) return
         draw()
         setBadgeData(getYearsBadgeData(el))
+        setLaneLabels(getLaneLabelsData(el))
       })
     }
 
@@ -597,7 +670,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
       }
       observer.disconnect()
     }
-  }, [draw, getYearsBadgeData])
+  }, [draw, getYearsBadgeData, getLaneLabelsData])
 
   // Redraw when returning from bfcache/tab visibility and on orientation changes
   useEffect(() => {
@@ -616,6 +689,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
         clearThemeCache()
         draw()
         setBadgeData(getYearsBadgeData(el))
+        setLaneLabels(getLaneLabelsData(el))
       })
     }
 
@@ -641,7 +715,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
       document.removeEventListener('visibilitychange', onVisibility)
       window.removeEventListener('orientationchange', onOrientation)
     }
-  }, [draw, getYearsBadgeData])
+  }, [draw, getYearsBadgeData, getLaneLabelsData])
 
   // Keyboard pan shortcuts (scope to focused canvas for WCAG 2.1/2.2)
   const handleCanvasKeyDown = useCallback((e) => {
@@ -670,6 +744,14 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
   // Pointer events
   const handleCanvasPointerDown = (e) => {
     setIsDragging(true)
+    // Track initial pointer position to detect drag vs click
+    const rect = canvasRef.current?.getBoundingClientRect()
+    if (rect) {
+      pointerDownPos.current = {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+      }
+    }
     handlePointerDown(e)
   }
 
@@ -722,6 +804,17 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     const mouseX = e.clientX - rect.left
     const mouseY = e.clientY - rect.top
 
+    // Prevent accidental clicks after dragging - check if pointer moved significantly
+    const dx = mouseX - pointerDownPos.current.x
+    const dy = mouseY - pointerDownPos.current.y
+    const dragDistance = Math.sqrt(dx * dx + dy * dy)
+    const DRAG_THRESHOLD = 5 // pixels - if moved more than this, it was a drag not a click
+
+    if (dragDistance > DRAG_THRESHOLD) {
+      // This was a drag, not a click - don't open medal details
+      return
+    }
+
     // Determine clicked medal node (use culled set)
     const { effScale, effPanX, effPanY } = getEffectiveTransform(canvasRef.current)
     const visibleMedals = getVisibleMedalsForCanvas(canvasRef.current)
@@ -747,6 +840,16 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
     const rect = canvasRef.current.getBoundingClientRect()
     const mouseX = e.clientX - rect.left
     const mouseY = e.clientY - rect.top
+
+    // Prevent accidental double-clicks after dragging
+    const dx = mouseX - pointerDownPos.current.x
+    const dy = mouseY - pointerDownPos.current.y
+    const dragDistance = Math.sqrt(dx * dx + dy * dy)
+    const DRAG_THRESHOLD = 5
+
+    if (dragDistance > DRAG_THRESHOLD) {
+      return
+    }
 
     const { effScale, effPanX, effPanY } = getEffectiveTransform(canvasRef.current)
     const visibleMedals = getVisibleMedalsForCanvas(canvasRef.current)
@@ -851,6 +954,9 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                 </React.Fragment>
               ))}
             </div>
+
+            {/* Lane labels for timeline view */}
+            <LaneLabels laneLabels={laneLabels} />
 
             {showLegend && (
               <div
@@ -1391,6 +1497,9 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
                   </React.Fragment>
                 ))}
               </div>
+
+              {/* Lane labels for timeline view */}
+              <LaneLabels laneLabels={laneLabels} />
             </div>
           </div>
 
