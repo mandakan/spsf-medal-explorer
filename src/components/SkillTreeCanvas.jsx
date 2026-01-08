@@ -14,6 +14,37 @@ import Icon from './Icon'
 import { useSkillTreeLayoutPreset } from '../hooks/useSkillTreeLayoutPreset'
 import { useSkillTreeLayout } from '../hooks/useSkillTreeLayout'
 
+/**
+ * Renders lane labels for timeline view as DOM overlay
+ * @param {Array} laneLabels - Array of label objects with {id, line1, line2, top}
+ */
+function LaneLabels({ laneLabels }) {
+  if (!laneLabels || laneLabels.length === 0) return null
+
+  return (
+    <div className="pointer-events-none absolute inset-0">
+      {laneLabels.map(label => (
+        <div
+          key={label.id}
+          role="note"
+          aria-label={`${label.line1} ${label.line2}`.replace('-', '')}
+          className="absolute left-0 text-xs leading-tight font-medium text-text-primary bg-background/95 backdrop-blur-sm px-1.5 py-0.5 rounded-r border-r border-t border-b border-border/60 shadow-sm"
+          style={{
+            top: `${label.top}px`,
+            transform: 'translateY(-50%)',
+            zIndex: 5,
+            maxWidth: '115px'
+          }}
+          title={`${label.line1} ${label.line2}`.replace('-', '')}
+        >
+          <div className="whitespace-nowrap">{label.line1}</div>
+          {label.line2 && <div className="whitespace-nowrap">{label.line2}</div>}
+        </div>
+      ))}
+    </div>
+  )
+}
+
 export default function SkillTreeCanvas({ legendDescribedById }) {
   const canvasRef = useRef(null)
   const { medalDatabase } = useMedalDatabase()
@@ -116,7 +147,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
       right: LABEL_HALF_PX + CANVAS_PAD,
       bottom: (isTimeline ? TIMELINE_BOTTOM_PAD : LABEL_BOTTOM_PX) + CANVAS_PAD
     }
-  }, [layout, legendSafeTop, LANE_LABEL_WIDTH, LABEL_HALF_PX, LABEL_BOTTOM_PX, TIMELINE_TOP_PAD, TIMELINE_BOTTOM_PAD, CANVAS_PAD])
+  }, [layout, legendSafeTop])
 
   const { panX, panY, scale, setScaleAbsolute, handleWheel, handlePointerDown, handlePointerMove, handlePointerUp, resetView } = usePanZoom(6, MIN_SCALE, MAX_SCALE, {
     getBounds: getWorldBounds,
@@ -925,28 +956,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
             </div>
 
             {/* Lane labels for timeline view */}
-            {laneLabels.length > 0 && (
-              <div className="pointer-events-none absolute inset-0">
-                {laneLabels.map(label => (
-                  <div
-                    key={label.id}
-                    role="note"
-                    aria-label={`${label.line1} ${label.line2}`.replace('-', '')}
-                    className="absolute left-0 text-xs leading-tight font-medium text-text-primary bg-background/95 backdrop-blur-sm px-1.5 py-0.5 rounded-r border-r border-t border-b border-border/60 shadow-sm"
-                    style={{
-                      top: `${label.top}px`,
-                      transform: 'translateY(-50%)',
-                      zIndex: 5,
-                      maxWidth: '115px'
-                    }}
-                    title={`${label.line1} ${label.line2}`.replace('-', '')}
-                  >
-                    <div className="whitespace-nowrap">{label.line1}</div>
-                    {label.line2 && <div className="whitespace-nowrap">{label.line2}</div>}
-                  </div>
-                ))}
-              </div>
-            )}
+            <LaneLabels laneLabels={laneLabels} />
 
             {showLegend && (
               <div
@@ -1489,28 +1499,7 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
               </div>
 
               {/* Lane labels for timeline view */}
-              {laneLabels.length > 0 && (
-                <div className="pointer-events-none absolute inset-0">
-                  {laneLabels.map(label => (
-                    <div
-                      key={label.id}
-                      role="note"
-                      aria-label={`${label.line1} ${label.line2}`.replace('-', '')}
-                      className="absolute left-0 text-xs leading-tight font-medium text-text-primary bg-background/95 backdrop-blur-sm px-1.5 py-0.5 rounded-r border-r border-t border-b border-border/60 shadow-sm"
-                      style={{
-                        top: `${label.top}px`,
-                        transform: 'translateY(-50%)',
-                        zIndex: 5,
-                        maxWidth: '115px'
-                      }}
-                      title={`${label.line1} ${label.line2}`.replace('-', '')}
-                    >
-                      <div className="whitespace-nowrap">{label.line1}</div>
-                      {label.line2 && <div className="whitespace-nowrap">{label.line2}</div>}
-                    </div>
-                  ))}
-                </div>
-              )}
+              <LaneLabels laneLabels={laneLabels} />
             </div>
           </div>
 

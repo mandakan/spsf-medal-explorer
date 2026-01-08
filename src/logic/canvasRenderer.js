@@ -8,6 +8,8 @@ import { ICON_FOR_STATUS } from '../constants/statusIcons.js'
 import { Lock, CirclePlus, CircleCheck, Trophy, CircleDashed, Search, Circle } from 'lucide'
 
  const LABEL_FONT_PX = 14
+ // Threshold in pixels for detecting horizontal connections (connections with Y-difference below this are considered horizontal)
+ const HORIZONTAL_CONNECTION_THRESHOLD = 5
 
  // lucide icon rendering helpers for canvas (keep in sync with StatusIcon mapping)
  const ICON_NODE_BY_NAME = {
@@ -402,7 +404,7 @@ export function drawConnection(ctx, x1, y1, x2, y2, type = 'prerequisite', scale
 
   // Label (minimum years) – shown only when zoomed in to reduce clutter
   // Skip labels for horizontal connections (same Y coordinate) since the X-axis already represents years
-  const isHorizontal = Math.abs(y2 - y1) < 5 // Threshold for detecting horizontal connections
+  const isHorizontal = Math.abs(y2 - y1) < HORIZONTAL_CONNECTION_THRESHOLD
   if (label && scale >= 0.8 && !isHorizontal) {
     const palette = getThemeColors(ctx?.canvas)
     const dx = x2 - x1
