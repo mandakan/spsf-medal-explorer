@@ -57,12 +57,8 @@ export async function shareFile(blob, filename) {
     type: 'text/plain'
   })
 
-  // Double-check that we can actually share this specific file
-  if (navigator.canShare && !navigator.canShare({ files: [file] })) {
-    throw new Error('Den här filtypen kan inte delas på din enhet')
-  }
-
   try {
+    // CRITICAL: Do NOT call canShare() here - it may break the user gesture chain
     // Note: Many browsers don't support title/text when sharing files
     // Only include the files array to maximize compatibility
     await navigator.share({

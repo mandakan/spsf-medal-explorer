@@ -17,7 +17,8 @@ export default function ExportPanel({ profile }) {
 
       const dateStr = new Date().toISOString().split('T')[0]
       const jsonString = await exportManager.toProfileBackup(profile, { version: '1.0' })
-      const filename = `medal-backup-${dateStr}.json`
+      // Use .txt extension for better Android app compatibility when sharing
+      const filename = `medal-backup-${dateStr}.txt`
       const blob = new Blob([jsonString], { type: 'application/json;charset=utf-8' })
 
       // Show dialog instead of immediate download
