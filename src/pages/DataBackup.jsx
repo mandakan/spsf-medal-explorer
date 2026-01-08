@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import ExportPanel from '../components/ExportPanel'
 import ShareDialog from '../components/ShareDialog'
 import ProfileImportDialog from '../components/ProfileImportDialog'
+import RestoreGuide from '../components/RestoreGuide'
 import * as exportManager from '../utils/exportManager'
 import { useProfile } from '../hooks/useProfile'
 import FeatureGate from '../components/FeatureGate.jsx'
@@ -87,6 +88,12 @@ export default function DataBackup() {
               upsertAchievements={upsertAchievements}
             />
           </FeatureGate>
+        </div>
+      )}
+
+      {canUse && (
+        <div className="mt-6">
+          <RestoreGuide />
         </div>
       )}
 

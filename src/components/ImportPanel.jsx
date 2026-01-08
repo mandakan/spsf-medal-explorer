@@ -112,7 +112,7 @@ export default function ImportPanel({ onImport }) {
         <input
           ref={fileInputRef}
           type="file"
-          accept=".json,.csv"
+          accept=".json,.csv,.txt"
           onChange={(e) => e.target.files?.length && handleFile(e.target.files[0])}
           className="hidden"
         />

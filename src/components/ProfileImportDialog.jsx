@@ -127,7 +127,7 @@ export default function ProfileImportDialog({
 
             {/* Helper text for accessibility */}
             <p id={`${id}-file-hint`} className="text-xs text-muted-foreground">
-              Endast JSON-filer (.json) accepteras
+              JSON-filer (.json eller .txt) accepteras
             </p>
 
             {/* Hidden native file input */}
@@ -135,7 +135,7 @@ export default function ProfileImportDialog({
               ref={fileInputRef}
               id={`${id}-file`}
               type="file"
-              accept=".json,application/json"
+              accept=".json,.txt,application/json"
               onChange={onFileChange}
               className="sr-only"
               disabled={busy}
