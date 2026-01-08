@@ -37,10 +37,30 @@ export function validatePrerequisites(data) {
   return { ok: errors.length === 0, errors }
 }
 
+
 /**
- * Load the normalized medals dataset (name + tierName).
+ * Load all medal data files and merge into single dataset.
+ * Supports both new multi-file structure and legacy single file.
  */
 export async function loadBestAvailableData() {
-  const base = await import('../data/medals.json')
-  return base.default || base
+  // In test environment (Jest), skip multi-file loading and use legacy
+  // eslint-disable-next-line no-undef
+  const isTest = typeof process !== 'undefined' && process.env.NODE_ENV === 'test'
+
+  if (!isTest) {
+    try {
+      // Dynamically import Vite-specific loader (only works in Vite environment)
+      const { loadAllMedalFiles, mergeAndValidateMedalFiles } = await import('./medalLoader.vite.js')
+      const medalFiles = await loadAllMedalFiles()
+      if (medalFiles.length > 0) {
+        return mergeAndValidateMedalFiles(medalFiles)
+      }
+    } catch (error) {
+      console.warn('Failed to load multi-file medal data, falling back to legacy:', error)
+    }
+  }
+
+  // Fallback to legacy single file
+  const legacy = await import('../data/medals.json')
+  return legacy.default || legacy
 }
