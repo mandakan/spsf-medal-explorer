@@ -178,12 +178,56 @@ function FormContent({
           }
           break
         }
+        case 'competition_performance': {
+          const dt = String(row.disciplineType || '').toLowerCase()
+          if (!DISCIPLINE_TYPES.includes(dt)) {
+            errs.push('Välj giltig gren (field, running, precision)')
+            fields.disciplineType = true
+          }
+          // For running/skiing: validate points (lower is better)
+          // For field: validate score and scorePercent
+          if (dt === 'running' || dt === 'skiing') {
+            const p = Number(row.points)
+            if (!Number.isFinite(p) || p < 0) {
+              errs.push('Poäng måste vara ett positivt tal')
+              fields.points = true
+            }
+          } else if (dt === 'field') {
+            const sc = Number(row.score)
+            const maxSc = Number(row.maxScore)
+            if (!Number.isFinite(sc) || sc < 0) {
+              errs.push('Poäng måste vara ett positivt tal')
+              fields.score = true
+            }
+            if (!Number.isFinite(maxSc) || maxSc <= 0) {
+              errs.push('Max poäng måste vara större än 0')
+              fields.maxScore = true
+            }
+          }
+          break
+        }
+        case 'air_pistol_precision': {
+          const p = Number(row.points)
+          if (!Number.isFinite(p) || p < 0 || p > 100) {
+            errs.push('Poäng måste vara 0-100')
+            fields.points = true
+          }
+          break
+        }
+        case 'running_shooting_course': {
+          const p = Number(row.points)
+          if (!Number.isFinite(p) || p < 0) {
+            errs.push('Poäng måste vara ett positivt tal')
+            fields.points = true
+          }
+          break
+        }
         default:
           break
       }
       return { errs, fields }
     }
-  }, [WG, COMP_TYPES, APP_TIME_OPTIONS, COMP_DISCIPLINE_TYPES])
+  }, [WG, COMP_TYPES, APP_TIME_OPTIONS, COMP_DISCIPLINE_TYPES, DISCIPLINE_TYPES])
 
   const onSubmit = (addAnother = false) => {
     const { errs, fields } = validate(form)

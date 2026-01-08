@@ -147,6 +147,22 @@ export function mapFormToAchievement({ medal, medalType, formData }) {
         disciplineType: String(formData?.disciplineType || '').toLowerCase(),
         ppcClass: formData?.ppcClass || '',
       }
+    case 'competition_performance':
+      return {
+        ...base,
+        points: Number(formData?.points ?? formData?.score ?? 0),
+        score: Number(formData?.score ?? 0),
+        scorePercent: Number(formData?.scorePercent ?? 0),
+        maxScore: Number(formData?.maxScore ?? 0),
+        competitionName: formData?.competitionName || '',
+        disciplineType: String(formData?.disciplineType || '').toLowerCase(),
+      }
+    case 'air_pistol_precision':
+      return {
+        ...base,
+        points: Number(formData?.points ?? formData?.score ?? 0),
+        seriesName: formData?.seriesName || formData?.competitionName || '',
+      }
     case 'qualification_result':
       return {
         ...base,
