@@ -4,6 +4,9 @@ import QualificationForm from './form/QualificationForm'
 import TeamEventForm from './form/TeamEventForm'
 import EventForm from './form/EventForm'
 import CustomForm from './form/CustomForm'
+import PrecisionSeriesForm from './form/PrecisionSeriesForm'
+import ApplicationSeriesForm from './form/ApplicationSeriesForm'
+import SpeedShootingSeriesForm from './form/SpeedShootingSeriesForm'
 import AchievementSuccessDialog from './AchievementSuccessDialog'
 import { useAchievementHistory } from '../hooks/useAchievementHistory'
 import { detectMedalFormType, mapFormToAchievement } from '../utils/achievementMapper'
@@ -17,17 +20,90 @@ const formComponents = {
   custom: CustomForm,
 }
 
+// Type-specific forms for direct achievement entry
+const typeSpecificForms = {
+  precision_series: PrecisionSeriesForm,
+  application_series: ApplicationSeriesForm,
+  speed_shooting_series: SpeedShootingSeriesForm,
+}
+
+// Swedish labels for achievement types
+const achievementTypeLabels = {
+  precision_series: 'Precisionsserie',
+  application_series: 'Tillämpningsserie',
+  speed_shooting_series: 'Duellserie',
+  competition_performance: 'Tävlingsprestation',
+  air_pistol_precision: 'Luftpistolprecision',
+}
+
+/**
+ * Extract achievement types from medal requirements recursively
+ */
+function extractAchievementTypes(requirements) {
+  if (!requirements) return []
+  const types = new Set()
+
+  function traverse(node) {
+    if (!node || typeof node !== 'object') return
+
+    // If node has a type, add it
+    if (node.type && typeof node.type === 'string') {
+      // Filter out logical operators and medal prerequisites
+      if (!['and', 'or', 'medal'].includes(node.type.toLowerCase())) {
+        types.add(node.type)
+      }
+    }
+
+    // Recursively traverse nested requirements
+    if (node.and && Array.isArray(node.and)) {
+      node.and.forEach(traverse)
+    }
+    if (node.or && Array.isArray(node.or)) {
+      node.or.forEach(traverse)
+    }
+  }
+
+  traverse(requirements)
+  return Array.from(types)
+}
+
 export default function UniversalAchievementLogger({ medal, onSuccess, unlockMode = false }) {
   const { addAchievement, unlockMedal } = useAchievementHistory()
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
   const [savedAchievement, setSavedAchievement] = useState(null)
   const [formKey, setFormKey] = useState(0)
+  const [selectedType, setSelectedType] = useState(null)
+
+  // Extract available achievement types from medal requirements
+  const availableTypes = useMemo(() => {
+    if (unlockMode) return []
+    const types = extractAchievementTypes(medal?.requirements)
+    // Filter to only types we have specific forms for
+    return types.filter(t => typeSpecificForms[t])
+  }, [medal, unlockMode])
 
   // Detect form variant from medal data
   const medalType = useMemo(() => detectMedalFormType(medal), [medal])
   const effectiveType = unlockMode ? 'event' : medalType
-  const FormComponent = unlockMode ? CustomForm : (formComponents[medalType] || CustomForm)
+
+  // Determine which form to show
+  const FormComponent = useMemo(() => {
+    if (unlockMode) return CustomForm
+
+    // If user has selected a specific type, use that form
+    if (selectedType && typeSpecificForms[selectedType]) {
+      return typeSpecificForms[selectedType]
+    }
+
+    // If there's only one available type, use it automatically
+    if (availableTypes.length === 1 && typeSpecificForms[availableTypes[0]]) {
+      return typeSpecificForms[availableTypes[0]]
+    }
+
+    // Otherwise fall back to medal-type detection
+    return formComponents[medalType] || CustomForm
+  }, [unlockMode, selectedType, availableTypes, medalType])
   const headingId = useMemo(
     () => `achievement-logger-title-${medal?.id || medal?.medalId || 'unknown'}`,
     [medal]
@@ -69,6 +145,10 @@ export default function UniversalAchievementLogger({ medal, onSuccess, unlockMod
     setSavedAchievement(null)
     setError(null)
     setFormKey(prev => prev + 1)
+    // Reset type selection if there are multiple types
+    if (availableTypes.length > 1) {
+      setSelectedType(null)
+    }
   }
 
   const handleDone = () => {
@@ -105,12 +185,53 @@ export default function UniversalAchievementLogger({ medal, onSuccess, unlockMod
         </div>
       )}
 
-      <FormComponent
-        key={formKey}
-        medal={medal}
-        onSubmit={handleSubmit}
-        loading={loading}
-      />
+      {/* Type selector for medals with multiple achievement types */}
+      {availableTypes.length > 1 && !selectedType && (
+        <div className="space-y-3 mb-4">
+          <p className="text-sm text-text-secondary">
+            Detta märke kan tjänas genom olika typer av aktiviteter. Välj vilken typ du vill logga:
+          </p>
+          <div className="grid gap-2">
+            {availableTypes.map(type => (
+              <button
+                key={type}
+                type="button"
+                onClick={() => setSelectedType(type)}
+                className="btn btn-secondary py-3 min-h-[44px] text-left justify-start"
+              >
+                {achievementTypeLabels[type] || type}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Show form if type is selected or only one type available */}
+      {(availableTypes.length <= 1 || selectedType) && (
+        <>
+          {availableTypes.length > 1 && selectedType && (
+            <div className="mb-4 p-3 rounded-lg bg-bg-secondary border border-border">
+              <p className="text-sm text-text-secondary">
+                <span className="font-medium text-text-primary">Typ:</span>{' '}
+                {achievementTypeLabels[selectedType] || selectedType}
+                <button
+                  type="button"
+                  onClick={() => setSelectedType(null)}
+                  className="ml-2 text-xs text-primary hover:underline"
+                >
+                  Byt typ
+                </button>
+              </p>
+            </div>
+          )}
+          <FormComponent
+            key={formKey}
+            medal={medal}
+            onSubmit={handleSubmit}
+            loading={loading}
+          />
+        </>
+      )}
 
       {/* Success dialog with "add another" option */}
       <AchievementSuccessDialog
