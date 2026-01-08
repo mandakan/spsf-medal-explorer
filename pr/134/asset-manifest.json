@@ -5,7 +5,7 @@
     "isDynamicEntry": true
   },
   "index.html": {
-    "file": "assets/index-BToTp9Po.js",
+    "file": "assets/index-BciKebh0.js",
     "name": "index",
     "src": "index.html",
     "isEntry": true,
@@ -19,7 +19,7 @@
       "_vendor-Co8o9yF8.js"
     ],
     "css": [
-      "assets/index-5dd-oou9.css"
+      "assets/index-Bo-q49B3.css"
     ]
   },
   "src/data/air_pistol_mark.medals.json": {
@@ -89,12 +89,13 @@
     "isDynamicEntry": true
   },
   "src/utils/medalLoader.vite.js": {
-    "file": "assets/medalLoader.vite-CaJDx56D.js",
+    "file": "assets/medalLoader.vite-4UgShVsg.js",
     "name": "medalLoader.vite",
     "src": "src/utils/medalLoader.vite.js",
     "isDynamicEntry": true,
     "imports": [
-      "_vendor-Co8o9yF8.js"
+      "_vendor-Co8o9yF8.js",
+      "index.html"
     ],
     "dynamicImports": [
       "src/data/air_pistol_mark.medals.json",
