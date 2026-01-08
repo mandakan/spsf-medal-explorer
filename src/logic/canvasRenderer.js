@@ -401,7 +401,9 @@ export function drawConnection(ctx, x1, y1, x2, y2, type = 'prerequisite', scale
   ctx.fill()
 
   // Label (minimum years) – shown only when zoomed in to reduce clutter
-  if (label && scale >= 0.8) {
+  // Skip labels for horizontal connections (same Y coordinate) since the X-axis already represents years
+  const isHorizontal = Math.abs(y2 - y1) < 5 // Threshold for detecting horizontal connections
+  if (label && scale >= 0.8 && !isHorizontal) {
     const palette = getThemeColors(ctx?.canvas)
     const dx = x2 - x1
     const dy = y2 - y1
