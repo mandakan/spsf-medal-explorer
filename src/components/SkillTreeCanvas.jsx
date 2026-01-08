@@ -373,7 +373,8 @@ export default function SkillTreeCanvas({ legendDescribedById }) {
       ctx.lineWidth = 1
       ctx.strokeStyle = gridColor
       ctx.globalAlpha = 0.25
-      for (let yi = startYear; yi <= endYear; yi++) {
+      // Only render year lines from year 0 onwards
+      for (let yi = Math.max(0, startYear); yi <= endYear; yi++) {
         const worldX = yi * yearWidth
         const screenX = (worldX + effPanX) * effScale + width / 2
         ctx.beginPath()
