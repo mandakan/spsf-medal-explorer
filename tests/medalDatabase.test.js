@@ -1,4 +1,4 @@
-import { validatePrerequisites, loadBestAvailableData } from '../src/utils/medalDatabase'
+import { validatePrerequisites, loadBestAvailableData, mergeAndValidateMedalFiles } from '../src/utils/medalDatabase'
 
 describe('medalDatabase utils', () => {
   describe('multi-file loading', () => {
@@ -64,6 +64,95 @@ describe('medalDatabase utils', () => {
       expect(result.ok).toBe(false)
       expect(result.errors.length).toBeGreaterThan(0)
       expect(result.errors[0]).toContain('missing-medal')
+    })
+  })
+
+  describe('mergeAndValidateMedalFiles', () => {
+    test('rejects medals with wrong type in file', () => {
+      const invalidFiles = [{
+        path: 'test.medals.json',
+        data: {
+          type: 'pistol_mark',
+          medals: [{ id: 'test', type: 'air_pistol_mark' }] // Wrong type!
+        }
+      }]
+
+      expect(() => mergeAndValidateMedalFiles(invalidFiles)).toThrow(/has type/)
+      expect(() => mergeAndValidateMedalFiles(invalidFiles)).toThrow(/air_pistol_mark/)
+    })
+
+    test('rejects files missing type field', () => {
+      const invalidFiles = [{
+        path: 'test.medals.json',
+        data: {
+          medals: [{ id: 'test', type: 'pistol_mark' }]
+          // Missing 'type' field
+        }
+      }]
+
+      expect(() => mergeAndValidateMedalFiles(invalidFiles)).toThrow(/missing 'type'/)
+    })
+
+    test('rejects files missing medals array', () => {
+      const invalidFiles = [{
+        path: 'test.medals.json',
+        data: {
+          type: 'pistol_mark'
+          // Missing 'medals' array
+        }
+      }]
+
+      expect(() => mergeAndValidateMedalFiles(invalidFiles)).toThrow(/missing 'type' or 'medals' array/)
+    })
+
+    test('rejects duplicate medal types across files', () => {
+      const invalidFiles = [
+        {
+          path: 'pistol_mark_1.medals.json',
+          data: {
+            type: 'pistol_mark',
+            medals: [{ id: 'test-1', type: 'pistol_mark' }]
+          }
+        },
+        {
+          path: 'pistol_mark_2.medals.json',
+          data: {
+            type: 'pistol_mark', // Duplicate type!
+            medals: [{ id: 'test-2', type: 'pistol_mark' }]
+          }
+        }
+      ]
+
+      expect(() => mergeAndValidateMedalFiles(invalidFiles)).toThrow(/Duplicate medal type/)
+    })
+
+    test('successfully merges valid files', () => {
+      const validFiles = [
+        {
+          path: 'pistol_mark.medals.json',
+          data: {
+            type: 'pistol_mark',
+            medals: [
+              { id: 'pistol-bronze', type: 'pistol_mark' },
+              { id: 'pistol-silver', type: 'pistol_mark' }
+            ]
+          }
+        },
+        {
+          path: 'elite_mark.medals.json',
+          data: {
+            type: 'elite_mark',
+            medals: [
+              { id: 'elite-bronze', type: 'elite_mark' }
+            ]
+          }
+        }
+      ]
+
+      const result = mergeAndValidateMedalFiles(validFiles)
+      expect(result.version).toBe('1.0')
+      expect(result.medals.length).toBe(3)
+      expect(result.medals.map(m => m.id)).toEqual(['pistol-bronze', 'pistol-silver', 'elite-bronze'])
     })
   })
 })

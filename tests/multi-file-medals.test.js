@@ -72,4 +72,15 @@ describe('Medal data structure', () => {
       expect(medal.tier).toBeTruthy()
     }
   })
+
+  test('validates cross-type prerequisites (elite requires pistol)', async () => {
+    const data = await loadBestAvailableData()
+    const eliteBronze = data.medals.find(m => m.id === 'elite-mark-bronze')
+    const pistolGold = data.medals.find(m => m.id === 'pistol-mark-gold')
+
+    // Elite Bronze should require Pistol Gold (cross-type prerequisite)
+    expect(eliteBronze).toBeDefined()
+    expect(pistolGold).toBeDefined()
+    expect(eliteBronze.prerequisites.some(p => p.medalId === 'pistol-mark-gold')).toBe(true)
+  })
 })
