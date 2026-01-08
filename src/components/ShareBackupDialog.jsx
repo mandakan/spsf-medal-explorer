@@ -15,20 +15,6 @@ export default function ShareBackupDialog({ blob, filename, onClose, onComplete 
   const canShare = isFileShareSupported()
   const shareMessage = getShareMessage()
 
-  // Debug info (computed, not state)
-  const debugInfo = {
-    canShare,
-    hasNavigatorShare: !!navigator.share,
-    hasCanShare: !!navigator.canShare,
-    userAgent: navigator.userAgent,
-    isMobile: /Android|iPhone|iPad|iPod/.test(navigator.userAgent)
-  }
-
-  // Debug logging
-  useEffect(() => {
-    console.log('ShareBackupDialog:', debugInfo)
-  }, [canShare]) // eslint-disable-line react-hooks/exhaustive-deps
-
   // Use ref to avoid stale closures
   const onCloseRef = useRef(onClose)
 
@@ -186,30 +172,6 @@ export default function ShareBackupDialog({ blob, filename, onClose, onComplete 
               : 'Ladda ner och ladda upp till din föredragna molnlagring'}
           </p>
         </div>
-
-        {/* Debug Info Display (temporary) */}
-        {debugInfo && (
-          <div className="mb-4 p-3 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600">
-            <p className="text-xs font-mono text-gray-700 dark:text-gray-300 mb-1">
-              <strong>Debug:</strong>
-            </p>
-            <p className="text-xs font-mono text-gray-600 dark:text-gray-400">
-              canShare: {String(debugInfo.canShare)}
-            </p>
-            <p className="text-xs font-mono text-gray-600 dark:text-gray-400">
-              hasNavigatorShare: {String(debugInfo.hasNavigatorShare)}
-            </p>
-            <p className="text-xs font-mono text-gray-600 dark:text-gray-400">
-              hasCanShare: {String(debugInfo.hasCanShare)}
-            </p>
-            <p className="text-xs font-mono text-gray-600 dark:text-gray-400">
-              isMobile: {String(debugInfo.isMobile)}
-            </p>
-            <p className="text-xs font-mono text-gray-600 dark:text-gray-400 break-all">
-              UA: {debugInfo.userAgent.substring(0, 60)}...
-            </p>
-          </div>
-        )}
 
         {/* Error Display */}
         {error && (
