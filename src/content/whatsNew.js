@@ -5,12 +5,14 @@
 export const releases = [
   {
     id: '0.9.5',
-    date: '2026-01-04',
+    date: '2026-01-08',
     title: 'Fler märken och kön i profil',
     highlights: [
       'Skidskyttemärken är tillagda för granskning',
+      'Mästarmärken är tillagda för granskning',
       'Ett fåtal märken särskiljer kraven för män och kvinnor så profilen måste hålla den informationen',
       'Interaktiv användarguide för trädvyn med stöd för mobil och helskärmsläge',
+      'Förenklad funktionalitet för backup och flytt av profildata',
     ],
     link: 'https://github.com/mandakan/spsf-medal-explorer/releases/tag/v0.9.5',
   },
