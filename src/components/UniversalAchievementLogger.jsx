@@ -187,17 +187,22 @@ export default function UniversalAchievementLogger({ medal, onSuccess, unlockMod
 
       {/* Type selector for medals with multiple achievement types */}
       {availableTypes.length > 1 && !selectedType && (
-        <div className="space-y-3 mb-4">
+        <div className="space-y-3 mb-4 animate-fade-in">
           <p className="text-sm text-text-secondary">
             Detta märke kan tjänas genom olika typer av aktiviteter. Välj vilken typ du vill logga:
           </p>
           <div className="grid gap-2">
-            {availableTypes.map(type => (
+            {availableTypes.map((type, index) => (
               <button
                 key={type}
                 type="button"
                 onClick={() => setSelectedType(type)}
-                className="btn btn-secondary py-3 min-h-[44px] text-left justify-start"
+                className="btn btn-secondary py-3 min-h-[44px] text-left justify-start transform transition-all hover:scale-[1.02]"
+                style={{
+                  animationDelay: `${index * 50}ms`,
+                  animation: 'slideInUp 0.2s ease-out forwards',
+                  opacity: 0,
+                }}
               >
                 {achievementTypeLabels[type] || type}
               </button>

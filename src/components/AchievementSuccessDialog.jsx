@@ -1,13 +1,31 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import Icon from './Icon'
 
 /**
  * Success dialog shown after logging an achievement.
  * Offers "add another" or "done" options for better UX flow.
+ * Includes smooth animations for better perceived performance.
  */
 export default function AchievementSuccessDialog({ achievement, onAddAnother, onDone }) {
+  const [shouldAnimate, setShouldAnimate] = useState(false)
+
+  // Trigger animation on mount
+  useEffect(() => {
+    if (achievement) {
+      // Small delay for smooth entrance
+      const timer = setTimeout(() => setShouldAnimate(true), 10)
+      return () => {
+        setShouldAnimate(false)
+        clearTimeout(timer)
+      }
+    }
+  }, [achievement])
+
   if (!achievement) return null
+
+  // Derive visibility from both achievement and animation state
+  const isVisible = achievement && shouldAnimate
 
   // Format achievement details for display
   const getAchievementSummary = () => {
@@ -33,14 +51,16 @@ export default function AchievementSuccessDialog({ achievement, onAddAnother, on
 
   const dialogContent = (
     <>
-      {/* Backdrop */}
+      {/* Backdrop with fade-in animation */}
       <div
-        className="fixed inset-0 bg-black/50 z-[2000]"
+        className={`fixed inset-0 bg-black/50 z-[2000] transition-opacity duration-200 ${
+          isVisible ? 'opacity-100' : 'opacity-0'
+        }`}
         onClick={onDone}
         aria-hidden="true"
       />
 
-      {/* Dialog */}
+      {/* Dialog with scale-in animation */}
       <div
         role="dialog"
         aria-modal="true"
@@ -52,7 +72,11 @@ export default function AchievementSuccessDialog({ achievement, onAddAnother, on
           transform: 'translate(-50%, -50%)',
           zIndex: 2001,
         }}
-        className="bg-bg-primary rounded-xl p-6 shadow-xl max-w-md w-[90vw] border border-border"
+        className={`
+          bg-bg-primary rounded-xl p-6 shadow-xl max-w-md w-[90vw] border border-border
+          transition-all duration-200 ease-out
+          ${isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}
+        `}
       >
         {/* Success Icon and Title */}
         <div className="flex items-start gap-4 mb-4">
