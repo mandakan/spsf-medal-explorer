@@ -5,8 +5,8 @@ import { useAchievementForm } from '../../hooks/useAchievementForm'
  * Type-specific form for logging speed shooting series achievements.
  * Optimized for duellskjutning (duel shooting) with points-based scoring.
  */
-export default function SpeedShootingSeriesForm({ onSubmit, loading }) {
-  const { values, errors, handleChange, handleSubmit } = useAchievementForm({
+export default function SpeedShootingSeriesForm({ onSubmit, onSubmitAndAddAnother, loading }) {
+  const { values, errors, handleChange, handleSubmit, validate } = useAchievementForm({
     initialValues: {
       date: new Date().toISOString().split('T')[0],
       weaponGroup: 'A',
@@ -27,6 +27,15 @@ export default function SpeedShootingSeriesForm({ onSubmit, loading }) {
     },
     onSubmit: (vals) => onSubmit({ ...vals, achievementType: 'speed_shooting_series' }),
   })
+
+  // Handle "Save & Add Another" button click
+  const handleSaveAndAddAnother = (e) => {
+    e.preventDefault()
+    const validationErrors = validate(values)
+    if (Object.keys(validationErrors).length === 0 && onSubmitAndAddAnother) {
+      onSubmitAndAddAnother({ ...values, achievementType: 'speed_shooting_series' })
+    }
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4" noValidate>
@@ -163,14 +172,26 @@ export default function SpeedShootingSeriesForm({ onSubmit, loading }) {
         />
       </div>
 
-      {/* Submit */}
-      <button
-        type="submit"
-        disabled={loading}
-        className="btn btn-primary w-full py-3 min-h-[44px] disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        {loading ? 'Sparar...' : 'Spara Duellserie'}
-      </button>
+      {/* Submit Buttons */}
+      <div className="flex flex-col sm:flex-row gap-3 pt-2">
+        <button
+          type="submit"
+          disabled={loading}
+          className="btn btn-primary flex-1 py-3 min-h-[44px] disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {loading ? 'Sparar...' : 'Spara & Stäng'}
+        </button>
+        {onSubmitAndAddAnother && (
+          <button
+            type="button"
+            onClick={handleSaveAndAddAnother}
+            disabled={loading}
+            className="btn btn-secondary flex-1 py-3 min-h-[44px] disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Spara & Lägg till fler
+          </button>
+        )}
+      </div>
     </form>
   )
 }

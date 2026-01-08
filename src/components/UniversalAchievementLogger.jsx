@@ -7,7 +7,6 @@ import CustomForm from './form/CustomForm'
 import PrecisionSeriesForm from './form/PrecisionSeriesForm'
 import ApplicationSeriesForm from './form/ApplicationSeriesForm'
 import SpeedShootingSeriesForm from './form/SpeedShootingSeriesForm'
-import AchievementSuccessDialog from './AchievementSuccessDialog'
 import { useAchievementHistory } from '../hooks/useAchievementHistory'
 import { detectMedalFormType, mapFormToAchievement } from '../utils/achievementMapper'
 import { validateAchievement as validateAchievementObject } from '../validators/universalValidator'
@@ -76,7 +75,6 @@ export default function UniversalAchievementLogger({ medal, onSuccess, unlockMod
   const { addAchievement, unlockMedal } = useAchievementHistory()
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
-  const [savedAchievement, setSavedAchievement] = useState(null)
   const [formKey, setFormKey] = useState(0)
   const [selectedType, setSelectedType] = useState(null)
 
@@ -136,8 +134,8 @@ export default function UniversalAchievementLogger({ medal, onSuccess, unlockMod
         await unlockMedal(medal.id, achievement.date)
       }
 
-      // Show success dialog instead of immediately closing
-      setSavedAchievement(achievement)
+      // Close the dialog immediately after successful save
+      onSuccess?.(achievement)
     } catch (err) {
       setError(err?.message || 'Misslyckades att spara aktivitet')
     } finally {
@@ -145,20 +143,41 @@ export default function UniversalAchievementLogger({ medal, onSuccess, unlockMod
     }
   }
 
-  const handleAddAnother = () => {
-    // Clear success state and reset form by changing key
-    setSavedAchievement(null)
-    setError(null)
-    setFormKey(prev => prev + 1)
-    // Reset type selection if there are multiple types
-    if (availableTypes.length > 1) {
-      setSelectedType(null)
-    }
-  }
+  const handleSubmitAndAddAnother = async (formData) => {
+    try {
+      setLoading(true)
+      setError(null)
 
-  const handleDone = () => {
-    // Call parent's onSuccess callback to close the dialog
-    onSuccess?.(savedAchievement)
+      // Map to app's internal achievement shape
+      const achievement = mapFormToAchievement({ medal, medalType: effectiveType, formData })
+
+      // Validate the mapped achievement object
+      const validation = validateAchievementObject(achievement)
+      if (!validation.valid) {
+        throw new Error(validation.errors.join(' '))
+      }
+
+      // Persist and recalc
+      await addAchievement(achievement)
+
+      // If in unlock mode, also mark the medal as unlocked
+      if (unlockMode && medal?.id) {
+        await unlockMedal(medal.id, achievement.date)
+      }
+
+      // Reset form by changing key to allow adding another
+      setFormKey(prev => prev + 1)
+      setError(null)
+
+      // Reset type selection if there are multiple types
+      if (availableTypes.length > 1) {
+        setSelectedType(null)
+      }
+    } catch (err) {
+      setError(err?.message || 'Misslyckades att spara aktivitet')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -238,17 +257,11 @@ export default function UniversalAchievementLogger({ medal, onSuccess, unlockMod
             key={formKey}
             medal={medal}
             onSubmit={handleSubmit}
+            onSubmitAndAddAnother={handleSubmitAndAddAnother}
             loading={loading}
           />
         </>
       )}
-
-      {/* Success dialog with "add another" option */}
-      <AchievementSuccessDialog
-        achievement={savedAchievement}
-        onAddAnother={handleAddAnother}
-        onDone={handleDone}
-      />
     </div>
   )
 }
