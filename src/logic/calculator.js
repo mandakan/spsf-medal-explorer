@@ -652,6 +652,12 @@ export class MedalCalculator {
       case 'custom_criterion':
         leaf = this.checkCustomCriterionRequirement(req, -1, opts)
         break
+      case 'shooting_round':
+        leaf = this.checkShootingRoundRequirement(req, -1, opts)
+        break
+      case 'speed_shooting_series':
+        leaf = this.checkSpeedShootingSeriesRequirement(req, -1, opts)
+        break
       default:
         leaf = {
           type: req.type,
@@ -1060,8 +1066,12 @@ export class MedalCalculator {
     const all = (this.profile.prerequisites || []).filter(a => a.type === 'competition_result')
 
     const filterByDiscipline = (list) => {
-      const dt = req.disciplineType
-      return (list || []).filter(a => a.disciplineType === dt)
+      let filtered = (list || []).filter(a => a.disciplineType === req.disciplineType)
+      // Apply competitionType filter if specified (e.g., "rikstavlingen")
+      if (req.competitionType) {
+        filtered = filtered.filter(a => a.competitionType === req.competitionType)
+      }
+      return filtered
     }
 
     const evaluateForEndYear = (endYear) => {
@@ -1085,8 +1095,22 @@ export class MedalCalculator {
           const th = req.pointThreshold?.[cls]?.min
           return typeof a.score === 'number' && typeof th === 'number' && a.score >= th
         })
+      } else if (req.seriesBasedThresholds) {
+        // Thresholds based on number of series shot (e.g., 6, 7, or 10 series)
+        matches = list.filter(a => {
+          // Filter by competitionType if specified
+          if (req.competitionType && a.competitionType !== req.competitionType) {
+            return false
+          }
+          const seriesCount = String(a.seriesCount || '')
+          const g = a.weaponGroup || 'A'
+          const thresholdSet = req.seriesBasedThresholds[seriesCount]
+          if (!thresholdSet) return false
+          const th = thresholdSet[g]?.min
+          return typeof a.score === 'number' && typeof th === 'number' && a.score >= th
+        })
       } else {
-        // Thresholds keyed by weapon group (A/B/C/R)
+        // Standard thresholds keyed by weapon group (A/B/C/R)
         matches = list.filter(a => {
           const g = a.weaponGroup || 'A'
           const th = req.pointThresholds?.[g]?.min
@@ -1134,6 +1158,168 @@ export class MedalCalculator {
       description: req.description,
       windowYear: met ? bestEndYear : null
     }
+  }
+
+  checkShootingRoundRequirement(req, index, opts = {}) {
+    const all = (this.profile.prerequisites || []).filter(a => a.type === 'shooting_round')
+
+    const endYear = (opts && typeof opts.endYear === 'number') ? opts.endYear : null
+    if (endYear == null) {
+      return {
+        type: 'shooting_round',
+        index,
+        isMet: false,
+        description: req.description,
+        reason: 'end_year_required',
+        windowYear: null
+      }
+    }
+
+    let achievements = all
+    const tw = req.timeWindowYears
+    if (tw === 1) {
+      achievements = all.filter(a => a.year === endYear)
+    } else if (typeof tw === 'number' && tw > 1) {
+      const start0 = endYear - tw + 1
+      const start = Math.max(start0, Number.isFinite(opts.minStartYear) ? opts.minStartYear : start0)
+      achievements = all.filter(a => (a.year ?? 0) >= start && (a.year ?? 0) <= endYear)
+    } else {
+      achievements = all.filter(a => a.year === endYear)
+    }
+
+    // Filter by weapon group and total points threshold
+    const candidates = achievements.filter(a => {
+      const g = a.weaponGroup || 'A'
+      const th = req.totalPointThresholds?.[g]?.min
+      return typeof a.totalPoints === 'number' && typeof th === 'number' && a.totalPoints >= th
+    })
+
+    const required = req.minAchievements ?? 1
+    const progress = { current: candidates.length, required }
+    const met = progress.current >= required
+
+    return {
+      type: 'shooting_round',
+      index,
+      isMet: met,
+      progress,
+      description: req.description,
+      windowYear: met ? endYear : null,
+      totalPointThresholds: req.totalPointThresholds
+    }
+  }
+
+  checkSpeedShootingSeriesRequirement(req, index, opts = {}) {
+    const all = (this.profile.prerequisites || []).filter(a => a.type === 'speed_shooting_series')
+
+    // If evaluating with a fixed end year (for referenced checks), constrain the data to that year/window
+    if (opts.endYear != null) {
+      let achievements = all
+      const tw = req.timeWindowYears
+      if (tw === 1) {
+        achievements = all.filter(a => a.year === opts.endYear)
+      } else if (typeof tw === 'number' && tw > 1) {
+        const start0 = opts.endYear - tw + 1
+        const start = Math.max(start0, Number.isFinite(opts.minStartYear) ? opts.minStartYear : start0)
+        achievements = all.filter(a => (a.year ?? 0) >= start && (a.year ?? 0) <= opts.endYear)
+      } else {
+        achievements = all.filter(a => a.year === opts.endYear)
+      }
+
+      const candidates = this.filterBySpeedShootingThreshold(achievements, req)
+      const required = req.minAchievements ?? 1
+      const progress = { current: candidates.length, required }
+      const met = progress.current >= required
+
+      return {
+        type: 'speed_shooting_series',
+        index,
+        isMet: met,
+        progress,
+        description: req.description,
+        windowYear: met ? opts.endYear : null,
+        pointThresholds: {
+          A: req.pointThresholds?.A?.min,
+          B: req.pointThresholds?.B?.min,
+          C: req.pointThresholds?.C?.min,
+          R: req.pointThresholds?.R?.min
+        }
+      }
+    }
+
+    // Default path: pick the best calendar year or block
+    const applyThresholds = (list) => this.filterBySpeedShootingThreshold(list, req)
+
+    let candidates = []
+    let windowYear = null
+
+    if (req.timeWindowYears === 1) {
+      const byYear = this.groupBy(all, a => a.year)
+      // Pick the calendar year with max qualifying results
+      let bestYear = null
+      let bestMatches = []
+      Object.entries(byYear).forEach(([year, list]) => {
+        const matches = applyThresholds(list)
+        if (matches.length > bestMatches.length) {
+          bestMatches = matches
+          bestYear = Number(year)
+        }
+      })
+      candidates = bestMatches
+      windowYear = bestYear
+    } else if (typeof req.timeWindowYears === 'number' && req.timeWindowYears > 1) {
+      // Use calendar-year blocks; evaluate all possible end years in the data
+      const years = Array.from(new Set(all.map(a => a.year).filter(y => typeof y === 'number'))).sort((a, b) => a - b)
+      let bestEndYear = null
+      let bestMatches = []
+      for (const endYear of years) {
+        const startYear = endYear - req.timeWindowYears + 1
+        const inBlock = all.filter(a => (a.year ?? 0) >= startYear && (a.year ?? 0) <= endYear)
+        const matches = applyThresholds(inBlock)
+        if (matches.length > bestMatches.length) {
+          bestMatches = matches
+          bestEndYear = endYear
+        }
+      }
+      candidates = bestMatches
+      windowYear = bestEndYear
+    } else {
+      candidates = applyThresholds(all)
+      // no specific window; do not assign windowYear
+    }
+
+    const required = req.minAchievements ?? 1
+    const progress = { current: candidates.length, required }
+    const met = progress.current >= required
+
+    return {
+      type: 'speed_shooting_series',
+      index,
+      isMet: met,
+      progress,
+      description: req.description,
+      windowYear: met ? windowYear : null,
+      pointThresholds: {
+        A: req.pointThresholds?.A?.min,
+        B: req.pointThresholds?.B?.min,
+        C: req.pointThresholds?.C?.min,
+        R: req.pointThresholds?.R?.min
+      }
+    }
+  }
+
+  filterBySpeedShootingThreshold(list, req) {
+    const thresholds = {
+      A: req.pointThresholds?.A?.min ?? 0,
+      B: req.pointThresholds?.B?.min ?? 0,
+      C: req.pointThresholds?.C?.min ?? 0,
+      R: req.pointThresholds?.R?.min ?? 0
+    }
+    return (list || []).filter(a => {
+      const group = a.weaponGroup || 'A'
+      const min = thresholds[group]
+      return typeof a.points === 'number' && a.points >= min
+    })
   }
 
   evaluateAllMedals() {

@@ -8,7 +8,8 @@
  */
 
 const WG = ['A', 'B', 'C', 'R']
-const COMP_DISCIPLINE_TYPES = ['national_whole_match', 'military_fast_match', 'ppc']
+const COMP_DISCIPLINE_TYPES = ['national_whole_match', 'military_fast_match', 'ppc', 'precision', 'field']
+const COMPETITION_TYPES = ['rikstavlingen', 'riks', 'nationell', 'landsdel', 'krets']
 
 function isFutureDate(dateStr) {
   const d = new Date(dateStr)
@@ -92,13 +93,23 @@ export function validateAchievement(achievement) {
     if (typeof sc !== 'number' || Number.isNaN(sc) || sc < 0) {
       errors.push('Score required for competition result')
     }
-    if (!dt || !['national_whole_match', 'military_fast_match', 'ppc'].includes(dt)) {
+    if (!dt || !COMP_DISCIPLINE_TYPES.includes(dt)) {
       errors.push('Discipline required for competition result')
     }
     if (dt === 'ppc') {
       const cls = achievement.ppcClass
       if (!cls || String(cls).trim() === '') {
         errors.push('PPC class required for PPC discipline')
+      }
+    }
+    // Optional fields for championship mark requirements
+    if (achievement.competitionType && !COMPETITION_TYPES.includes(achievement.competitionType)) {
+      errors.push('Invalid competition type')
+    }
+    if (achievement.seriesCount != null) {
+      const sc = Number(achievement.seriesCount)
+      if (Number.isNaN(sc) || ![6, 7, 10].includes(sc)) {
+        errors.push('Series count must be 6, 7, or 10')
       }
     }
   }
@@ -111,6 +122,27 @@ export function validateAchievement(achievement) {
       errors.push('Date required for running shooting course')
     } else if (isFutureDate(achievement.date)) {
       errors.push('Date cannot be in the future')
+    }
+  }
+  if (type === 'shooting_round') {
+    const pts = achievement.totalPoints
+    if (typeof pts !== 'number' || Number.isNaN(pts) || pts < 0) {
+      errors.push('Total points required for shooting round')
+    }
+    // Each shooting round comprises 3 series (150s, 20s, 10s), max 15 points per serie = 45 max
+    if (pts > 150) {
+      errors.push('Total points cannot exceed 150')
+    }
+  }
+  if (type === 'speed_shooting_series') {
+    const pts = achievement.points
+    if (typeof pts !== 'number' || Number.isNaN(pts)) {
+      errors.push('Points required for speed shooting series')
+    } else {
+      // 5 shots per series, max 10 points per shot = 50 max
+      if (pts < 0 || pts > 50) {
+        errors.push('Points must be between 0 and 50')
+      }
     }
   }
   return { valid: errors.length === 0, errors }

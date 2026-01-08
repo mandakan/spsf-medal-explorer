@@ -13,7 +13,7 @@ export default function AchievementDialog({
   submitLabel,
   WG = ['A', 'B', 'C', 'R'],
   DISCIPLINE_TYPES = ['field', 'precision', 'military_fast'],
-  COMP_TYPES = ['national', 'regional/landsdels', 'crewmate/krets', 'championship'],
+  COMP_TYPES = ['national', 'regional/landsdels', 'crewmate/krets', 'championship', 'rikstavlingen', 'riks', 'nationell', 'landsdel', 'krets'],
   MEDAL_TYPES = ['bronze', 'silver', 'gold'],
   APP_TIME_OPTIONS = [
     { value: 60, label: '60, Brons' },
@@ -21,7 +21,7 @@ export default function AchievementDialog({
     { value: 17, label: '17, Guld A/R' },
     { value: 15, label: '15, Guld B/C' },
   ],
-  COMP_DISCIPLINE_TYPES = ['national_whole_match', 'military_fast_match', 'ppc'],
+  COMP_DISCIPLINE_TYPES = ['national_whole_match', 'military_fast_match', 'ppc', 'precision', 'field'],
   PPC_CLASS_SUGGESTIONS = ['R1500', 'P1500', 'Open', 'SSA', 'SR 4"', 'SR 2,75"', 'Dist pistol', 'Dist revolver'],
 }) {
   // Remount the form content when dialog opens or initialRow changes to avoid setState in effects
@@ -132,6 +132,22 @@ function FormContent({
           }
           break
         }
+        case 'shooting_round': {
+          const p = Number(row.totalPoints)
+          if (!Number.isFinite(p) || p < 0 || p > 150) {
+            errs.push('Totalpoäng måste vara 0-150')
+            fields.totalPoints = true
+          }
+          break
+        }
+        case 'speed_shooting_series': {
+          const p = Number(row.points)
+          if (!Number.isFinite(p) || p < 0 || p > 50) {
+            errs.push('Poäng måste vara 0-50')
+            fields.points = true
+          }
+          break
+        }
         case 'competition_result': {
           const ct = String(row.competitionType || '').toLowerCase()
           const dt = String(row.disciplineType || '').toLowerCase()
@@ -151,6 +167,14 @@ function FormContent({
           if (dt === 'ppc' && !String(row.ppcClass || '').trim()) {
             errs.push('Välj PPC-klass')
             fields.ppcClass = true
+          }
+          // Validate seriesCount if provided (optional for Mästarmärket requirements)
+          if (row.seriesCount != null && row.seriesCount !== '') {
+            const seriesCount = Number(row.seriesCount)
+            if (!Number.isFinite(seriesCount) || ![6, 7, 10].includes(seriesCount)) {
+              errs.push('Antal serier måste vara 6, 7 eller 10')
+              fields.seriesCount = true
+            }
           }
           break
         }
@@ -179,6 +203,7 @@ function FormContent({
         timeSeconds: '',
         hits: '',
         points: '',
+        totalPoints: '',
         competitionType: '',
         medalType: '',
         disciplineType: '',
@@ -186,6 +211,7 @@ function FormContent({
         competitionName: '',
         weapon: '',
         score: '',
+        seriesCount: '',
         teamName: '',
         position: '',
         participants: '',
@@ -240,6 +266,8 @@ function FormContent({
         >
           <option value="precision_series">Precisionsserier</option>
           <option value="application_series">Tillämpningsserier</option>
+          <option value="shooting_round">Skjutomgång</option>
+          <option value="speed_shooting_series">Snabbskjutningsserier</option>
           <option value="standard_medal">Standardmedalj</option>
           <option value="competition_result">Tävlingsresultat</option>
           <option value="qualification_result">Kvalificering</option>
@@ -305,6 +333,44 @@ function FormContent({
               aria-invalid={errors.fields?.hits || undefined}
             />
           </div>
+        </div>
+      )}
+
+      {form.type === 'shooting_round' && (
+        <div>
+          <label htmlFor="br-totalpoints" className="field-label mb-2">Totalpoäng (0-150)</label>
+          <input
+            id="br-totalpoints"
+            type="number"
+            min="0"
+            max="150"
+            className="input py-3"
+            value={form.totalPoints ?? ''}
+            onChange={(e) => setField('totalPoints', e.target.value)}
+            aria-invalid={errors.fields?.totalPoints || undefined}
+          />
+          <p className="text-xs text-text-tertiary mt-1">
+            Skjutomgång består av 3 serier (150s, 20s, 10s)
+          </p>
+        </div>
+      )}
+
+      {form.type === 'speed_shooting_series' && (
+        <div>
+          <label htmlFor="br-speedpoints" className="field-label mb-2">Poäng (0-50)</label>
+          <input
+            id="br-speedpoints"
+            type="number"
+            min="0"
+            max="50"
+            className="input py-3"
+            value={form.points ?? ''}
+            onChange={(e) => setField('points', e.target.value)}
+            aria-invalid={errors.fields?.points || undefined}
+          />
+          <p className="text-xs text-text-tertiary mt-1">
+            5-skottsserie mot snabbpistoltavla 25m (3 sek per skott)
+          </p>
         </div>
       )}
 
@@ -408,6 +474,24 @@ function FormContent({
             />
           </div>
 
+          <div>
+            <label htmlFor="br-series" className="field-label mb-2">Antal serier (valfritt)</label>
+            <select
+              id="br-series"
+              className="select py-3"
+              value={form.seriesCount ?? ''}
+              onChange={(e) => setField('seriesCount', e.target.value === '' ? '' : Number(e.target.value))}
+              aria-invalid={errors.fields?.seriesCount || undefined}
+            >
+              <option value="">-</option>
+              <option value="6">6 serier</option>
+              <option value="7">7 serier</option>
+              <option value="10">10 serier</option>
+            </select>
+            <p className="text-xs text-text-tertiary mt-1">
+              Används för Mästarmärket
+            </p>
+          </div>
 
           <div className="md:col-span-2">
             <label htmlFor="br-cname" className="field-label mb-2">Namn (valfritt)</label>
