@@ -3,7 +3,7 @@
   "medals": [
     {
       "id": "championship-mark-bronze",
-      "status": "reviewed",
+      "status": "under_review",
       "type": "championship_mark",
       "tier": "bronze",
       "name": "Mästarmärket",
@@ -179,7 +179,7 @@
     },
     {
       "id": "championship-mark-silver",
-      "status": "reviewed",
+      "status": "under_review",
       "type": "championship_mark",
       "tier": "silver",
       "name": "Mästarmärket",
@@ -355,7 +355,7 @@
     },
     {
       "id": "championship-mark-gold",
-      "status": "reviewed",
+      "status": "under_review",
       "type": "championship_mark",
       "tier": "gold",
       "name": "Mästarmärket",
@@ -531,7 +531,7 @@
     },
     {
       "id": "championship-mark-gold-star-1",
-      "status": "reviewed",
+      "status": "under_review",
       "type": "championship_mark",
       "tier": "gold_star_1",
       "name": "Mästarmärket",
@@ -567,7 +567,7 @@
     },
     {
       "id": "championship-mark-gold-star-2",
-      "status": "reviewed",
+      "status": "under_review",
       "type": "championship_mark",
       "tier": "gold_star_2",
       "name": "Mästarmärket",
@@ -603,7 +603,7 @@
     },
     {
       "id": "championship-mark-gold-star-3",
-      "status": "reviewed",
+      "status": "under_review",
       "type": "championship_mark",
       "tier": "gold_star_3",
       "name": "Mästarmärket",
