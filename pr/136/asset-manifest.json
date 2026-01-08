@@ -5,7 +5,7 @@
     "isDynamicEntry": true
   },
   "index.html": {
-    "file": "assets/index-DEI8I0r4.js",
+    "file": "assets/index-Dq1KIdUh.js",
     "name": "index",
     "src": "index.html",
     "isEntry": true,
@@ -28,7 +28,7 @@
     "isDynamicEntry": true
   },
   "src/data/championship_mark.medals.json": {
-    "file": "assets/championship_mark.medals-CUp3-CxR.js",
+    "file": "assets/championship_mark.medals-CyDDAXCu.js",
     "name": "championship_mark.medals",
     "src": "src/data/championship_mark.medals.json",
     "isDynamicEntry": true
@@ -82,7 +82,7 @@
     "isDynamicEntry": true
   },
   "src/utils/medalLoader.vite.js": {
-    "file": "assets/medalLoader.vite-Dvp6YG7Q.js",
+    "file": "assets/medalLoader.vite-Bp1KOg2n.js",
     "name": "medalLoader.vite",
     "src": "src/utils/medalLoader.vite.js",
     "isDynamicEntry": true,
