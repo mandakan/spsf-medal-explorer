@@ -4,6 +4,7 @@ import QualificationForm from './form/QualificationForm'
 import TeamEventForm from './form/TeamEventForm'
 import EventForm from './form/EventForm'
 import CustomForm from './form/CustomForm'
+import AchievementSuccessDialog from './AchievementSuccessDialog'
 import { useAchievementHistory } from '../hooks/useAchievementHistory'
 import { detectMedalFormType, mapFormToAchievement } from '../utils/achievementMapper'
 import { validateAchievement as validateAchievementObject } from '../validators/universalValidator'
@@ -20,6 +21,8 @@ export default function UniversalAchievementLogger({ medal, onSuccess, unlockMod
   const { addAchievement, unlockMedal } = useAchievementHistory()
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [savedAchievement, setSavedAchievement] = useState(null)
+  const [formKey, setFormKey] = useState(0)
 
   // Detect form variant from medal data
   const medalType = useMemo(() => detectMedalFormType(medal), [medal])
@@ -52,12 +55,25 @@ export default function UniversalAchievementLogger({ medal, onSuccess, unlockMod
         await unlockMedal(medal.id, achievement.date)
       }
 
-      onSuccess?.(achievement)
+      // Show success dialog instead of immediately closing
+      setSavedAchievement(achievement)
     } catch (err) {
       setError(err?.message || 'Misslyckades att spara aktivitet')
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleAddAnother = () => {
+    // Clear success state and reset form by changing key
+    setSavedAchievement(null)
+    setError(null)
+    setFormKey(prev => prev + 1)
+  }
+
+  const handleDone = () => {
+    // Call parent's onSuccess callback to close the dialog
+    onSuccess?.(savedAchievement)
   }
 
   return (
@@ -90,9 +106,17 @@ export default function UniversalAchievementLogger({ medal, onSuccess, unlockMod
       )}
 
       <FormComponent
+        key={formKey}
         medal={medal}
         onSubmit={handleSubmit}
         loading={loading}
+      />
+
+      {/* Success dialog with "add another" option */}
+      <AchievementSuccessDialog
+        achievement={savedAchievement}
+        onAddAnother={handleAddAnother}
+        onDone={handleDone}
       />
     </div>
   )
