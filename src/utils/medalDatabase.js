@@ -81,44 +81,27 @@ export function mergeAndValidateMedalFiles(files) {
 
 /**
  * Load all medal data files and merge into single dataset.
- * Supports both new multi-file structure and legacy single file.
  *
  * Loading strategy:
- * 1. In browser (Vite): Attempts to load all *.medals.json files using import.meta.glob
- * 2. In tests (Jest): Skips multi-file loading (import.meta not supported)
- * 3. On failure: Falls back to legacy medals.json for resilience
- *
- * The fallback is intentional to ensure the app remains functional even if:
- * - Multi-file loading fails due to configuration issues
- * - Running in environments without Vite (e.g., Jest)
- * - Legacy medals.json is the only available source
+ * 1. In browser (Vite): Uses import.meta.glob to load all *.medals.json files
+ * 2. In tests (Jest): Uses dynamic imports with explicit file list
+ * 3. Both environments load from the same split medal files
  *
  * @returns {Promise<{version: string, medals: Array}>} Medal dataset
  */
 export async function loadBestAvailableData() {
-  // In test environment (Jest), skip multi-file loading and use legacy
+  // In test environment (Jest), use Node-compatible loader
   // eslint-disable-next-line no-undef
   const isTest = typeof process !== 'undefined' && process.env.NODE_ENV === 'test'
 
-  if (!isTest) {
-    try {
-      // Dynamically import Vite-specific loader (only works in Vite environment)
-      const { loadAllMedalFiles, mergeAndValidateMedalFiles } = await import('./medalLoader.vite.js')
-      const medalFiles = await loadAllMedalFiles()
-      if (medalFiles.length > 0) {
-        return mergeAndValidateMedalFiles(medalFiles)
-      }
-    } catch (error) {
-      // Log warning but continue - fallback provides resilience
-      // This is expected in Jest and acceptable in production (uses legacy data)
-      console.warn('[Medal Database] Multi-file loading failed, using legacy medals.json:', error.message)
-    }
+  if (isTest) {
+    // Jest environment: use Node-compatible loader
+    const { loadMedalDataNode } = await import('./medalLoader.node.js')
+    return loadMedalDataNode()
   }
 
-  // Fallback to legacy single file
-  // This path is used in:
-  // - Jest/test environment (intentional)
-  // - Multi-file loading failure (safety net)
-  const legacy = await import('../data/medals.json')
-  return legacy.default || legacy
+  // Browser/Vite environment: use import.meta.glob
+  const { loadAllMedalFiles, mergeAndValidateMedalFiles } = await import('./medalLoader.vite.js')
+  const medalFiles = await loadAllMedalFiles()
+  return mergeAndValidateMedalFiles(medalFiles)
 }
