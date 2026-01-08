@@ -1,24 +1,24 @@
 {
-  "_vendor-Bvrq602Z.js": {
-    "file": "assets/vendor-Bvrq602Z.js",
+  "_vendor-BWcDdYGz.js": {
+    "file": "assets/vendor-BWcDdYGz.js",
     "name": "vendor",
     "isDynamicEntry": true
   },
   "index.html": {
-    "file": "assets/index-DRH0sLGe.js",
+    "file": "assets/index-CRPZeaJ3.js",
     "name": "index",
     "src": "index.html",
     "isEntry": true,
     "imports": [
-      "_vendor-Bvrq602Z.js"
+      "_vendor-BWcDdYGz.js"
     ],
     "dynamicImports": [
       "src/utils/medalLoader.vite.js",
-      "_vendor-Bvrq602Z.js",
-      "_vendor-Bvrq602Z.js"
+      "_vendor-BWcDdYGz.js",
+      "_vendor-BWcDdYGz.js"
     ],
     "css": [
-      "assets/index-Bo-q49B3.css"
+      "assets/index-DH5iwfWX.css"
     ]
   },
   "src/data/air_pistol_mark.medals.json": {
@@ -82,12 +82,12 @@
     "isDynamicEntry": true
   },
   "src/utils/medalLoader.vite.js": {
-    "file": "assets/medalLoader.vite-BGF0-gNO.js",
+    "file": "assets/medalLoader.vite-4dDY3f2x.js",
     "name": "medalLoader.vite",
     "src": "src/utils/medalLoader.vite.js",
     "isDynamicEntry": true,
     "imports": [
-      "_vendor-Bvrq602Z.js",
+      "_vendor-BWcDdYGz.js",
       "index.html"
     ],
     "dynamicImports": [
