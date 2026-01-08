@@ -1,8 +1,7 @@
 import React from 'react'
 import { useAchievementForm } from '../../hooks/useAchievementForm'
-import { validateCustom } from '../../validators/universalValidator'
 
-export default function CustomForm({ medal, onSubmit, loading }) {
+export default function CustomForm({ onSubmit, loading }) {
   const { values, errors, handleChange, handleSubmit } = useAchievementForm({
     initialValues: {
       date: new Date().toISOString().split('T')[0],
@@ -10,7 +9,12 @@ export default function CustomForm({ medal, onSubmit, loading }) {
       eventName: '',
       notes: '',
     },
-    validate: (vals) => validateCustom(vals, medal),
+    validate: (vals) => {
+      const errs = {}
+      if (!vals.date) errs.date = 'Date is required'
+      if (!vals.weaponGroup) errs.weaponGroup = 'Weapon group is required'
+      return errs
+    },
     onSubmit,
   })
 
