@@ -7,7 +7,7 @@ import { useAchievementForm } from '../../hooks/useAchievementForm'
  */
 export default function PrecisionSeriesForm({ onSubmit, onSubmitAndAddAnother, loading }) {
   const dateInputRef = useRef(null)
-  const { values, errors, handleChange, handleSubmit, validate } = useAchievementForm({
+  const { values, errors, handleChange, handleSubmit, validate, setErrors } = useAchievementForm({
     initialValues: {
       date: new Date().toISOString().split('T')[0],
       weaponGroup: 'A',
@@ -41,6 +41,7 @@ export default function PrecisionSeriesForm({ onSubmit, onSubmitAndAddAnother, l
   const handleSaveAndAddAnother = (e) => {
     e.preventDefault()
     const validationErrors = validate(values)
+    setErrors(validationErrors)
     if (Object.keys(validationErrors).length === 0 && onSubmitAndAddAnother) {
       onSubmitAndAddAnother({ ...values, achievementType: 'precision_series' })
     }
@@ -208,7 +209,7 @@ export default function PrecisionSeriesForm({ onSubmit, onSubmitAndAddAnother, l
             disabled={loading}
             className="btn btn-secondary flex-1 py-3 min-h-[44px] disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Spara & Lägg till fler
+            {loading ? 'Sparar...' : 'Spara & Lägg till fler'}
           </button>
         )}
       </div>

@@ -6,7 +6,7 @@ import { useAchievementForm } from '../../hooks/useAchievementForm'
  * Optimized for duellskjutning (duel shooting) with points-based scoring.
  */
 export default function SpeedShootingSeriesForm({ onSubmit, onSubmitAndAddAnother, loading }) {
-  const { values, errors, handleChange, handleSubmit, validate } = useAchievementForm({
+  const { values, errors, handleChange, handleSubmit, validate, setErrors } = useAchievementForm({
     initialValues: {
       date: new Date().toISOString().split('T')[0],
       weaponGroup: 'A',
@@ -32,6 +32,7 @@ export default function SpeedShootingSeriesForm({ onSubmit, onSubmitAndAddAnothe
   const handleSaveAndAddAnother = (e) => {
     e.preventDefault()
     const validationErrors = validate(values)
+    setErrors(validationErrors)
     if (Object.keys(validationErrors).length === 0 && onSubmitAndAddAnother) {
       onSubmitAndAddAnother({ ...values, achievementType: 'speed_shooting_series' })
     }
@@ -188,7 +189,7 @@ export default function SpeedShootingSeriesForm({ onSubmit, onSubmitAndAddAnothe
             disabled={loading}
             className="btn btn-secondary flex-1 py-3 min-h-[44px] disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Spara & Lägg till fler
+            {loading ? 'Sparar...' : 'Spara & Lägg till fler'}
           </button>
         )}
       </div>
