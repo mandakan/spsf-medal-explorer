@@ -70,8 +70,12 @@ Follow the established three-layer pattern:
 #### Dialog Components
 
 - Use React Portals (`createPortal`) for overlay dialogs to escape parent DOM constraints
-- Use inline styles for critical positioning properties (position, top, left, transform, zIndex)
-- Prefer Tailwind for non-critical styling
+- **CRITICAL**: Use inline styles for dialog dimensions and positioning. NEVER use Tailwind classes for these properties:
+  - **Positioning**: `position`, `top`, `left`, `right`, `bottom`, `inset`, `transform`, `zIndex`
+  - **Dimensions**: `width`, `height`, `maxWidth`, `maxHeight`, `minWidth`, `minHeight`
+  - **Layout**: `overflow`, `display` (when critical for layout)
+- Prefer Tailwind for non-critical styling (colors, borders, padding, etc.)
+- **Why inline styles?** Tailwind classes can conflict with parent containers and CSS specificity, causing "super thin" or "super tall" dialogs on desktop
 - Example pattern:
 ```jsx
 const dialogContent = (
@@ -85,9 +89,12 @@ const dialogContent = (
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
+        width: 'min(90vw, 32rem)',  // ← Responsive width with max constraint
+        maxHeight: '90vh',           // ← Prevent overflow
+        overflow: 'auto',            // ← Enable scrolling
         zIndex: 2001
       }}
-      className="bg-bg-primary rounded-xl p-6"
+      className="bg-bg-primary rounded-xl p-6"  // ← Tailwind OK for styling
     >
       {/* Dialog content */}
     </div>
@@ -276,7 +283,7 @@ export function validateBackup(backup) {
 - Use color alone for status indication
 - Create clickable `<div>` elements (use `<button>`)
 - Forget to test keyboard navigation
-- Use CSS classes for critical dialog positioning (use inline styles)
+- Use Tailwind classes for dialog dimensions/positioning (`w-`, `max-w-`, `h-`, etc.) - **ALWAYS use inline styles**
 - Add features beyond what was requested (avoid over-engineering)
 - Create new files when editing existing ones would work
 - Use `catch (e)` if the error variable is unused (triggers ESLint error)
