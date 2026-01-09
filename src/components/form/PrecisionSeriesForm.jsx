@@ -1,17 +1,32 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useMemo } from 'react'
 import { useAchievementForm } from '../../hooks/useAchievementForm'
+import { useProfile } from '../../hooks/useProfile'
+import { getPrecisionSeriesDefaults, getRequirementHint } from '../../utils/requirementDefaults'
 
 /**
  * Type-specific form for logging precision series achievements.
  * Optimized for precision shooting with points-based scoring.
+ * Pre-populates fields with minimum requirements from medal definition.
  */
-export default function PrecisionSeriesForm({ onSubmit, onSubmitAndAddAnother, loading }) {
+export default function PrecisionSeriesForm({ medal, onSubmit, onSubmitAndAddAnother, loading }) {
   const dateInputRef = useRef(null)
+  const { currentProfile } = useProfile()
+
+  // Extract default values from medal requirements (with age-aware thresholds)
+  const defaults = useMemo(() => {
+    return getPrecisionSeriesDefaults(medal, currentProfile)
+  }, [medal, currentProfile])
+
+  // Get contextual hint from medal requirements
+  const requirementHint = useMemo(() => {
+    return getRequirementHint(medal, 'precision_series')
+  }, [medal])
+
   const { values, errors, handleChange, handleSubmit, validate, setErrors } = useAchievementForm({
     initialValues: {
       date: new Date().toISOString().split('T')[0],
-      weaponGroup: 'A',
-      points: '',
+      weaponGroup: defaults.weaponGroup,
+      points: defaults.points,
       competitionName: '',
       notes: '',
     },
@@ -138,7 +153,8 @@ export default function PrecisionSeriesForm({ onSubmit, onSubmitAndAddAnother, l
           </p>
         ) : (
           <p id="hint-points" className="mt-1 text-sm text-text-secondary">
-            Resultat från 5 skott på 25m pistoltavla
+            {requirementHint || 'Resultat från 5 skott på 25m pistoltavla'}
+            {defaults.points && ` (Minst ${defaults.points} poäng krävs)`}
           </p>
         )}
       </div>
