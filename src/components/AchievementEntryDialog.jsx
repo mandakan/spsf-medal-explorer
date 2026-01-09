@@ -24,13 +24,25 @@ export default function AchievementEntryDialog({ medal, open, onClose }) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="achievement-entry-title"
-        className="fixed z-[3001] inset-x-0 bottom-0 sm:inset-0 sm:flex sm:items-center sm:justify-center"
+        style={{
+          position: 'fixed',
+          zIndex: 3001,
+          inset: 0,
+          display: 'flex',
+          alignItems: 'flex-end',
+        }}
+        className="sm:items-center sm:justify-center"
       >
         <div
+          style={{
+            width: '100%',
+            maxWidth: '42rem',
+            maxHeight: '90vh',
+            overflow: 'hidden',
+          }}
           className="
             bg-bg-primary rounded-t-xl sm:rounded-xl shadow-xl
-            max-h-[90vh] w-full sm:max-w-2xl sm:w-[90vw]
-            overflow-hidden flex flex-col
+            flex flex-col
             border-t border-border sm:border
           "
         >
@@ -58,6 +70,7 @@ export default function AchievementEntryDialog({ medal, open, onClose }) {
               medal={medal}
               onSuccess={onClose}
               unlockMode={false}
+              compact={true}
             />
           </div>
         </div>

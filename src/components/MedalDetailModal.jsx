@@ -7,6 +7,7 @@ import UnlockMedalDialog from './UnlockMedalDialog'
 import RemoveMedalDialog from './RemoveMedalDialog'
 import AchievementEntryDialog from './AchievementEntryDialog'
 import { useUnlockGuard } from '../hooks/useUnlockGuard'
+import { useFlag } from '../hooks/useFeatureFlags'
 const Markdown = lazy(() => import('react-markdown'))
 import remarkGfm from 'remark-gfm'
 import { useNavigate, useLocation } from 'react-router-dom'
@@ -25,6 +26,8 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
   const { currentProfile } = useProfile()
   const allowManual = !!currentProfile?.features?.allowManualUnlock
   const medal = medalDatabase?.getMedalById(medalId)
+  const [selectedYear, setSelectedYear] = useState(null)
+  const { state: achievementEntryEnabled } = useFlag('achievementEntry')
   const [unlockOpen, setUnlockOpen] = useState(false)
   const [achievementEntryOpen, setAchievementEntryOpen] = useState(false)
   const navigate = useNavigate()
@@ -60,16 +63,61 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
     return Number.isNaN(d.getTime()) ? null : d.getFullYear()
   }, [unlockedIso])
 
+  // Get eligible years and available years for year selector
+  const eligibleYears = useMemo(() => {
+    if (!calculator || !medalId) return []
+    try {
+      return calculator.getEligibleYears(medalId) || []
+    } catch {
+      return []
+    }
+  }, [calculator, medalId])
+
+  const achievementYears = useMemo(() => {
+    if (!calculator) return []
+    try {
+      return calculator.getAllAchievementYears() || []
+    } catch {
+      return []
+    }
+  }, [calculator])
+
+  const currentYear = new Date().getFullYear()
+
+  // Determine which year to show by default
+  const defaultYear = useMemo(() => {
+    // If unlocked, show the unlocked year
+    if (unlockedYear != null) return unlockedYear
+    // If user has selected a year, use that
+    if (selectedYear != null) return selectedYear
+    // If eligible in current year, show current year
+    if (eligibleYears.includes(currentYear)) return currentYear
+    // If eligible in any year, show the most recent eligible year
+    if (eligibleYears.length > 0) return Math.max(...eligibleYears)
+    // Otherwise show current year (to see what they're working towards)
+    return currentYear
+  }, [unlockedYear, selectedYear, eligibleYears, currentYear])
+
+  // Available years for the selector: eligible years + current year
+  // Only show years that are relevant to THIS medal's progress
+  const availableYears = useMemo(() => {
+    const years = new Set([currentYear, ...eligibleYears])
+    return Array.from(years).sort((a, b) => b - a) // Descending order
+  }, [currentYear, eligibleYears])
+
   const reqTree = useMemo(() => {
     if (!medal) return null
-    const fromStatus = status?.details?.tree
-    if (fromStatus) return fromStatus
+    // If unlocked, use the tree from status which was computed at unlock time
+    if (status?.status === 'unlocked' && status?.details?.tree) {
+      return status.details.tree
+    }
+    // Otherwise evaluate for the selected/default year
     try {
-      return calculator?.checkRequirements?.(medal)?.tree ?? null
+      return calculator?.checkRequirements?.(medal, { endYear: defaultYear })?.tree ?? null
     } catch {
       return null
     }
-  }, [calculator, medal, status])
+  }, [calculator, medal, status, defaultYear])
 
   const reqCounts = useMemo(() => {
     if (!reqTree) return null
@@ -540,14 +588,81 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
             )}
 
             {!isPlaceholder && reqTree && (
-              <SectionCard
-                id={`req-${medal.id}`}
-                title="Krav"
-                summary={reqCounts ? `${reqCounts.met}/${reqCounts.total} uppfyllda` : undefined}
-                collapsible={false}
-              >
-                <RequirementTree tree={reqTree} bare />
-              </SectionCard>
+              <>
+                {/* Year selector for progress - only show if not unlocked and has multiple years */}
+                {status?.status !== 'unlocked' && availableYears.length > 1 && (
+                  <div className="mb-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <label htmlFor="year-selector" className="text-sm font-medium text-foreground">
+                        Visa framsteg för år:
+                      </label>
+                      <button
+                        type="button"
+                        aria-label="Information om årsvisa krav"
+                        className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-bg-secondary hover:bg-background border border-border text-xs text-muted-foreground"
+                        title="Kraven måste uppfyllas under samma kalenderår"
+                      >
+                        <Icon name="Info" className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                    <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin" role="group" aria-label="Välj år">
+                      {availableYears.map((year) => {
+                        const isSelected = year === defaultYear
+                        const isEligible = eligibleYears.includes(year)
+                        const isCurrent = year === currentYear
+                        const hasAchievements = achievementYears.includes(year)
+
+                        return (
+                          <button
+                            key={year}
+                            type="button"
+                            onClick={() => setSelectedYear(year)}
+                            aria-pressed={isSelected}
+                            aria-label={`År ${year}${isCurrent ? ' (nuvarande år)' : ''}${isEligible ? ' (kvalificerad)' : ''}${hasAchievements ? ' (har aktiviteter)' : ''}`}
+                            className={[
+                              'shrink-0 px-4 py-2 rounded-lg text-sm font-medium transition-colors min-h-[44px]',
+                              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
+                              isSelected
+                                ? isEligible
+                                  ? 'bg-green-100 text-green-900 border-2 border-green-500 dark:bg-green-900/30 dark:text-green-100 dark:border-green-600'
+                                  : isCurrent
+                                  ? 'bg-primary text-primary-foreground border-2 border-primary'
+                                  : 'bg-bg-secondary text-foreground border-2 border-primary'
+                                : isEligible
+                                ? 'bg-green-50 text-green-700 border border-green-300 hover:bg-green-100 dark:bg-green-900/20 dark:text-green-200 dark:border-green-800 dark:hover:bg-green-900/30'
+                                : 'bg-bg-secondary text-foreground border border-border hover:bg-background'
+                            ].join(' ')}
+                          >
+                            <span className="flex items-center gap-1.5">
+                              {year}
+                              {isEligible && (
+                                <Icon name="CheckCircle2" className="w-4 h-4" aria-hidden="true" />
+                              )}
+                              {isCurrent && !isEligible && (
+                                <Icon name="Circle" className="w-3 h-3 fill-current" aria-hidden="true" />
+                              )}
+                            </span>
+                          </button>
+                        )
+                      })}
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      <Icon name="CheckCircle2" className="w-3 h-3 inline text-green-600 dark:text-green-400" aria-hidden="true" /> = Kvalificerad för detta år
+                      {' • '}
+                      <Icon name="Circle" className="w-2.5 h-2.5 inline fill-current" aria-hidden="true" /> = Nuvarande år
+                    </p>
+                  </div>
+                )}
+
+                <SectionCard
+                  id={`req-${medal.id}`}
+                  title="Krav"
+                  summary={reqCounts ? `${reqCounts.met}/${reqCounts.total} uppfyllda${status?.status !== 'unlocked' ? ` • ${defaultYear}` : ''}` : undefined}
+                  collapsible={false}
+                >
+                  <RequirementTree tree={reqTree} bare />
+                </SectionCard>
+              </>
             )}
 
             {!isPlaceholder && medal.requirementsOriginal && (
@@ -620,8 +735,8 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
               Stäng
             </button>
 
-            {/* Log Achievement button - show for non-locked, non-placeholder medals */}
-            {currentProfile && !isPlaceholder && status?.status !== 'locked' && (
+            {/* Log Achievement button - show for non-locked, non-placeholder medals (feature-gated) */}
+            {currentProfile && !isPlaceholder && status?.status !== 'locked' && achievementEntryEnabled !== 'off' && (
               <button
                 type="button"
                 onClick={() => setAchievementEntryOpen(true)}
@@ -688,6 +803,7 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
         medal={medal}
         open={unlockOpen}
         onClose={() => setUnlockOpen(false)}
+        preferredYear={defaultYear}
       />
 
       <RemoveMedalDialog

@@ -297,85 +297,44 @@ export class MedalCalculator {
     }
   }
 
+  /**
+   * Check precision series requirement for a specific year
+   * @param {Object} req - Requirement specification
+   * @param {number} index - Requirement index
+   * @param {Object} opts - Options
+   * @param {number} opts.endYear - REQUIRED: Year to evaluate requirement for
+   * @param {number} [opts.minStartYear] - Optional minimum start year for time windows
+   * @returns {Object} Requirement check result with reason: 'end_year_required' if endYear not provided
+   */
   checkPrecisionSeriesRequirement(req, index, opts = {}) {
     const all = (this.profile.prerequisites || []).filter(a => a.type === 'precision_series')
 
-    // If evaluating with a fixed end year (for referenced checks), constrain the data to that year/window
-    if (opts.endYear != null) {
-      let achievements = all
-      const tw = req.timeWindowYears
-      if (tw === 1) {
-        achievements = all.filter(a => a.year === opts.endYear)
-      } else if (typeof tw === 'number' && tw > 1) {
-        const start0 = opts.endYear - tw + 1
-        const start = Math.max(start0, Number.isFinite(opts.minStartYear) ? opts.minStartYear : start0)
-        achievements = all.filter(a => (a.year ?? 0) >= start && (a.year ?? 0) <= opts.endYear)
-      } else {
-        achievements = all.filter(a => a.year === opts.endYear)
-      }
-
-      const candidates = this.filterByPrecisionSeriesThreshold(achievements, req)
-      const required = req.minAchievements ?? 1
-      const progress = { current: candidates.length, required }
-      const met = progress.current >= required
-
+    // Require endYear for year-aware evaluation
+    if (opts.endYear == null) {
       return {
         type: 'precision_series',
         index,
-        isMet: met,
-        progress,
+        isMet: false,
         description: req.description,
-        pointThresholds: {
-          A: req.pointThresholds?.A?.min,
-          B: req.pointThresholds?.B?.min,
-          C: req.pointThresholds?.C?.min,
-          R: req.pointThresholds?.R?.min
-        },
-        windowYear: met ? opts.endYear : null
+        reason: 'end_year_required',
+        windowYear: null
       }
     }
 
-    // Default path: pick the best calendar year or block
-    const applyThresholds = (list) => this.filterByPrecisionSeriesThreshold(list, req)
-
-    let candidates = []
-    let windowYear = null
-
-    if (req.timeWindowYears === 1) {
-      const byYear = this.groupBy(all, a => a.year)
-      // Pick the calendar year with max qualifying results
-      let bestYear = null
-      let bestMatches = []
-      Object.entries(byYear).forEach(([year, list]) => {
-        const matches = applyThresholds(list)
-        if (matches.length > bestMatches.length) {
-          bestMatches = matches
-          bestYear = Number(year)
-        }
-      })
-      candidates = bestMatches
-      windowYear = bestYear
-    } else if (typeof req.timeWindowYears === 'number' && req.timeWindowYears > 1) {
-      // Use calendar-year blocks; evaluate all possible end years in the data
-      const years = Array.from(new Set(all.map(a => a.year).filter(y => typeof y === 'number'))).sort((a, b) => a - b)
-      let bestEndYear = null
-      let bestMatches = []
-      for (const endYear of years) {
-        const startYear = endYear - req.timeWindowYears + 1
-        const inBlock = all.filter(a => (a.year ?? 0) >= startYear && (a.year ?? 0) <= endYear)
-        const matches = applyThresholds(inBlock)
-        if (matches.length > bestMatches.length) {
-          bestMatches = matches
-          bestEndYear = endYear
-        }
-      }
-      candidates = bestMatches
-      windowYear = bestEndYear
+    // Evaluate with a fixed end year, constrain the data to that year/window
+    let achievements = all
+    const tw = req.timeWindowYears
+    if (tw === 1) {
+      achievements = all.filter(a => a.year === opts.endYear)
+    } else if (typeof tw === 'number' && tw > 1) {
+      const start0 = opts.endYear - tw + 1
+      const start = Math.max(start0, Number.isFinite(opts.minStartYear) ? opts.minStartYear : start0)
+      achievements = all.filter(a => (a.year ?? 0) >= start && (a.year ?? 0) <= opts.endYear)
     } else {
-      candidates = applyThresholds(all)
-      // no specific window; do not assign windowYear
+      achievements = all.filter(a => a.year === opts.endYear)
     }
 
+    const candidates = this.filterByPrecisionSeriesThreshold(achievements, req)
     const required = req.minAchievements ?? 1
     const progress = { current: candidates.length, required }
     const met = progress.current >= required
@@ -392,12 +351,33 @@ export class MedalCalculator {
         C: req.pointThresholds?.C?.min,
         R: req.pointThresholds?.R?.min
       },
-      windowYear: met ? windowYear : null
+      windowYear: met ? opts.endYear : null
     }
   }
 
+  /**
+   * Check application series requirement for a specific year
+   * @param {Object} req - Requirement specification
+   * @param {number} index - Requirement index
+   * @param {Object} opts - Options
+   * @param {number} opts.endYear - REQUIRED: Year to evaluate requirement for
+   * @param {number} [opts.minStartYear] - Optional minimum start year for time windows
+   * @returns {Object} Requirement check result with reason: 'end_year_required' if endYear not provided
+   */
   checkApplicationSeriesRequirement(req, index, opts = {}) {
     const all = (this.profile.prerequisites || []).filter(a => a.type === 'application_series')
+
+    // Require endYear for year-aware evaluation
+    if (opts.endYear == null) {
+      return {
+        type: 'application_series',
+        index,
+        isMet: false,
+        description: req.description,
+        reason: 'end_year_required',
+        windowYear: null
+      }
+    }
 
     const passes = (a) => {
       const g = a.weaponGroup || 'A'
@@ -410,73 +390,20 @@ export class MedalCalculator {
       return hasTime && hasHits && timeOk && hitsOk
     }
 
-    // If evaluating with a fixed end year (for referenced checks), constrain the data to that year/window
-    if (opts.endYear != null) {
-      let achievements = all
-      const tw = req.timeWindowYears
-      if (tw === 1) {
-        achievements = all.filter(a => a.year === opts.endYear)
-      } else if (typeof tw === 'number' && tw > 1) {
-        const start0 = opts.endYear - tw + 1
-        const start = Math.max(start0, Number.isFinite(opts.minStartYear) ? opts.minStartYear : start0)
-        achievements = all.filter(a => (a.year ?? 0) >= start && (a.year ?? 0) <= opts.endYear)
-      } else {
-        achievements = all.filter(a => a.year === opts.endYear)
-      }
-
-      const candidates = achievements.filter(passes)
-      const required = req.minAchievements ?? 1
-      const progress = { current: candidates.length, required }
-      const met = progress.current >= required
-
-      return {
-        type: 'application_series',
-        index,
-        isMet: met,
-        progress,
-        description: req.description,
-        windowYear: met ? opts.endYear : null
-      }
-    }
-
-    // Default path: pick the best calendar year or block
-    let candidates = []
-    let windowYear = null
-
-    if (req.timeWindowYears === 1) {
-      const byYear = this.groupBy(all, a => a.year)
-      let bestMatches = []
-      let bestYear = null
-      Object.entries(byYear).forEach(([year, list]) => {
-        const matches = list.filter(passes)
-        if (matches.length > bestMatches.length) {
-          bestMatches = matches
-          bestYear = Number(year)
-        }
-      })
-      candidates = bestMatches
-      windowYear = bestYear
-    } else if (typeof req.timeWindowYears === 'number' && req.timeWindowYears > 1) {
-      // Calendar-year blocks across the data; choose the best end year
-      const years = Array.from(new Set(all.map(a => a.year).filter(y => typeof y === 'number'))).sort((a, b) => a - b)
-      let bestEndYear = null
-      let bestMatches = []
-      for (const endYear of years) {
-        const startYear = endYear - req.timeWindowYears + 1
-        const inBlock = all.filter(a => (a.year ?? 0) >= startYear && (a.year ?? 0) <= endYear)
-        const matches = inBlock.filter(passes)
-        if (matches.length > bestMatches.length) {
-          bestMatches = matches
-          bestEndYear = endYear
-        }
-      }
-      candidates = bestMatches
-      windowYear = bestEndYear
+    // Evaluate with a fixed end year, constrain the data to that year/window
+    let achievements = all
+    const tw = req.timeWindowYears
+    if (tw === 1) {
+      achievements = all.filter(a => a.year === opts.endYear)
+    } else if (typeof tw === 'number' && tw > 1) {
+      const start0 = opts.endYear - tw + 1
+      const start = Math.max(start0, Number.isFinite(opts.minStartYear) ? opts.minStartYear : start0)
+      achievements = all.filter(a => (a.year ?? 0) >= start && (a.year ?? 0) <= opts.endYear)
     } else {
-      candidates = all.filter(passes)
-      // no specific window; do not assign windowYear
+      achievements = all.filter(a => a.year === opts.endYear)
     }
 
+    const candidates = achievements.filter(passes)
     const required = req.minAchievements ?? 1
     const progress = { current: candidates.length, required }
     const met = progress.current >= required
@@ -487,7 +414,7 @@ export class MedalCalculator {
       isMet: met,
       progress,
       description: req.description,
-      windowYear: met ? windowYear : null
+      windowYear: met ? opts.endYear : null
     }
   }
 
@@ -1068,8 +995,31 @@ export class MedalCalculator {
     }
   }
 
+  /**
+   * Check cumulative competition score requirement for a specific year
+   * @param {Object} req - Requirement specification
+   * @param {number} index - Requirement index
+   * @param {Object} opts - Options
+   * @param {number} opts.endYear - REQUIRED: Year to evaluate requirement for
+   * @param {number} [opts.minStartYear] - Optional minimum start year for time windows
+   * @returns {Object} Requirement check result with reason: 'end_year_required' if endYear not provided
+   */
   checkCumulativeCompetitionScoreRequirement(req, index, opts = {}) {
     const all = (this.profile.prerequisites || []).filter(a => a.type === 'competition_result')
+
+    const endYear = (opts && typeof opts.endYear === 'number') ? opts.endYear : null
+
+    // Require endYear for year-aware evaluation
+    if (endYear == null) {
+      return {
+        type: 'cumulative_competition_score',
+        index,
+        isMet: false,
+        description: req.description,
+        reason: 'end_year_required',
+        windowYear: null
+      }
+    }
 
     const filterByDiscipline = (list) => {
       let filtered = (list || []).filter(a => a.disciplineType === req.disciplineType)
@@ -1127,42 +1077,17 @@ export class MedalCalculator {
       return matches
     }
 
-    const endYear = (opts && typeof opts.endYear === 'number') ? opts.endYear : null
     const required = req.minCompetitions ?? 1
+    const matches = evaluateForEndYear(endYear)
+    const met = matches.length >= required
 
-    if (endYear != null) {
-      const matches = evaluateForEndYear(endYear)
-      const met = matches.length >= required
-      return {
-        type: 'cumulative_competition_score',
-        index,
-        isMet: met,
-        progress: { current: matches.length, required },
-        description: req.description,
-        windowYear: met ? endYear : null
-      }
-    }
-
-    // When no fixed endYear is provided, scan candidate years and pick the best end year
-    const years = Array.from(new Set(filterByDiscipline(all).map(a => a.year).filter(y => typeof y === 'number'))).sort((a, b) => a - b)
-    let bestEndYear = null
-    let bestCount = 0
-    for (const y of years) {
-      const matches = evaluateForEndYear(y)
-      if (matches.length > bestCount) {
-        bestCount = matches.length
-        bestEndYear = y
-      }
-    }
-
-    const met = bestCount >= required
     return {
       type: 'cumulative_competition_score',
       index,
       isMet: met,
-      progress: { current: bestCount, required },
+      progress: { current: matches.length, required },
       description: req.description,
-      windowYear: met ? bestEndYear : null
+      windowYear: met ? endYear : null
     }
   }
 
@@ -1215,85 +1140,44 @@ export class MedalCalculator {
     }
   }
 
+  /**
+   * Check speed shooting series requirement for a specific year
+   * @param {Object} req - Requirement specification
+   * @param {number} index - Requirement index
+   * @param {Object} opts - Options
+   * @param {number} opts.endYear - REQUIRED: Year to evaluate requirement for
+   * @param {number} [opts.minStartYear] - Optional minimum start year for time windows
+   * @returns {Object} Requirement check result with reason: 'end_year_required' if endYear not provided
+   */
   checkSpeedShootingSeriesRequirement(req, index, opts = {}) {
     const all = (this.profile.prerequisites || []).filter(a => a.type === 'speed_shooting_series')
 
-    // If evaluating with a fixed end year (for referenced checks), constrain the data to that year/window
-    if (opts.endYear != null) {
-      let achievements = all
-      const tw = req.timeWindowYears
-      if (tw === 1) {
-        achievements = all.filter(a => a.year === opts.endYear)
-      } else if (typeof tw === 'number' && tw > 1) {
-        const start0 = opts.endYear - tw + 1
-        const start = Math.max(start0, Number.isFinite(opts.minStartYear) ? opts.minStartYear : start0)
-        achievements = all.filter(a => (a.year ?? 0) >= start && (a.year ?? 0) <= opts.endYear)
-      } else {
-        achievements = all.filter(a => a.year === opts.endYear)
-      }
-
-      const candidates = this.filterBySpeedShootingThreshold(achievements, req)
-      const required = req.minAchievements ?? 1
-      const progress = { current: candidates.length, required }
-      const met = progress.current >= required
-
+    // Require endYear for year-aware evaluation
+    if (opts.endYear == null) {
       return {
         type: 'speed_shooting_series',
         index,
-        isMet: met,
-        progress,
+        isMet: false,
         description: req.description,
-        windowYear: met ? opts.endYear : null,
-        pointThresholds: {
-          A: req.pointThresholds?.A?.min,
-          B: req.pointThresholds?.B?.min,
-          C: req.pointThresholds?.C?.min,
-          R: req.pointThresholds?.R?.min
-        }
+        reason: 'end_year_required',
+        windowYear: null
       }
     }
 
-    // Default path: pick the best calendar year or block
-    const applyThresholds = (list) => this.filterBySpeedShootingThreshold(list, req)
-
-    let candidates = []
-    let windowYear = null
-
-    if (req.timeWindowYears === 1) {
-      const byYear = this.groupBy(all, a => a.year)
-      // Pick the calendar year with max qualifying results
-      let bestYear = null
-      let bestMatches = []
-      Object.entries(byYear).forEach(([year, list]) => {
-        const matches = applyThresholds(list)
-        if (matches.length > bestMatches.length) {
-          bestMatches = matches
-          bestYear = Number(year)
-        }
-      })
-      candidates = bestMatches
-      windowYear = bestYear
-    } else if (typeof req.timeWindowYears === 'number' && req.timeWindowYears > 1) {
-      // Use calendar-year blocks; evaluate all possible end years in the data
-      const years = Array.from(new Set(all.map(a => a.year).filter(y => typeof y === 'number'))).sort((a, b) => a - b)
-      let bestEndYear = null
-      let bestMatches = []
-      for (const endYear of years) {
-        const startYear = endYear - req.timeWindowYears + 1
-        const inBlock = all.filter(a => (a.year ?? 0) >= startYear && (a.year ?? 0) <= endYear)
-        const matches = applyThresholds(inBlock)
-        if (matches.length > bestMatches.length) {
-          bestMatches = matches
-          bestEndYear = endYear
-        }
-      }
-      candidates = bestMatches
-      windowYear = bestEndYear
+    // Evaluate with a fixed end year, constrain the data to that year/window
+    let achievements = all
+    const tw = req.timeWindowYears
+    if (tw === 1) {
+      achievements = all.filter(a => a.year === opts.endYear)
+    } else if (typeof tw === 'number' && tw > 1) {
+      const start0 = opts.endYear - tw + 1
+      const start = Math.max(start0, Number.isFinite(opts.minStartYear) ? opts.minStartYear : start0)
+      achievements = all.filter(a => (a.year ?? 0) >= start && (a.year ?? 0) <= opts.endYear)
     } else {
-      candidates = applyThresholds(all)
-      // no specific window; do not assign windowYear
+      achievements = all.filter(a => a.year === opts.endYear)
     }
 
+    const candidates = this.filterBySpeedShootingThreshold(achievements, req)
     const required = req.minAchievements ?? 1
     const progress = { current: candidates.length, required }
     const met = progress.current >= required
@@ -1304,7 +1188,7 @@ export class MedalCalculator {
       isMet: met,
       progress,
       description: req.description,
-      windowYear: met ? windowYear : null,
+      windowYear: met ? opts.endYear : null,
       pointThresholds: {
         A: req.pointThresholds?.A?.min,
         B: req.pointThresholds?.B?.min,
@@ -1314,77 +1198,44 @@ export class MedalCalculator {
     }
   }
 
+  /**
+   * Check competition performance requirement for a specific year
+   * @param {Object} req - Requirement specification
+   * @param {number} index - Requirement index
+   * @param {Object} opts - Options
+   * @param {number} opts.endYear - REQUIRED: Year to evaluate requirement for
+   * @param {number} [opts.minStartYear] - Optional minimum start year for time windows
+   * @returns {Object} Requirement check result with reason: 'end_year_required' if endYear not provided
+   */
   checkCompetitionPerformanceRequirement(req, index, opts = {}) {
     const all = (this.profile.prerequisites || []).filter(a => a.type === 'competition_performance')
 
-    // If evaluating with a fixed end year, constrain the data to that year/window
-    if (opts.endYear != null) {
-      let achievements = all
-      const tw = req.timeWindowYears
-      if (tw === 1) {
-        achievements = all.filter(a => a.year === opts.endYear)
-      } else if (typeof tw === 'number' && tw > 1) {
-        const start0 = opts.endYear - tw + 1
-        const start = Math.max(start0, Number.isFinite(opts.minStartYear) ? opts.minStartYear : start0)
-        achievements = all.filter(a => (a.year ?? 0) >= start && (a.year ?? 0) <= opts.endYear)
-      } else {
-        achievements = all.filter(a => a.year === opts.endYear)
-      }
-
-      const candidates = this.filterByCompetitionPerformanceThreshold(achievements, req)
-      const required = req.minCompetitions ?? req.minAchievements ?? 1
-      const progress = { current: candidates.length, required }
-      const met = progress.current >= required
-
+    // Require endYear for year-aware evaluation
+    if (opts.endYear == null) {
       return {
         type: 'competition_performance',
         index,
-        isMet: met,
-        progress,
+        isMet: false,
         description: req.description,
-        windowYear: met ? opts.endYear : null,
-        disciplineType: req.disciplineType
+        reason: 'end_year_required',
+        windowYear: null
       }
     }
 
-    // Default path: pick the best calendar year or block
-    const applyThresholds = (list) => this.filterByCompetitionPerformanceThreshold(list, req)
-
-    let candidates = []
-    let windowYear = null
-
-    if (req.timeWindowYears === 1) {
-      const byYear = this.groupBy(all, a => a.year)
-      let bestYear = null
-      let bestMatches = []
-      Object.entries(byYear).forEach(([year, list]) => {
-        const matches = applyThresholds(list)
-        if (matches.length > bestMatches.length) {
-          bestMatches = matches
-          bestYear = Number(year)
-        }
-      })
-      candidates = bestMatches
-      windowYear = bestYear
-    } else if (typeof req.timeWindowYears === 'number' && req.timeWindowYears > 1) {
-      const years = Array.from(new Set(all.map(a => a.year).filter(y => typeof y === 'number'))).sort((a, b) => a - b)
-      let bestEndYear = null
-      let bestMatches = []
-      for (const endYear of years) {
-        const startYear = endYear - req.timeWindowYears + 1
-        const inBlock = all.filter(a => (a.year ?? 0) >= startYear && (a.year ?? 0) <= endYear)
-        const matches = applyThresholds(inBlock)
-        if (matches.length > bestMatches.length) {
-          bestMatches = matches
-          bestEndYear = endYear
-        }
-      }
-      candidates = bestMatches
-      windowYear = bestEndYear
+    // Evaluate with a fixed end year, constrain the data to that year/window
+    let achievements = all
+    const tw = req.timeWindowYears
+    if (tw === 1) {
+      achievements = all.filter(a => a.year === opts.endYear)
+    } else if (typeof tw === 'number' && tw > 1) {
+      const start0 = opts.endYear - tw + 1
+      const start = Math.max(start0, Number.isFinite(opts.minStartYear) ? opts.minStartYear : start0)
+      achievements = all.filter(a => (a.year ?? 0) >= start && (a.year ?? 0) <= opts.endYear)
     } else {
-      candidates = applyThresholds(all)
+      achievements = all.filter(a => a.year === opts.endYear)
     }
 
+    const candidates = this.filterByCompetitionPerformanceThreshold(achievements, req)
     const required = req.minCompetitions ?? req.minAchievements ?? 1
     const progress = { current: candidates.length, required }
     const met = progress.current >= required
@@ -1395,82 +1246,49 @@ export class MedalCalculator {
       isMet: met,
       progress,
       description: req.description,
-      windowYear: met ? windowYear : null,
+      windowYear: met ? opts.endYear : null,
       disciplineType: req.disciplineType
     }
   }
 
+  /**
+   * Check air pistol precision requirement for a specific year
+   * @param {Object} req - Requirement specification
+   * @param {number} index - Requirement index
+   * @param {Object} opts - Options
+   * @param {number} opts.endYear - REQUIRED: Year to evaluate requirement for
+   * @param {number} [opts.minStartYear] - Optional minimum start year for time windows
+   * @returns {Object} Requirement check result with reason: 'end_year_required' if endYear not provided
+   */
   checkAirPistolPrecisionRequirement(req, index, opts = {}) {
     const all = (this.profile.prerequisites || []).filter(a => a.type === 'air_pistol_precision')
 
-    // If evaluating with a fixed end year, constrain the data to that year/window
-    if (opts.endYear != null) {
-      let achievements = all
-      const tw = req.timeWindowYears
-      if (tw === 1) {
-        achievements = all.filter(a => a.year === opts.endYear)
-      } else if (typeof tw === 'number' && tw > 1) {
-        const start0 = opts.endYear - tw + 1
-        const start = Math.max(start0, Number.isFinite(opts.minStartYear) ? opts.minStartYear : start0)
-        achievements = all.filter(a => (a.year ?? 0) >= start && (a.year ?? 0) <= opts.endYear)
-      } else {
-        achievements = all.filter(a => a.year === opts.endYear)
-      }
-
-      const candidates = this.filterByAirPistolThreshold(achievements, req)
-      const required = req.minSeries ?? req.minAchievements ?? 1
-      const progress = { current: candidates.length, required }
-      const met = progress.current >= required
-
+    // Require endYear for year-aware evaluation
+    if (opts.endYear == null) {
       return {
         type: 'air_pistol_precision',
         index,
-        isMet: met,
-        progress,
+        isMet: false,
         description: req.description,
-        windowYear: met ? opts.endYear : null,
-        minPointsPerSeries: req.minPointsPerSeries
+        reason: 'end_year_required',
+        windowYear: null
       }
     }
 
-    // Default path: pick the best calendar year or block
-    const applyThresholds = (list) => this.filterByAirPistolThreshold(list, req)
-
-    let candidates = []
-    let windowYear = null
-
-    if (req.timeWindowYears === 1) {
-      const byYear = this.groupBy(all, a => a.year)
-      let bestYear = null
-      let bestMatches = []
-      Object.entries(byYear).forEach(([year, list]) => {
-        const matches = applyThresholds(list)
-        if (matches.length > bestMatches.length) {
-          bestMatches = matches
-          bestYear = Number(year)
-        }
-      })
-      candidates = bestMatches
-      windowYear = bestYear
-    } else if (typeof req.timeWindowYears === 'number' && req.timeWindowYears > 1) {
-      const years = Array.from(new Set(all.map(a => a.year).filter(y => typeof y === 'number'))).sort((a, b) => a - b)
-      let bestEndYear = null
-      let bestMatches = []
-      for (const endYear of years) {
-        const startYear = endYear - req.timeWindowYears + 1
-        const inBlock = all.filter(a => (a.year ?? 0) >= startYear && (a.year ?? 0) <= endYear)
-        const matches = applyThresholds(inBlock)
-        if (matches.length > bestMatches.length) {
-          bestMatches = matches
-          bestEndYear = endYear
-        }
-      }
-      candidates = bestMatches
-      windowYear = bestEndYear
+    // Evaluate with a fixed end year, constrain the data to that year/window
+    let achievements = all
+    const tw = req.timeWindowYears
+    if (tw === 1) {
+      achievements = all.filter(a => a.year === opts.endYear)
+    } else if (typeof tw === 'number' && tw > 1) {
+      const start0 = opts.endYear - tw + 1
+      const start = Math.max(start0, Number.isFinite(opts.minStartYear) ? opts.minStartYear : start0)
+      achievements = all.filter(a => (a.year ?? 0) >= start && (a.year ?? 0) <= opts.endYear)
     } else {
-      candidates = applyThresholds(all)
+      achievements = all.filter(a => a.year === opts.endYear)
     }
 
+    const candidates = this.filterByAirPistolThreshold(achievements, req)
     const required = req.minSeries ?? req.minAchievements ?? 1
     const progress = { current: candidates.length, required }
     const met = progress.current >= required
@@ -1481,7 +1299,7 @@ export class MedalCalculator {
       isMet: met,
       progress,
       description: req.description,
-      windowYear: met ? windowYear : null,
+      windowYear: met ? opts.endYear : null,
       minPointsPerSeries: req.minPointsPerSeries
     }
   }

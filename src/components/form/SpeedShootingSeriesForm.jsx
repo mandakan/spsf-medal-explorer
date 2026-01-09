@@ -1,16 +1,29 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useAchievementForm } from '../../hooks/useAchievementForm'
+import { getSpeedShootingSeriesDefaults, getRequirementHint } from '../../utils/requirementDefaults'
+import CollapsibleOptionalFields from '../CollapsibleOptionalFields'
 
 /**
  * Type-specific form for logging speed shooting series achievements.
  * Optimized for duellskjutning (duel shooting) with points-based scoring.
+ * Pre-populates fields with minimum requirements from medal definition.
  */
-export default function SpeedShootingSeriesForm({ onSubmit, onSubmitAndAddAnother, loading }) {
+export default function SpeedShootingSeriesForm({ medal, onSubmit, onSubmitAndAddAnother, loading }) {
+  // Extract default values from medal requirements
+  const defaults = useMemo(() => {
+    return getSpeedShootingSeriesDefaults(medal)
+  }, [medal])
+
+  // Get contextual hint from medal requirements
+  const requirementHint = useMemo(() => {
+    return getRequirementHint(medal, 'speed_shooting_series')
+  }, [medal])
+
   const { values, errors, handleChange, handleSubmit, validate, setErrors } = useAchievementForm({
     initialValues: {
       date: new Date().toISOString().split('T')[0],
-      weaponGroup: 'A',
-      points: '',
+      weaponGroup: defaults.weaponGroup,
+      points: defaults.points,
       competitionName: '',
       notes: '',
     },
@@ -128,50 +141,54 @@ export default function SpeedShootingSeriesForm({ onSubmit, onSubmitAndAddAnothe
           </p>
         ) : (
           <p id="hint-points" className="mt-1 text-sm text-text-secondary">
-            Resultat från duellskjutning
+            {requirementHint || 'Resultat från duellskjutning'}
+            {defaults.points && ` (Minst ${defaults.points} poäng krävs)`}
           </p>
         )}
       </div>
 
-      {/* Competition Name (optional) */}
-      <div>
-        <label
-          htmlFor="speed-competition"
-          className="field-label mb-2"
-        >
-          Tävling / Bana (valfritt)
-        </label>
-        <input
-          id="speed-competition"
-          type="text"
-          name="competitionName"
-          aria-label="Tävlingsnamn"
-          value={values.competitionName}
-          onChange={handleChange}
-          className="input py-3"
-          placeholder="T.ex. Elitmärkestävling"
-        />
-      </div>
+      {/* Optional Fields - Collapsed by default */}
+      <CollapsibleOptionalFields label="Valfria fält">
+        {/* Competition Name (optional) */}
+        <div>
+          <label
+            htmlFor="speed-competition"
+            className="field-label mb-2"
+          >
+            Tävling / Bana
+          </label>
+          <input
+            id="speed-competition"
+            type="text"
+            name="competitionName"
+            aria-label="Tävlingsnamn"
+            value={values.competitionName}
+            onChange={handleChange}
+            className="input py-3"
+            placeholder="T.ex. Elitmärkestävling"
+          />
+        </div>
 
-      {/* Notes (optional) */}
-      <div>
-        <label
-          htmlFor="speed-notes"
-          className="field-label mb-2"
-        >
-          Anteckningar (valfritt)
-        </label>
-        <textarea
-          id="speed-notes"
-          name="notes"
-          aria-label="Anteckningar"
-          value={values.notes}
-          onChange={handleChange}
-          className="textarea py-3 resize-none"
-          rows={3}
-          placeholder="T.ex. väderförhållanden, vapen använt, etc."
-        />
-      </div>
+        {/* Notes (optional) */}
+        <div>
+          <label
+            htmlFor="speed-notes"
+            className="field-label mb-2"
+          >
+            Anteckningar
+          </label>
+          <textarea
+            id="speed-notes"
+            name="notes"
+            aria-label="Anteckningar"
+            value={values.notes}
+            onChange={handleChange}
+            className="textarea py-3 resize-none"
+            rows={3}
+            placeholder="T.ex. väderförhållanden, vapen använt, etc."
+          />
+        </div>
+      </CollapsibleOptionalFields>
 
       {/* Submit Buttons */}
       <div className="flex flex-col sm:flex-row gap-3 pt-2">
