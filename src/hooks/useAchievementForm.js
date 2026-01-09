@@ -56,6 +56,7 @@ export function useAchievementForm({ initialValues, validate, onSubmit }) {
     errors,
     handleChange,
     handleSubmit,
+    validate: runValidation,
     formProps,
     setValues,
     setErrors,
