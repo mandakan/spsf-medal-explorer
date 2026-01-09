@@ -7,6 +7,7 @@ import UnlockMedalDialog from './UnlockMedalDialog'
 import RemoveMedalDialog from './RemoveMedalDialog'
 import AchievementEntryDialog from './AchievementEntryDialog'
 import { useUnlockGuard } from '../hooks/useUnlockGuard'
+import { useFlag } from '../hooks/useFeatureFlags'
 const Markdown = lazy(() => import('react-markdown'))
 import remarkGfm from 'remark-gfm'
 import { useNavigate, useLocation } from 'react-router-dom'
@@ -26,6 +27,7 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
   const allowManual = !!currentProfile?.features?.allowManualUnlock
   const medal = medalDatabase?.getMedalById(medalId)
   const [selectedYear, setSelectedYear] = useState(null)
+  const { state: achievementEntryEnabled } = useFlag('achievementEntry')
   const [unlockOpen, setUnlockOpen] = useState(false)
   const [achievementEntryOpen, setAchievementEntryOpen] = useState(false)
   const navigate = useNavigate()
@@ -732,8 +734,8 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
               Stäng
             </button>
 
-            {/* Log Achievement button - show for non-locked, non-placeholder medals */}
-            {currentProfile && !isPlaceholder && status?.status !== 'locked' && (
+            {/* Log Achievement button - show for non-locked, non-placeholder medals (feature-gated) */}
+            {currentProfile && !isPlaceholder && status?.status !== 'locked' && achievementEntryEnabled !== 'off' && (
               <button
                 type="button"
                 onClick={() => setAchievementEntryOpen(true)}
