@@ -70,6 +70,7 @@ export default function AchievementEntryDialog({ medal, open, onClose }) {
               medal={medal}
               onSuccess={onClose}
               unlockMode={false}
+              compact={true}
             />
           </div>
         </div>

@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react'
 import { useAchievementForm } from '../../hooks/useAchievementForm'
 import { getApplicationSeriesDefaults, getRequirementHint } from '../../utils/requirementDefaults'
+import CollapsibleOptionalFields from '../CollapsibleOptionalFields'
 
 /**
  * Type-specific form for logging application series achievements.
@@ -188,45 +189,48 @@ export default function ApplicationSeriesForm({ medal, onSubmit, onSubmitAndAddA
         )}
       </div>
 
-      {/* Competition Name (optional) */}
-      <div>
-        <label
-          htmlFor="application-competition"
-          className="field-label mb-2"
-        >
-          Tävling / Bana (valfritt)
-        </label>
-        <input
-          id="application-competition"
-          type="text"
-          name="competitionName"
-          aria-label="Tävlingsnamn"
-          value={values.competitionName}
-          onChange={handleChange}
-          className="input py-3"
-          placeholder="T.ex. Träning, Klubbmästerskap"
-        />
-      </div>
+      {/* Optional Fields - Collapsed by default */}
+      <CollapsibleOptionalFields label="Valfria fält">
+        {/* Competition Name (optional) */}
+        <div>
+          <label
+            htmlFor="application-competition"
+            className="field-label mb-2"
+          >
+            Tävling / Bana
+          </label>
+          <input
+            id="application-competition"
+            type="text"
+            name="competitionName"
+            aria-label="Tävlingsnamn"
+            value={values.competitionName}
+            onChange={handleChange}
+            className="input py-3"
+            placeholder="T.ex. Träning, Klubbmästerskap"
+          />
+        </div>
 
-      {/* Notes (optional) */}
-      <div>
-        <label
-          htmlFor="application-notes"
-          className="field-label mb-2"
-        >
-          Anteckningar (valfritt)
-        </label>
-        <textarea
-          id="application-notes"
-          name="notes"
-          aria-label="Anteckningar"
-          value={values.notes}
-          onChange={handleChange}
-          className="textarea py-3 resize-none"
-          rows={3}
-          placeholder="T.ex. väderförhållanden, utgångsställning, etc."
-        />
-      </div>
+        {/* Notes (optional) */}
+        <div>
+          <label
+            htmlFor="application-notes"
+            className="field-label mb-2"
+          >
+            Anteckningar
+          </label>
+          <textarea
+            id="application-notes"
+            name="notes"
+            aria-label="Anteckningar"
+            value={values.notes}
+            onChange={handleChange}
+            className="textarea py-3 resize-none"
+            rows={3}
+            placeholder="T.ex. väderförhållanden, utgångsställning, etc."
+          />
+        </div>
+      </CollapsibleOptionalFields>
 
       {/* Submit Buttons */}
       <div className="flex flex-col sm:flex-row gap-3 pt-2">

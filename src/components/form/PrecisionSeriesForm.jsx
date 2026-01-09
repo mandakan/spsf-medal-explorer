@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useMemo } from 'react'
 import { useAchievementForm } from '../../hooks/useAchievementForm'
 import { useProfile } from '../../hooks/useProfile'
 import { getPrecisionSeriesDefaults, getRequirementHint } from '../../utils/requirementDefaults'
+import CollapsibleOptionalFields from '../CollapsibleOptionalFields'
 
 /**
  * Type-specific form for logging precision series achievements.
@@ -159,45 +160,48 @@ export default function PrecisionSeriesForm({ medal, onSubmit, onSubmitAndAddAno
         )}
       </div>
 
-      {/* Competition Name (optional) */}
-      <div>
-        <label
-          htmlFor="precision-competition"
-          className="field-label mb-2"
-        >
-          Tävling / Bana (valfritt)
-        </label>
-        <input
-          id="precision-competition"
-          type="text"
-          name="competitionName"
-          aria-label="Tävlingsnamn"
-          value={values.competitionName}
-          onChange={handleChange}
-          className="input py-3"
-          placeholder="T.ex. Klubbmästerskap"
-        />
-      </div>
+      {/* Optional Fields - Collapsed by default */}
+      <CollapsibleOptionalFields label="Valfria fält">
+        {/* Competition Name (optional) */}
+        <div>
+          <label
+            htmlFor="precision-competition"
+            className="field-label mb-2"
+          >
+            Tävling / Bana
+          </label>
+          <input
+            id="precision-competition"
+            type="text"
+            name="competitionName"
+            aria-label="Tävlingsnamn"
+            value={values.competitionName}
+            onChange={handleChange}
+            className="input py-3"
+            placeholder="T.ex. Klubbmästerskap"
+          />
+        </div>
 
-      {/* Notes (optional) */}
-      <div>
-        <label
-          htmlFor="precision-notes"
-          className="field-label mb-2"
-        >
-          Anteckningar (valfritt)
-        </label>
-        <textarea
-          id="precision-notes"
-          name="notes"
-          aria-label="Anteckningar"
-          value={values.notes}
-          onChange={handleChange}
-          className="textarea py-3 resize-none"
-          rows={3}
-          placeholder="T.ex. väderförhållanden, vapen använt, etc."
-        />
-      </div>
+        {/* Notes (optional) */}
+        <div>
+          <label
+            htmlFor="precision-notes"
+            className="field-label mb-2"
+          >
+            Anteckningar
+          </label>
+          <textarea
+            id="precision-notes"
+            name="notes"
+            aria-label="Anteckningar"
+            value={values.notes}
+            onChange={handleChange}
+            className="textarea py-3 resize-none"
+            rows={3}
+            placeholder="T.ex. väderförhållanden, vapen använt, etc."
+          />
+        </div>
+      </CollapsibleOptionalFields>
 
       {/* Submit Buttons */}
       <div className="flex flex-col sm:flex-row gap-3 pt-2">

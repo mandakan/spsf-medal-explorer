@@ -71,7 +71,7 @@ function extractAchievementTypes(requirements, maxDepth = 20) {
   return Array.from(types)
 }
 
-export default function UniversalAchievementLogger({ medal, onSuccess, unlockMode = false }) {
+export default function UniversalAchievementLogger({ medal, onSuccess, unlockMode = false, compact = false }) {
   const { addAchievement, unlockMedal } = useAchievementHistory()
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -184,14 +184,23 @@ export default function UniversalAchievementLogger({ medal, onSuccess, unlockMod
     <div
       role="region"
       aria-labelledby={headingId}
-      className="card p-4 w-full"
+      className={compact ? 'w-full' : 'card p-4 w-full'}
     >
-      <h2
-        id={headingId}
-        className="section-title mb-4 break-words"
-      >
-        {unlockMode ? 'Lås upp märke' : 'Logga Aktivitet'}: {medal?.displayName || medal?.name || medal?.id}
-      </h2>
+      {!compact && (
+        <h2
+          id={headingId}
+          className="section-title mb-4 break-words"
+        >
+          {unlockMode ? 'Lås upp märke' : 'Logga Aktivitet'}: {medal?.displayName || medal?.name || medal?.id}
+        </h2>
+      )}
+
+      {/* Hidden heading for accessibility when compact */}
+      {compact && (
+        <h2 id={headingId} className="sr-only">
+          {unlockMode ? 'Lås upp märke' : 'Logga Aktivitet'}: {medal?.displayName || medal?.name || medal?.id}
+        </h2>
+      )}
 
       {error && (
         <div
@@ -212,9 +221,11 @@ export default function UniversalAchievementLogger({ medal, onSuccess, unlockMod
       {/* Type selector for medals with multiple achievement types */}
       {availableTypes.length > 1 && !selectedType && (
         <div className="space-y-3 mb-4 animate-fade-in">
-          <p className="text-sm text-text-secondary">
-            Detta märke kan tjänas genom olika typer av aktiviteter. Välj vilken typ du vill logga:
-          </p>
+          {!compact && (
+            <p className="text-sm text-text-secondary">
+              Detta märke kan tjänas genom olika typer av aktiviteter. Välj vilken typ du vill logga:
+            </p>
+          )}
           <div className="grid gap-2">
             {availableTypes.map((type, index) => (
               <button
@@ -239,14 +250,16 @@ export default function UniversalAchievementLogger({ medal, onSuccess, unlockMod
       {(availableTypes.length <= 1 || selectedType) && (
         <>
           {availableTypes.length > 1 && selectedType && (
-            <div className="mb-4 p-3 rounded-lg bg-bg-secondary border border-border">
-              <p className="text-sm text-text-secondary">
-                <span className="font-medium text-text-primary">Typ:</span>{' '}
-                {achievementTypeLabels[selectedType] || selectedType}
+            <div className={`mb-4 rounded-lg ${compact ? 'p-2 bg-bg-secondary/50' : 'p-3 bg-bg-secondary border border-border'}`}>
+              <p className="text-sm text-text-secondary flex items-center justify-between">
+                <span>
+                  <span className="font-medium text-text-primary">Typ:</span>{' '}
+                  {achievementTypeLabels[selectedType] || selectedType}
+                </span>
                 <button
                   type="button"
                   onClick={() => setSelectedType(null)}
-                  className="ml-2 text-xs text-primary hover:underline"
+                  className="text-xs text-primary hover:underline ml-2"
                 >
                   Byt typ
                 </button>
