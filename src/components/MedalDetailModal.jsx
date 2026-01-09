@@ -98,11 +98,12 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
     return currentYear
   }, [unlockedYear, selectedYear, eligibleYears, currentYear])
 
-  // Available years for the selector: achievement years + current year + eligible years
+  // Available years for the selector: eligible years + current year
+  // Only show years that are relevant to THIS medal's progress
   const availableYears = useMemo(() => {
-    const years = new Set([...achievementYears, currentYear, ...eligibleYears])
+    const years = new Set([currentYear, ...eligibleYears])
     return Array.from(years).sort((a, b) => b - a) // Descending order
-  }, [achievementYears, currentYear, eligibleYears])
+  }, [currentYear, eligibleYears])
 
   const reqTree = useMemo(() => {
     if (!medal) return null

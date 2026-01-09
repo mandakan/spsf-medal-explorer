@@ -50,6 +50,12 @@ function extractAchievementTypes(requirements, maxDepth = 20) {
     // Prevent stack overflow on malformed data
     if (depth >= maxDepth) return
 
+    // If node is an array, traverse each element
+    if (Array.isArray(node)) {
+      node.forEach(child => traverse(child, depth + 1))
+      return
+    }
+
     // If node has a type, add it
     if (node.type && typeof node.type === 'string') {
       // Filter out logical operators and medal prerequisites
