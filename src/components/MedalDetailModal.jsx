@@ -656,7 +656,7 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
                 <SectionCard
                   id={`req-${medal.id}`}
                   title="Krav"
-                  summary={reqCounts ? `${reqCounts.met}/${reqCounts.total} uppfyllda${status?.status !== 'unlocked' ? ` (${defaultYear})` : ''}` : undefined}
+                  summary={reqCounts ? `${reqCounts.met}/${reqCounts.total} uppfyllda${status?.status !== 'unlocked' ? ` • ${defaultYear}` : ''}` : undefined}
                   collapsible={false}
                 >
                   <RequirementTree tree={reqTree} bare />
@@ -802,6 +802,7 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
         medal={medal}
         open={unlockOpen}
         onClose={() => setUnlockOpen(false)}
+        preferredYear={defaultYear}
       />
 
       <RemoveMedalDialog

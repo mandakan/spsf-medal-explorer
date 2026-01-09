@@ -3,7 +3,7 @@ import MobileBottomSheet from './MobileBottomSheet'
 import { useMedalCalculator } from '../hooks/useMedalCalculator'
 import { useProfile } from '../hooks/useProfile'
 
-export default function UnlockMedalDialog({ medal, open, onClose }) {
+export default function UnlockMedalDialog({ medal, open, onClose, preferredYear = null }) {
   const calculator = useMedalCalculator()
   const { currentProfile, unlockMedal } = useProfile()
   const allowManual = !!currentProfile?.features?.allowManualUnlock
@@ -106,9 +106,13 @@ export default function UnlockMedalDialog({ medal, open, onClose }) {
 
   const suggestedYear = useMemo(() => {
     if (!open) return ''
+    // If a preferred year is provided, use it
+    if (preferredYear != null && Number.isFinite(preferredYear)) {
+      return preferredYear
+    }
     const y = computeDefaultYear()
     return (y !== '' && Number.isFinite(y)) ? y : ''
-  }, [open, computeDefaultYear])
+  }, [open, preferredYear, computeDefaultYear])
 
   const manualYearValue = allowManual ? (year === '' ? suggestedYear : year) : null
 
