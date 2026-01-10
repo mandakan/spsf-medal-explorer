@@ -113,13 +113,13 @@ export function validateAchievement(achievement) {
       }
     }
   }
-  if (type === 'running_shooting_course') {
+  if (type === 'running_shooting_course' || type === 'skis_shooting_course') {
     const pts = achievement.points
     if (typeof pts !== 'number' || Number.isNaN(pts) || pts < 0) {
-      errors.push('Points required for running shooting course')
+      errors.push('Points required for running/skiing shooting course')
     }
     if (!achievement.date || Number.isNaN(new Date(achievement.date).getTime())) {
-      errors.push('Date required for running shooting course')
+      errors.push('Date required for running/skiing shooting course')
     } else if (isFutureDate(achievement.date)) {
       errors.push('Date cannot be in the future')
     }
@@ -143,6 +143,45 @@ export function validateAchievement(achievement) {
       if (pts < 0 || pts > 50) {
         errors.push('Points must be between 0 and 50')
       }
+    }
+  }
+  if (type === 'air_pistol_precision') {
+    const pts = achievement.points
+    if (typeof pts !== 'number' || Number.isNaN(pts)) {
+      errors.push('Points required for air pistol precision')
+    } else {
+      // 10 shots, max 10 points per shot = 100 max
+      if (pts < 0 || pts > 100) {
+        errors.push('Points must be between 0 and 100')
+      }
+    }
+  }
+  if (type === 'competition_performance') {
+    const dt = String(achievement.disciplineType || '').toLowerCase()
+    if (!dt || !['field', 'running', 'skiing'].includes(dt)) {
+      errors.push('Discipline type required for competition performance')
+    }
+    if (dt === 'field') {
+      const sp = achievement.scorePercent
+      if (typeof sp !== 'number' || Number.isNaN(sp) || sp < 0 || sp > 100) {
+        errors.push('Score percent required for field competition (0-100)')
+      }
+    }
+    if (dt === 'running' || dt === 'skiing') {
+      const pts = achievement.points
+      if (typeof pts !== 'number' || Number.isNaN(pts) || pts < 0) {
+        errors.push('Points required for running/skiing competition')
+      }
+    }
+  }
+  if (type === 'standard_medal') {
+    const dt = String(achievement.disciplineType || '').toLowerCase()
+    if (!dt) {
+      errors.push('Discipline type required for standard medal')
+    }
+    const mt = String(achievement.medalType || '').toLowerCase()
+    if (!mt || !['bronze', 'silver', 'gold'].includes(mt)) {
+      errors.push('Medal type (bronze/silver/gold) required for standard medal')
     }
   }
   return { valid: errors.length === 0, errors }
