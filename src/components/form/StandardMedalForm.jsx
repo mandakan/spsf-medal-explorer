@@ -157,9 +157,13 @@ export default function StandardMedalForm({ medal, onSubmit, onSubmitAndAddAnoth
             ))}
           </select>
         )}
-        {errors.disciplineType && (
+        {errors.disciplineType ? (
           <p id="error-discipline" className="mt-1 text-sm text-red-600 dark:text-red-400">
             {errors.disciplineType}
+          </p>
+        ) : !disciplineLocked && (
+          <p className="mt-1 text-sm text-text-secondary">
+            Vilken skyttedisciplin standardmedaljen gäller
           </p>
         )}
       </div>
@@ -190,9 +194,13 @@ export default function StandardMedalForm({ medal, onSubmit, onSubmitAndAddAnoth
             </option>
           ))}
         </select>
-        {errors.medalType && (
+        {errors.medalType ? (
           <p id="error-medal-type" className="mt-1 text-sm text-red-600 dark:text-red-400">
             {errors.medalType}
+          </p>
+        ) : (
+          <p className="mt-1 text-sm text-text-secondary">
+            Vilken nivå på standardmedaljen du uppnått
           </p>
         )}
       </div>

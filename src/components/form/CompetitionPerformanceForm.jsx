@@ -27,6 +27,14 @@ export default function CompetitionPerformanceForm({ medal, onSubmit, onSubmitAn
   const disciplineLocked = Boolean(defaults.disciplineType)
 
   // Initialize form with appropriate values based on discipline
+  // Helper to calculate scorePercent for field shooting
+  const calculateScorePercent = (vals) => {
+    if (vals.disciplineType === 'field' && vals.maxScore > 0) {
+      return Math.round((Number(vals.score) / Number(vals.maxScore)) * 100)
+    }
+    return 0
+  }
+
   const { values, errors, handleChange, handleSubmit, validate, setErrors } = useAchievementForm({
     initialValues: {
       date: new Date().toISOString().split('T')[0],
@@ -68,15 +76,9 @@ export default function CompetitionPerformanceForm({ medal, onSubmit, onSubmitAn
       return errs
     },
     onSubmit: (vals) => {
-      // Calculate scorePercent for field shooting
-      let scorePercent = 0
-      if (vals.disciplineType === 'field' && vals.maxScore > 0) {
-        scorePercent = Math.round((Number(vals.score) / Number(vals.maxScore)) * 100)
-      }
-
       onSubmit({
         ...vals,
-        scorePercent,
+        scorePercent: calculateScorePercent(vals),
         achievementType: 'competition_performance',
       })
     },
@@ -96,15 +98,9 @@ export default function CompetitionPerformanceForm({ medal, onSubmit, onSubmitAn
     const validationErrors = validate(values)
     setErrors(validationErrors)
     if (Object.keys(validationErrors).length === 0 && onSubmitAndAddAnother) {
-      // Calculate scorePercent for field shooting
-      let scorePercent = 0
-      if (values.disciplineType === 'field' && values.maxScore > 0) {
-        scorePercent = Math.round((Number(values.score) / Number(values.maxScore)) * 100)
-      }
-
       onSubmitAndAddAnother({
         ...values,
-        scorePercent,
+        scorePercent: calculateScorePercent(values),
         achievementType: 'competition_performance',
       })
     }

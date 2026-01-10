@@ -225,7 +225,7 @@ export function getRunningShootingCourseDefaults(medal, profile = null, preferre
   if (!requirement) {
     return {
       maxPoints: null,
-      achievementType: 'running_shooting_course',
+      achievementType: preferredType || 'running_shooting_course',
     }
   }
 
