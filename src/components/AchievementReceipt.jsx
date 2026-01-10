@@ -81,7 +81,7 @@ export default function AchievementReceipt({
       collapsible
       defaultOpen={false}
     >
-      <ul className="space-y-2 mb-4" role="list">
+      <ul className="space-y-3 mb-4" role="list">
         {formattedAchievements.map((ach) => (
           <li key={ach.id} className="flex items-start gap-2 text-sm">
             <Icon
@@ -90,11 +90,11 @@ export default function AchievementReceipt({
               aria-hidden="true"
             />
             <div className="flex-1 min-w-0">
-              <span className="text-foreground font-medium">{ach.label}</span>
+              <div className="text-foreground font-medium">{ach.label}</div>
               {ach.details && (
-                <span className="text-muted-foreground ml-2 break-words">
+                <div className="text-muted-foreground text-xs mt-0.5">
                   {ach.details}
-                </span>
+                </div>
               )}
             </div>
           </li>
