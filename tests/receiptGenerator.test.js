@@ -60,7 +60,24 @@ describe('receiptGenerator', () => {
   })
 
   describe('formatAchievementForDisplay', () => {
-    it('formats precision_series achievement', () => {
+    it('formats precision_series achievement with date', () => {
+      const result = formatAchievementForDisplay({
+        id: 'ach-1',
+        type: 'precision_series',
+        date: '2025-03-15',
+        year: 2025,
+        weaponGroup: 'A',
+        points: 195,
+      })
+
+      expect(result.label).toBe('Precisionsserier')
+      expect(result.details).toContain('2025-03-15')
+      expect(result.details).toContain('Grupp A')
+      expect(result.details).toContain('195 p')
+      expect(result.date).toBe('2025-03-15')
+    })
+
+    it('falls back to year when date is not available', () => {
       const result = formatAchievementForDisplay({
         id: 'ach-1',
         type: 'precision_series',
@@ -69,10 +86,10 @@ describe('receiptGenerator', () => {
         points: 195,
       })
 
-      expect(result.label).toBe('Precisionsserier')
       expect(result.details).toContain('2025')
-      expect(result.details).toContain('Grupp A')
-      expect(result.details).toContain('195 p')
+      // Should not contain a date in YYYY-MM-DD format
+      expect(result.details).not.toMatch(/\d{4}-\d{2}-\d{2}/)
+      expect(result.date).toBe('2025')
     })
 
     it('formats application_series achievement', () => {
@@ -143,11 +160,11 @@ describe('receiptGenerator', () => {
   })
 
   describe('generateReceiptText', () => {
-    it('generates complete receipt text', () => {
+    it('generates complete receipt text with dates', () => {
       const medal = { displayName: 'Pistolskyttemärket Brons' }
       const achievements = [
-        { id: 'ach-1', type: 'precision_series', year: 2025, weaponGroup: 'A', points: 195 },
-        { id: 'ach-2', type: 'precision_series', year: 2025, weaponGroup: 'A', points: 198 },
+        { id: 'ach-1', type: 'precision_series', date: '2025-03-15', year: 2025, weaponGroup: 'A', points: 195 },
+        { id: 'ach-2', type: 'precision_series', date: '2025-06-20', year: 2025, weaponGroup: 'A', points: 198 },
       ]
 
       const result = generateReceiptText({
@@ -164,6 +181,8 @@ describe('receiptGenerator', () => {
       expect(result).toContain('KVALIFICERANDE AKTIVITETER:')
       expect(result).toContain('1. Precisionsserier')
       expect(result).toContain('2. Precisionsserier')
+      expect(result).toContain('2025-03-15')
+      expect(result).toContain('2025-06-20')
       expect(result).toContain('195 p')
       expect(result).toContain('198 p')
       expect(result).toContain('Genererat av SPSF Medal Explorer')

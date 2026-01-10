@@ -17,6 +17,22 @@ export function getReceiptAchievements({ unlockedEntry, profile }) {
 }
 
 /**
+ * Format a date string for display (Swedish format: YYYY-MM-DD)
+ * @param {string} dateStr - ISO date string
+ * @returns {string|null} Formatted date or null
+ */
+function formatDate(dateStr) {
+  if (!dateStr) return null
+  try {
+    const d = new Date(dateStr)
+    if (Number.isNaN(d.getTime())) return null
+    return d.toISOString().slice(0, 10)
+  } catch {
+    return null
+  }
+}
+
+/**
  * Format a single achievement for display
  * @param {Object} achievement - Achievement object
  * @returns {Object} Formatted achievement with label and details
@@ -25,8 +41,11 @@ export function formatAchievementForDisplay(achievement) {
   const label = getAchievementTypeLabel(achievement.type)
   const details = []
 
-  // Year
-  if (achievement.year) {
+  // Date (prefer full date, fall back to year)
+  const formattedDate = formatDate(achievement.date)
+  if (formattedDate) {
+    details.push(formattedDate)
+  } else if (achievement.year) {
     details.push(String(achievement.year))
   }
 
@@ -96,6 +115,7 @@ export function formatAchievementForDisplay(achievement) {
     type: achievement.type,
     label,
     details: details.join(' - '),
+    date: formattedDate || (achievement.year ? String(achievement.year) : null),
     year: achievement.year,
   }
 }
