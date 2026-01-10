@@ -5,17 +5,29 @@
 
 /**
  * Recursively find a requirement node of a specific type in medal requirements
- * @param {object} requirements - Medal requirements tree
+ * @param {object|array} requirements - Medal requirements tree (can be array or object)
  * @param {string} type - Achievement type to find (e.g., 'application_series')
  * @param {number} maxDepth - Maximum recursion depth
  * @returns {object|null} Requirement node or null if not found
  */
 function findRequirementByType(requirements, type, maxDepth = 20) {
-  if (!requirements || typeof requirements !== 'object') return null
+  if (!requirements) return null
 
   function traverse(node, depth = 0) {
-    if (!node || typeof node !== 'object') return null
+    if (!node) return null
     if (depth >= maxDepth) return null
+
+    // Handle arrays (requirements can be an array at root or nested level)
+    if (Array.isArray(node)) {
+      for (const child of node) {
+        const result = traverse(child, depth + 1)
+        if (result) return result
+      }
+      return null
+    }
+
+    // Must be an object from here
+    if (typeof node !== 'object') return null
 
     // If this node matches the type, return it
     if (node.type === type) return node
@@ -144,6 +156,142 @@ export function getRequirementHint(medal, achievementType) {
 
   // Return the description from the requirement if available
   return requirement.description || null
+}
+
+/**
+ * Extract default values for competition_performance form from medal requirements
+ * @param {object} medal - Medal object with requirements
+ * @param {object} profile - User profile (for sex-based thresholds)
+ * @returns {object} Default form values
+ */
+export function getCompetitionPerformanceDefaults(medal, profile = null) {
+  const requirement = findRequirementByType(medal?.requirements, 'competition_performance')
+  if (!requirement) {
+    return {
+      disciplineType: '',
+      weaponGroup: 'A',
+      maxPoints: null,
+      thresholds: null,
+    }
+  }
+
+  const disciplineType = requirement.disciplineType || ''
+  const sex = profile?.sex || 'male'
+
+  // For running/skiing: extract maxPoints based on sex
+  let maxPoints = null
+  if (requirement.maxPoints) {
+    maxPoints = requirement.maxPoints[sex] ?? requirement.maxPoints.male ?? null
+  }
+
+  // For field: extract pointThresholdPercent
+  const thresholds = requirement.pointThresholdPercent || null
+
+  return {
+    disciplineType,
+    weaponGroup: 'A',
+    maxPoints,
+    thresholds,
+  }
+}
+
+/**
+ * Extract default values for running_shooting_course or skis_shooting_course form from medal requirements
+ * @param {object} medal - Medal object with requirements
+ * @param {object} profile - User profile (for sex and age-based thresholds)
+ * @param {string} preferredType - Preferred requirement type to look for
+ * @returns {object} Default form values
+ */
+export function getRunningShootingCourseDefaults(medal, profile = null, preferredType = null) {
+  // Try to find the requirement - check both types
+  let requirement = null
+  let foundType = null
+
+  if (preferredType) {
+    requirement = findRequirementByType(medal?.requirements, preferredType)
+    if (requirement) foundType = preferredType
+  }
+
+  if (!requirement) {
+    requirement = findRequirementByType(medal?.requirements, 'running_shooting_course')
+    if (requirement) foundType = 'running_shooting_course'
+  }
+
+  if (!requirement) {
+    requirement = findRequirementByType(medal?.requirements, 'skis_shooting_course')
+    if (requirement) foundType = 'skis_shooting_course'
+  }
+
+  if (!requirement) {
+    return {
+      maxPoints: null,
+      achievementType: preferredType || 'running_shooting_course',
+    }
+  }
+
+  const sex = profile?.sex || 'male'
+  let maxPoints = requirement.maxPoints?.[sex] ?? requirement.maxPoints?.male ?? null
+
+  // Check for age-based categories if profile has dateOfBirth
+  if (profile?.dateOfBirth && requirement.ageCategories) {
+    const birthYear = new Date(profile.dateOfBirth).getFullYear()
+    const currentYear = new Date().getFullYear()
+    const age = currentYear - birthYear
+
+    // Find matching age category
+    const ageCategory = requirement.ageCategories.find(cat =>
+      age >= (cat.ageMin ?? 0) && age <= (cat.ageMax ?? 999)
+    )
+
+    if (ageCategory?.maxPoints?.[sex]) {
+      maxPoints = ageCategory.maxPoints[sex]
+    }
+  }
+
+  return {
+    maxPoints,
+    achievementType: foundType,
+  }
+}
+
+/**
+ * Extract default values for air_pistol_precision form from medal requirements
+ * @param {object} medal - Medal object with requirements
+ * @returns {object} Default form values
+ */
+export function getAirPistolPrecisionDefaults(medal) {
+  const requirement = findRequirementByType(medal?.requirements, 'air_pistol_precision')
+  if (!requirement) {
+    return {
+      minPointsPerSeries: null,
+      minSeries: 5,
+    }
+  }
+
+  return {
+    minPointsPerSeries: requirement.minPointsPerSeries ?? null,
+    minSeries: requirement.minSeries ?? 5,
+  }
+}
+
+/**
+ * Extract default values for standard_medal form from medal requirements
+ * @param {object} medal - Medal object with requirements
+ * @returns {object} Default form values
+ */
+export function getStandardMedalDefaults(medal) {
+  const requirement = findRequirementByType(medal?.requirements, 'standard_medal')
+  if (!requirement) {
+    return {
+      disciplineType: '',
+      medalType: '',
+    }
+  }
+
+  return {
+    disciplineType: requirement.disciplineType || '',
+    medalType: requirement.medalType || '',
+  }
 }
 
 /**

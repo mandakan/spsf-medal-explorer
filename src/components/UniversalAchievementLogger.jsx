@@ -7,6 +7,10 @@ import CustomForm from './form/CustomForm'
 import PrecisionSeriesForm from './form/PrecisionSeriesForm'
 import ApplicationSeriesForm from './form/ApplicationSeriesForm'
 import SpeedShootingSeriesForm from './form/SpeedShootingSeriesForm'
+import AirPistolPrecisionForm from './form/AirPistolPrecisionForm'
+import CompetitionPerformanceForm from './form/CompetitionPerformanceForm'
+import RunningShootingCourseForm from './form/RunningShootingCourseForm'
+import StandardMedalForm from './form/StandardMedalForm'
 import { useAchievementHistory } from '../hooks/useAchievementHistory'
 import { detectMedalFormType, mapFormToAchievement } from '../utils/achievementMapper'
 import { validateAchievement as validateAchievementObject } from '../validators/universalValidator'
@@ -24,6 +28,11 @@ const typeSpecificForms = {
   precision_series: PrecisionSeriesForm,
   application_series: ApplicationSeriesForm,
   speed_shooting_series: SpeedShootingSeriesForm,
+  air_pistol_precision: AirPistolPrecisionForm,
+  competition_performance: CompetitionPerformanceForm,
+  running_shooting_course: RunningShootingCourseForm,
+  skis_shooting_course: RunningShootingCourseForm, // Same form as running
+  standard_medal: StandardMedalForm,
 }
 
 // Swedish labels for achievement types
@@ -33,6 +42,9 @@ const achievementTypeLabels = {
   speed_shooting_series: 'Duellserie',
   competition_performance: 'Tävlingsprestation',
   air_pistol_precision: 'Luftpistolprecision',
+  running_shooting_course: 'Terränglopp med skytte',
+  skis_shooting_course: 'Skidlopp med skytte',
+  standard_medal: 'Standardmedalj',
 }
 
 /**

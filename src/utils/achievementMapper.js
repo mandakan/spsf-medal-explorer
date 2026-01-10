@@ -126,6 +126,7 @@ export function mapFormToAchievement({ medal, medalType, formData }) {
 
   switch (storageType) {
     case 'running_shooting_course':
+    case 'skis_shooting_course':
       return {
         ...base,
         points: Number(formData?.points ?? formData?.score ?? 0),
