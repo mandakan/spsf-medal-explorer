@@ -333,7 +333,7 @@ export function ProfileProvider({ children }) {
   )
 
   const unlockMedal = useCallback(
-    async (medalId, unlockedDate) => {
+    async (medalId, unlockedDate, achievementIds = []) => {
       if (!currentProfile) throw new Error('No profile selected')
       if (!medalId) throw new Error('medalId is required')
       if (currentProfile.isGuest) {
@@ -347,6 +347,7 @@ export function ProfileProvider({ children }) {
           const entry = {
             medalId,
             unlockedDate: unlockedDate || new Date().toISOString().slice(0, 10),
+            achievementIds: Array.isArray(achievementIds) ? achievementIds : [],
           }
           return {
             ...p,
@@ -370,6 +371,7 @@ export function ProfileProvider({ children }) {
         const entry = {
           medalId,
           unlockedDate: unlockedDate || new Date().toISOString().slice(0, 10),
+          achievementIds: Array.isArray(achievementIds) ? achievementIds : [],
         }
         const nextProfile = { ...profile, unlockedMedals: [...list, entry], lastModified: new Date().toISOString() }
         const saved = await storage.saveUserProfile(nextProfile)

@@ -171,7 +171,9 @@ export default function UnlockMedalDialog({ medal, open, onClose, preferredYear 
     if (!canUnlock) return
     const y = allowManual ? selectedYear : Number(selectedYear)
     const unlockedDate = `${y}-12-31`
-    await unlockMedal(medal.id, unlockedDate)
+    // Capture contributing achievement IDs for the receipt
+    const achievementIds = calculator?.getContributingAchievements?.(medal.id, y) || []
+    await unlockMedal(medal.id, unlockedDate, achievementIds)
     onClose?.()
   }
 

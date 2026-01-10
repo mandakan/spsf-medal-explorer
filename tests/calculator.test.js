@@ -433,3 +433,234 @@ describe('MedalCalculator - air_pistol_precision', () => {
     expect(result.status).toBe('available') // Only 3 series in current year, need 5
   })
 })
+
+describe('MedalCalculator - getContributingAchievements', () => {
+  let calculator, medalDb, profile
+
+  beforeEach(() => {
+    const medalData = {
+      medals: [
+        {
+          id: 'pistol-mark-bronze',
+          status: 'reviewed',
+          type: 'pistol_mark',
+          tier: 'bronze',
+          displayName: 'Pistol Mark - Bronze',
+          prerequisites: [],
+          requirements: [{
+            type: 'precision_series',
+            minAchievements: 3,
+            timeWindowYears: 1,
+            pointThresholds: {
+              A: { min: 32 },
+              B: { min: 33 },
+              C: { min: 34 }
+            }
+          }]
+        },
+        {
+          id: 'multi-req-medal',
+          status: 'reviewed',
+          type: 'test',
+          tier: 'bronze',
+          displayName: 'Multi Requirement Medal',
+          prerequisites: [],
+          requirements: [
+            {
+              type: 'precision_series',
+              minAchievements: 2,
+              timeWindowYears: 1,
+              pointThresholds: { A: { min: 30 } }
+            },
+            {
+              type: 'application_series',
+              minAchievements: 1,
+              timeWindowYears: 1,
+              thresholds: { A: { minHits: 5, maxTimeSeconds: 60 } }
+            }
+          ]
+        }
+      ]
+    }
+
+    medalDb = new MedalDatabase(medalData)
+    profile = new UserProfile({
+      displayName: 'Test User',
+      dateOfBirth: '2000-01-01',
+      sex: 'male',
+      unlockedMedals: [],
+      prerequisites: []
+    })
+
+    calculator = new MedalCalculator(medalDb, profile)
+  })
+
+  test('returns empty array for non-existent medal', () => {
+    const result = calculator.getContributingAchievements('non-existent', 2025)
+    expect(result).toEqual([])
+  })
+
+  test('returns empty array when requirements not met', () => {
+    const currentYear = new Date().getFullYear()
+    profile.prerequisites = [
+      new Achievement({ id: 'ach-1', type: 'precision_series', year: currentYear, weaponGroup: 'A', points: 35 }),
+      new Achievement({ id: 'ach-2', type: 'precision_series', year: currentYear, weaponGroup: 'A', points: 36 })
+      // Only 2 achievements, need 3
+    ]
+
+    const result = calculator.getContributingAchievements('pistol-mark-bronze', currentYear)
+    expect(result).toEqual([])
+  })
+
+  test('returns achievement IDs when requirements are met', () => {
+    const currentYear = new Date().getFullYear()
+    profile.prerequisites = [
+      new Achievement({ id: 'ach-1', type: 'precision_series', year: currentYear, weaponGroup: 'A', points: 35 }),
+      new Achievement({ id: 'ach-2', type: 'precision_series', year: currentYear, weaponGroup: 'A', points: 36 }),
+      new Achievement({ id: 'ach-3', type: 'precision_series', year: currentYear, weaponGroup: 'A', points: 37 })
+    ]
+
+    const result = calculator.getContributingAchievements('pistol-mark-bronze', currentYear)
+    expect(result).toHaveLength(3)
+    expect(result).toContain('ach-1')
+    expect(result).toContain('ach-2')
+    expect(result).toContain('ach-3')
+  })
+
+  test('only returns IDs of achievements that meet threshold', () => {
+    const currentYear = new Date().getFullYear()
+    profile.prerequisites = [
+      new Achievement({ id: 'ach-1', type: 'precision_series', year: currentYear, weaponGroup: 'A', points: 35 }),
+      new Achievement({ id: 'ach-2', type: 'precision_series', year: currentYear, weaponGroup: 'A', points: 36 }),
+      new Achievement({ id: 'ach-3', type: 'precision_series', year: currentYear, weaponGroup: 'A', points: 37 }),
+      new Achievement({ id: 'ach-4', type: 'precision_series', year: currentYear, weaponGroup: 'A', points: 25 }) // below threshold
+    ]
+
+    const result = calculator.getContributingAchievements('pistol-mark-bronze', currentYear)
+    expect(result).toHaveLength(3)
+    expect(result).not.toContain('ach-4')
+  })
+
+  test('collects IDs from multiple requirement types', () => {
+    const currentYear = new Date().getFullYear()
+    profile.prerequisites = [
+      new Achievement({ id: 'prec-1', type: 'precision_series', year: currentYear, weaponGroup: 'A', points: 35 }),
+      new Achievement({ id: 'prec-2', type: 'precision_series', year: currentYear, weaponGroup: 'A', points: 36 }),
+      new Achievement({ id: 'app-1', type: 'application_series', year: currentYear, weaponGroup: 'A', hits: 5, timeSeconds: 50 })
+    ]
+
+    const result = calculator.getContributingAchievements('multi-req-medal', currentYear)
+    expect(result).toHaveLength(3)
+    expect(result).toContain('prec-1')
+    expect(result).toContain('prec-2')
+    expect(result).toContain('app-1')
+  })
+
+  test('returns unique IDs (no duplicates)', () => {
+    const currentYear = new Date().getFullYear()
+    profile.prerequisites = [
+      new Achievement({ id: 'ach-1', type: 'precision_series', year: currentYear, weaponGroup: 'A', points: 35 }),
+      new Achievement({ id: 'ach-2', type: 'precision_series', year: currentYear, weaponGroup: 'A', points: 36 }),
+      new Achievement({ id: 'ach-3', type: 'precision_series', year: currentYear, weaponGroup: 'A', points: 37 })
+    ]
+
+    const result = calculator.getContributingAchievements('pistol-mark-bronze', currentYear)
+    const uniqueIds = new Set(result)
+    expect(result.length).toBe(uniqueIds.size)
+  })
+})
+
+describe('MedalCalculator - matchingAchievementIds in requirement results', () => {
+  let calculator, medalDb, profile
+
+  beforeEach(() => {
+    const medalData = {
+      medals: [
+        {
+          id: 'pistol-mark-bronze',
+          status: 'reviewed',
+          type: 'pistol_mark',
+          tier: 'bronze',
+          displayName: 'Pistol Mark - Bronze',
+          prerequisites: [],
+          requirements: [{
+            type: 'precision_series',
+            minAchievements: 3,
+            timeWindowYears: 1,
+            pointThresholds: {
+              A: { min: 32 }
+            }
+          }]
+        }
+      ]
+    }
+
+    medalDb = new MedalDatabase(medalData)
+    profile = new UserProfile({
+      displayName: 'Test User',
+      dateOfBirth: '2000-01-01',
+      sex: 'male',
+      unlockedMedals: [],
+      prerequisites: []
+    })
+
+    calculator = new MedalCalculator(medalDb, profile)
+  })
+
+  test('checkRequirements includes matchingAchievementIds in tree leaves', () => {
+    const currentYear = new Date().getFullYear()
+    profile.prerequisites = [
+      new Achievement({ id: 'ach-1', type: 'precision_series', year: currentYear, weaponGroup: 'A', points: 35 }),
+      new Achievement({ id: 'ach-2', type: 'precision_series', year: currentYear, weaponGroup: 'A', points: 36 }),
+      new Achievement({ id: 'ach-3', type: 'precision_series', year: currentYear, weaponGroup: 'A', points: 37 })
+    ]
+
+    const medal = medalDb.getMedalById('pistol-mark-bronze')
+    const result = calculator.checkRequirements(medal, { endYear: currentYear })
+
+    expect(result.allMet).toBe(true)
+    expect(result.tree).toBeDefined()
+
+    // Navigate to the leaf node
+    const leaf = result.tree.node === 'leaf' ? result.tree.leaf : result.tree.children?.[0]?.leaf
+    expect(leaf).toBeDefined()
+    expect(leaf.matchingAchievementIds).toBeDefined()
+    expect(Array.isArray(leaf.matchingAchievementIds)).toBe(true)
+    expect(leaf.matchingAchievementIds).toHaveLength(3)
+  })
+
+  test('matchingAchievementIds is limited to required count', () => {
+    const currentYear = new Date().getFullYear()
+    profile.prerequisites = [
+      new Achievement({ id: 'ach-1', type: 'precision_series', year: currentYear, weaponGroup: 'A', points: 35 }),
+      new Achievement({ id: 'ach-2', type: 'precision_series', year: currentYear, weaponGroup: 'A', points: 36 }),
+      new Achievement({ id: 'ach-3', type: 'precision_series', year: currentYear, weaponGroup: 'A', points: 37 }),
+      new Achievement({ id: 'ach-4', type: 'precision_series', year: currentYear, weaponGroup: 'A', points: 38 }),
+      new Achievement({ id: 'ach-5', type: 'precision_series', year: currentYear, weaponGroup: 'A', points: 39 })
+    ]
+
+    const medal = medalDb.getMedalById('pistol-mark-bronze')
+    const result = calculator.checkRequirements(medal, { endYear: currentYear })
+
+    // Navigate to the leaf node
+    const leaf = result.tree.node === 'leaf' ? result.tree.leaf : result.tree.children?.[0]?.leaf
+    // minAchievements is 3, so only 3 IDs should be returned even if 5 qualify
+    expect(leaf.matchingAchievementIds).toHaveLength(3)
+  })
+
+  test('matchingAchievementIds filters out null/undefined IDs', () => {
+    const currentYear = new Date().getFullYear()
+    profile.prerequisites = [
+      new Achievement({ id: 'ach-1', type: 'precision_series', year: currentYear, weaponGroup: 'A', points: 35 }),
+      new Achievement({ type: 'precision_series', year: currentYear, weaponGroup: 'A', points: 36 }), // no id
+      new Achievement({ id: 'ach-3', type: 'precision_series', year: currentYear, weaponGroup: 'A', points: 37 })
+    ]
+
+    const medal = medalDb.getMedalById('pistol-mark-bronze')
+    const result = calculator.checkRequirements(medal, { endYear: currentYear })
+
+    const leaf = result.tree.node === 'leaf' ? result.tree.leaf : result.tree.children?.[0]?.leaf
+    // Should only have IDs that exist
+    expect(leaf.matchingAchievementIds.every(id => id != null)).toBe(true)
+  })
+})

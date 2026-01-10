@@ -351,7 +351,8 @@ export class MedalCalculator {
         C: req.pointThresholds?.C?.min,
         R: req.pointThresholds?.R?.min
       },
-      windowYear: met ? opts.endYear : null
+      windowYear: met ? opts.endYear : null,
+      matchingAchievementIds: candidates.slice(0, required).map(a => a.id).filter(Boolean)
     }
   }
 
@@ -414,7 +415,8 @@ export class MedalCalculator {
       isMet: met,
       progress,
       description: req.description,
-      windowYear: met ? opts.endYear : null
+      windowYear: met ? opts.endYear : null,
+      matchingAchievementIds: candidates.slice(0, required).map(a => a.id).filter(Boolean)
     }
   }
 
@@ -488,7 +490,8 @@ export class MedalCalculator {
       maxPoints,
       sex,
       age,
-      ...(category?.name ? { ageCategory: category.name } : {})
+      ...(category?.name ? { ageCategory: category.name } : {}),
+      matchingAchievementIds: candidates.slice(0, required).map(a => a.id).filter(Boolean)
     }
   }
 
@@ -615,6 +618,41 @@ export class MedalCalculator {
       this.flattenLeaves(ch, out)
     }
     return out
+  }
+
+  /**
+   * Get all achievement IDs that contributed to unlocking a medal
+   * Walks the evaluated requirement tree and collects matchingAchievementIds from met leaves
+   * @param {string} medalId - Medal ID to evaluate
+   * @param {number} year - Year to evaluate for
+   * @returns {string[]} Array of unique achievement IDs
+   */
+  getContributingAchievements(medalId, year) {
+    const medal = this.medals.getMedalById(medalId)
+    if (!medal) return []
+
+    try {
+      const reqCheck = this.checkRequirements(medal, { endYear: year })
+      if (!reqCheck.allMet) return []
+
+      const ids = new Set()
+      const collectIds = (node) => {
+        if (!node) return
+        if (node.node === 'leaf' && node.leaf?.isMet) {
+          const matching = node.leaf.matchingAchievementIds || []
+          for (const id of matching) {
+            if (id) ids.add(id)
+          }
+        }
+        for (const ch of node.children || []) {
+          collectIds(ch)
+        }
+      }
+      collectIds(reqCheck.tree)
+      return Array.from(ids)
+    } catch {
+      return []
+    }
   }
 
   // Candidate end years to try when no specific endYear is provided
@@ -991,7 +1029,8 @@ export class MedalCalculator {
       isMet: met,
       progress,
       description: req.description,
-      windowYear: met && endYear != null ? endYear : null
+      windowYear: met && endYear != null ? endYear : null,
+      matchingAchievementIds: list.slice(0, required).map(a => a.id).filter(Boolean)
     }
   }
 
@@ -1087,7 +1126,8 @@ export class MedalCalculator {
       isMet: met,
       progress: { current: matches.length, required },
       description: req.description,
-      windowYear: met ? endYear : null
+      windowYear: met ? endYear : null,
+      matchingAchievementIds: matches.slice(0, required).map(a => a.id).filter(Boolean)
     }
   }
 
@@ -1136,7 +1176,8 @@ export class MedalCalculator {
       progress,
       description: req.description,
       windowYear: met ? endYear : null,
-      totalPointThresholds: req.totalPointThresholds
+      totalPointThresholds: req.totalPointThresholds,
+      matchingAchievementIds: candidates.slice(0, required).map(a => a.id).filter(Boolean)
     }
   }
 
@@ -1194,7 +1235,8 @@ export class MedalCalculator {
         B: req.pointThresholds?.B?.min,
         C: req.pointThresholds?.C?.min,
         R: req.pointThresholds?.R?.min
-      }
+      },
+      matchingAchievementIds: candidates.slice(0, required).map(a => a.id).filter(Boolean)
     }
   }
 
@@ -1247,7 +1289,8 @@ export class MedalCalculator {
       progress,
       description: req.description,
       windowYear: met ? opts.endYear : null,
-      disciplineType: req.disciplineType
+      disciplineType: req.disciplineType,
+      matchingAchievementIds: candidates.slice(0, required).map(a => a.id).filter(Boolean)
     }
   }
 
@@ -1300,7 +1343,8 @@ export class MedalCalculator {
       progress,
       description: req.description,
       windowYear: met ? opts.endYear : null,
-      minPointsPerSeries: req.minPointsPerSeries
+      minPointsPerSeries: req.minPointsPerSeries,
+      matchingAchievementIds: candidates.slice(0, required).map(a => a.id).filter(Boolean)
     }
   }
 
