@@ -18,6 +18,7 @@ import SectionCard from './SectionCard'
 import StatusPill from './StatusPill'
 import StatusIcon from './StatusIcon'
 import Icon from './Icon'
+import AchievementReceipt from './AchievementReceipt'
 
 export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) {
   const { medalDatabase } = useMedalDatabase()
@@ -529,6 +530,14 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
                   </p>
                 </div>
               </SectionCard>
+            )}
+
+            {!isPlaceholder && status?.status === 'unlocked' && (
+              <AchievementReceipt
+                medal={medal}
+                unlockedEntry={currentProfile?.unlockedMedals?.find(m => m.medalId === medalId)}
+                profile={currentProfile}
+              />
             )}
 
             {!isPlaceholder && prereqItemsResolved.length > 0 && (
