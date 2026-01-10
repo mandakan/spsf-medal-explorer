@@ -4,6 +4,17 @@
  */
 export const releases = [
   {
+    id: '0.9.6',
+    date: '2026-01-10',
+    title: 'Säkerhetsuppdatering',
+    highlights: [
+      'Förbättringar av användarupplevelsen i trädvy',
+      'Buggfix av hantering årtal för medaljkrav',
+      'Säkerhetsuppdatering av beroenden',
+    ],
+    link: 'https://github.com/mandakan/spsf-medal-explorer/releases/tag/v0.9.6',
+  },
+  {
     id: '0.9.5',
     date: '2026-01-08',
     title: 'Fler märken och kön i profil',
