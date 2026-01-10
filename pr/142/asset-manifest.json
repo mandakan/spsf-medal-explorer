@@ -5,7 +5,7 @@
     "isDynamicEntry": true
   },
   "index.html": {
-    "file": "assets/index-B_hK3kDW.js",
+    "file": "assets/index-g1JHZq6V.js",
     "name": "index",
     "src": "index.html",
     "isEntry": true,
@@ -18,7 +18,7 @@
       "_vendor-C5_MJ7S4.js"
     ],
     "css": [
-      "assets/index-DwGcPTrj.css"
+      "assets/index-C9U-IDKC.css"
     ]
   },
   "src/data/air_pistol_mark.medals.json": {
@@ -82,7 +82,7 @@
     "isDynamicEntry": true
   },
   "src/utils/medalLoader.vite.js": {
-    "file": "assets/medalLoader.vite-DR5g3o4d.js",
+    "file": "assets/medalLoader.vite-rxtnC1QM.js",
     "name": "medalLoader.vite",
     "src": "src/utils/medalLoader.vite.js",
     "isDynamicEntry": true,
