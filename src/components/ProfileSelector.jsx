@@ -139,19 +139,21 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
             >
               Importera profil
             </button>
-            <button
-              onClick={() => {
-                setModalMode('guest')
-                setEditingProfile(null)
-                setNewProfileName('Gästläge')
-                setNewDateOfBirth('1975-01-02')
-                setNewSex('')
-                setShowModal(true)
-              }}
-              className="btn btn-muted min-h-[44px]"
-            >
-              Fortsätt i gästläge
-            </button>
+            {profiles.length === 0 && (
+              <button
+                onClick={() => {
+                  setModalMode('guest')
+                  setEditingProfile(null)
+                  setNewProfileName('Gästläge')
+                  setNewDateOfBirth('1975-01-02')
+                  setNewSex('')
+                  setShowModal(true)
+                }}
+                className="btn btn-muted min-h-[44px]"
+              >
+                Fortsätt i gästläge
+              </button>
+            )}
           </div>
         </MobileBottomSheet>
       ) : (

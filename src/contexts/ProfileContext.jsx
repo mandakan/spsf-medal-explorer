@@ -60,6 +60,10 @@ function createGuestProfile({ sex }) {
     unlockedMedals: [],
     prerequisites: [],
     isGuest: true,
+    features: {
+      allowManualUnlock: true,
+      enforceCurrentYearForSustained: false,
+    },
   })
 }
 
