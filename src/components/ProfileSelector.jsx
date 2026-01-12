@@ -23,10 +23,13 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!newProfileName.trim() || !newDateOfBirth || !newSex) return
+    if (!newSex) return
+    if (modalMode !== 'guest' && (!newProfileName.trim() || !newDateOfBirth)) return
 
     try {
-      if (effectiveModalMode === 'edit' && effectiveEditingProfile) {
+      if (modalMode === 'guest') {
+        await startExplorerMode(newSex)
+      } else if (effectiveModalMode === 'edit' && effectiveEditingProfile) {
         await updateProfile({
           ...editingProfile,
           displayName: newProfileName.trim(),
@@ -139,19 +142,21 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
             >
               Importera profil
             </button>
-            <button
-              onClick={() => {
-                setModalMode('guest')
-                setEditingProfile(null)
-                setNewProfileName('Gästläge')
-                setNewDateOfBirth('1975-01-02')
-                setNewSex('')
-                setShowModal(true)
-              }}
-              className="btn btn-muted min-h-[44px]"
-            >
-              Fortsätt i gästläge
-            </button>
+            {profiles.length === 0 && (
+              <button
+                onClick={() => {
+                  setModalMode('guest')
+                  setEditingProfile(null)
+                  setNewProfileName('Gästläge')
+                  setNewDateOfBirth('1975-01-02')
+                  setNewSex('')
+                  setShowModal(true)
+                }}
+                className="btn btn-muted min-h-[44px]"
+              >
+                Fortsätt i gästläge
+              </button>
+            )}
           </div>
         </MobileBottomSheet>
       ) : (
@@ -329,28 +334,6 @@ export default function ProfileSelector({ mode = 'picker', open = false, onClose
                   Avbryt
                 </button>
               </div>
-
-              {modalMode === 'guest' && (
-                <div className="pt-2">
-                  <button
-                    type="button"
-                    className="btn btn-primary w-full min-h-[44px]"
-                    disabled={loading || !newSex}
-                    onClick={async () => {
-                      if (!newSex) return
-                      try {
-                        await startExplorerMode(newSex)
-                        setShowModal(false)
-                        onClose?.()
-                      } catch (e) {
-                        console.error(e)
-                      }
-                    }}
-                  >
-                    Starta gästläge
-                  </button>
-                </div>
-              )}
             </form>
           </div>
         </div>
