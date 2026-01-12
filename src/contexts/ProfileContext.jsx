@@ -89,7 +89,7 @@ export function ProfileProvider({ children }) {
     }
   }, [storage])
 
-  const startExplorerMode = useCallback((sex) => {
+  const startExplorerMode = useCallback((sex = 'male') => {
     try { window.localStorage.setItem(ONBOARDING_KEY, 'guest') } catch (e) { void e }
     setCurrentProfile(createGuestProfile({ sex }))
   }, [])
