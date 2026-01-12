@@ -334,10 +334,17 @@ export class MedalCalculator {
       achievements = all.filter(a => a.year === opts.endYear)
     }
 
-    const candidates = this.filterByPrecisionSeriesThreshold(achievements, req)
+    // Resolve age-based thresholds if ageCategories are defined
+    const age = this.getAgeAtYear(opts.endYear)
+    const { thresholds: resolvedThresholds, matchedCategory } = this.resolveAgeBasedPrecisionThresholdsWithCategory(req, age)
+
+    const candidates = this.filterByPrecisionSeriesThreshold(achievements, { pointThresholds: resolvedThresholds })
     const required = req.minAchievements ?? 1
     const progress = { current: candidates.length, required }
     const met = progress.current >= required
+
+    // Include ageCategories for UI display if they exist
+    const hasAgeCategories = Array.isArray(req.ageCategories) && req.ageCategories.length > 0
 
     return {
       type: 'precision_series',
@@ -346,13 +353,51 @@ export class MedalCalculator {
       progress,
       description: req.description,
       pointThresholds: {
-        A: req.pointThresholds?.A?.min,
-        B: req.pointThresholds?.B?.min,
-        C: req.pointThresholds?.C?.min,
-        R: req.pointThresholds?.R?.min
+        A: resolvedThresholds?.A?.min,
+        B: resolvedThresholds?.B?.min,
+        C: resolvedThresholds?.C?.min,
+        R: resolvedThresholds?.R?.min
       },
       windowYear: met ? opts.endYear : null,
-      matchingAchievementIds: candidates.slice(0, required).map(a => a.id).filter(Boolean)
+      matchingAchievementIds: candidates.slice(0, required).map(a => a.id).filter(Boolean),
+      ...(age != null ? { age } : {}),
+      ...(hasAgeCategories ? { ageCategories: req.ageCategories, matchedAgeCategory: matchedCategory?.name || null } : {})
+    }
+  }
+
+  /**
+   * Resolve point thresholds based on age categories for precision series
+   * @param {Object} req - Requirement specification with optional ageCategories
+   * @param {number|null} age - Age at end of year, or null if unknown
+   * @returns {Object} Resolved pointThresholds object
+   */
+  resolveAgeBasedPrecisionThresholds(req, age) {
+    return this.resolveAgeBasedPrecisionThresholdsWithCategory(req, age).thresholds
+  }
+
+  /**
+   * Resolve point thresholds based on age categories, returning both thresholds and matched category
+   * @param {Object} req - Requirement specification with optional ageCategories
+   * @param {number|null} age - Age at end of year, or null if unknown
+   * @returns {{thresholds: Object, matchedCategory: Object|null}} Resolved thresholds and category
+   */
+  resolveAgeBasedPrecisionThresholdsWithCategory(req, age) {
+    // If no ageCategories or age is unknown, use base thresholds
+    if (!Array.isArray(req.ageCategories) || req.ageCategories.length === 0 || age == null) {
+      return { thresholds: req.pointThresholds || {}, matchedCategory: null }
+    }
+
+    // Find matching age category
+    const category = req.ageCategories.find(c => {
+      const min = typeof c.ageMin === 'number' ? c.ageMin : 0
+      const max = typeof c.ageMax === 'number' ? c.ageMax : 999
+      return age >= min && age <= max
+    })
+
+    // Return category thresholds if found, otherwise base thresholds
+    return {
+      thresholds: category?.pointThresholds || req.pointThresholds || {},
+      matchedCategory: category || null
     }
   }
 
@@ -380,9 +425,13 @@ export class MedalCalculator {
       }
     }
 
+    // Resolve age-based thresholds if ageCategories are defined
+    const age = this.getAgeAtYear(opts.endYear)
+    const { thresholds: resolvedThresholds, matchedCategory } = this.resolveAgeBasedApplicationThresholdsWithCategory(req, age)
+
     const passes = (a) => {
       const g = a.weaponGroup || 'A'
-      const th = req.thresholds?.[g]
+      const th = resolvedThresholds?.[g]
       if (!th) return false
       const hasTime = typeof a.timeSeconds === 'number' && a.timeSeconds > 0
       const hasHits = typeof a.hits === 'number' && a.hits >= 0
@@ -409,6 +458,9 @@ export class MedalCalculator {
     const progress = { current: candidates.length, required }
     const met = progress.current >= required
 
+    // Include ageCategories for UI display if they exist
+    const hasAgeCategories = Array.isArray(req.ageCategories) && req.ageCategories.length > 0
+
     return {
       type: 'application_series',
       index,
@@ -416,7 +468,45 @@ export class MedalCalculator {
       progress,
       description: req.description,
       windowYear: met ? opts.endYear : null,
-      matchingAchievementIds: candidates.slice(0, required).map(a => a.id).filter(Boolean)
+      matchingAchievementIds: candidates.slice(0, required).map(a => a.id).filter(Boolean),
+      ...(age != null ? { age } : {}),
+      ...(hasAgeCategories ? { ageCategories: req.ageCategories, matchedAgeCategory: matchedCategory?.name || null } : {})
+    }
+  }
+
+  /**
+   * Resolve thresholds based on age categories for application series
+   * @param {Object} req - Requirement specification with optional ageCategories
+   * @param {number|null} age - Age at end of year, or null if unknown
+   * @returns {Object} Resolved thresholds object
+   */
+  resolveAgeBasedApplicationThresholds(req, age) {
+    return this.resolveAgeBasedApplicationThresholdsWithCategory(req, age).thresholds
+  }
+
+  /**
+   * Resolve thresholds based on age categories, returning both thresholds and matched category
+   * @param {Object} req - Requirement specification with optional ageCategories
+   * @param {number|null} age - Age at end of year, or null if unknown
+   * @returns {{thresholds: Object, matchedCategory: Object|null}} Resolved thresholds and category
+   */
+  resolveAgeBasedApplicationThresholdsWithCategory(req, age) {
+    // If no ageCategories or age is unknown, use base thresholds
+    if (!Array.isArray(req.ageCategories) || req.ageCategories.length === 0 || age == null) {
+      return { thresholds: req.thresholds || {}, matchedCategory: null }
+    }
+
+    // Find matching age category
+    const category = req.ageCategories.find(c => {
+      const min = typeof c.ageMin === 'number' ? c.ageMin : 0
+      const max = typeof c.ageMax === 'number' ? c.ageMax : 999
+      return age >= min && age <= max
+    })
+
+    // Return category thresholds if found, otherwise base thresholds
+    return {
+      thresholds: category?.thresholds || req.thresholds || {},
+      matchedCategory: category || null
     }
   }
 

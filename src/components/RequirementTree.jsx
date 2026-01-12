@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import Icon from './Icon'
+import AgeDiscountInfo from './AgeDiscountInfo'
 
 function StatusIcon({ met }) {
   return (
@@ -43,15 +44,30 @@ function LeafRow({ leaf }) {
   const yearValue = leaf.windowYear != null ? leaf.windowYear : (leaf.subtreeYear != null ? leaf.subtreeYear : null)
   const yearText = yearValue != null ? `• År ${yearValue}` : null
 
+  // Check if this leaf has age-based thresholds to display
+  const hasAgeCategories = Array.isArray(leaf.ageCategories) && leaf.ageCategories.length > 0
+
   return (
-    <div className="px-2 py-1 flex items-start gap-2">
-      <StatusIcon met={!!leaf.isMet} />
-      <span className={`${leaf.isMet ? 'text-foreground' : 'text-muted-foreground'} flex-1 min-w-0`}>
-        {label} {yearText ? <span className="text-xs text-muted-foreground">{yearText}</span> : null}
-      </span>
-      {progressText ? (
-        <span className="ml-auto shrink-0 text-xs text-muted-foreground tabular-nums">{progressText}</span>
-      ) : null}
+    <div className="px-2 py-1">
+      <div className="flex items-start gap-2">
+        <StatusIcon met={!!leaf.isMet} />
+        <span className={`${leaf.isMet ? 'text-foreground' : 'text-muted-foreground'} flex-1 min-w-0`}>
+          {label} {yearText ? <span className="text-xs text-muted-foreground">{yearText}</span> : null}
+        </span>
+        {progressText ? (
+          <span className="ml-auto shrink-0 text-xs text-muted-foreground tabular-nums">{progressText}</span>
+        ) : null}
+      </div>
+      {hasAgeCategories && (
+        <div className="ml-6">
+          <AgeDiscountInfo
+            ageCategories={leaf.ageCategories}
+            matchedAgeCategory={leaf.matchedAgeCategory}
+            age={leaf.age}
+            type={leaf.type}
+          />
+        </div>
+      )}
     </div>
   )
 }

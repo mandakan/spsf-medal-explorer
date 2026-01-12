@@ -166,7 +166,8 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
           gapFailed,
         }
       }
-      return it
+      // For non-medal prerequisites (age_requirement, etc.), set displayMet from isMet
+      return { ...it, displayMet: it.isMet }
     })
   }, [prereqCheck, prereqGapFailedIds, medalDatabase])
 
