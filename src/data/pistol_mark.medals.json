@@ -47,9 +47,7 @@
                   "C": {
                     "min": 34
                   }
-                },
-                "timeSeconds": 17,
-                "hitsRequired": 6
+                }
               },
               {
                 "name": "age_55_64",
@@ -66,9 +64,7 @@
                   "C": {
                     "min": 33
                   }
-                },
-                "timeSeconds": 17,
-                "hitsRequired": 6
+                }
               },
               {
                 "name": "age_65_plus",
@@ -85,9 +81,7 @@
                   "C": {
                     "min": 32
                   }
-                },
-                "timeSeconds": 17,
-                "hitsRequired": 6
+                }
               }
             ]
           },
@@ -183,9 +177,7 @@
                 "C": {
                   "min": 40
                 }
-              },
-              "timeSeconds": 17,
-              "hitsRequired": 6
+              }
             },
             {
               "name": "age_55_64",
@@ -202,9 +194,7 @@
                 "C": {
                   "min": 39
                 }
-              },
-              "timeSeconds": 17,
-              "hitsRequired": 6
+              }
             },
             {
               "name": "age_65_plus",
@@ -221,9 +211,7 @@
                 "C": {
                   "min": 38
                 }
-              },
-              "timeSeconds": 17,
-              "hitsRequired": 6
+              }
             }
           ]
         },
@@ -313,9 +301,7 @@
                       "C": {
                         "min": 46
                       }
-                    },
-                    "timeSeconds": 17,
-                    "hitsRequired": 6
+                    }
                   },
                   {
                     "name": "age_55_64",
@@ -332,9 +318,7 @@
                       "C": {
                         "min": 45
                       }
-                    },
-                    "timeSeconds": 17,
-                    "hitsRequired": 6
+                    }
                   },
                   {
                     "name": "age_65_plus",
@@ -351,9 +335,7 @@
                       "C": {
                         "min": 44
                       }
-                    },
-                    "timeSeconds": 17,
-                    "hitsRequired": 6
+                    }
                   }
                 ]
               },

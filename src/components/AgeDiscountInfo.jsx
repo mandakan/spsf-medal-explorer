@@ -33,9 +33,9 @@ function getThresholdValues(category, type) {
   // Application series - show time thresholds
   const th = category.thresholds || {}
   return {
-    A: th.A?.maxTimeSeconds ? `${th.A.maxTimeSeconds}s` : '-',
-    B: th.B?.maxTimeSeconds ? `${th.B.maxTimeSeconds}s` : '-',
-    C: th.C?.maxTimeSeconds ? `${th.C.maxTimeSeconds}s` : '-'
+    A: typeof th.A?.maxTimeSeconds === 'number' ? `${th.A.maxTimeSeconds}s` : '-',
+    B: typeof th.B?.maxTimeSeconds === 'number' ? `${th.B.maxTimeSeconds}s` : '-',
+    C: typeof th.C?.maxTimeSeconds === 'number' ? `${th.C.maxTimeSeconds}s` : '-'
   }
 }
 
@@ -115,6 +115,7 @@ function AgeThresholdsTable({ ageCategories, matchedAgeCategory, type }) {
                   scope="col"
                   className="text-center py-1 px-2 font-medium text-muted-foreground"
                   aria-label={`${valueHeader} vapengrupp A`}
+                  title="Vapengrupp A: Grovkalibriga pistoler och revolvrar"
                 >
                   A
                 </th>
@@ -122,6 +123,7 @@ function AgeThresholdsTable({ ageCategories, matchedAgeCategory, type }) {
                   scope="col"
                   className="text-center py-1 px-2 font-medium text-muted-foreground"
                   aria-label={`${valueHeader} vapengrupp B`}
+                  title="Vapengrupp B: .22 sportpistol och revolver"
                 >
                   B
                 </th>
@@ -129,6 +131,7 @@ function AgeThresholdsTable({ ageCategories, matchedAgeCategory, type }) {
                   scope="col"
                   className="text-center py-1 px-2 font-medium text-muted-foreground"
                   aria-label={`${valueHeader} vapengrupp C`}
+                  title="Vapengrupp C: Finkalibriga pistoler och revolvrar"
                 >
                   C
                 </th>
@@ -205,7 +208,7 @@ export default function AgeDiscountInfo({ ageCategories, matchedAgeCategory, age
   return (
     <div className="mt-1">
       <div className="flex items-center gap-2 flex-wrap">
-        <AgeCategoryBadge matchedCategory={matchedCategory} age={age} />
+        <AgeCategoryBadge matchedCategory={matchedCategory} />
         {matchedCategory && (
           <span className="sr-only">
             Åldersrabatt tillämpas baserat på din ålder ({age} år).
