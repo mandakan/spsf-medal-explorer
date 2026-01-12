@@ -1,4 +1,4 @@
-const VERSION = 'build-142'
+const VERSION = 'build-143'
 const BASE = new URL(self.registration.scope).pathname
 const SCOPE_KEY = (BASE.replace(/^\/|\/$/g, '').replace(/[^\w-]/g, '_')) || 'root'
 const STATIC_CACHE = `static-cache-${SCOPE_KEY}-${VERSION}`
