@@ -288,13 +288,13 @@
                 "seriesType": "precision",
                 "pointThresholds": {
                   "A": {
-                    "min": 32
+                    "min": 43
                   },
                   "B": {
-                    "min": 33
+                    "min": 45
                   },
                   "C": {
-                    "min": 34
+                    "min": 46
                   }
                 },
                 "ageCategories": [
@@ -305,13 +305,13 @@
                     "description": "Under 55 år",
                     "pointThresholds": {
                       "A": {
-                        "min": 32
+                        "min": 43
                       },
                       "B": {
-                        "min": 33
+                        "min": 45
                       },
                       "C": {
-                        "min": 34
+                        "min": 46
                       }
                     },
                     "timeSeconds": 17,
@@ -324,13 +324,13 @@
                     "description": "55 till 64 år",
                     "pointThresholds": {
                       "A": {
-                        "min": 31
+                        "min": 42
                       },
                       "B": {
-                        "min": 32
+                        "min": 44
                       },
                       "C": {
-                        "min": 33
+                        "min": 45
                       }
                     },
                     "timeSeconds": 17,
@@ -343,13 +343,13 @@
                     "description": "65 år och äldre",
                     "pointThresholds": {
                       "A": {
-                        "min": 30
+                        "min": 41
                       },
                       "B": {
-                        "min": 31
+                        "min": 43
                       },
                       "C": {
-                        "min": 32
+                        "min": 44
                       }
                     },
                     "timeSeconds": 17,
@@ -448,36 +448,164 @@
           "perYear": {
             "or": [
               {
-                "type": "sustained_reference",
-                "description": "Ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
-                "references": {
-                  "when": [
-                    {
-                      "if": {
-                        "age": {
-                          "gte": 66
-                        }
+                "and": [
+                  {
+                    "type": "precision_series",
+                    "description": "3 precisionsserier för årtalsmärke",
+                    "minAchievements": 3,
+                    "timeWindowYears": 1,
+                    "seriesType": "precision",
+                    "pointThresholds": {
+                      "A": {
+                        "min": 43
                       },
-                      "refs": [
-                        {
-                          "medalId": "pistol-mark-silver"
-                        }
-                      ]
+                      "B": {
+                        "min": 45
+                      },
+                      "C": {
+                        "min": 46
+                      }
                     },
-                    {
-                      "if": {
-                        "age": {
-                          "lt": 65
+                    "ageCategories": [
+                      {
+                        "name": "under_55",
+                        "ageMin": 0,
+                        "ageMax": 54,
+                        "description": "Under 55 år",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 43
+                          },
+                          "B": {
+                            "min": 45
+                          },
+                          "C": {
+                            "min": 46
+                          }
                         }
                       },
-                      "refs": [
-                        {
-                          "medalId": "pistol-mark-gold"
+                      {
+                        "name": "age_55_64",
+                        "ageMin": 55,
+                        "ageMax": 64,
+                        "description": "55 till 64 år",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 42
+                          },
+                          "B": {
+                            "min": 44
+                          },
+                          "C": {
+                            "min": 45
+                          }
                         }
-                      ]
-                    }
-                  ]
-                }
+                      },
+                      {
+                        "name": "age_65_plus",
+                        "ageMin": 65,
+                        "ageMax": 999,
+                        "description": "65 år och äldre (med guldmärke)",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 36
+                          },
+                          "B": {
+                            "min": 37
+                          },
+                          "C": {
+                            "min": 38
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "or": [
+                      {
+                        "type": "application_series",
+                        "description": "3 tillämpningsserier för årtalsmärke",
+                        "minAchievements": 3,
+                        "timeWindowYears": 1,
+                        "thresholds": {
+                          "A": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 17
+                          },
+                          "B": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 15
+                          },
+                          "C": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 15
+                          },
+                          "R": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 17
+                          }
+                        },
+                        "ageCategories": [
+                          {
+                            "name": "under_65",
+                            "ageMin": 0,
+                            "ageMax": 64,
+                            "description": "Under 65 år",
+                            "thresholds": {
+                              "A": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 17
+                              },
+                              "B": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 15
+                              },
+                              "C": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 15
+                              },
+                              "R": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 17
+                              }
+                            }
+                          },
+                          {
+                            "name": "age_65_plus",
+                            "ageMin": 65,
+                            "ageMax": 999,
+                            "description": "65 år och äldre (med guldmärke)",
+                            "thresholds": {
+                              "A": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "B": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "C": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "R": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "standard_medal",
+                        "description": "Minst en standardmedalj i fält (brons)",
+                        "disciplineType": "field",
+                        "minAchievements": 1,
+                        "timeWindowYears": 1
+                      }
+                    ]
+                  }
+                ]
               },
               {
                 "type": "cumulative_competition_score",
@@ -589,36 +717,164 @@
           "perYear": {
             "or": [
               {
-                "type": "sustained_reference",
-                "description": "Ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
-                "references": {
-                  "when": [
-                    {
-                      "if": {
-                        "age": {
-                          "gte": 66
-                        }
+                "and": [
+                  {
+                    "type": "precision_series",
+                    "description": "3 precisionsserier för årtalsmärke",
+                    "minAchievements": 3,
+                    "timeWindowYears": 1,
+                    "seriesType": "precision",
+                    "pointThresholds": {
+                      "A": {
+                        "min": 43
                       },
-                      "refs": [
-                        {
-                          "medalId": "pistol-mark-silver"
-                        }
-                      ]
+                      "B": {
+                        "min": 45
+                      },
+                      "C": {
+                        "min": 46
+                      }
                     },
-                    {
-                      "if": {
-                        "age": {
-                          "lt": 65
+                    "ageCategories": [
+                      {
+                        "name": "under_55",
+                        "ageMin": 0,
+                        "ageMax": 54,
+                        "description": "Under 55 år",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 43
+                          },
+                          "B": {
+                            "min": 45
+                          },
+                          "C": {
+                            "min": 46
+                          }
                         }
                       },
-                      "refs": [
-                        {
-                          "medalId": "pistol-mark-gold"
+                      {
+                        "name": "age_55_64",
+                        "ageMin": 55,
+                        "ageMax": 64,
+                        "description": "55 till 64 år",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 42
+                          },
+                          "B": {
+                            "min": 44
+                          },
+                          "C": {
+                            "min": 45
+                          }
                         }
-                      ]
-                    }
-                  ]
-                }
+                      },
+                      {
+                        "name": "age_65_plus",
+                        "ageMin": 65,
+                        "ageMax": 999,
+                        "description": "65 år och äldre (med guldmärke)",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 36
+                          },
+                          "B": {
+                            "min": 37
+                          },
+                          "C": {
+                            "min": 38
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "or": [
+                      {
+                        "type": "application_series",
+                        "description": "3 tillämpningsserier för årtalsmärke",
+                        "minAchievements": 3,
+                        "timeWindowYears": 1,
+                        "thresholds": {
+                          "A": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 17
+                          },
+                          "B": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 15
+                          },
+                          "C": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 15
+                          },
+                          "R": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 17
+                          }
+                        },
+                        "ageCategories": [
+                          {
+                            "name": "under_65",
+                            "ageMin": 0,
+                            "ageMax": 64,
+                            "description": "Under 65 år",
+                            "thresholds": {
+                              "A": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 17
+                              },
+                              "B": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 15
+                              },
+                              "C": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 15
+                              },
+                              "R": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 17
+                              }
+                            }
+                          },
+                          {
+                            "name": "age_65_plus",
+                            "ageMin": 65,
+                            "ageMax": 999,
+                            "description": "65 år och äldre (med guldmärke)",
+                            "thresholds": {
+                              "A": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "B": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "C": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "R": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "standard_medal",
+                        "description": "Minst en standardmedalj i fält (brons)",
+                        "disciplineType": "field",
+                        "minAchievements": 1,
+                        "timeWindowYears": 1
+                      }
+                    ]
+                  }
+                ]
               },
               {
                 "type": "cumulative_competition_score",
@@ -730,36 +986,164 @@
           "perYear": {
             "or": [
               {
-                "type": "sustained_reference",
-                "description": "Ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
-                "references": {
-                  "when": [
-                    {
-                      "if": {
-                        "age": {
-                          "gte": 66
-                        }
+                "and": [
+                  {
+                    "type": "precision_series",
+                    "description": "3 precisionsserier för årtalsmärke",
+                    "minAchievements": 3,
+                    "timeWindowYears": 1,
+                    "seriesType": "precision",
+                    "pointThresholds": {
+                      "A": {
+                        "min": 43
                       },
-                      "refs": [
-                        {
-                          "medalId": "pistol-mark-silver"
-                        }
-                      ]
+                      "B": {
+                        "min": 45
+                      },
+                      "C": {
+                        "min": 46
+                      }
                     },
-                    {
-                      "if": {
-                        "age": {
-                          "lt": 65
+                    "ageCategories": [
+                      {
+                        "name": "under_55",
+                        "ageMin": 0,
+                        "ageMax": 54,
+                        "description": "Under 55 år",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 43
+                          },
+                          "B": {
+                            "min": 45
+                          },
+                          "C": {
+                            "min": 46
+                          }
                         }
                       },
-                      "refs": [
-                        {
-                          "medalId": "pistol-mark-gold"
+                      {
+                        "name": "age_55_64",
+                        "ageMin": 55,
+                        "ageMax": 64,
+                        "description": "55 till 64 år",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 42
+                          },
+                          "B": {
+                            "min": 44
+                          },
+                          "C": {
+                            "min": 45
+                          }
                         }
-                      ]
-                    }
-                  ]
-                }
+                      },
+                      {
+                        "name": "age_65_plus",
+                        "ageMin": 65,
+                        "ageMax": 999,
+                        "description": "65 år och äldre (med guldmärke)",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 36
+                          },
+                          "B": {
+                            "min": 37
+                          },
+                          "C": {
+                            "min": 38
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "or": [
+                      {
+                        "type": "application_series",
+                        "description": "3 tillämpningsserier för årtalsmärke",
+                        "minAchievements": 3,
+                        "timeWindowYears": 1,
+                        "thresholds": {
+                          "A": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 17
+                          },
+                          "B": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 15
+                          },
+                          "C": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 15
+                          },
+                          "R": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 17
+                          }
+                        },
+                        "ageCategories": [
+                          {
+                            "name": "under_65",
+                            "ageMin": 0,
+                            "ageMax": 64,
+                            "description": "Under 65 år",
+                            "thresholds": {
+                              "A": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 17
+                              },
+                              "B": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 15
+                              },
+                              "C": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 15
+                              },
+                              "R": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 17
+                              }
+                            }
+                          },
+                          {
+                            "name": "age_65_plus",
+                            "ageMin": 65,
+                            "ageMax": 999,
+                            "description": "65 år och äldre (med guldmärke)",
+                            "thresholds": {
+                              "A": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "B": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "C": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "R": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "standard_medal",
+                        "description": "Minst en standardmedalj i fält (brons)",
+                        "disciplineType": "field",
+                        "minAchievements": 1,
+                        "timeWindowYears": 1
+                      }
+                    ]
+                  }
+                ]
               },
               {
                 "type": "cumulative_competition_score",
@@ -871,36 +1255,164 @@
           "perYear": {
             "or": [
               {
-                "type": "sustained_reference",
-                "description": "Ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
-                "references": {
-                  "when": [
-                    {
-                      "if": {
-                        "age": {
-                          "gte": 66
-                        }
+                "and": [
+                  {
+                    "type": "precision_series",
+                    "description": "3 precisionsserier för årtalsmärke",
+                    "minAchievements": 3,
+                    "timeWindowYears": 1,
+                    "seriesType": "precision",
+                    "pointThresholds": {
+                      "A": {
+                        "min": 43
                       },
-                      "refs": [
-                        {
-                          "medalId": "pistol-mark-silver"
-                        }
-                      ]
+                      "B": {
+                        "min": 45
+                      },
+                      "C": {
+                        "min": 46
+                      }
                     },
-                    {
-                      "if": {
-                        "age": {
-                          "lt": 65
+                    "ageCategories": [
+                      {
+                        "name": "under_55",
+                        "ageMin": 0,
+                        "ageMax": 54,
+                        "description": "Under 55 år",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 43
+                          },
+                          "B": {
+                            "min": 45
+                          },
+                          "C": {
+                            "min": 46
+                          }
                         }
                       },
-                      "refs": [
-                        {
-                          "medalId": "pistol-mark-gold"
+                      {
+                        "name": "age_55_64",
+                        "ageMin": 55,
+                        "ageMax": 64,
+                        "description": "55 till 64 år",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 42
+                          },
+                          "B": {
+                            "min": 44
+                          },
+                          "C": {
+                            "min": 45
+                          }
                         }
-                      ]
-                    }
-                  ]
-                }
+                      },
+                      {
+                        "name": "age_65_plus",
+                        "ageMin": 65,
+                        "ageMax": 999,
+                        "description": "65 år och äldre (med guldmärke)",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 36
+                          },
+                          "B": {
+                            "min": 37
+                          },
+                          "C": {
+                            "min": 38
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "or": [
+                      {
+                        "type": "application_series",
+                        "description": "3 tillämpningsserier för årtalsmärke",
+                        "minAchievements": 3,
+                        "timeWindowYears": 1,
+                        "thresholds": {
+                          "A": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 17
+                          },
+                          "B": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 15
+                          },
+                          "C": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 15
+                          },
+                          "R": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 17
+                          }
+                        },
+                        "ageCategories": [
+                          {
+                            "name": "under_65",
+                            "ageMin": 0,
+                            "ageMax": 64,
+                            "description": "Under 65 år",
+                            "thresholds": {
+                              "A": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 17
+                              },
+                              "B": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 15
+                              },
+                              "C": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 15
+                              },
+                              "R": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 17
+                              }
+                            }
+                          },
+                          {
+                            "name": "age_65_plus",
+                            "ageMin": 65,
+                            "ageMax": 999,
+                            "description": "65 år och äldre (med guldmärke)",
+                            "thresholds": {
+                              "A": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "B": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "C": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "R": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "standard_medal",
+                        "description": "Minst en standardmedalj i fält (brons)",
+                        "disciplineType": "field",
+                        "minAchievements": 1,
+                        "timeWindowYears": 1
+                      }
+                    ]
+                  }
+                ]
               },
               {
                 "type": "cumulative_competition_score",
@@ -1012,36 +1524,164 @@
           "perYear": {
             "or": [
               {
-                "type": "sustained_reference",
-                "description": "Ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
-                "references": {
-                  "when": [
-                    {
-                      "if": {
-                        "age": {
-                          "gte": 66
-                        }
+                "and": [
+                  {
+                    "type": "precision_series",
+                    "description": "3 precisionsserier för årtalsmärke",
+                    "minAchievements": 3,
+                    "timeWindowYears": 1,
+                    "seriesType": "precision",
+                    "pointThresholds": {
+                      "A": {
+                        "min": 43
                       },
-                      "refs": [
-                        {
-                          "medalId": "pistol-mark-silver"
-                        }
-                      ]
+                      "B": {
+                        "min": 45
+                      },
+                      "C": {
+                        "min": 46
+                      }
                     },
-                    {
-                      "if": {
-                        "age": {
-                          "lt": 65
+                    "ageCategories": [
+                      {
+                        "name": "under_55",
+                        "ageMin": 0,
+                        "ageMax": 54,
+                        "description": "Under 55 år",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 43
+                          },
+                          "B": {
+                            "min": 45
+                          },
+                          "C": {
+                            "min": 46
+                          }
                         }
                       },
-                      "refs": [
-                        {
-                          "medalId": "pistol-mark-gold"
+                      {
+                        "name": "age_55_64",
+                        "ageMin": 55,
+                        "ageMax": 64,
+                        "description": "55 till 64 år",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 42
+                          },
+                          "B": {
+                            "min": 44
+                          },
+                          "C": {
+                            "min": 45
+                          }
                         }
-                      ]
-                    }
-                  ]
-                }
+                      },
+                      {
+                        "name": "age_65_plus",
+                        "ageMin": 65,
+                        "ageMax": 999,
+                        "description": "65 år och äldre (med guldmärke)",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 36
+                          },
+                          "B": {
+                            "min": 37
+                          },
+                          "C": {
+                            "min": 38
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "or": [
+                      {
+                        "type": "application_series",
+                        "description": "3 tillämpningsserier för årtalsmärke",
+                        "minAchievements": 3,
+                        "timeWindowYears": 1,
+                        "thresholds": {
+                          "A": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 17
+                          },
+                          "B": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 15
+                          },
+                          "C": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 15
+                          },
+                          "R": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 17
+                          }
+                        },
+                        "ageCategories": [
+                          {
+                            "name": "under_65",
+                            "ageMin": 0,
+                            "ageMax": 64,
+                            "description": "Under 65 år",
+                            "thresholds": {
+                              "A": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 17
+                              },
+                              "B": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 15
+                              },
+                              "C": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 15
+                              },
+                              "R": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 17
+                              }
+                            }
+                          },
+                          {
+                            "name": "age_65_plus",
+                            "ageMin": 65,
+                            "ageMax": 999,
+                            "description": "65 år och äldre (med guldmärke)",
+                            "thresholds": {
+                              "A": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "B": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "C": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "R": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "standard_medal",
+                        "description": "Minst en standardmedalj i fält (brons)",
+                        "disciplineType": "field",
+                        "minAchievements": 1,
+                        "timeWindowYears": 1
+                      }
+                    ]
+                  }
+                ]
               },
               {
                 "type": "cumulative_competition_score",
@@ -1153,36 +1793,164 @@
           "perYear": {
             "or": [
               {
-                "type": "sustained_reference",
-                "description": "Ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
-                "references": {
-                  "when": [
-                    {
-                      "if": {
-                        "age": {
-                          "gte": 66
-                        }
+                "and": [
+                  {
+                    "type": "precision_series",
+                    "description": "3 precisionsserier för årtalsmärke",
+                    "minAchievements": 3,
+                    "timeWindowYears": 1,
+                    "seriesType": "precision",
+                    "pointThresholds": {
+                      "A": {
+                        "min": 43
                       },
-                      "refs": [
-                        {
-                          "medalId": "pistol-mark-silver"
-                        }
-                      ]
+                      "B": {
+                        "min": 45
+                      },
+                      "C": {
+                        "min": 46
+                      }
                     },
-                    {
-                      "if": {
-                        "age": {
-                          "lt": 65
+                    "ageCategories": [
+                      {
+                        "name": "under_55",
+                        "ageMin": 0,
+                        "ageMax": 54,
+                        "description": "Under 55 år",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 43
+                          },
+                          "B": {
+                            "min": 45
+                          },
+                          "C": {
+                            "min": 46
+                          }
                         }
                       },
-                      "refs": [
-                        {
-                          "medalId": "pistol-mark-gold"
+                      {
+                        "name": "age_55_64",
+                        "ageMin": 55,
+                        "ageMax": 64,
+                        "description": "55 till 64 år",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 42
+                          },
+                          "B": {
+                            "min": 44
+                          },
+                          "C": {
+                            "min": 45
+                          }
                         }
-                      ]
-                    }
-                  ]
-                }
+                      },
+                      {
+                        "name": "age_65_plus",
+                        "ageMin": 65,
+                        "ageMax": 999,
+                        "description": "65 år och äldre (med guldmärke)",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 36
+                          },
+                          "B": {
+                            "min": 37
+                          },
+                          "C": {
+                            "min": 38
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "or": [
+                      {
+                        "type": "application_series",
+                        "description": "3 tillämpningsserier för årtalsmärke",
+                        "minAchievements": 3,
+                        "timeWindowYears": 1,
+                        "thresholds": {
+                          "A": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 17
+                          },
+                          "B": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 15
+                          },
+                          "C": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 15
+                          },
+                          "R": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 17
+                          }
+                        },
+                        "ageCategories": [
+                          {
+                            "name": "under_65",
+                            "ageMin": 0,
+                            "ageMax": 64,
+                            "description": "Under 65 år",
+                            "thresholds": {
+                              "A": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 17
+                              },
+                              "B": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 15
+                              },
+                              "C": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 15
+                              },
+                              "R": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 17
+                              }
+                            }
+                          },
+                          {
+                            "name": "age_65_plus",
+                            "ageMin": 65,
+                            "ageMax": 999,
+                            "description": "65 år och äldre (med guldmärke)",
+                            "thresholds": {
+                              "A": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "B": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "C": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "R": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "standard_medal",
+                        "description": "Minst en standardmedalj i fält (brons)",
+                        "disciplineType": "field",
+                        "minAchievements": 1,
+                        "timeWindowYears": 1
+                      }
+                    ]
+                  }
+                ]
               },
               {
                 "type": "cumulative_competition_score",
@@ -1294,36 +2062,164 @@
           "perYear": {
             "or": [
               {
-                "type": "sustained_reference",
-                "description": "Ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
-                "references": {
-                  "when": [
-                    {
-                      "if": {
-                        "age": {
-                          "gte": 66
-                        }
+                "and": [
+                  {
+                    "type": "precision_series",
+                    "description": "3 precisionsserier för årtalsmärke",
+                    "minAchievements": 3,
+                    "timeWindowYears": 1,
+                    "seriesType": "precision",
+                    "pointThresholds": {
+                      "A": {
+                        "min": 43
                       },
-                      "refs": [
-                        {
-                          "medalId": "pistol-mark-silver"
-                        }
-                      ]
+                      "B": {
+                        "min": 45
+                      },
+                      "C": {
+                        "min": 46
+                      }
                     },
-                    {
-                      "if": {
-                        "age": {
-                          "lt": 65
+                    "ageCategories": [
+                      {
+                        "name": "under_55",
+                        "ageMin": 0,
+                        "ageMax": 54,
+                        "description": "Under 55 år",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 43
+                          },
+                          "B": {
+                            "min": 45
+                          },
+                          "C": {
+                            "min": 46
+                          }
                         }
                       },
-                      "refs": [
-                        {
-                          "medalId": "pistol-mark-gold"
+                      {
+                        "name": "age_55_64",
+                        "ageMin": 55,
+                        "ageMax": 64,
+                        "description": "55 till 64 år",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 42
+                          },
+                          "B": {
+                            "min": 44
+                          },
+                          "C": {
+                            "min": 45
+                          }
                         }
-                      ]
-                    }
-                  ]
-                }
+                      },
+                      {
+                        "name": "age_65_plus",
+                        "ageMin": 65,
+                        "ageMax": 999,
+                        "description": "65 år och äldre (med guldmärke)",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 36
+                          },
+                          "B": {
+                            "min": 37
+                          },
+                          "C": {
+                            "min": 38
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "or": [
+                      {
+                        "type": "application_series",
+                        "description": "3 tillämpningsserier för årtalsmärke",
+                        "minAchievements": 3,
+                        "timeWindowYears": 1,
+                        "thresholds": {
+                          "A": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 17
+                          },
+                          "B": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 15
+                          },
+                          "C": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 15
+                          },
+                          "R": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 17
+                          }
+                        },
+                        "ageCategories": [
+                          {
+                            "name": "under_65",
+                            "ageMin": 0,
+                            "ageMax": 64,
+                            "description": "Under 65 år",
+                            "thresholds": {
+                              "A": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 17
+                              },
+                              "B": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 15
+                              },
+                              "C": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 15
+                              },
+                              "R": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 17
+                              }
+                            }
+                          },
+                          {
+                            "name": "age_65_plus",
+                            "ageMin": 65,
+                            "ageMax": 999,
+                            "description": "65 år och äldre (med guldmärke)",
+                            "thresholds": {
+                              "A": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "B": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "C": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "R": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "standard_medal",
+                        "description": "Minst en standardmedalj i fält (brons)",
+                        "disciplineType": "field",
+                        "minAchievements": 1,
+                        "timeWindowYears": 1
+                      }
+                    ]
+                  }
+                ]
               },
               {
                 "type": "cumulative_competition_score",
@@ -1435,36 +2331,164 @@
           "perYear": {
             "or": [
               {
-                "type": "sustained_reference",
-                "description": "Ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
-                "references": {
-                  "when": [
-                    {
-                      "if": {
-                        "age": {
-                          "gte": 66
-                        }
+                "and": [
+                  {
+                    "type": "precision_series",
+                    "description": "3 precisionsserier för årtalsmärke",
+                    "minAchievements": 3,
+                    "timeWindowYears": 1,
+                    "seriesType": "precision",
+                    "pointThresholds": {
+                      "A": {
+                        "min": 43
                       },
-                      "refs": [
-                        {
-                          "medalId": "pistol-mark-silver"
-                        }
-                      ]
+                      "B": {
+                        "min": 45
+                      },
+                      "C": {
+                        "min": 46
+                      }
                     },
-                    {
-                      "if": {
-                        "age": {
-                          "lt": 65
+                    "ageCategories": [
+                      {
+                        "name": "under_55",
+                        "ageMin": 0,
+                        "ageMax": 54,
+                        "description": "Under 55 år",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 43
+                          },
+                          "B": {
+                            "min": 45
+                          },
+                          "C": {
+                            "min": 46
+                          }
                         }
                       },
-                      "refs": [
-                        {
-                          "medalId": "pistol-mark-gold"
+                      {
+                        "name": "age_55_64",
+                        "ageMin": 55,
+                        "ageMax": 64,
+                        "description": "55 till 64 år",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 42
+                          },
+                          "B": {
+                            "min": 44
+                          },
+                          "C": {
+                            "min": 45
+                          }
                         }
-                      ]
-                    }
-                  ]
-                }
+                      },
+                      {
+                        "name": "age_65_plus",
+                        "ageMin": 65,
+                        "ageMax": 999,
+                        "description": "65 år och äldre (med guldmärke)",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 36
+                          },
+                          "B": {
+                            "min": 37
+                          },
+                          "C": {
+                            "min": 38
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "or": [
+                      {
+                        "type": "application_series",
+                        "description": "3 tillämpningsserier för årtalsmärke",
+                        "minAchievements": 3,
+                        "timeWindowYears": 1,
+                        "thresholds": {
+                          "A": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 17
+                          },
+                          "B": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 15
+                          },
+                          "C": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 15
+                          },
+                          "R": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 17
+                          }
+                        },
+                        "ageCategories": [
+                          {
+                            "name": "under_65",
+                            "ageMin": 0,
+                            "ageMax": 64,
+                            "description": "Under 65 år",
+                            "thresholds": {
+                              "A": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 17
+                              },
+                              "B": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 15
+                              },
+                              "C": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 15
+                              },
+                              "R": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 17
+                              }
+                            }
+                          },
+                          {
+                            "name": "age_65_plus",
+                            "ageMin": 65,
+                            "ageMax": 999,
+                            "description": "65 år och äldre (med guldmärke)",
+                            "thresholds": {
+                              "A": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "B": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "C": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "R": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "standard_medal",
+                        "description": "Minst en standardmedalj i fält (brons)",
+                        "disciplineType": "field",
+                        "minAchievements": 1,
+                        "timeWindowYears": 1
+                      }
+                    ]
+                  }
+                ]
               },
               {
                 "type": "cumulative_competition_score",
@@ -1576,36 +2600,164 @@
           "perYear": {
             "or": [
               {
-                "type": "sustained_reference",
-                "description": "Ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
-                "references": {
-                  "when": [
-                    {
-                      "if": {
-                        "age": {
-                          "gte": 66
-                        }
+                "and": [
+                  {
+                    "type": "precision_series",
+                    "description": "3 precisionsserier för årtalsmärke",
+                    "minAchievements": 3,
+                    "timeWindowYears": 1,
+                    "seriesType": "precision",
+                    "pointThresholds": {
+                      "A": {
+                        "min": 43
                       },
-                      "refs": [
-                        {
-                          "medalId": "pistol-mark-silver"
-                        }
-                      ]
+                      "B": {
+                        "min": 45
+                      },
+                      "C": {
+                        "min": 46
+                      }
                     },
-                    {
-                      "if": {
-                        "age": {
-                          "lt": 65
+                    "ageCategories": [
+                      {
+                        "name": "under_55",
+                        "ageMin": 0,
+                        "ageMax": 54,
+                        "description": "Under 55 år",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 43
+                          },
+                          "B": {
+                            "min": 45
+                          },
+                          "C": {
+                            "min": 46
+                          }
                         }
                       },
-                      "refs": [
-                        {
-                          "medalId": "pistol-mark-gold"
+                      {
+                        "name": "age_55_64",
+                        "ageMin": 55,
+                        "ageMax": 64,
+                        "description": "55 till 64 år",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 42
+                          },
+                          "B": {
+                            "min": 44
+                          },
+                          "C": {
+                            "min": 45
+                          }
                         }
-                      ]
-                    }
-                  ]
-                }
+                      },
+                      {
+                        "name": "age_65_plus",
+                        "ageMin": 65,
+                        "ageMax": 999,
+                        "description": "65 år och äldre (med guldmärke)",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 36
+                          },
+                          "B": {
+                            "min": 37
+                          },
+                          "C": {
+                            "min": 38
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "or": [
+                      {
+                        "type": "application_series",
+                        "description": "3 tillämpningsserier för årtalsmärke",
+                        "minAchievements": 3,
+                        "timeWindowYears": 1,
+                        "thresholds": {
+                          "A": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 17
+                          },
+                          "B": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 15
+                          },
+                          "C": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 15
+                          },
+                          "R": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 17
+                          }
+                        },
+                        "ageCategories": [
+                          {
+                            "name": "under_65",
+                            "ageMin": 0,
+                            "ageMax": 64,
+                            "description": "Under 65 år",
+                            "thresholds": {
+                              "A": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 17
+                              },
+                              "B": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 15
+                              },
+                              "C": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 15
+                              },
+                              "R": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 17
+                              }
+                            }
+                          },
+                          {
+                            "name": "age_65_plus",
+                            "ageMin": 65,
+                            "ageMax": 999,
+                            "description": "65 år och äldre (med guldmärke)",
+                            "thresholds": {
+                              "A": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "B": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "C": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "R": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "standard_medal",
+                        "description": "Minst en standardmedalj i fält (brons)",
+                        "disciplineType": "field",
+                        "minAchievements": 1,
+                        "timeWindowYears": 1
+                      }
+                    ]
+                  }
+                ]
               },
               {
                 "type": "cumulative_competition_score",
@@ -1717,36 +2869,164 @@
           "perYear": {
             "or": [
               {
-                "type": "sustained_reference",
-                "description": "Ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
-                "references": {
-                  "when": [
-                    {
-                      "if": {
-                        "age": {
-                          "gte": 66
-                        }
+                "and": [
+                  {
+                    "type": "precision_series",
+                    "description": "3 precisionsserier för årtalsmärke",
+                    "minAchievements": 3,
+                    "timeWindowYears": 1,
+                    "seriesType": "precision",
+                    "pointThresholds": {
+                      "A": {
+                        "min": 43
                       },
-                      "refs": [
-                        {
-                          "medalId": "pistol-mark-silver"
-                        }
-                      ]
+                      "B": {
+                        "min": 45
+                      },
+                      "C": {
+                        "min": 46
+                      }
                     },
-                    {
-                      "if": {
-                        "age": {
-                          "lt": 65
+                    "ageCategories": [
+                      {
+                        "name": "under_55",
+                        "ageMin": 0,
+                        "ageMax": 54,
+                        "description": "Under 55 år",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 43
+                          },
+                          "B": {
+                            "min": 45
+                          },
+                          "C": {
+                            "min": 46
+                          }
                         }
                       },
-                      "refs": [
-                        {
-                          "medalId": "pistol-mark-gold"
+                      {
+                        "name": "age_55_64",
+                        "ageMin": 55,
+                        "ageMax": 64,
+                        "description": "55 till 64 år",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 42
+                          },
+                          "B": {
+                            "min": 44
+                          },
+                          "C": {
+                            "min": 45
+                          }
                         }
-                      ]
-                    }
-                  ]
-                }
+                      },
+                      {
+                        "name": "age_65_plus",
+                        "ageMin": 65,
+                        "ageMax": 999,
+                        "description": "65 år och äldre (med guldmärke)",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 36
+                          },
+                          "B": {
+                            "min": 37
+                          },
+                          "C": {
+                            "min": 38
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "or": [
+                      {
+                        "type": "application_series",
+                        "description": "3 tillämpningsserier för årtalsmärke",
+                        "minAchievements": 3,
+                        "timeWindowYears": 1,
+                        "thresholds": {
+                          "A": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 17
+                          },
+                          "B": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 15
+                          },
+                          "C": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 15
+                          },
+                          "R": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 17
+                          }
+                        },
+                        "ageCategories": [
+                          {
+                            "name": "under_65",
+                            "ageMin": 0,
+                            "ageMax": 64,
+                            "description": "Under 65 år",
+                            "thresholds": {
+                              "A": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 17
+                              },
+                              "B": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 15
+                              },
+                              "C": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 15
+                              },
+                              "R": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 17
+                              }
+                            }
+                          },
+                          {
+                            "name": "age_65_plus",
+                            "ageMin": 65,
+                            "ageMax": 999,
+                            "description": "65 år och äldre (med guldmärke)",
+                            "thresholds": {
+                              "A": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "B": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "C": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "R": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "standard_medal",
+                        "description": "Minst en standardmedalj i fält (brons)",
+                        "disciplineType": "field",
+                        "minAchievements": 1,
+                        "timeWindowYears": 1
+                      }
+                    ]
+                  }
+                ]
               },
               {
                 "type": "cumulative_competition_score",
@@ -1858,36 +3138,164 @@
           "perYear": {
             "or": [
               {
-                "type": "sustained_reference",
-                "description": "Ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
-                "references": {
-                  "when": [
-                    {
-                      "if": {
-                        "age": {
-                          "gte": 66
-                        }
+                "and": [
+                  {
+                    "type": "precision_series",
+                    "description": "3 precisionsserier för årtalsmärke",
+                    "minAchievements": 3,
+                    "timeWindowYears": 1,
+                    "seriesType": "precision",
+                    "pointThresholds": {
+                      "A": {
+                        "min": 43
                       },
-                      "refs": [
-                        {
-                          "medalId": "pistol-mark-silver"
-                        }
-                      ]
+                      "B": {
+                        "min": 45
+                      },
+                      "C": {
+                        "min": 46
+                      }
                     },
-                    {
-                      "if": {
-                        "age": {
-                          "lt": 65
+                    "ageCategories": [
+                      {
+                        "name": "under_55",
+                        "ageMin": 0,
+                        "ageMax": 54,
+                        "description": "Under 55 år",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 43
+                          },
+                          "B": {
+                            "min": 45
+                          },
+                          "C": {
+                            "min": 46
+                          }
                         }
                       },
-                      "refs": [
-                        {
-                          "medalId": "pistol-mark-gold"
+                      {
+                        "name": "age_55_64",
+                        "ageMin": 55,
+                        "ageMax": 64,
+                        "description": "55 till 64 år",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 42
+                          },
+                          "B": {
+                            "min": 44
+                          },
+                          "C": {
+                            "min": 45
+                          }
                         }
-                      ]
-                    }
-                  ]
-                }
+                      },
+                      {
+                        "name": "age_65_plus",
+                        "ageMin": 65,
+                        "ageMax": 999,
+                        "description": "65 år och äldre (med guldmärke)",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 36
+                          },
+                          "B": {
+                            "min": 37
+                          },
+                          "C": {
+                            "min": 38
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "or": [
+                      {
+                        "type": "application_series",
+                        "description": "3 tillämpningsserier för årtalsmärke",
+                        "minAchievements": 3,
+                        "timeWindowYears": 1,
+                        "thresholds": {
+                          "A": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 17
+                          },
+                          "B": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 15
+                          },
+                          "C": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 15
+                          },
+                          "R": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 17
+                          }
+                        },
+                        "ageCategories": [
+                          {
+                            "name": "under_65",
+                            "ageMin": 0,
+                            "ageMax": 64,
+                            "description": "Under 65 år",
+                            "thresholds": {
+                              "A": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 17
+                              },
+                              "B": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 15
+                              },
+                              "C": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 15
+                              },
+                              "R": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 17
+                              }
+                            }
+                          },
+                          {
+                            "name": "age_65_plus",
+                            "ageMin": 65,
+                            "ageMax": 999,
+                            "description": "65 år och äldre (med guldmärke)",
+                            "thresholds": {
+                              "A": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "B": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "C": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "R": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "standard_medal",
+                        "description": "Minst en standardmedalj i fält (brons)",
+                        "disciplineType": "field",
+                        "minAchievements": 1,
+                        "timeWindowYears": 1
+                      }
+                    ]
+                  }
+                ]
               },
               {
                 "type": "cumulative_competition_score",
@@ -1999,36 +3407,164 @@
           "perYear": {
             "or": [
               {
-                "type": "sustained_reference",
-                "description": "Ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
-                "references": {
-                  "when": [
-                    {
-                      "if": {
-                        "age": {
-                          "gte": 66
-                        }
+                "and": [
+                  {
+                    "type": "precision_series",
+                    "description": "3 precisionsserier för årtalsmärke",
+                    "minAchievements": 3,
+                    "timeWindowYears": 1,
+                    "seriesType": "precision",
+                    "pointThresholds": {
+                      "A": {
+                        "min": 43
                       },
-                      "refs": [
-                        {
-                          "medalId": "pistol-mark-silver"
-                        }
-                      ]
+                      "B": {
+                        "min": 45
+                      },
+                      "C": {
+                        "min": 46
+                      }
                     },
-                    {
-                      "if": {
-                        "age": {
-                          "lt": 65
+                    "ageCategories": [
+                      {
+                        "name": "under_55",
+                        "ageMin": 0,
+                        "ageMax": 54,
+                        "description": "Under 55 år",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 43
+                          },
+                          "B": {
+                            "min": 45
+                          },
+                          "C": {
+                            "min": 46
+                          }
                         }
                       },
-                      "refs": [
-                        {
-                          "medalId": "pistol-mark-gold"
+                      {
+                        "name": "age_55_64",
+                        "ageMin": 55,
+                        "ageMax": 64,
+                        "description": "55 till 64 år",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 42
+                          },
+                          "B": {
+                            "min": 44
+                          },
+                          "C": {
+                            "min": 45
+                          }
                         }
-                      ]
-                    }
-                  ]
-                }
+                      },
+                      {
+                        "name": "age_65_plus",
+                        "ageMin": 65,
+                        "ageMax": 999,
+                        "description": "65 år och äldre (med guldmärke)",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 36
+                          },
+                          "B": {
+                            "min": 37
+                          },
+                          "C": {
+                            "min": 38
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "or": [
+                      {
+                        "type": "application_series",
+                        "description": "3 tillämpningsserier för årtalsmärke",
+                        "minAchievements": 3,
+                        "timeWindowYears": 1,
+                        "thresholds": {
+                          "A": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 17
+                          },
+                          "B": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 15
+                          },
+                          "C": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 15
+                          },
+                          "R": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 17
+                          }
+                        },
+                        "ageCategories": [
+                          {
+                            "name": "under_65",
+                            "ageMin": 0,
+                            "ageMax": 64,
+                            "description": "Under 65 år",
+                            "thresholds": {
+                              "A": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 17
+                              },
+                              "B": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 15
+                              },
+                              "C": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 15
+                              },
+                              "R": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 17
+                              }
+                            }
+                          },
+                          {
+                            "name": "age_65_plus",
+                            "ageMin": 65,
+                            "ageMax": 999,
+                            "description": "65 år och äldre (med guldmärke)",
+                            "thresholds": {
+                              "A": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "B": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "C": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "R": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "standard_medal",
+                        "description": "Minst en standardmedalj i fält (brons)",
+                        "disciplineType": "field",
+                        "minAchievements": 1,
+                        "timeWindowYears": 1
+                      }
+                    ]
+                  }
+                ]
               },
               {
                 "type": "cumulative_competition_score",
@@ -2140,36 +3676,164 @@
           "perYear": {
             "or": [
               {
-                "type": "sustained_reference",
-                "description": "Ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
-                "references": {
-                  "when": [
-                    {
-                      "if": {
-                        "age": {
-                          "gte": 66
-                        }
+                "and": [
+                  {
+                    "type": "precision_series",
+                    "description": "3 precisionsserier för årtalsmärke",
+                    "minAchievements": 3,
+                    "timeWindowYears": 1,
+                    "seriesType": "precision",
+                    "pointThresholds": {
+                      "A": {
+                        "min": 43
                       },
-                      "refs": [
-                        {
-                          "medalId": "pistol-mark-silver"
-                        }
-                      ]
+                      "B": {
+                        "min": 45
+                      },
+                      "C": {
+                        "min": 46
+                      }
                     },
-                    {
-                      "if": {
-                        "age": {
-                          "lt": 65
+                    "ageCategories": [
+                      {
+                        "name": "under_55",
+                        "ageMin": 0,
+                        "ageMax": 54,
+                        "description": "Under 55 år",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 43
+                          },
+                          "B": {
+                            "min": 45
+                          },
+                          "C": {
+                            "min": 46
+                          }
                         }
                       },
-                      "refs": [
-                        {
-                          "medalId": "pistol-mark-gold"
+                      {
+                        "name": "age_55_64",
+                        "ageMin": 55,
+                        "ageMax": 64,
+                        "description": "55 till 64 år",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 42
+                          },
+                          "B": {
+                            "min": 44
+                          },
+                          "C": {
+                            "min": 45
+                          }
                         }
-                      ]
-                    }
-                  ]
-                }
+                      },
+                      {
+                        "name": "age_65_plus",
+                        "ageMin": 65,
+                        "ageMax": 999,
+                        "description": "65 år och äldre (med guldmärke)",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 36
+                          },
+                          "B": {
+                            "min": 37
+                          },
+                          "C": {
+                            "min": 38
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "or": [
+                      {
+                        "type": "application_series",
+                        "description": "3 tillämpningsserier för årtalsmärke",
+                        "minAchievements": 3,
+                        "timeWindowYears": 1,
+                        "thresholds": {
+                          "A": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 17
+                          },
+                          "B": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 15
+                          },
+                          "C": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 15
+                          },
+                          "R": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 17
+                          }
+                        },
+                        "ageCategories": [
+                          {
+                            "name": "under_65",
+                            "ageMin": 0,
+                            "ageMax": 64,
+                            "description": "Under 65 år",
+                            "thresholds": {
+                              "A": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 17
+                              },
+                              "B": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 15
+                              },
+                              "C": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 15
+                              },
+                              "R": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 17
+                              }
+                            }
+                          },
+                          {
+                            "name": "age_65_plus",
+                            "ageMin": 65,
+                            "ageMax": 999,
+                            "description": "65 år och äldre (med guldmärke)",
+                            "thresholds": {
+                              "A": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "B": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "C": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "R": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "standard_medal",
+                        "description": "Minst en standardmedalj i fält (brons)",
+                        "disciplineType": "field",
+                        "minAchievements": 1,
+                        "timeWindowYears": 1
+                      }
+                    ]
+                  }
+                ]
               },
               {
                 "type": "cumulative_competition_score",
@@ -2281,36 +3945,164 @@
           "perYear": {
             "or": [
               {
-                "type": "sustained_reference",
-                "description": "Ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
-                "references": {
-                  "when": [
-                    {
-                      "if": {
-                        "age": {
-                          "gte": 66
-                        }
+                "and": [
+                  {
+                    "type": "precision_series",
+                    "description": "3 precisionsserier för årtalsmärke",
+                    "minAchievements": 3,
+                    "timeWindowYears": 1,
+                    "seriesType": "precision",
+                    "pointThresholds": {
+                      "A": {
+                        "min": 43
                       },
-                      "refs": [
-                        {
-                          "medalId": "pistol-mark-silver"
-                        }
-                      ]
+                      "B": {
+                        "min": 45
+                      },
+                      "C": {
+                        "min": 46
+                      }
                     },
-                    {
-                      "if": {
-                        "age": {
-                          "lt": 65
+                    "ageCategories": [
+                      {
+                        "name": "under_55",
+                        "ageMin": 0,
+                        "ageMax": 54,
+                        "description": "Under 55 år",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 43
+                          },
+                          "B": {
+                            "min": 45
+                          },
+                          "C": {
+                            "min": 46
+                          }
                         }
                       },
-                      "refs": [
-                        {
-                          "medalId": "pistol-mark-gold"
+                      {
+                        "name": "age_55_64",
+                        "ageMin": 55,
+                        "ageMax": 64,
+                        "description": "55 till 64 år",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 42
+                          },
+                          "B": {
+                            "min": 44
+                          },
+                          "C": {
+                            "min": 45
+                          }
                         }
-                      ]
-                    }
-                  ]
-                }
+                      },
+                      {
+                        "name": "age_65_plus",
+                        "ageMin": 65,
+                        "ageMax": 999,
+                        "description": "65 år och äldre (med guldmärke)",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 36
+                          },
+                          "B": {
+                            "min": 37
+                          },
+                          "C": {
+                            "min": 38
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "or": [
+                      {
+                        "type": "application_series",
+                        "description": "3 tillämpningsserier för årtalsmärke",
+                        "minAchievements": 3,
+                        "timeWindowYears": 1,
+                        "thresholds": {
+                          "A": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 17
+                          },
+                          "B": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 15
+                          },
+                          "C": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 15
+                          },
+                          "R": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 17
+                          }
+                        },
+                        "ageCategories": [
+                          {
+                            "name": "under_65",
+                            "ageMin": 0,
+                            "ageMax": 64,
+                            "description": "Under 65 år",
+                            "thresholds": {
+                              "A": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 17
+                              },
+                              "B": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 15
+                              },
+                              "C": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 15
+                              },
+                              "R": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 17
+                              }
+                            }
+                          },
+                          {
+                            "name": "age_65_plus",
+                            "ageMin": 65,
+                            "ageMax": 999,
+                            "description": "65 år och äldre (med guldmärke)",
+                            "thresholds": {
+                              "A": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "B": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "C": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "R": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "standard_medal",
+                        "description": "Minst en standardmedalj i fält (brons)",
+                        "disciplineType": "field",
+                        "minAchievements": 1,
+                        "timeWindowYears": 1
+                      }
+                    ]
+                  }
+                ]
               },
               {
                 "type": "cumulative_competition_score",
@@ -2424,36 +4216,164 @@
           "perYear": {
             "or": [
               {
-                "type": "sustained_reference",
-                "description": "Ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
-                "references": {
-                  "when": [
-                    {
-                      "if": {
-                        "age": {
-                          "gte": 66
-                        }
+                "and": [
+                  {
+                    "type": "precision_series",
+                    "description": "3 precisionsserier för årtalsmärke",
+                    "minAchievements": 3,
+                    "timeWindowYears": 1,
+                    "seriesType": "precision",
+                    "pointThresholds": {
+                      "A": {
+                        "min": 43
                       },
-                      "refs": [
-                        {
-                          "medalId": "pistol-mark-silver"
-                        }
-                      ]
+                      "B": {
+                        "min": 45
+                      },
+                      "C": {
+                        "min": 46
+                      }
                     },
-                    {
-                      "if": {
-                        "age": {
-                          "lt": 65
+                    "ageCategories": [
+                      {
+                        "name": "under_55",
+                        "ageMin": 0,
+                        "ageMax": 54,
+                        "description": "Under 55 år",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 43
+                          },
+                          "B": {
+                            "min": 45
+                          },
+                          "C": {
+                            "min": 46
+                          }
                         }
                       },
-                      "refs": [
-                        {
-                          "medalId": "pistol-mark-gold"
+                      {
+                        "name": "age_55_64",
+                        "ageMin": 55,
+                        "ageMax": 64,
+                        "description": "55 till 64 år",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 42
+                          },
+                          "B": {
+                            "min": 44
+                          },
+                          "C": {
+                            "min": 45
+                          }
                         }
-                      ]
-                    }
-                  ]
-                }
+                      },
+                      {
+                        "name": "age_65_plus",
+                        "ageMin": 65,
+                        "ageMax": 999,
+                        "description": "65 år och äldre (med guldmärke)",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 36
+                          },
+                          "B": {
+                            "min": 37
+                          },
+                          "C": {
+                            "min": 38
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "or": [
+                      {
+                        "type": "application_series",
+                        "description": "3 tillämpningsserier för årtalsmärke",
+                        "minAchievements": 3,
+                        "timeWindowYears": 1,
+                        "thresholds": {
+                          "A": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 17
+                          },
+                          "B": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 15
+                          },
+                          "C": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 15
+                          },
+                          "R": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 17
+                          }
+                        },
+                        "ageCategories": [
+                          {
+                            "name": "under_65",
+                            "ageMin": 0,
+                            "ageMax": 64,
+                            "description": "Under 65 år",
+                            "thresholds": {
+                              "A": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 17
+                              },
+                              "B": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 15
+                              },
+                              "C": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 15
+                              },
+                              "R": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 17
+                              }
+                            }
+                          },
+                          {
+                            "name": "age_65_plus",
+                            "ageMin": 65,
+                            "ageMax": 999,
+                            "description": "65 år och äldre (med guldmärke)",
+                            "thresholds": {
+                              "A": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "B": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "C": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "R": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "standard_medal",
+                        "description": "Minst en standardmedalj i fält (brons)",
+                        "disciplineType": "field",
+                        "minAchievements": 1,
+                        "timeWindowYears": 1
+                      }
+                    ]
+                  }
+                ]
               },
               {
                 "type": "cumulative_competition_score",
@@ -2567,36 +4487,164 @@
           "perYear": {
             "or": [
               {
-                "type": "sustained_reference",
-                "description": "Ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
-                "references": {
-                  "when": [
-                    {
-                      "if": {
-                        "age": {
-                          "gte": 66
-                        }
+                "and": [
+                  {
+                    "type": "precision_series",
+                    "description": "3 precisionsserier för årtalsmärke",
+                    "minAchievements": 3,
+                    "timeWindowYears": 1,
+                    "seriesType": "precision",
+                    "pointThresholds": {
+                      "A": {
+                        "min": 43
                       },
-                      "refs": [
-                        {
-                          "medalId": "pistol-mark-silver"
-                        }
-                      ]
+                      "B": {
+                        "min": 45
+                      },
+                      "C": {
+                        "min": 46
+                      }
                     },
-                    {
-                      "if": {
-                        "age": {
-                          "lt": 65
+                    "ageCategories": [
+                      {
+                        "name": "under_55",
+                        "ageMin": 0,
+                        "ageMax": 54,
+                        "description": "Under 55 år",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 43
+                          },
+                          "B": {
+                            "min": 45
+                          },
+                          "C": {
+                            "min": 46
+                          }
                         }
                       },
-                      "refs": [
-                        {
-                          "medalId": "pistol-mark-gold"
+                      {
+                        "name": "age_55_64",
+                        "ageMin": 55,
+                        "ageMax": 64,
+                        "description": "55 till 64 år",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 42
+                          },
+                          "B": {
+                            "min": 44
+                          },
+                          "C": {
+                            "min": 45
+                          }
                         }
-                      ]
-                    }
-                  ]
-                }
+                      },
+                      {
+                        "name": "age_65_plus",
+                        "ageMin": 65,
+                        "ageMax": 999,
+                        "description": "65 år och äldre (med guldmärke)",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 36
+                          },
+                          "B": {
+                            "min": 37
+                          },
+                          "C": {
+                            "min": 38
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "or": [
+                      {
+                        "type": "application_series",
+                        "description": "3 tillämpningsserier för årtalsmärke",
+                        "minAchievements": 3,
+                        "timeWindowYears": 1,
+                        "thresholds": {
+                          "A": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 17
+                          },
+                          "B": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 15
+                          },
+                          "C": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 15
+                          },
+                          "R": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 17
+                          }
+                        },
+                        "ageCategories": [
+                          {
+                            "name": "under_65",
+                            "ageMin": 0,
+                            "ageMax": 64,
+                            "description": "Under 65 år",
+                            "thresholds": {
+                              "A": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 17
+                              },
+                              "B": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 15
+                              },
+                              "C": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 15
+                              },
+                              "R": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 17
+                              }
+                            }
+                          },
+                          {
+                            "name": "age_65_plus",
+                            "ageMin": 65,
+                            "ageMax": 999,
+                            "description": "65 år och äldre (med guldmärke)",
+                            "thresholds": {
+                              "A": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "B": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "C": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "R": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "standard_medal",
+                        "description": "Minst en standardmedalj i fält (brons)",
+                        "disciplineType": "field",
+                        "minAchievements": 1,
+                        "timeWindowYears": 1
+                      }
+                    ]
+                  }
+                ]
               },
               {
                 "type": "cumulative_competition_score",
@@ -2710,36 +4758,164 @@
           "perYear": {
             "or": [
               {
-                "type": "sustained_reference",
-                "description": "Ånyo uppfyllt fordringarna för pistolskyttemärket i guld (silver om skytten föregående år fyllt 65 år).",
-                "references": {
-                  "when": [
-                    {
-                      "if": {
-                        "age": {
-                          "gte": 66
-                        }
+                "and": [
+                  {
+                    "type": "precision_series",
+                    "description": "3 precisionsserier för årtalsmärke",
+                    "minAchievements": 3,
+                    "timeWindowYears": 1,
+                    "seriesType": "precision",
+                    "pointThresholds": {
+                      "A": {
+                        "min": 43
                       },
-                      "refs": [
-                        {
-                          "medalId": "pistol-mark-silver"
-                        }
-                      ]
+                      "B": {
+                        "min": 45
+                      },
+                      "C": {
+                        "min": 46
+                      }
                     },
-                    {
-                      "if": {
-                        "age": {
-                          "lt": 65
+                    "ageCategories": [
+                      {
+                        "name": "under_55",
+                        "ageMin": 0,
+                        "ageMax": 54,
+                        "description": "Under 55 år",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 43
+                          },
+                          "B": {
+                            "min": 45
+                          },
+                          "C": {
+                            "min": 46
+                          }
                         }
                       },
-                      "refs": [
-                        {
-                          "medalId": "pistol-mark-gold"
+                      {
+                        "name": "age_55_64",
+                        "ageMin": 55,
+                        "ageMax": 64,
+                        "description": "55 till 64 år",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 42
+                          },
+                          "B": {
+                            "min": 44
+                          },
+                          "C": {
+                            "min": 45
+                          }
                         }
-                      ]
-                    }
-                  ]
-                }
+                      },
+                      {
+                        "name": "age_65_plus",
+                        "ageMin": 65,
+                        "ageMax": 999,
+                        "description": "65 år och äldre (med guldmärke)",
+                        "pointThresholds": {
+                          "A": {
+                            "min": 36
+                          },
+                          "B": {
+                            "min": 37
+                          },
+                          "C": {
+                            "min": 38
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "or": [
+                      {
+                        "type": "application_series",
+                        "description": "3 tillämpningsserier för årtalsmärke",
+                        "minAchievements": 3,
+                        "timeWindowYears": 1,
+                        "thresholds": {
+                          "A": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 17
+                          },
+                          "B": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 15
+                          },
+                          "C": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 15
+                          },
+                          "R": {
+                            "minHits": 6,
+                            "maxTimeSeconds": 17
+                          }
+                        },
+                        "ageCategories": [
+                          {
+                            "name": "under_65",
+                            "ageMin": 0,
+                            "ageMax": 64,
+                            "description": "Under 65 år",
+                            "thresholds": {
+                              "A": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 17
+                              },
+                              "B": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 15
+                              },
+                              "C": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 15
+                              },
+                              "R": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 17
+                              }
+                            }
+                          },
+                          {
+                            "name": "age_65_plus",
+                            "ageMin": 65,
+                            "ageMax": 999,
+                            "description": "65 år och äldre (med guldmärke)",
+                            "thresholds": {
+                              "A": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "B": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "C": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              },
+                              "R": {
+                                "minHits": 6,
+                                "maxTimeSeconds": 40
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "standard_medal",
+                        "description": "Minst en standardmedalj i fält (brons)",
+                        "disciplineType": "field",
+                        "minAchievements": 1,
+                        "timeWindowYears": 1
+                      }
+                    ]
+                  }
+                ]
               },
               {
                 "type": "cumulative_competition_score",
