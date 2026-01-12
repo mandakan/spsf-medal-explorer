@@ -119,12 +119,11 @@ export function ProfileProvider({ children }) {
           } else if (allProfiles.length > 0) {
             selected = [...allProfiles].sort((a, b) => new Date(b.lastModified) - new Date(a.lastModified))[0]
           } else {
-            // No implicit guest profile anymore; user must explicitly create/select with required fields.
+            // If user chose guest mode, create guest profile automatically
             try {
               const choice = window.localStorage.getItem(ONBOARDING_KEY)
               if (choice === 'guest') {
-                // keep null; UI must prompt for required sex before starting guest mode
-                selected = null
+                selected = createGuestProfile({ sex: 'male' })
               }
             } catch (e) { void e }
           }
