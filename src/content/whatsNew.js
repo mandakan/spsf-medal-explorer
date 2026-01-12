@@ -3,6 +3,16 @@
  * Keep this concise; link to full release notes for details.
  */
 export const releases = [
+    {
+    id: '0.9.7',
+    date: '2026-01-11',
+    title: 'Fixa buggar i gästläge',
+    highlights: [
+      'Fixa buggar som gjorde gästläget oanvändbart',
+      'Visa vilka aktiviteter som låst upp respektive märke',
+    ],
+    link: 'https://github.com/mandakan/spsf-medal-explorer/releases/tag/v0.9.7',
+  },
   {
     id: '0.9.6',
     date: '2026-01-10',
