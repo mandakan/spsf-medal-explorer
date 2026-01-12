@@ -5,7 +5,7 @@
     "isDynamicEntry": true
   },
   "index.html": {
-    "file": "assets/index--3sNpsoM.js",
+    "file": "assets/index-Cf9v8UqJ.js",
     "name": "index",
     "src": "index.html",
     "isEntry": true,
@@ -82,7 +82,7 @@
     "isDynamicEntry": true
   },
   "src/utils/medalLoader.vite.js": {
-    "file": "assets/medalLoader.vite-DgrbYFtf.js",
+    "file": "assets/medalLoader.vite-Bu0BTUnk.js",
     "name": "medalLoader.vite",
     "src": "src/utils/medalLoader.vite.js",
     "isDynamicEntry": true,
