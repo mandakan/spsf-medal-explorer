@@ -387,8 +387,8 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
           'pointer-events-auto fixed',
           // Mobile bottom sheet
           'inset-x-0 bottom-0 w-full h-[90svh] max-h-[90vh]',
-          // Desktop right drawer
-          'sm:inset-y-0 sm:right-0 sm:left-auto sm:w-[32rem] sm:h-full',
+          // Desktop right drawer - responsive widths for better content readability
+          'sm:inset-y-0 sm:right-0 sm:left-auto sm:w-[32rem] lg:w-[40rem] xl:w-[48rem] sm:h-full',
           // Surface
           'bg-bg-secondary shadow-2xl overflow-hidden',
           // Shape
