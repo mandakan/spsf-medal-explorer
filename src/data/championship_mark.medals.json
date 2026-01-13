@@ -158,12 +158,16 @@
                   },
                   {
                     "description": "Kompetensprov 3: Tävlingsresultat i fältskjutning",
-                    "type": "standard_medal",
-                    "description": "Standardmedalj i brons i fältskjutning",
-                    "disciplineType": "field",
-                    "medalTier": "bronze",
-                    "minAchievements": 1,
-                    "timeWindowYears": 1
+                    "and": [
+                      {
+                        "type": "standard_medal",
+                        "description": "Standardmedalj i brons i fältskjutning",
+                        "disciplineType": "field",
+                        "medalTier": "bronze",
+                        "minAchievements": 1,
+                        "timeWindowYears": 1
+                      }
+                    ]
                   }
                 ]
               }
@@ -334,12 +338,16 @@
                   },
                   {
                     "description": "Kompetensprov 3: Tävlingsresultat i fältskjutning",
-                    "type": "standard_medal",
-                    "description": "Standardmedalj i brons i fältskjutning",
-                    "disciplineType": "field",
-                    "medalTier": "bronze",
-                    "minAchievements": 1,
-                    "timeWindowYears": 1
+                    "and": [
+                      {
+                        "type": "standard_medal",
+                        "description": "Standardmedalj i brons i fältskjutning",
+                        "disciplineType": "field",
+                        "medalTier": "bronze",
+                        "minAchievements": 1,
+                        "timeWindowYears": 1
+                      }
+                    ]
                   }
                 ]
               }
@@ -510,12 +518,16 @@
                   },
                   {
                     "description": "Kompetensprov 3: Tävlingsresultat i fältskjutning",
-                    "type": "standard_medal",
-                    "description": "Standardmedalj i brons i fältskjutning",
-                    "disciplineType": "field",
-                    "medalTier": "bronze",
-                    "minAchievements": 1,
-                    "timeWindowYears": 1
+                    "and": [
+                      {
+                        "type": "standard_medal",
+                        "description": "Standardmedalj i brons i fältskjutning",
+                        "disciplineType": "field",
+                        "medalTier": "bronze",
+                        "minAchievements": 1,
+                        "timeWindowYears": 1
+                      }
+                    ]
                   }
                 ]
               }

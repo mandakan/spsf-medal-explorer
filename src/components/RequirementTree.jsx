@@ -169,8 +169,11 @@ function RequirementNode({ node, path = 'root', level = 0, defaultExpanded = lev
 
   const children = node.children || []
   const { met, total } = countMet(children)
-  const label = node.node === 'and' ? 'Alla följande' : 'Minst en av följande'
-  const summary = `${met}/${total} uppfyllda`
+  const operatorLabel = node.node === 'and' ? 'Alla följande' : 'Minst en av följande'
+  const label = node.description || operatorLabel
+  const summary = node.description
+    ? `${operatorLabel} • ${met}/${total} uppfyllda`
+    : `${met}/${total} uppfyllda`
 
   return (
     <li className={liClass}>
