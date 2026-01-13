@@ -612,16 +612,21 @@ export class MedalCalculator {
   // - Arrays become implicit AND
   // - { and: [...] } and { or: [...] } become operator nodes
   // - Any other object is treated as a leaf requirement with a type
+  // - Preserves 'description' on group nodes for UI display
   normalizeRequirementSpec(spec) {
     if (Array.isArray(spec)) {
       return { op: 'and', children: spec.map(s => this.normalizeRequirementSpec(s)) }
     }
     if (spec && typeof spec === 'object') {
       if (Array.isArray(spec.and)) {
-        return { op: 'and', children: spec.and.map(s => this.normalizeRequirementSpec(s)) }
+        const node = { op: 'and', children: spec.and.map(s => this.normalizeRequirementSpec(s)) }
+        if (spec.description) node.description = spec.description
+        return node
       }
       if (Array.isArray(spec.or)) {
-        return { op: 'or', children: spec.or.map(s => this.normalizeRequirementSpec(s)) }
+        const node = { op: 'or', children: spec.or.map(s => this.normalizeRequirementSpec(s)) }
+        if (spec.description) node.description = spec.description
+        return node
       }
       return { op: 'leaf', req: spec }
     }
@@ -635,13 +640,17 @@ export class MedalCalculator {
     if (node.op === 'and') {
       const children = node.children?.map(ch => this.evaluateReqNode(ch, medal, opts)) || []
       const isMet = children.every(r => r.isMet)
-      return { node: 'and', isMet, children }
+      const result = { node: 'and', isMet, children }
+      if (node.description) result.description = node.description
+      return result
     }
 
     if (node.op === 'or') {
       const children = node.children?.map(ch => this.evaluateReqNode(ch, medal, opts)) || []
       const isMet = children.some(r => r.isMet)
-      return { node: 'or', isMet, children }
+      const result = { node: 'or', isMet, children }
+      if (node.description) result.description = node.description
+      return result
     }
 
     // Leaf requirement
