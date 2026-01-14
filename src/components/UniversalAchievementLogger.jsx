@@ -238,7 +238,7 @@ export default function UniversalAchievementLogger({ medal, onSuccess, unlockMod
 
       {/* Type selector for medals with multiple achievement types */}
       {availableTypes.length > 1 && !selectedType && (
-        <div className="space-y-3 mb-4 animate-fade-in">
+        <div className="space-y-3 mb-4 animate-fade-in" data-tour="achievement-type-selector">
           {!compact && (
             <p className="text-sm text-text-secondary">
               Detta märke kan tjänas genom olika typer av aktiviteter. Välj vilken typ du vill logga:

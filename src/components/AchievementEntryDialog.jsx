@@ -1,20 +1,40 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import UniversalAchievementLogger from './UniversalAchievementLogger'
 import Icon from './Icon'
+import { useOnboardingTour } from '../hooks/useOnboardingTour'
+import { Z_INDEX } from '../config/zIndex'
 
 /**
  * Dialog wrapper for context-aware achievement entry.
  * Allows logging achievements directly from medal cards/details.
  */
 export default function AchievementEntryDialog({ medal, open, onClose }) {
+  const tour = useOnboardingTour()
+
+  // Auto-start tour on first dialog open
+  // Using granular dependencies to avoid re-running when tour object identity changes
+  useEffect(() => {
+    if (!open) return
+    if (!tour?.canAutoStart?.('achievement-entry')) return
+
+    // Delay to allow dialog animation to complete
+    const timer = setTimeout(() => {
+      tour.start('achievement-entry')
+    }, 300)
+
+    return () => clearTimeout(timer)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, tour?.canAutoStart, tour?.start])
+
   if (!open || !medal) return null
 
   const dialogContent = (
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/50 z-[3000]"
+        className="fixed inset-0 bg-black/50"
+        style={{ zIndex: Z_INDEX.DIALOG_BACKDROP }}
         onClick={onClose}
         aria-hidden="true"
       />
@@ -26,7 +46,7 @@ export default function AchievementEntryDialog({ medal, open, onClose }) {
         aria-labelledby="achievement-entry-title"
         style={{
           position: 'fixed',
-          zIndex: 3001,
+          zIndex: Z_INDEX.DIALOG_CONTENT,
           inset: 0,
           display: 'flex',
           alignItems: 'flex-end',
@@ -34,6 +54,7 @@ export default function AchievementEntryDialog({ medal, open, onClose }) {
         className="sm:items-center sm:justify-center"
       >
         <div
+          data-tour="achievement-dialog"
           style={{
             width: '100%',
             maxWidth: '42rem',
@@ -48,12 +69,23 @@ export default function AchievementEntryDialog({ medal, open, onClose }) {
         >
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-border bg-bg-secondary">
-            <h2
-              id="achievement-entry-title"
-              className="text-lg font-semibold text-text-primary"
-            >
-              Logga aktivitet
-            </h2>
+            <div className="flex items-center gap-2">
+              <h2
+                id="achievement-entry-title"
+                className="text-lg font-semibold text-text-primary"
+              >
+                Logga aktivitet
+              </h2>
+              <button
+                type="button"
+                onClick={() => tour?.start?.('achievement-entry')}
+                className="shrink-0 inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                aria-label="Visa guide"
+                title="Visa guide"
+              >
+                <Icon name="HelpCircle" className="w-5 h-5" />
+              </button>
+            </div>
             <button
               type="button"
               onClick={onClose}

@@ -21,6 +21,7 @@ export const ONBOARDING_TOUR_ID = 'v1'
 export const TOUR_VERSIONS = {
   medals: 'v1',
   'tree-view': 'v1',
+  'achievement-entry': 'v1',
 }
 
 export function getTourId(tourType = 'medals') {

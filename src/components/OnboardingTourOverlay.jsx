@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useCallback, useState } from 'react'
 import { useOnboardingTour } from '../hooks/useOnboardingTour'
+import { Z_INDEX } from '../config/zIndex'
 
 function clamp(n, min, max) {
   return Math.max(min, Math.min(max, n))
@@ -32,9 +33,15 @@ export default function OnboardingTourOverlay() {
 
   const dialogRef = useRef(null)
   const lastFocusedRef = useRef(null)
+  const hasAutoAdvancedRef = useRef(false)
 
   const [targetRect, setTargetRect] = useState(null)
   const [hasTarget, setHasTarget] = useState(false)
+
+  // Reset auto-advance guard when step changes
+  useEffect(() => {
+    hasAutoAdvancedRef.current = false
+  }, [stepIndex])
 
   const updateTarget = useCallback(() => {
     if (!open) return
@@ -88,7 +95,9 @@ export default function OnboardingTourOverlay() {
   }, [complete])
 
   const requiresTarget = !!step?.requiresTarget
-  const primaryDisabled = requiresTarget && !hasTarget
+  // Also disable "Nästa" if step expects auto-advance but target not yet visible
+  const awaitingAutoAdvance = step?.autoAdvanceToNextOn && !resolveTarget(step.autoAdvanceToNextOn)
+  const primaryDisabled = (requiresTarget && !hasTarget) || awaitingAutoAdvance
 
   const handlePrimary = useCallback(() => {
     if (primaryDisabled) return
@@ -217,8 +226,12 @@ export default function OnboardingTourOverlay() {
     if (!selector) return
 
     const check = () => {
+      if (hasAutoAdvancedRef.current) return // Prevent multiple advances
       const el = resolveTarget(selector)
-      if (el) next()
+      if (el) {
+        hasAutoAdvancedRef.current = true
+        next()
+      }
     }
 
     check()
@@ -238,10 +251,11 @@ export default function OnboardingTourOverlay() {
   })()
 
   // Mobile-first: bottom sheet by default, but top sheet if target is in bottom half.
-  // Desktop: if target exists, position near it.
+  // Desktop: if target exists, position near it (unless step prefers centered).
   const desktopPopoverStyle = (() => {
     if (!targetRect) return null
     if (typeof window === 'undefined') return null
+    if (step?.positionCenter) return null // Use centered modal instead of popover
     const vw = window.innerWidth
     const vh = window.innerHeight
     if (vw < 768) return null
@@ -276,12 +290,12 @@ export default function OnboardingTourOverlay() {
         borderRadius: 16,
         boxShadow: '0 0 0 9999px rgba(0,0,0,0.55)',
         pointerEvents: 'none',
-        zIndex: 65,
+        zIndex: Z_INDEX.TOUR_SPOTLIGHT,
       }
     : null
 
   return (
-    <div className="fixed inset-0 z-[70] pointer-events-none" aria-hidden={false}>
+    <div className="fixed inset-0 pointer-events-none" style={{ zIndex: Z_INDEX.TOUR_CONTAINER }} aria-hidden={false}>
       {/* Spotlight (preferred) or plain scrim */}
       {spotlightStyle ? (
         <div aria-hidden="true" style={spotlightStyle} />
@@ -296,10 +310,10 @@ export default function OnboardingTourOverlay() {
         aria-labelledby={titleId}
         aria-describedby={primaryDisabled ? `${descId} ${hintId}` : descId}
         tabIndex={-1}
+        style={{ ...desktopPopoverStyle, zIndex: Z_INDEX.TOUR_DIALOG, ...(targetInBottomHalf && !desktopPopoverStyle ? { paddingTop: 'env(safe-area-inset-top)' } : {}) }}
         className={[
           'card',
           'pointer-events-auto',
-          'z-[70]',
           desktopPopoverStyle
             ? 'rounded-xl shadow-lg'
             : targetInBottomHalf
@@ -310,7 +324,6 @@ export default function OnboardingTourOverlay() {
             : '',
           'outline-none',
         ].join(' ')}
-        style={desktopPopoverStyle || (targetInBottomHalf ? { paddingTop: 'env(safe-area-inset-top)' } : undefined)}
       >
         <div className={targetInBottomHalf ? 'p-4 sm:p-6 pt-2' : 'p-4 sm:p-6'}>
           <header className="flex items-start justify-between gap-4">
@@ -323,7 +336,7 @@ export default function OnboardingTourOverlay() {
               </p>
               {primaryDisabled && (
                 <p id={hintId} className="mt-2 text-xs text-muted-foreground">
-                  Öppna en medalj för att fortsätta.
+                  {step.requiresTargetHint || 'Slutför steget ovan för att fortsätta.'}
                 </p>
               )}
             </div>

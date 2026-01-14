@@ -84,7 +84,7 @@ export default function StandardMedalForm({ medal, onSubmit, onSubmitAndAddAnoth
     <form onSubmit={handleSubmit} className="space-y-4" noValidate>
       {/* Requirement hint */}
       {requirementHint && (
-        <p className="text-sm text-text-secondary bg-bg-secondary p-3 rounded-lg">
+        <p className="text-sm text-text-secondary bg-bg-secondary p-3 rounded-lg" data-tour="achievement-hint">
           {requirementHint}
         </p>
       )}
@@ -178,6 +178,7 @@ export default function StandardMedalForm({ medal, onSubmit, onSubmitAndAddAnoth
         </label>
         <select
           id="standard-medal-type"
+          data-tour="achievement-primary-input"
           name="medalType"
           aria-label="Välj medaljnivå"
           aria-invalid={Boolean(errors.medalType)}

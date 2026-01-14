@@ -236,6 +236,7 @@ export default function CompetitionPerformanceForm({ medal, onSubmit, onSubmitAn
             </label>
             <input
               id="competition-score"
+              data-tour="achievement-primary-input"
               type="number"
               name="score"
               inputMode="numeric"
@@ -254,7 +255,7 @@ export default function CompetitionPerformanceForm({ medal, onSubmit, onSubmitAn
                 {errors.score}
               </p>
             ) : (
-              <p id="hint-score" className="mt-1 text-sm text-text-secondary">
+              <p id="hint-score" className="mt-1 text-sm text-text-secondary" data-tour="achievement-hint">
                 {fieldThresholdHint || 'Antal träff/poäng du uppnådde'}
               </p>
             )}
