@@ -308,6 +308,7 @@ export class IndexedDBManager extends DataManager {
       }
 
       let target = null
+      let matchedByKey = null
       if (updateById && rec.id && byId.has(rec.id)) {
         target = byId.get(rec.id)
         if (DEBUG) console.debug('[IndexedDBManager] Matched by id', { row: i + 1, id: rec.id })
@@ -318,6 +319,7 @@ export class IndexedDBManager extends DataManager {
             if (DEBUG)
               console.debug('[IndexedDBManager] Matched by natural key', { row: i + 1, key: k })
             target = byKey.get(k)
+            matchedByKey = k
           } else {
             if (DEBUG)
               console.debug('[IndexedDBManager] No match by natural key', { row: i + 1, key: k })
@@ -333,6 +335,12 @@ export class IndexedDBManager extends DataManager {
         if (idx >= 0) {
           next[idx] = { ...rec, id: target.id }
           result.updated++
+          // Remove matched key so the same row can't be matched again
+          if (matchedByKey) {
+            byKey.delete(matchedByKey)
+          }
+          // Also remove from byId to prevent double-matching
+          byId.delete(target.id)
           if (DEBUG)
             console.info('[IndexedDBManager] Updated achievement', { row: i + 1, id: target.id })
         }
