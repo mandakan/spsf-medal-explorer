@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { achievementsToCSV, exportCsvTemplate, downloadCSV } from '../utils/achievementExport'
 import { parseCsv, toAchievement } from '../utils/achievementCsv'
 import Icon from './Icon'
@@ -6,7 +6,8 @@ import Icon from './Icon'
 export default function CsvActivitiesPanel({ profile, updateProfile, upsertAchievements }) {
   const [csvLoading, setCsvLoading] = useState(false)
   const [csvError, setCsvError] = useState(null)
-  const [csvPreview, setCsvPreview] = useState(null) // { rows, result }
+  const [csvParsedRows, setCsvParsedRows] = useState(null) // Parsed rows from CSV file
+  const [csvPreview, setCsvPreview] = useState(null) // { rows, result } - validation result
   const [csvSummary, setCsvSummary] = useState(null) // { added, updated, skipped, failed }
   const [csvOptions, setCsvOptions] = useState({ updateById: true, matchNaturalKey: false, addNew: true })
   const csvFileInputRef = useRef(null)
@@ -43,6 +44,7 @@ export default function CsvActivitiesPanel({ profile, updateProfile, upsertAchie
     setCsvError(null)
     setCsvSummary(null)
     setCsvPreview(null)
+    setCsvParsedRows(null)
     setCsvLoading(true)
     try {
       const text = await file.text()
@@ -52,6 +54,7 @@ export default function CsvActivitiesPanel({ profile, updateProfile, upsertAchie
         return
       }
       const rows = parsed.rows.map(toAchievement)
+      setCsvParsedRows(rows) // Store parsed rows for re-validation
       const result = await upsertAchievements(rows, { ...csvOptions, dryRun: true })
       setCsvPreview({ rows, result })
       setCsvFileName(file.name)
@@ -61,6 +64,32 @@ export default function CsvActivitiesPanel({ profile, updateProfile, upsertAchie
       setCsvLoading(false)
     }
   }
+
+  // Re-run validation when options change and we have parsed rows
+  useEffect(() => {
+    if (!csvParsedRows || csvParsedRows.length === 0) return
+
+    let cancelled = false
+    async function revalidate() {
+      setCsvLoading(true)
+      try {
+        const result = await upsertAchievements(csvParsedRows, { ...csvOptions, dryRun: true })
+        if (!cancelled) {
+          setCsvPreview({ rows: csvParsedRows, result })
+        }
+      } catch (e) {
+        if (!cancelled) {
+          setCsvError(e.message || 'Kunde inte validera CSV')
+        }
+      } finally {
+        if (!cancelled) {
+          setCsvLoading(false)
+        }
+      }
+    }
+    revalidate()
+    return () => { cancelled = true }
+  }, [csvOptions, csvParsedRows, upsertAchievements])
 
   async function handleConfirmCsvImport() {
     if (!csvPreview?.rows?.length) return
@@ -97,9 +126,14 @@ export default function CsvActivitiesPanel({ profile, updateProfile, upsertAchie
 
   function handleResetCsv() {
     setCsvError(null)
+    setCsvParsedRows(null)
     setCsvPreview(null)
     setCsvSummary(null)
     setCsvFileName('')
+    // Reset file input so the same file can be selected again
+    if (csvFileInputRef.current) {
+      csvFileInputRef.current.value = ''
+    }
   }
 
   return (
