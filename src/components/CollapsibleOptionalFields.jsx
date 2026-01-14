@@ -49,27 +49,11 @@ export default function CollapsibleOptionalFields({
       {isExpanded && (
         <div
           id="optional-fields-content"
-          className="mt-4 space-y-4 animate-fade-in"
-          style={{
-            animation: 'slideDown 0.2s ease-out'
-          }}
+          className="mt-4 space-y-4 animate-slide-down"
         >
           {children}
         </div>
       )}
-
-      <style jsx>{`
-        @keyframes slideDown {
-          from {
-            opacity: 0;
-            transform: translateY(-8px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
     </div>
   )
 }
