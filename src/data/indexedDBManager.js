@@ -479,7 +479,7 @@ export class IndexedDBManager extends DataManager {
       }
       const wg = achievement.weaponGroup || ''
       if (!['A', 'B', 'C', 'R'].includes(wg)) {
-        reasons.push(`weaponGroup must be one of A/B/C/R (got "${wg}")`)
+        reasons.push(`Ogiltig vapengrupp "${wg}" (tillåtna: A, B, C, R)`)
       }
 
       // Type-specific checks

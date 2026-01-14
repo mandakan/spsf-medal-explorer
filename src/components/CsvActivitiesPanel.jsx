@@ -65,7 +65,10 @@ export default function CsvActivitiesPanel({ profile, updateProfile, upsertAchie
     }
   }
 
-  // Re-run validation when options change and we have parsed rows
+  // Re-run validation when options change and we have parsed rows.
+  // Note: upsertAchievements is memoized with useCallback in ProfileContext but depends on
+  // currentProfile, so it will change when profile changes. This is intentional - re-validate
+  // against the new profile's existing data when profile changes.
   useEffect(() => {
     if (!csvParsedRows || csvParsedRows.length === 0) return
 
@@ -281,9 +284,9 @@ export default function CsvActivitiesPanel({ profile, updateProfile, upsertAchie
                 <table className="w-full text-sm">
                   <thead className="sticky top-0 bg-red-100 dark:bg-red-900">
                     <tr>
-                      <th className="text-left px-3 py-2 text-red-800 dark:text-red-200 font-medium">Rad</th>
-                      <th className="text-left px-3 py-2 text-red-800 dark:text-red-200 font-medium">Fel</th>
-                      <th className="text-left px-3 py-2 text-red-800 dark:text-red-200 font-medium">Data</th>
+                      <th scope="col" className="text-left px-3 py-2 text-red-800 dark:text-red-200 font-medium">Rad</th>
+                      <th scope="col" className="text-left px-3 py-2 text-red-800 dark:text-red-200 font-medium">Fel</th>
+                      <th scope="col" className="text-left px-3 py-2 text-red-800 dark:text-red-200 font-medium">Data</th>
                     </tr>
                   </thead>
                   <tbody>

@@ -47,13 +47,19 @@ function lc(val) {
  * Normalize weapon group values.
  * Accepts A, A1, A2, A3 and maps them all to A.
  * B, C, R are kept as-is.
+ * Invalid values are passed through for downstream validation to catch.
  */
 function normalizeWeaponGroup(val) {
-  const raw = String(val || 'A').trim().toUpperCase()
+  // Empty/missing defaults to A
+  if (val == null || String(val).trim() === '') {
+    return 'A'
+  }
+  const raw = String(val).trim().toUpperCase()
   // Map A1, A2, A3 to A
   if (raw === 'A1' || raw === 'A2' || raw === 'A3') {
     return 'A'
   }
+  // Return as-is (valid or invalid - downstream validation will catch invalid)
   return raw
 }
 
