@@ -43,6 +43,20 @@ function lc(val) {
   return val == null ? undefined : String(val).trim().toLowerCase()
 }
 
+/**
+ * Normalize weapon group values.
+ * Accepts A, A1, A2, A3 and maps them all to A.
+ * B, C, R are kept as-is.
+ */
+function normalizeWeaponGroup(val) {
+  const raw = String(val || 'A').trim().toUpperCase()
+  // Map A1, A2, A3 to A
+  if (raw === 'A1' || raw === 'A2' || raw === 'A3') {
+    return 'A'
+  }
+  return raw
+}
+
 function normalizeRecord(obj) {
   const out = {}
   for (const k of Object.keys(obj)) {
@@ -51,7 +65,7 @@ function normalizeRecord(obj) {
     switch (key) {
       case 'type': out.type = lc(v); break
       case 'year': out.year = toNumber(v); break
-      case 'weaponGroup': out.weaponGroup = String(v || 'A').trim().toUpperCase(); break
+      case 'weaponGroup': out.weaponGroup = normalizeWeaponGroup(v); break
       case 'points': out.points = toNumber(v); break
       case 'timeSeconds': out.timeSeconds = toNumber(v); break
       case 'hits': out.hits = toNumber(v); break
