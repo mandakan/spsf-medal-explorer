@@ -134,6 +134,7 @@ export default function PrecisionSeriesForm({ medal, onSubmit, onSubmitAndAddAno
         </label>
         <input
           id="precision-points"
+          data-tour="achievement-primary-input"
           type="number"
           name="points"
           inputMode="decimal"
@@ -153,7 +154,7 @@ export default function PrecisionSeriesForm({ medal, onSubmit, onSubmitAndAddAno
             {errors.points}
           </p>
         ) : (
-          <p id="hint-points" className="mt-1 text-sm text-text-secondary">
+          <p id="hint-points" className="mt-1 text-sm text-text-secondary" data-tour="achievement-hint">
             {requirementHint || 'Resultat från 5 skott på 25m pistoltavla'}
             {defaults.points && ` (Minst ${defaults.points} poäng krävs)`}
           </p>

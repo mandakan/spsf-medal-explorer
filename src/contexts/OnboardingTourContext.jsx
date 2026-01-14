@@ -34,6 +34,7 @@ const TOUR_STEPS = {
       body: 'Tryck på ett märke i listan för att se detaljer. Lämna guiden öppen och tryck sedan Nästa.',
       target: '[data-tour="medal-row-0"]',
       requiresTarget: true,
+      requiresTargetHint: 'Öppna ett märke för att fortsätta.',
       autoAdvanceToNextOn: '[data-tour="medal-detail-panel"]',
     },
     {
@@ -42,6 +43,7 @@ const TOUR_STEPS = {
       body: 'När detaljvyn är öppen ser du krav, förhandskrav och status. Tryck Nästa för att avsluta.',
       target: '[data-tour="medal-detail-panel"]',
       requiresTarget: true,
+      requiresTargetHint: 'Öppna ett märke för att fortsätta.',
     },
   ],
   'tree-view': [
@@ -80,6 +82,41 @@ const TOUR_STEPS = {
       title: 'Klicka på märken',
       body: 'Tryck på ett märke i trädet för att se detaljer. Årsbrickor visar hur många år som krävs.',
       target: '[data-tour="tree-canvas"]',
+    },
+  ],
+  'achievement-entry': [
+    {
+      id: 'welcome',
+      title: 'Smart inmatning',
+      body: 'Formuläret anpassas automatiskt efter märkets krav. Värden och fält väljs baserat på vad som behövs.',
+      target: '[data-tour="achievement-dialog"]',
+      positionCenter: true,
+    },
+    {
+      id: 'type-selector',
+      title: 'Aktivitetstyp',
+      body: 'Om märket kan tjänas på flera sätt, välj vilken typ av aktivitet du vill logga.',
+      target: '[data-tour="achievement-type-selector"]',
+      requiresTarget: false,
+      positionCenter: true,
+      autoAdvanceToNextOn: '[data-tour="achievement-primary-input"]',
+      requiresTargetHint: 'Välj en aktivitetstyp för att fortsätta.',
+    },
+    {
+      id: 'prefilled-values',
+      title: 'Förifyllda värden',
+      body: 'Fält är ifyllda med minimikrav från märket. Justera till ditt faktiska resultat.',
+      target: '[data-tour="achievement-primary-input"]',
+      requiresTarget: true,
+      requiresTargetHint: 'Välj en aktivitetstyp för att fortsätta.',
+      positionCenter: true,
+    },
+    {
+      id: 'requirement-hint',
+      title: 'Kravledtext',
+      body: 'Gråa ledtexter visar vad som krävs. Fyll i minst detta värde för att kvalificera.',
+      target: '[data-tour="achievement-hint"]',
+      positionCenter: true,
     },
   ],
 }

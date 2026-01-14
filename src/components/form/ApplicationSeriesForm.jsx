@@ -127,6 +127,7 @@ export default function ApplicationSeriesForm({ medal, onSubmit, onSubmitAndAddA
         </label>
         <input
           id="application-hits"
+          data-tour="achievement-primary-input"
           type="number"
           name="hits"
           inputMode="numeric"
@@ -146,7 +147,7 @@ export default function ApplicationSeriesForm({ medal, onSubmit, onSubmitAndAddA
             {errors.hits}
           </p>
         ) : (
-          <p id="hint-hits" className="mt-1 text-sm text-text-secondary">
+          <p id="hint-hits" className="mt-1 text-sm text-text-secondary" data-tour="achievement-hint">
             {requirementHint || '6 skott på B100 (50m) eller 1/6 mål C30 (25m)'}
             {defaults.hits && ` (Minst ${defaults.hits} träffar krävs)`}
           </p>
