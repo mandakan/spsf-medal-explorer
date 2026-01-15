@@ -1,21 +1,21 @@
 {
-  "_vendor-BnAD2fL_.js": {
-    "file": "assets/vendor-BnAD2fL_.js",
+  "_vendor-BbIsC1Kr.js": {
+    "file": "assets/vendor-BbIsC1Kr.js",
     "name": "vendor",
     "isDynamicEntry": true
   },
   "index.html": {
-    "file": "assets/index-CHpZQSQF.js",
+    "file": "assets/index-BoVsj7Xz.js",
     "name": "index",
     "src": "index.html",
     "isEntry": true,
     "imports": [
-      "_vendor-BnAD2fL_.js"
+      "_vendor-BbIsC1Kr.js"
     ],
     "dynamicImports": [
       "src/utils/medalLoader.vite.js",
-      "_vendor-BnAD2fL_.js",
-      "_vendor-BnAD2fL_.js"
+      "_vendor-BbIsC1Kr.js",
+      "_vendor-BbIsC1Kr.js"
     ],
     "css": [
       "assets/index-DSVdpeEW.css"
@@ -82,12 +82,12 @@
     "isDynamicEntry": true
   },
   "src/utils/medalLoader.vite.js": {
-    "file": "assets/medalLoader.vite-BPtDrYP5.js",
+    "file": "assets/medalLoader.vite-B0twhu6l.js",
     "name": "medalLoader.vite",
     "src": "src/utils/medalLoader.vite.js",
     "isDynamicEntry": true,
     "imports": [
-      "_vendor-BnAD2fL_.js",
+      "_vendor-BbIsC1Kr.js",
       "index.html"
     ],
     "dynamicImports": [
