@@ -1,4 +1,6 @@
 import { parseCsv, toAchievement } from '../src/utils/achievementCsv'
+import { exportCsvTemplate, generateExampleForType } from '../src/utils/achievementExport'
+import { ACHIEVEMENT_TYPES, ACHIEVEMENT_TYPE_LABELS } from '../src/utils/labels'
 
 describe('achievementCsv', () => {
   describe('parseCsv', () => {
@@ -109,6 +111,18 @@ precision_series,2024,A,"Said ""hello"" to everyone"`
       expect(parseWeaponGroup('  A  ')).toBe('A')
       expect(parseWeaponGroup('  A1  ')).toBe('A')
     })
+
+    it('normalizes LUFTPISTOL to C', () => {
+      expect(parseWeaponGroup('LUFTPISTOL')).toBe('C')
+      expect(parseWeaponGroup('luftpistol')).toBe('C')
+      expect(parseWeaponGroup('Luftpistol')).toBe('C')
+    })
+
+    it('normalizes LUFT and LP to C', () => {
+      expect(parseWeaponGroup('LUFT')).toBe('C')
+      expect(parseWeaponGroup('LP')).toBe('C')
+      expect(parseWeaponGroup('lp')).toBe('C')
+    })
   })
 
   describe('toAchievement', () => {
@@ -136,6 +150,67 @@ precision_series,2024,A,"Said ""hello"" to everyone"`
       const record = { type: 'precision_series', year: 2024 }
       const achievement = toAchievement(record)
       expect(achievement.weaponGroup).toBe('A')
+    })
+
+    it('defaults weaponGroup to C for air_pistol_precision', () => {
+      const record = { type: 'air_pistol_precision', year: 2024, points: 92 }
+      const achievement = toAchievement(record)
+      expect(achievement.weaponGroup).toBe('C')
+    })
+
+    it('always uses C for air_pistol_precision regardless of input', () => {
+      // Air pistol doesn't use traditional weapon groups, always defaults to C
+      const record = { type: 'air_pistol_precision', year: 2024, points: 92, weaponGroup: 'B' }
+      const achievement = toAchievement(record)
+      expect(achievement.weaponGroup).toBe('C')
+    })
+
+    it('ignores LUFTPISTOL weapon group for air_pistol_precision', () => {
+      const record = { type: 'air_pistol_precision', year: 2024, points: 92, weaponGroup: 'LUFTPISTOL' }
+      const achievement = toAchievement(record)
+      expect(achievement.weaponGroup).toBe('C')
+    })
+
+    it('defaults date to January 1st when only year is provided', () => {
+      const record = { type: 'precision_series', year: 2024, points: 45 }
+      const achievement = toAchievement(record)
+      expect(achievement.date).toBe('2024-01-01')
+      expect(achievement.year).toBe(2024)
+    })
+
+    it('extracts year from date when date is provided', () => {
+      const record = { type: 'precision_series', date: '2024-06-15', points: 45 }
+      const achievement = toAchievement(record)
+      expect(achievement.date).toBe('2024-06-15')
+      expect(achievement.year).toBe(2024)
+    })
+
+    it('date takes precedence over year column', () => {
+      const record = { type: 'precision_series', year: 2023, date: '2024-06-15', points: 45 }
+      const achievement = toAchievement(record)
+      expect(achievement.date).toBe('2024-06-15')
+      expect(achievement.year).toBe(2024) // Year extracted from date, not from year column
+    })
+
+    it('handles empty date string with year', () => {
+      const record = { type: 'precision_series', year: 2024, date: '', points: 45 }
+      const achievement = toAchievement(record)
+      expect(achievement.date).toBe('2024-01-01')
+      expect(achievement.year).toBe(2024)
+    })
+
+    it('handles whitespace-only date string with year', () => {
+      const record = { type: 'precision_series', year: 2024, date: '   ', points: 45 }
+      const achievement = toAchievement(record)
+      expect(achievement.date).toBe('2024-01-01')
+      expect(achievement.year).toBe(2024)
+    })
+
+    it('leaves both undefined when neither date nor year provided', () => {
+      const record = { type: 'precision_series', points: 45 }
+      const achievement = toAchievement(record)
+      expect(achievement.date).toBeUndefined()
+      expect(achievement.year).toBeUndefined()
     })
 
     it('includes all expected fields', () => {
@@ -196,5 +271,123 @@ precision_series,2024,A,"Said ""hello"" to everyone"`
       expect(result.rows[0].year).toBeUndefined()
       expect(result.rows[0].points).toBeUndefined()
     })
+  })
+})
+
+describe('exportCsvTemplate', () => {
+  it('generates one example row for each achievement type', () => {
+    const template = exportCsvTemplate()
+    const lines = template.split('\n')
+    // Header + one row per achievement type
+    expect(lines).toHaveLength(ACHIEVEMENT_TYPES.length + 1)
+  })
+
+  it('includes all achievement types in order', () => {
+    const template = exportCsvTemplate()
+    const lines = template.split('\n')
+    // Skip header, check that each row has the expected type
+    ACHIEVEMENT_TYPES.forEach((type, index) => {
+      const row = lines[index + 1]
+      expect(row).toContain(type)
+    })
+  })
+
+  it('generates valid CSV that can be parsed back', () => {
+    const template = exportCsvTemplate()
+    const { rows, errors } = parseCsv(template)
+    expect(errors).toHaveLength(0)
+    expect(rows).toHaveLength(ACHIEVEMENT_TYPES.length)
+  })
+
+  it('each example row has correct type', () => {
+    const template = exportCsvTemplate()
+    const { rows } = parseCsv(template)
+    rows.forEach((row, index) => {
+      expect(row.type).toBe(ACHIEVEMENT_TYPES[index])
+    })
+  })
+
+  it('includes schema_version in each row', () => {
+    const template = exportCsvTemplate('1')
+    const lines = template.split('\n')
+    // Each data row should end with schema version
+    for (let i = 1; i < lines.length; i++) {
+      expect(lines[i]).toMatch(/,1$/)
+    }
+  })
+
+  it('uses different schema version when provided', () => {
+    const template = exportCsvTemplate('2')
+    const lines = template.split('\n')
+    for (let i = 1; i < lines.length; i++) {
+      expect(lines[i]).toMatch(/,2$/)
+    }
+  })
+})
+
+describe('generateExampleForType', () => {
+  it('generates valid example for precision_series', () => {
+    const example = generateExampleForType('precision_series')
+    expect(example.type).toBe('precision_series')
+    expect(example.year).toBe('2024')
+    expect(example.weaponGroup).toBe('A')
+    expect(example.points).toBe('45')
+  })
+
+  it('generates valid example for application_series', () => {
+    const example = generateExampleForType('application_series')
+    expect(example.type).toBe('application_series')
+    expect(example.timeSeconds).toBe('25')
+    expect(example.hits).toBe('5')
+  })
+
+  it('generates valid example for competition_result', () => {
+    const example = generateExampleForType('competition_result')
+    expect(example.type).toBe('competition_result')
+    expect(example.score).toBe('285')
+    expect(example.disciplineType).toBe('precision')
+    expect(example.date).toBe('2024-05-20')
+  })
+
+  it('generates valid example for running_shooting_course', () => {
+    const example = generateExampleForType('running_shooting_course')
+    expect(example.type).toBe('running_shooting_course')
+    expect(example.points).toBe('85')
+    expect(example.date).toBe('2024-04-15')
+  })
+
+  it('generates valid example for air_pistol_precision', () => {
+    const example = generateExampleForType('air_pistol_precision')
+    expect(example.type).toBe('air_pistol_precision')
+    expect(example.points).toBe('92')
+    expect(example.weaponGroup).toBe('C')
+  })
+
+  it('uses Swedish type label as notes for each type', () => {
+    ACHIEVEMENT_TYPES.forEach(type => {
+      const example = generateExampleForType(type)
+      const expectedLabel = ACHIEVEMENT_TYPE_LABELS[type]
+      // Notes should contain the Swedish label (some types override with custom text)
+      expect(example.notes).toBeTruthy()
+    })
+  })
+
+  it('generates example for all known achievement types', () => {
+    ACHIEVEMENT_TYPES.forEach(type => {
+      const example = generateExampleForType(type)
+      expect(example).toBeDefined()
+      expect(example.type).toBe(type)
+      expect(example.year).toBe('2024')
+      // air_pistol_precision uses 'C' as default, others use 'A'
+      const expectedWg = type === 'air_pistol_precision' ? 'C' : 'A'
+      expect(example.weaponGroup).toBe(expectedWg)
+    })
+  })
+
+  it('returns base example for unknown types', () => {
+    const example = generateExampleForType('unknown_type')
+    expect(example.type).toBe('unknown_type')
+    expect(example.year).toBe('2024')
+    expect(example.weaponGroup).toBe('A')
   })
 })

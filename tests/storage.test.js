@@ -80,7 +80,7 @@ describe('LocalStorageDataManager', () => {
     const invalidProfile = { userId: null }
 
     await expect(storage.saveUserProfile(invalidProfile)).rejects.toThrow(
-      'Invalid profile structure'
+      /Ogiltig profil/
     )
   })
 })

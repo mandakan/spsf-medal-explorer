@@ -27,7 +27,10 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
   const { currentProfile } = useProfile()
   const allowManual = !!currentProfile?.features?.allowManualUnlock
   const medal = medalDatabase?.getMedalById(medalId)
-  const [selectedYear, setSelectedYear] = useState(null)
+  // Track selected year per medal - reset when navigating to a different medal
+  const [yearState, setYearState] = useState({ value: null, medalId: null })
+  const selectedYear = yearState.medalId === medalId ? yearState.value : null
+  const setSelectedYear = (year) => setYearState({ value: year, medalId })
   const { state: achievementEntryEnabled } = useFlag('achievementEntry')
   const [unlockOpen, setUnlockOpen] = useState(false)
   const [achievementEntryOpen, setAchievementEntryOpen] = useState(false)
@@ -638,15 +641,13 @@ export default function MedalDetailModal({ medalId, onClose, onNavigateMedal }) 
                                   : isCurrent
                                   ? 'bg-primary text-primary-foreground border-2 border-primary'
                                   : 'bg-bg-secondary text-foreground border-2 border-primary'
-                                : isEligible
-                                ? 'bg-green-50 text-green-700 border border-green-300 hover:bg-green-100 dark:bg-green-900/20 dark:text-green-200 dark:border-green-800 dark:hover:bg-green-900/30'
                                 : 'bg-bg-secondary text-foreground border border-border hover:bg-background'
                             ].join(' ')}
                           >
                             <span className="flex items-center gap-1.5">
                               {year}
                               {isEligible && (
-                                <Icon name="CheckCircle2" className="w-4 h-4" aria-hidden="true" />
+                                <Icon name="CheckCircle2" className={isSelected ? 'w-4 h-4' : 'w-4 h-4 text-green-600 dark:text-green-400'} aria-hidden="true" />
                               )}
                               {isCurrent && !isEligible && (
                                 <Icon name="Circle" className="w-3 h-3 fill-current" aria-hidden="true" />

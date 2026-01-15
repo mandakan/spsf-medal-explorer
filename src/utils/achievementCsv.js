@@ -47,6 +47,7 @@ function lc(val) {
  * Normalize weapon group values.
  * Accepts A, A1, A2, A3 and maps them all to A.
  * B, C, R are kept as-is.
+ * Also handles common aliases like "LUFTPISTOL" -> C.
  * Invalid values are passed through for downstream validation to catch.
  */
 function normalizeWeaponGroup(val) {
@@ -58,6 +59,10 @@ function normalizeWeaponGroup(val) {
   // Map A1, A2, A3 to A
   if (raw === 'A1' || raw === 'A2' || raw === 'A3') {
     return 'A'
+  }
+  // Map common aliases
+  if (raw === 'LUFTPISTOL' || raw === 'LUFT' || raw === 'LP') {
+    return 'C'
   }
   // Return as-is (valid or invalid - downstream validation will catch invalid)
   return raw
@@ -123,14 +128,80 @@ export function parseCsv(text) {
   return { rows, errors }
 }
 
+/**
+ * Get the weapon group for a given achievement type and input value.
+ * For air_pistol_precision, always returns 'C' regardless of input.
+ * For other types, returns the input value or 'A' as default.
+ * @param {string} type - Achievement type
+ * @param {string|undefined} inputWg - Input weapon group from CSV
+ * @returns {string} Weapon group to use
+ */
+function getWeaponGroup(type, inputWg) {
+  // Air pistol achievements always use 'C' - weapon group doesn't apply
+  if (type === 'air_pistol_precision') {
+    return 'C'
+  }
+  return inputWg || 'A'
+}
+
+/**
+ * Extract year from an ISO date string (YYYY-MM-DD).
+ * @param {string} dateStr - ISO date string
+ * @returns {number|undefined} Year or undefined if invalid
+ */
+function extractYearFromDate(dateStr) {
+  if (!dateStr || typeof dateStr !== 'string') return undefined
+  const match = dateStr.match(/^(\d{4})-\d{2}-\d{2}$/)
+  if (match) {
+    return Number(match[1])
+  }
+  return undefined
+}
+
+/**
+ * Synchronize date and year fields.
+ * - If date is populated, it's the master - extract year from it
+ * - If date is empty but year is populated, default date to January 1st of that year
+ * @param {string|undefined} date - Date from CSV
+ * @param {number|undefined} year - Year from CSV
+ * @returns {{date: string|undefined, year: number|undefined}}
+ */
+function synchronizeDateAndYear(date, year) {
+  const hasDate = date && typeof date === 'string' && date.trim() !== ''
+  const hasYear = typeof year === 'number' && !Number.isNaN(year)
+
+  if (hasDate) {
+    // Date is master - extract year from it
+    const extractedYear = extractYearFromDate(date)
+    return {
+      date,
+      year: extractedYear ?? year, // Use extracted year, fall back to provided year
+    }
+  }
+
+  if (hasYear) {
+    // No date but have year - default to January 1st
+    return {
+      date: `${year}-01-01`,
+      year,
+    }
+  }
+
+  // Neither provided
+  return { date: undefined, year: undefined }
+}
+
 export function toAchievement(rec) {
+  const weaponGroup = getWeaponGroup(rec.type, rec.weaponGroup)
+  const { date, year } = synchronizeDateAndYear(rec.date, rec.year)
+
   return {
     id: rec.id,
     type: rec.type,
-    year: rec.year,
-    weaponGroup: rec.weaponGroup || 'A',
+    year,
+    weaponGroup,
     points: rec.points,
-    date: rec.date,
+    date,
     timeSeconds: rec.timeSeconds,
     hits: rec.hits,
     competitionName: rec.competitionName,
