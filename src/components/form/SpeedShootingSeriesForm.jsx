@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { useAchievementForm } from '../../hooks/useAchievementForm'
-import { getSpeedShootingSeriesDefaults, getRequirementHint } from '../../utils/requirementDefaults'
+import { getSpeedShootingSeriesDefaults, getRequirementHint, getSpeedShootingSeriesThresholds } from '../../utils/requirementDefaults'
 import CollapsibleOptionalFields from '../CollapsibleOptionalFields'
 
 /**
@@ -8,7 +8,7 @@ import CollapsibleOptionalFields from '../CollapsibleOptionalFields'
  * Optimized for duellskjutning (duel shooting) with points-based scoring.
  * Pre-populates fields with minimum requirements from medal definition.
  */
-export default function SpeedShootingSeriesForm({ medal, onSubmit, onSubmitAndAddAnother, loading }) {
+export default function SpeedShootingSeriesForm({ medal, onSubmit, onSubmitAndAddAnother, loading, preservedValues }) {
   // Extract default values from medal requirements
   const defaults = useMemo(() => {
     return getSpeedShootingSeriesDefaults(medal)
@@ -21,10 +21,10 @@ export default function SpeedShootingSeriesForm({ medal, onSubmit, onSubmitAndAd
 
   const { values, errors, handleChange, handleSubmit, validate, setErrors } = useAchievementForm({
     initialValues: {
-      date: new Date().toISOString().split('T')[0],
-      weaponGroup: defaults.weaponGroup,
-      points: defaults.points,
-      competitionName: '',
+      date: preservedValues?.date ?? new Date().toISOString().split('T')[0],
+      weaponGroup: preservedValues?.weaponGroup ?? defaults.weaponGroup,
+      points: preservedValues?.points ?? defaults.points,
+      competitionName: preservedValues?.competitionName ?? '',
       notes: '',
     },
     validate: (vals) => {
@@ -40,6 +40,11 @@ export default function SpeedShootingSeriesForm({ medal, onSubmit, onSubmitAndAd
     },
     onSubmit: (vals) => onSubmit({ ...vals, achievementType: 'speed_shooting_series' }),
   })
+
+  // Get thresholds for the currently selected weapon group (updates dynamically)
+  const currentThresholds = useMemo(() => {
+    return getSpeedShootingSeriesThresholds(medal, values.weaponGroup)
+  }, [medal, values.weaponGroup])
 
   // Handle "Save & Add Another" button click
   const handleSaveAndAddAnother = (e) => {
@@ -99,9 +104,9 @@ export default function SpeedShootingSeriesForm({ medal, onSubmit, onSubmitAndAd
           className="select py-3 cursor-pointer"
           required
         >
-          <option value="A">Grupp A</option>
-          <option value="B">Grupp B</option>
           <option value="C">Grupp C</option>
+          <option value="B">Grupp B</option>
+          <option value="A">Grupp A</option>
           <option value="R">Grupp R</option>
         </select>
         {errors.weaponGroup && (
@@ -142,7 +147,7 @@ export default function SpeedShootingSeriesForm({ medal, onSubmit, onSubmitAndAd
         ) : (
           <p id="hint-points" className="mt-1 text-sm text-text-secondary">
             {requirementHint || 'Resultat från duellskjutning'}
-            {defaults.points && ` (Minst ${defaults.points} poäng krävs)`}
+            {currentThresholds.min != null && ` (Minst ${currentThresholds.min} poäng krävs för grupp ${values.weaponGroup})`}
           </p>
         )}
       </div>

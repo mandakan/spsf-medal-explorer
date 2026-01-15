@@ -61,14 +61,14 @@ export function getApplicationSeriesDefaults(medal) {
   const requirement = findRequirementByType(medal?.requirements, 'application_series')
   if (!requirement) {
     return {
-      weaponGroup: 'A',
+      weaponGroup: 'C',
       hits: '',
       timeSeconds: '',
     }
   }
 
-  // Get thresholds for weapon group A (most common)
-  const weaponGroup = 'A'
+  // Get thresholds for weapon group C (default)
+  const weaponGroup = 'C'
   const threshold = requirement.thresholds?.[weaponGroup]
 
   return {
@@ -88,13 +88,13 @@ export function getPrecisionSeriesDefaults(medal, profile = null) {
   const requirement = findRequirementByType(medal?.requirements, 'precision_series')
   if (!requirement) {
     return {
-      weaponGroup: 'A',
+      weaponGroup: 'C',
       points: '',
     }
   }
 
-  // Get point thresholds for weapon group A
-  const weaponGroup = 'A'
+  // Get point thresholds for weapon group C (default)
+  const weaponGroup = 'C'
 
   // Check for age-based categories if profile is provided
   let pointThreshold = requirement.pointThresholds?.[weaponGroup]?.min
@@ -129,13 +129,13 @@ export function getSpeedShootingSeriesDefaults(medal) {
   const requirement = findRequirementByType(medal?.requirements, 'speed_shooting_series')
   if (!requirement) {
     return {
-      weaponGroup: 'A',
+      weaponGroup: 'C',
       points: '',
     }
   }
 
-  // Get point thresholds for weapon group A
-  const weaponGroup = 'A'
+  // Get point thresholds for weapon group C (default)
+  const weaponGroup = 'C'
   const pointThreshold = requirement.pointThresholds?.[weaponGroup]?.min
 
   return {
@@ -169,7 +169,7 @@ export function getCompetitionPerformanceDefaults(medal, profile = null) {
   if (!requirement) {
     return {
       disciplineType: '',
-      weaponGroup: 'A',
+      weaponGroup: 'C',
       maxPoints: null,
       thresholds: null,
     }
@@ -189,7 +189,7 @@ export function getCompetitionPerformanceDefaults(medal, profile = null) {
 
   return {
     disciplineType,
-    weaponGroup: 'A',
+    weaponGroup: 'C',
     maxPoints,
     thresholds,
   }
@@ -302,13 +302,75 @@ export function getStandardMedalDefaults(medal) {
  */
 export function getAvailableWeaponGroups(medal, achievementType) {
   const requirement = findRequirementByType(medal?.requirements, achievementType)
-  if (!requirement) return ['A', 'B', 'C', 'R']
+  if (!requirement) return ['C', 'B', 'A', 'R']
 
   // Check thresholds or pointThresholds depending on requirement type
   const thresholds = requirement.thresholds || requirement.pointThresholds
   if (!thresholds || typeof thresholds !== 'object') {
-    return ['A', 'B', 'C', 'R']
+    return ['C', 'B', 'A', 'R']
   }
 
   return Object.keys(thresholds).sort()
+}
+
+/**
+ * Get threshold values for a specific weapon group in precision_series requirements
+ * @param {object} medal - Medal object with requirements
+ * @param {string} weaponGroup - Weapon group to get thresholds for
+ * @param {object} profile - User profile (optional, for age-based thresholds)
+ * @returns {object} Threshold values { min: number|null }
+ */
+export function getPrecisionSeriesThresholds(medal, weaponGroup, profile = null) {
+  const requirement = findRequirementByType(medal?.requirements, 'precision_series')
+  if (!requirement) return { min: null }
+
+  // Check for age-based categories if profile is provided
+  if (profile?.dateOfBirth && requirement.ageCategories) {
+    const birthYear = new Date(profile.dateOfBirth).getFullYear()
+    const currentYear = new Date().getFullYear()
+    const age = currentYear - birthYear
+
+    // Find matching age category
+    const ageCategory = requirement.ageCategories.find(cat =>
+      age >= (cat.ageMin ?? 0) && age <= (cat.ageMax ?? 999)
+    )
+
+    if (ageCategory?.pointThresholds?.[weaponGroup]) {
+      return { min: ageCategory.pointThresholds[weaponGroup].min ?? null }
+    }
+  }
+
+  const threshold = requirement.pointThresholds?.[weaponGroup]
+  return { min: threshold?.min ?? null }
+}
+
+/**
+ * Get threshold values for a specific weapon group in application_series requirements
+ * @param {object} medal - Medal object with requirements
+ * @param {string} weaponGroup - Weapon group to get thresholds for
+ * @returns {object} Threshold values { minHits: number|null, maxTimeSeconds: number|null }
+ */
+export function getApplicationSeriesThresholds(medal, weaponGroup) {
+  const requirement = findRequirementByType(medal?.requirements, 'application_series')
+  if (!requirement) return { minHits: null, maxTimeSeconds: null }
+
+  const threshold = requirement.thresholds?.[weaponGroup]
+  return {
+    minHits: threshold?.minHits ?? null,
+    maxTimeSeconds: threshold?.maxTimeSeconds ?? null,
+  }
+}
+
+/**
+ * Get threshold values for a specific weapon group in speed_shooting_series requirements
+ * @param {object} medal - Medal object with requirements
+ * @param {string} weaponGroup - Weapon group to get thresholds for
+ * @returns {object} Threshold values { min: number|null }
+ */
+export function getSpeedShootingSeriesThresholds(medal, weaponGroup) {
+  const requirement = findRequirementByType(medal?.requirements, 'speed_shooting_series')
+  if (!requirement) return { min: null }
+
+  const threshold = requirement.pointThresholds?.[weaponGroup]
+  return { min: threshold?.min ?? null }
 }

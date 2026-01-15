@@ -1,14 +1,14 @@
 import React from 'react'
 import { useAchievementForm } from '../../hooks/useAchievementForm'
 
-export default function TeamEventForm({ onSubmit, loading }) {
+export default function TeamEventForm({ onSubmit, loading, preservedValues }) {
   const { values, errors, handleChange, handleSubmit } = useAchievementForm({
     initialValues: {
-      date: new Date().toISOString().split('T')[0],
-      weaponGroup: 'A',
-      teamName: '',
-      position: '',
-      participants: '',
+      date: preservedValues?.date ?? new Date().toISOString().split('T')[0],
+      weaponGroup: preservedValues?.weaponGroup ?? 'C',
+      teamName: preservedValues?.teamName ?? '',
+      position: preservedValues?.position ?? '',
+      participants: preservedValues?.participants ?? '',
       notes: '',
     },
     validate: (vals) => {
@@ -61,9 +61,9 @@ export default function TeamEventForm({ onSubmit, loading }) {
           className="select py-3 cursor-pointer"
           required
         >
-          <option value="A">Group A</option>
-          <option value="B">Group B</option>
           <option value="C">Group C</option>
+          <option value="B">Group B</option>
+          <option value="A">Group A</option>
           <option value="R">Group R</option>
         </select>
         {errors.weaponGroup && <p id="t-error-weaponGroup" className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.weaponGroup}</p>}

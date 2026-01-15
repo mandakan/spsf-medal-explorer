@@ -8,7 +8,7 @@ import CollapsibleOptionalFields from '../CollapsibleOptionalFields'
  * Optimized for air pistol shooting with points-based scoring (0-100).
  * Pre-populates fields with minimum requirements from medal definition.
  */
-export default function AirPistolPrecisionForm({ medal, onSubmit, onSubmitAndAddAnother, loading }) {
+export default function AirPistolPrecisionForm({ medal, onSubmit, onSubmitAndAddAnother, loading, preservedValues }) {
   const dateInputRef = useRef(null)
 
   // Extract default values from medal requirements
@@ -23,8 +23,8 @@ export default function AirPistolPrecisionForm({ medal, onSubmit, onSubmitAndAdd
 
   const { values, errors, handleChange, handleSubmit, validate, setErrors } = useAchievementForm({
     initialValues: {
-      date: new Date().toISOString().split('T')[0],
-      points: defaults.minPointsPerSeries ?? '',
+      date: preservedValues?.date ?? new Date().toISOString().split('T')[0],
+      points: preservedValues?.points ?? defaults.minPointsPerSeries ?? '',
       seriesName: '',
       notes: '',
     },

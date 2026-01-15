@@ -9,7 +9,7 @@ import CollapsibleOptionalFields from '../CollapsibleOptionalFields'
  * Optimized for terrain running with shooting - points-based scoring (lower is better).
  * Pre-populates fields with maximum allowed points from medal definition.
  */
-export default function RunningShootingCourseForm({ medal, onSubmit, onSubmitAndAddAnother, loading }) {
+export default function RunningShootingCourseForm({ medal, onSubmit, onSubmitAndAddAnother, loading, preservedValues }) {
   const dateInputRef = useRef(null)
   const { currentProfile } = useProfile()
 
@@ -27,9 +27,9 @@ export default function RunningShootingCourseForm({ medal, onSubmit, onSubmitAnd
 
   const { values, errors, handleChange, handleSubmit, validate, setErrors } = useAchievementForm({
     initialValues: {
-      date: new Date().toISOString().split('T')[0],
-      points: defaults.maxPoints ?? '',
-      courseName: '',
+      date: preservedValues?.date ?? new Date().toISOString().split('T')[0],
+      points: preservedValues?.points ?? defaults.maxPoints ?? '',
+      courseName: preservedValues?.courseName ?? '',
       notes: '',
     },
     validate: (vals) => {
