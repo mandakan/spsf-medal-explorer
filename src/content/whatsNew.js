@@ -3,7 +3,7 @@
  * Keep this concise; link to full release notes for details.
  */
 export const releases = [
-  {
+    {
     id: '0.9.8',
     date: '2026-01-15',
     title: 'Förhandsvisning av funktion för att registrera aktiviteter',
@@ -15,7 +15,7 @@ export const releases = [
       'Import och export av aktiviteter via CSV',
     ],
     link: 'https://github.com/mandakan/spsf-medal-explorer/releases/tag/v0.9.8',
-  },
+    },
     {
     id: '0.9.7',
     date: '2026-01-11',
