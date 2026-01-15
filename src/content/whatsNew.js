@@ -8,7 +8,7 @@ export const releases = [
     date: '2026-01-15',
     title: 'Förhandsvisning av funktion för att registrera aktiviteter',
     highlights: [
-      'Förhandsvisning av funktion för att lägga in aktiviteter både direkt via märken och i bulk från inställnignar',
+      'Förhandsvisning av funktion för att lägga in aktiviteter både direkt via märken och i bulk från inställningar',
       'Guide för hur man lägger in aktiviteter',
       'Fixa inkorrekta åldersrabatter för vissa märken',
       'Visa fler nästlade detaljer i kravlistan',
