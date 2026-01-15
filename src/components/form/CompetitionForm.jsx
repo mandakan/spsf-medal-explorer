@@ -2,13 +2,13 @@ import React from 'react'
 import { useAchievementForm } from '../../hooks/useAchievementForm'
 import { validateCompetition } from '../../validators/universalValidator'
 
-export default function CompetitionForm({ medal, onSubmit, loading }) {
+export default function CompetitionForm({ medal, onSubmit, loading, preservedValues }) {
   const { values, errors, handleChange, handleSubmit } = useAchievementForm({
     initialValues: {
-      date: new Date().toISOString().split('T')[0],
-      weaponGroup: 'A',
-      score: '',
-      competitionName: '',
+      date: preservedValues?.date ?? new Date().toISOString().split('T')[0],
+      weaponGroup: preservedValues?.weaponGroup ?? 'C',
+      score: preservedValues?.score ?? '',
+      competitionName: preservedValues?.competitionName ?? '',
       notes: '',
     },
     validate: (vals) => validateCompetition(vals, medal),
@@ -63,9 +63,9 @@ export default function CompetitionForm({ medal, onSubmit, loading }) {
           className="select py-3 cursor-pointer"
           required
         >
-          <option value="A">Group A</option>
-          <option value="B">Group B</option>
           <option value="C">Group C</option>
+          <option value="B">Group B</option>
+          <option value="A">Group A</option>
           <option value="R">Group R</option>
         </select>
         {errors.weaponGroup && (

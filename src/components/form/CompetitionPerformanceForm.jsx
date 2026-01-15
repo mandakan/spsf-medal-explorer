@@ -9,7 +9,7 @@ import CollapsibleOptionalFields from '../CollapsibleOptionalFields'
  * Handles both field shooting (percentage-based) and running/skiing (points-based) disciplines.
  * Auto-detects discipline type from medal requirements when possible.
  */
-export default function CompetitionPerformanceForm({ medal, onSubmit, onSubmitAndAddAnother, loading }) {
+export default function CompetitionPerformanceForm({ medal, onSubmit, onSubmitAndAddAnother, loading, preservedValues }) {
   const dateInputRef = useRef(null)
   const { currentProfile } = useProfile()
 
@@ -37,16 +37,16 @@ export default function CompetitionPerformanceForm({ medal, onSubmit, onSubmitAn
 
   const { values, errors, handleChange, handleSubmit, validate, setErrors } = useAchievementForm({
     initialValues: {
-      date: new Date().toISOString().split('T')[0],
-      disciplineType: defaults.disciplineType || '',
-      weaponGroup: defaults.weaponGroup || 'A',
+      date: preservedValues?.date ?? new Date().toISOString().split('T')[0],
+      disciplineType: preservedValues?.disciplineType ?? defaults.disciplineType ?? '',
+      weaponGroup: preservedValues?.weaponGroup ?? defaults.weaponGroup ?? 'C',
       // Field shooting fields
-      score: '',
-      maxScore: '',
+      score: preservedValues?.score ?? '',
+      maxScore: preservedValues?.maxScore ?? '',
       // Running/skiing fields - pre-populate with max allowed points (threshold)
-      points: defaults.maxPoints ?? '',
+      points: preservedValues?.points ?? defaults.maxPoints ?? '',
       // Common optional fields
-      competitionName: '',
+      competitionName: preservedValues?.competitionName ?? '',
       notes: '',
     },
     validate: (vals) => {
@@ -219,9 +219,9 @@ export default function CompetitionPerformanceForm({ medal, onSubmit, onSubmitAn
               className="select py-3 cursor-pointer"
               required
             >
-              <option value="A">Grupp A</option>
-              <option value="B">Grupp B</option>
               <option value="C">Grupp C</option>
+              <option value="B">Grupp B</option>
+              <option value="A">Grupp A</option>
               <option value="R">Grupp R</option>
             </select>
           </div>

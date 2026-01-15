@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useMemo } from 'react'
 import { useAchievementForm } from '../../hooks/useAchievementForm'
 import { useProfile } from '../../hooks/useProfile'
-import { getPrecisionSeriesDefaults, getRequirementHint } from '../../utils/requirementDefaults'
+import { getPrecisionSeriesDefaults, getRequirementHint, getPrecisionSeriesThresholds } from '../../utils/requirementDefaults'
 import CollapsibleOptionalFields from '../CollapsibleOptionalFields'
 
 /**
@@ -9,7 +9,7 @@ import CollapsibleOptionalFields from '../CollapsibleOptionalFields'
  * Optimized for precision shooting with points-based scoring.
  * Pre-populates fields with minimum requirements from medal definition.
  */
-export default function PrecisionSeriesForm({ medal, onSubmit, onSubmitAndAddAnother, loading }) {
+export default function PrecisionSeriesForm({ medal, onSubmit, onSubmitAndAddAnother, loading, preservedValues }) {
   const dateInputRef = useRef(null)
   const { currentProfile } = useProfile()
 
@@ -25,10 +25,10 @@ export default function PrecisionSeriesForm({ medal, onSubmit, onSubmitAndAddAno
 
   const { values, errors, handleChange, handleSubmit, validate, setErrors } = useAchievementForm({
     initialValues: {
-      date: new Date().toISOString().split('T')[0],
-      weaponGroup: defaults.weaponGroup,
-      points: defaults.points,
-      competitionName: '',
+      date: preservedValues?.date ?? new Date().toISOString().split('T')[0],
+      weaponGroup: preservedValues?.weaponGroup ?? defaults.weaponGroup,
+      points: preservedValues?.points ?? defaults.points,
+      competitionName: preservedValues?.competitionName ?? '',
       notes: '',
     },
     validate: (vals) => {
@@ -44,6 +44,11 @@ export default function PrecisionSeriesForm({ medal, onSubmit, onSubmitAndAddAno
     },
     onSubmit: (vals) => onSubmit({ ...vals, achievementType: 'precision_series' }),
   })
+
+  // Get thresholds for the currently selected weapon group (updates dynamically)
+  const currentThresholds = useMemo(() => {
+    return getPrecisionSeriesThresholds(medal, values.weaponGroup, currentProfile)
+  }, [medal, values.weaponGroup, currentProfile])
 
   // Auto-focus first field for better UX
   useEffect(() => {
@@ -112,9 +117,9 @@ export default function PrecisionSeriesForm({ medal, onSubmit, onSubmitAndAddAno
           className="select py-3 cursor-pointer"
           required
         >
-          <option value="A">Grupp A</option>
-          <option value="B">Grupp B</option>
           <option value="C">Grupp C</option>
+          <option value="B">Grupp B</option>
+          <option value="A">Grupp A</option>
           <option value="R">Grupp R</option>
         </select>
         {errors.weaponGroup && (
@@ -156,7 +161,7 @@ export default function PrecisionSeriesForm({ medal, onSubmit, onSubmitAndAddAno
         ) : (
           <p id="hint-points" className="mt-1 text-sm text-text-secondary" data-tour="achievement-hint">
             {requirementHint || 'Resultat från 5 skott på 25m pistoltavla'}
-            {defaults.points && ` (Minst ${defaults.points} poäng krävs)`}
+            {currentThresholds.min != null && ` (Minst ${currentThresholds.min} poäng krävs för grupp ${values.weaponGroup})`}
           </p>
         )}
       </div>

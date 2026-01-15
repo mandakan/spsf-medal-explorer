@@ -29,9 +29,9 @@ describe('requirementDefaults utility', () => {
       const defaults = getApplicationSeriesDefaults(medal)
 
       expect(defaults).toEqual({
-        weaponGroup: 'A',
+        weaponGroup: 'C',
         hits: 5,
-        timeSeconds: 60
+        timeSeconds: 50
       })
     })
 
@@ -51,7 +51,7 @@ describe('requirementDefaults utility', () => {
       const defaults = getApplicationSeriesDefaults(medal)
 
       expect(defaults).toEqual({
-        weaponGroup: 'A',
+        weaponGroup: 'C',
         hits: '',
         timeSeconds: ''
       })
@@ -59,13 +59,13 @@ describe('requirementDefaults utility', () => {
 
     test('handles null/undefined medal gracefully', () => {
       expect(getApplicationSeriesDefaults(null)).toEqual({
-        weaponGroup: 'A',
+        weaponGroup: 'C',
         hits: '',
         timeSeconds: ''
       })
 
       expect(getApplicationSeriesDefaults(undefined)).toEqual({
-        weaponGroup: 'A',
+        weaponGroup: 'C',
         hits: '',
         timeSeconds: ''
       })
@@ -94,8 +94,8 @@ describe('requirementDefaults utility', () => {
       const defaults = getPrecisionSeriesDefaults(medal)
 
       expect(defaults).toEqual({
-        weaponGroup: 'A',
-        points: 32
+        weaponGroup: 'C',
+        points: 34
       })
     })
 
@@ -105,23 +105,23 @@ describe('requirementDefaults utility', () => {
         requirements: {
           type: 'precision_series',
           pointThresholds: {
-            A: { min: 32 }
+            C: { min: 34 }
           },
           ageCategories: [
             {
               ageMin: 0,
               ageMax: 54,
-              pointThresholds: { A: { min: 32 } }
+              pointThresholds: { C: { min: 34 } }
             },
             {
               ageMin: 55,
               ageMax: 64,
-              pointThresholds: { A: { min: 31 } }
+              pointThresholds: { C: { min: 33 } }
             },
             {
               ageMin: 65,
               ageMax: 999,
-              pointThresholds: { A: { min: 30 } }
+              pointThresholds: { C: { min: 32 } }
             }
           ]
         }
@@ -135,8 +135,8 @@ describe('requirementDefaults utility', () => {
       const defaults = getPrecisionSeriesDefaults(medal, profile)
 
       expect(defaults).toEqual({
-        weaponGroup: 'A',
-        points: 31 // Age 55-64 category
+        weaponGroup: 'C',
+        points: 33 // Age 55-64 category
       })
     })
 
@@ -152,7 +152,7 @@ describe('requirementDefaults utility', () => {
       const defaults = getPrecisionSeriesDefaults(medal)
 
       expect(defaults).toEqual({
-        weaponGroup: 'A',
+        weaponGroup: 'C',
         points: ''
       })
     })
@@ -175,8 +175,8 @@ describe('requirementDefaults utility', () => {
       const defaults = getSpeedShootingSeriesDefaults(medal)
 
       expect(defaults).toEqual({
-        weaponGroup: 'A',
-        points: 35
+        weaponGroup: 'C',
+        points: 37
       })
     })
   })
@@ -264,7 +264,7 @@ describe('requirementDefaults utility', () => {
 
       const groups = getAvailableWeaponGroups(medal, 'application_series')
 
-      expect(groups).toEqual(['A', 'B', 'C', 'R'])
+      expect(groups).toEqual(['C', 'B', 'A', 'R'])
     })
   })
 
@@ -275,17 +275,17 @@ describe('requirementDefaults utility', () => {
           and: [
             {
               type: 'precision_series',
-              pointThresholds: { A: { min: 32 } }
+              pointThresholds: { C: { min: 34 } }
             },
             {
               or: [
                 {
                   type: 'application_series',
-                  thresholds: { A: { minHits: 5, maxTimeSeconds: 60 } }
+                  thresholds: { C: { minHits: 5, maxTimeSeconds: 50 } }
                 },
                 {
                   type: 'speed_shooting_series',
-                  pointThresholds: { A: { min: 35 } }
+                  pointThresholds: { C: { min: 37 } }
                 }
               ]
             }
@@ -295,13 +295,13 @@ describe('requirementDefaults utility', () => {
 
       const appDefaults = getApplicationSeriesDefaults(medal)
       expect(appDefaults.hits).toBe(5)
-      expect(appDefaults.timeSeconds).toBe(60)
+      expect(appDefaults.timeSeconds).toBe(50)
 
       const precDefaults = getPrecisionSeriesDefaults(medal)
-      expect(precDefaults.points).toBe(32)
+      expect(precDefaults.points).toBe(34)
 
       const speedDefaults = getSpeedShootingSeriesDefaults(medal)
-      expect(speedDefaults.points).toBe(35)
+      expect(speedDefaults.points).toBe(37)
     })
   })
 })

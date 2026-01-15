@@ -22,7 +22,7 @@ const MEDAL_TYPE_OPTIONS = [
  * Used when a medal requirement can be fulfilled by achieving a standard medal
  * in a specific discipline (e.g., field shooting standard medal).
  */
-export default function StandardMedalForm({ medal, onSubmit, onSubmitAndAddAnother, loading }) {
+export default function StandardMedalForm({ medal, onSubmit, onSubmitAndAddAnother, loading, preservedValues }) {
   const dateInputRef = useRef(null)
 
   // Extract default values from medal requirements
@@ -40,7 +40,7 @@ export default function StandardMedalForm({ medal, onSubmit, onSubmitAndAddAnoth
 
   const { values, errors, handleChange, handleSubmit, validate, setErrors } = useAchievementForm({
     initialValues: {
-      date: new Date().toISOString().split('T')[0],
+      date: preservedValues?.date ?? new Date().toISOString().split('T')[0],
       disciplineType: defaults.disciplineType || '',
       medalType: defaults.medalType || '',
       notes: '',

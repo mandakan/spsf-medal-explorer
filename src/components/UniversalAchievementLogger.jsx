@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import CompetitionForm from './form/CompetitionForm'
 import QualificationForm from './form/QualificationForm'
 import TeamEventForm from './form/TeamEventForm'
@@ -14,6 +14,7 @@ import StandardMedalForm from './form/StandardMedalForm'
 import { useAchievementHistory } from '../hooks/useAchievementHistory'
 import { detectMedalFormType, mapFormToAchievement } from '../utils/achievementMapper'
 import { validateAchievement as validateAchievementObject } from '../validators/universalValidator'
+import Icon from './Icon'
 
 const formComponents = {
   competition: CompetitionForm,
@@ -95,6 +96,16 @@ export default function UniversalAchievementLogger({ medal, onSuccess, unlockMod
   const [loading, setLoading] = useState(false)
   const [formKey, setFormKey] = useState(0)
   const [selectedType, setSelectedType] = useState(null)
+  const [successMessage, setSuccessMessage] = useState(null)
+  const [preservedValues, setPreservedValues] = useState(null)
+
+  // Auto-dismiss success message after 3 seconds
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => setSuccessMessage(null), 3000)
+      return () => clearTimeout(timer)
+    }
+  }, [successMessage])
 
   // Extract available achievement types from medal requirements
   const availableTypes = useMemo(() => {
@@ -183,14 +194,29 @@ export default function UniversalAchievementLogger({ medal, onSuccess, unlockMod
         await unlockMedal(medal.id, achievement.date)
       }
 
+      // Store values to preserve for next entry
+      setPreservedValues({
+        date: formData.date,
+        weaponGroup: formData.weaponGroup,
+        competitionName: formData.competitionName,
+        disciplineType: formData.disciplineType,
+        courseName: formData.courseName,
+        // Score/result fields
+        points: formData.points,
+        hits: formData.hits,
+        timeSeconds: formData.timeSeconds,
+        score: formData.score,
+        maxScore: formData.maxScore,
+      })
+
+      // Show success feedback
+      setSuccessMessage('Aktivitet sparad!')
+
       // Reset form by changing key to allow adding another
       setFormKey(prev => prev + 1)
       setError(null)
 
-      // Reset type selection if there are multiple types
-      if (availableTypes.length > 1) {
-        setSelectedType(null)
-      }
+      // Keep type selection - don't reset to allow quick batch entry
     } catch (err) {
       setError(err?.message || 'Misslyckades att spara aktivitet')
     } finally {
@@ -218,6 +244,18 @@ export default function UniversalAchievementLogger({ medal, onSuccess, unlockMod
         <h2 id={headingId} className="sr-only">
           {unlockMode ? 'Lås upp märke' : 'Logga Aktivitet'}: {medal?.displayName || medal?.name || medal?.id}
         </h2>
+      )}
+
+      {/* Success toast for "save and add more" */}
+      {successMessage && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="mb-4 p-3 rounded-lg bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-800 flex items-center gap-2 animate-slide-down"
+        >
+          <Icon name="CheckCircle" className="w-5 h-5" aria-hidden="true" />
+          <span>{successMessage}</span>
+        </div>
       )}
 
       {error && (
@@ -287,6 +325,7 @@ export default function UniversalAchievementLogger({ medal, onSuccess, unlockMod
           <FormComponent
             key={formKey}
             medal={medal}
+            preservedValues={preservedValues}
             onSubmit={handleSubmit}
             onSubmitAndAddAnother={handleSubmitAndAddAnother}
             loading={loading}

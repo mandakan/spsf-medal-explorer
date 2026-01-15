@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { useAchievementForm } from '../../hooks/useAchievementForm'
-import { getApplicationSeriesDefaults, getRequirementHint } from '../../utils/requirementDefaults'
+import { getApplicationSeriesDefaults, getRequirementHint, getApplicationSeriesThresholds } from '../../utils/requirementDefaults'
 import CollapsibleOptionalFields from '../CollapsibleOptionalFields'
 
 /**
@@ -8,7 +8,7 @@ import CollapsibleOptionalFields from '../CollapsibleOptionalFields'
  * Optimized for timed shooting with hits counting.
  * Pre-populates fields with minimum requirements from medal definition.
  */
-export default function ApplicationSeriesForm({ medal, onSubmit, onSubmitAndAddAnother, loading }) {
+export default function ApplicationSeriesForm({ medal, onSubmit, onSubmitAndAddAnother, loading, preservedValues }) {
   // Extract default values from medal requirements
   const defaults = useMemo(() => {
     return getApplicationSeriesDefaults(medal)
@@ -21,11 +21,11 @@ export default function ApplicationSeriesForm({ medal, onSubmit, onSubmitAndAddA
 
   const { values, errors, handleChange, handleSubmit, validate, setErrors } = useAchievementForm({
     initialValues: {
-      date: new Date().toISOString().split('T')[0],
-      weaponGroup: defaults.weaponGroup,
-      hits: defaults.hits,
-      timeSeconds: defaults.timeSeconds,
-      competitionName: '',
+      date: preservedValues?.date ?? new Date().toISOString().split('T')[0],
+      weaponGroup: preservedValues?.weaponGroup ?? defaults.weaponGroup,
+      hits: preservedValues?.hits ?? defaults.hits,
+      timeSeconds: preservedValues?.timeSeconds ?? defaults.timeSeconds,
+      competitionName: preservedValues?.competitionName ?? '',
       notes: '',
     },
     validate: (vals) => {
@@ -46,6 +46,11 @@ export default function ApplicationSeriesForm({ medal, onSubmit, onSubmitAndAddA
     },
     onSubmit: (vals) => onSubmit({ ...vals, achievementType: 'application_series' }),
   })
+
+  // Get thresholds for the currently selected weapon group (updates dynamically)
+  const currentThresholds = useMemo(() => {
+    return getApplicationSeriesThresholds(medal, values.weaponGroup)
+  }, [medal, values.weaponGroup])
 
   // Handle "Save & Add Another" button click
   const handleSaveAndAddAnother = (e) => {
@@ -105,9 +110,9 @@ export default function ApplicationSeriesForm({ medal, onSubmit, onSubmitAndAddA
           className="select py-3 cursor-pointer"
           required
         >
-          <option value="A">Grupp A</option>
-          <option value="B">Grupp B</option>
           <option value="C">Grupp C</option>
+          <option value="B">Grupp B</option>
+          <option value="A">Grupp A</option>
           <option value="R">Grupp R</option>
         </select>
         {errors.weaponGroup && (
@@ -149,7 +154,7 @@ export default function ApplicationSeriesForm({ medal, onSubmit, onSubmitAndAddA
         ) : (
           <p id="hint-hits" className="mt-1 text-sm text-text-secondary" data-tour="achievement-hint">
             {requirementHint || '6 skott på B100 (50m) eller 1/6 mål C30 (25m)'}
-            {defaults.hits && ` (Minst ${defaults.hits} träffar krävs)`}
+            {currentThresholds.minHits != null && ` (Minst ${currentThresholds.minHits} träffar krävs för grupp ${values.weaponGroup})`}
           </p>
         )}
       </div>
@@ -185,7 +190,7 @@ export default function ApplicationSeriesForm({ medal, onSubmit, onSubmitAndAddA
         ) : (
           <p id="hint-time" className="mt-1 text-sm text-text-secondary">
             Skjuttid från första till sista skottet
-            {defaults.timeSeconds && ` (Max ${defaults.timeSeconds}s krävs)`}
+            {currentThresholds.maxTimeSeconds != null && ` (Max ${currentThresholds.maxTimeSeconds}s krävs för grupp ${values.weaponGroup})`}
           </p>
         )}
       </div>
