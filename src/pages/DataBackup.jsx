@@ -10,14 +10,14 @@ import FeatureGate from '../components/FeatureGate.jsx'
 import CsvActivitiesPanel from '../components/CsvActivitiesPanel.jsx'
 
 export default function DataBackup() {
-  const { currentProfile, updateProfile, loading, error, upsertAchievements } = useProfile()
+  const { currentProfile, updateProfile, error, upsertAchievements } = useProfile()
   const [shareOpen, setShareOpen] = useState(false)
   const [shareData, setShareData] = useState(null)
   const [localError, setLocalError] = useState(null)
   const [importProfileOpen, setImportProfileOpen] = useState(false)
 
 
-  const canUse = useMemo(() => !!currentProfile && !loading, [currentProfile, loading])
+  const canUse = useMemo(() => !!currentProfile, [currentProfile])
 
 
   const openShare = async () => {
