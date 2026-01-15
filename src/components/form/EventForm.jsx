@@ -6,7 +6,7 @@ export default function EventForm({ onSubmit, loading, preservedValues }) {
     initialValues: {
       date: preservedValues?.date ?? new Date().toISOString().split('T')[0],
       weaponGroup: preservedValues?.weaponGroup ?? 'C',
-      eventName: '',
+      eventName: preservedValues?.eventName ?? '',
       notes: '',
     },
     validate: (vals) => {

@@ -6,7 +6,7 @@ export default function QualificationForm({ onSubmit, loading, preservedValues }
     initialValues: {
       date: preservedValues?.date ?? new Date().toISOString().split('T')[0],
       weaponGroup: preservedValues?.weaponGroup ?? 'C',
-      weapon: '',
+      weapon: preservedValues?.weapon ?? '',
       score: preservedValues?.score ?? '',
       notes: '',
     },

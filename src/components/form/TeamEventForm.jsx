@@ -6,9 +6,9 @@ export default function TeamEventForm({ onSubmit, loading, preservedValues }) {
     initialValues: {
       date: preservedValues?.date ?? new Date().toISOString().split('T')[0],
       weaponGroup: preservedValues?.weaponGroup ?? 'C',
-      teamName: '',
-      position: '',
-      participants: '',
+      teamName: preservedValues?.teamName ?? '',
+      position: preservedValues?.position ?? '',
+      participants: preservedValues?.participants ?? '',
       notes: '',
     },
     validate: (vals) => {

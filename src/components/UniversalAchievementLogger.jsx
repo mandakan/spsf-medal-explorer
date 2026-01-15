@@ -195,6 +195,8 @@ export default function UniversalAchievementLogger({ medal, onSuccess, unlockMod
       }
 
       // Store values to preserve for next entry
+      // Note: 'notes' field is intentionally omitted - it resets to empty
+      // because notes are typically specific to each individual entry
       setPreservedValues({
         date: formData.date,
         weaponGroup: formData.weaponGroup,
@@ -207,6 +209,12 @@ export default function UniversalAchievementLogger({ medal, onSuccess, unlockMod
         timeSeconds: formData.timeSeconds,
         score: formData.score,
         maxScore: formData.maxScore,
+        // Form-specific fields (for less common forms)
+        eventName: formData.eventName,
+        weapon: formData.weapon,
+        teamName: formData.teamName,
+        position: formData.position,
+        participants: formData.participants,
       })
 
       // Show success feedback
@@ -218,6 +226,26 @@ export default function UniversalAchievementLogger({ medal, onSuccess, unlockMod
 
       // Keep type selection - don't reset to allow quick batch entry
     } catch (err) {
+      // Preserve form values on error so user can correct and retry
+      setPreservedValues({
+        date: formData.date,
+        weaponGroup: formData.weaponGroup,
+        competitionName: formData.competitionName,
+        disciplineType: formData.disciplineType,
+        courseName: formData.courseName,
+        points: formData.points,
+        hits: formData.hits,
+        timeSeconds: formData.timeSeconds,
+        score: formData.score,
+        maxScore: formData.maxScore,
+        eventName: formData.eventName,
+        weapon: formData.weapon,
+        teamName: formData.teamName,
+        position: formData.position,
+        participants: formData.participants,
+        notes: formData.notes, // Keep notes on error for retry
+      })
+      setFormKey(prev => prev + 1) // Reset form with preserved values
       setError(err?.message || 'Misslyckades att spara aktivitet')
     } finally {
       setLoading(false)

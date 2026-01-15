@@ -67,7 +67,7 @@ export function getApplicationSeriesDefaults(medal) {
     }
   }
 
-  // Get thresholds for weapon group A (most common)
+  // Get thresholds for weapon group C (default)
   const weaponGroup = 'C'
   const threshold = requirement.thresholds?.[weaponGroup]
 
@@ -93,7 +93,7 @@ export function getPrecisionSeriesDefaults(medal, profile = null) {
     }
   }
 
-  // Get point thresholds for weapon group A
+  // Get point thresholds for weapon group C (default)
   const weaponGroup = 'C'
 
   // Check for age-based categories if profile is provided
@@ -134,7 +134,7 @@ export function getSpeedShootingSeriesDefaults(medal) {
     }
   }
 
-  // Get point thresholds for weapon group A
+  // Get point thresholds for weapon group C (default)
   const weaponGroup = 'C'
   const pointThreshold = requirement.pointThresholds?.[weaponGroup]?.min
 
