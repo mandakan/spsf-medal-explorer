@@ -62,8 +62,9 @@ export class LocalStorageDataManager extends DataManager {
    */
   async saveUserProfile(profile) {
     // Validate profile structure
-    if (!this.validateProfile(profile)) {
-      throw new Error('Invalid profile structure')
+    const validation = this.validateProfile(profile)
+    if (!validation.valid) {
+      throw new Error(`Ogiltig profil: ${validation.errors.join(', ')}`)
     }
     // Normalize features (default to shared defaults when undefined)
     const features = {
@@ -349,31 +350,62 @@ export class LocalStorageDataManager extends DataManager {
 
   /**
    * Validate profile structure per docs/02-Data-Model.md
+   * @param {object} profile - Profile to validate
+   * @returns {{valid: boolean, errors: string[]}} Validation result with errors
    */
   validateProfile(profile) {
-    if (!profile || typeof profile !== 'object') return false
-    if (!profile.userId || typeof profile.userId !== 'string') return false
-    if (typeof profile.displayName !== 'string') return false
-    if (!Array.isArray(profile.unlockedMedals)) return false
-    if (!Array.isArray(profile.prerequisites)) return false
-    if (!this._isValidDob(profile.dateOfBirth)) return false
+    const errors = []
 
-    if (!profile.sex || typeof profile.sex !== 'string') return false
-    if (!VALID_PROFILE_SEX.includes(profile.sex)) return false
+    if (!profile || typeof profile !== 'object') {
+      return { valid: false, errors: ['Profilen är ogiltig'] }
+    }
+    if (!profile.userId || typeof profile.userId !== 'string') {
+      errors.push('Användar-ID saknas eller är ogiltigt')
+    }
+    if (typeof profile.displayName !== 'string') {
+      errors.push('Profilnamn saknas')
+    }
+    if (!Array.isArray(profile.unlockedMedals)) {
+      errors.push('Upplåsta medaljer måste vara en lista')
+    }
+    if (!Array.isArray(profile.prerequisites)) {
+      errors.push('Förutsättningar måste vara en lista')
+    }
+    if (!this._isValidDob(profile.dateOfBirth)) {
+      errors.push('Ogiltigt födelsedatum (måste vara ÅÅÅÅ-MM-DD)')
+    }
+
+    if (!profile.sex || typeof profile.sex !== 'string') {
+      errors.push('Kön saknas')
+    } else if (!VALID_PROFILE_SEX.includes(profile.sex)) {
+      errors.push('Ogiltigt kön (måste vara "male" eller "female")')
+    }
 
     // Optional features validation
     if (profile.features != null) {
-      if (typeof profile.features !== 'object') return false
-      if ('allowManualUnlock' in profile.features && typeof profile.features.allowManualUnlock !== 'boolean') {
-        return false
-      }
-      if ('enforceCurrentYearForSustained' in profile.features && typeof profile.features.enforceCurrentYearForSustained !== 'boolean') {
-        return false
+      if (typeof profile.features !== 'object') {
+        errors.push('Funktioner måste vara ett objekt')
+      } else {
+        if ('allowManualUnlock' in profile.features && typeof profile.features.allowManualUnlock !== 'boolean') {
+          errors.push('allowManualUnlock måste vara sant eller falskt')
+        }
+        if ('enforceCurrentYearForSustained' in profile.features && typeof profile.features.enforceCurrentYearForSustained !== 'boolean') {
+          errors.push('enforceCurrentYearForSustained måste vara sant eller falskt')
+        }
       }
     }
-    const age = this._computeAge(profile.dateOfBirth)
-    if (age < 8 || age > 100) return false
-    return true
+
+    // Only check age if DOB is valid
+    if (this._isValidDob(profile.dateOfBirth)) {
+      const age = this._computeAge(profile.dateOfBirth)
+      if (age < 8) {
+        errors.push(`Åldern måste vara minst 8 år (beräknad ålder: ${age})`)
+      } else if (age > 100) {
+        errors.push(`Åldern får inte överstiga 100 år (beräknad ålder: ${age})`)
+      }
+    }
+
+    return { valid: errors.length === 0, errors }
   }
 
   /**
@@ -383,97 +415,97 @@ export class LocalStorageDataManager extends DataManager {
     const reasons = []
 
     if (!achievement || typeof achievement !== 'object') {
-      reasons.push('achievement must be an object')
+      reasons.push('Aktiviteten måste vara ett objekt')
     } else {
       if (!achievement.type || typeof achievement.type !== 'string') {
-        reasons.push('type missing or not a string')
+        reasons.push('Typ saknas eller är ogiltig')
       }
       if (typeof achievement.year !== 'number' || Number.isNaN(achievement.year)) {
-        reasons.push('year must be a finite number')
+        reasons.push('År måste vara ett tal')
       }
       const wg = achievement.weaponGroup || ''
       if (!['A', 'B', 'C', 'R'].includes(wg)) {
-        reasons.push(`weaponGroup must be one of A/B/C/R (got "${wg}")`)
+        reasons.push(`Vapengrupp måste vara A, B, C eller R (fick "${wg}")`)
       }
 
       // Type-specific checks
       if (achievement.type === 'precision_series') {
         if (typeof achievement.points !== 'number' || Number.isNaN(achievement.points)) {
-          reasons.push('points must be a number')
+          reasons.push('Poäng måste vara ett tal')
         } else {
           if (achievement.points < 0 || achievement.points > 50) {
-            reasons.push('points must be between 0 and 50')
+            reasons.push('Poäng måste vara mellan 0 och 50')
           }
         }
       }
 
       if (achievement.type === 'application_series') {
         if (!achievement.date || Number.isNaN(new Date(achievement.date).getTime())) {
-          reasons.push('date must be a valid ISO date')
+          reasons.push('Datum måste vara ett giltigt ISO-datum (ÅÅÅÅ-MM-DD)')
         } else {
           const d = new Date(achievement.date)
           const today = new Date()
           today.setHours(0, 0, 0, 0)
           d.setHours(0, 0, 0, 0)
           if (d.getTime() > today.getTime()) {
-            reasons.push('date cannot be in the future')
+            reasons.push('Datum får inte vara i framtiden')
           }
         }
         if (typeof achievement.timeSeconds !== 'number' || !Number.isFinite(achievement.timeSeconds) || achievement.timeSeconds <= 0) {
-          reasons.push('timeSeconds must be a positive number')
+          reasons.push('Tid (sekunder) måste vara ett positivt tal')
         }
         if (typeof achievement.hits !== 'number' || !Number.isFinite(achievement.hits) || achievement.hits < 0) {
-          reasons.push('hits must be a non-negative number')
+          reasons.push('Träffar måste vara ett icke-negativt tal')
         }
       }
 
       if (achievement.type === 'competition_result') {
         if (!achievement.date || Number.isNaN(new Date(achievement.date).getTime())) {
-          reasons.push('date must be a valid ISO date')
+          reasons.push('Datum måste vara ett giltigt ISO-datum (ÅÅÅÅ-MM-DD)')
         } else {
           const d = new Date(achievement.date)
           const today = new Date()
           today.setHours(0, 0, 0, 0)
           d.setHours(0, 0, 0, 0)
           if (d.getTime() > today.getTime()) {
-            reasons.push('date cannot be in the future')
+            reasons.push('Datum får inte vara i framtiden')
           }
         }
 
         if (typeof achievement.score !== 'number' || !Number.isFinite(achievement.score)) {
-          reasons.push('score must be a number')
+          reasons.push('Resultat måste vara ett tal')
         } else if (achievement.score < 0) {
-          reasons.push('score must be >= 0')
+          reasons.push('Resultat måste vara >= 0')
         }
 
         const allowedDisciplines = ['national_whole_match', 'military_fast_match', 'ppc']
         const disc = String(achievement.disciplineType || '').toLowerCase()
         if (!allowedDisciplines.includes(disc)) {
-          reasons.push(`disciplineType must be one of ${allowedDisciplines.join(', ')} (got "${disc || '(empty)'}")`)
+          reasons.push(`Disciplin måste vara national_whole_match, military_fast_match eller ppc (fick "${disc || '(tom)'}")`)
         }
 
         if (disc === 'ppc') {
           const cls = achievement.ppcClass
           if (!cls || String(cls).trim() === '') {
-            reasons.push('ppcClass is required when disciplineType is "ppc"')
+            reasons.push('PPC-klass krävs när disciplin är "ppc"')
           }
         }
       }
 
       if (achievement.type === 'running_shooting_course') {
         if (!achievement.date || Number.isNaN(new Date(achievement.date).getTime())) {
-          reasons.push('date must be a valid ISO date')
+          reasons.push('Datum måste vara ett giltigt ISO-datum (ÅÅÅÅ-MM-DD)')
         } else {
           const d = new Date(achievement.date)
           const today = new Date()
           today.setHours(0, 0, 0, 0)
           d.setHours(0, 0, 0, 0)
           if (d.getTime() > today.getTime()) {
-            reasons.push('date cannot be in the future')
+            reasons.push('Datum får inte vara i framtiden')
           }
         }
         if (typeof achievement.points !== 'number' || !Number.isFinite(achievement.points) || achievement.points < 0) {
-          reasons.push('points must be a non-negative number')
+          reasons.push('Poäng måste vara ett icke-negativt tal')
         }
       }
     }
@@ -669,8 +701,9 @@ export class LocalStorageDataManager extends DataManager {
       throw new Error('Invalid restore strategy')
     }
 
-    if (!this.validateProfile(normalized)) {
-      throw new Error('Invalid profile structure')
+    const validation = this.validateProfile(normalized)
+    if (!validation.valid) {
+      throw new Error(`Ogiltig profil: ${validation.errors.join(', ')}`)
     }
 
     const data = this.getStorageData()

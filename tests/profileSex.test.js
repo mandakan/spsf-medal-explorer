@@ -77,7 +77,7 @@ describe('Profile sex field', () => {
       unlockedMedals: [],
       prerequisites: [],
     }
-    await expect(dm.saveUserProfile(profile)).rejects.toThrow('Invalid profile structure')
+    await expect(dm.saveUserProfile(profile)).rejects.toThrow(/Kön saknas/)
   })
 
   test('saveUserProfile rejects invalid sex', async () => {
@@ -89,7 +89,7 @@ describe('Profile sex field', () => {
       unlockedMedals: [],
       prerequisites: [],
     }
-    await expect(dm.saveUserProfile(profile)).rejects.toThrow('Invalid profile structure')
+    await expect(dm.saveUserProfile(profile)).rejects.toThrow(/Ogiltigt kön/)
   })
 
   test('restoreProfile with strategy=new-id assigns new id and keeps valid sex', async () => {
@@ -150,6 +150,56 @@ describe('Profile sex field', () => {
       unlockedMedals: [],
       prerequisites: [],
     }
-    await expect(dm.restoreProfile(bad, { strategy: 'new-id' })).rejects.toThrow('Invalid profile structure')
+    await expect(dm.restoreProfile(bad, { strategy: 'new-id' })).rejects.toThrow(/Ogiltigt kön/)
+  })
+
+  test('saveUserProfile rejects age below 8 years', async () => {
+    const profile = {
+      userId: 'user-young',
+      displayName: 'Young',
+      dateOfBirth: isoDobForAge(6),
+      sex: 'male',
+      unlockedMedals: [],
+      prerequisites: [],
+    }
+    await expect(dm.saveUserProfile(profile)).rejects.toThrow(/Åldern måste vara minst 8 år/)
+  })
+
+  test('saveUserProfile accepts age exactly 8 years', async () => {
+    const profile = {
+      userId: 'user-min-age',
+      displayName: 'MinAge',
+      dateOfBirth: isoDobForAge(8),
+      sex: 'female',
+      unlockedMedals: [],
+      prerequisites: [],
+    }
+    const saved = await dm.saveUserProfile(profile)
+    expect(saved.userId).toBe('user-min-age')
+  })
+
+  test('saveUserProfile accepts age exactly 100 years', async () => {
+    const profile = {
+      userId: 'user-max-age',
+      displayName: 'MaxAge',
+      dateOfBirth: isoDobForAge(100),
+      sex: 'male',
+      unlockedMedals: [],
+      prerequisites: [],
+    }
+    const saved = await dm.saveUserProfile(profile)
+    expect(saved.userId).toBe('user-max-age')
+  })
+
+  test('saveUserProfile rejects age above 100 years', async () => {
+    const profile = {
+      userId: 'user-old',
+      displayName: 'TooOld',
+      dateOfBirth: isoDobForAge(101),
+      sex: 'female',
+      unlockedMedals: [],
+      prerequisites: [],
+    }
+    await expect(dm.saveUserProfile(profile)).rejects.toThrow(/Åldern får inte överstiga 100 år/)
   })
 })

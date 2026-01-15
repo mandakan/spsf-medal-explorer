@@ -1,4 +1,4 @@
-const ACHIEVEMENT_TYPE_LABELS = {
+export const ACHIEVEMENT_TYPE_LABELS = {
   precision_series: 'Precisionsserier',
   application_series: 'Tillämpningsserier',
   competition_result: 'Tävlingsresultat',
@@ -15,6 +15,8 @@ const ACHIEVEMENT_TYPE_LABELS = {
   air_pistol_precision: 'Luftpistol precision',
   cumulative_competition_score: 'Kumulativt tävlingsresultat',
 }
+
+export const ACHIEVEMENT_TYPES = Object.keys(ACHIEVEMENT_TYPE_LABELS)
 
 export function getAchievementTypeLabel(type) {
   return ACHIEVEMENT_TYPE_LABELS[type] || type

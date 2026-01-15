@@ -105,14 +105,14 @@ describe('IndexedDBManager', () => {
       const invalidProfile = { ...testProfile }
       delete invalidProfile.sex
       await expect(manager.saveUserProfile(invalidProfile)).rejects.toThrow(
-        'Invalid profile structure'
+        /Kön saknas/
       )
     })
 
     it('rejects invalid profile (invalid dateOfBirth)', async () => {
       const invalidProfile = { ...testProfile, dateOfBirth: 'not-a-date' }
       await expect(manager.saveUserProfile(invalidProfile)).rejects.toThrow(
-        'Invalid profile structure'
+        /Ogiltigt födelsedatum/
       )
     })
   })

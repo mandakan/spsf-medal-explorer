@@ -34,6 +34,11 @@ export default function AchievementTimeline() {
     return [...new Set(currentProfile.prerequisites.map(a => a.year))].sort((a, b) => b - a)
   }, [currentProfile])
 
+  const types = useMemo(() => {
+    if (!currentProfile?.prerequisites) return []
+    return [...new Set(currentProfile.prerequisites.map(a => a.type))].sort()
+  }, [currentProfile])
+
   if (!currentProfile) {
     return (
       <div className="card p-4">
@@ -52,7 +57,7 @@ export default function AchievementTimeline() {
       <div className="space-y-6">
       <div className="card p-4">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-bold text-text-primary">Filters</h3>
+          <h3 className="text-lg font-bold text-text-primary">Filter</h3>
           <button
             onClick={handleExport}
             className="btn btn-primary text-sm"
@@ -63,33 +68,33 @@ export default function AchievementTimeline() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium mb-1 text-foreground">Year</label>
+            <label className="block text-sm font-medium mb-1 text-foreground">År</label>
             <select
               value={filterYear || ''}
               onChange={(e) => setFilterYear(e.target.value ? parseInt(e.target.value) : null)}
               className="select"
             >
-              <option value="">All Years</option>
+              <option value="">Alla år</option>
               {years.map(year => (
                 <option key={year} value={year}>{year}</option>
               ))}
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1 text-foreground">Type</label>
+            <label className="block text-sm font-medium mb-1 text-foreground">Typ</label>
             <select
               value={filterType || ''}
               onChange={(e) => setFilterType(e.target.value || null)}
               className="select"
             >
-              <option value="">All typer</option>
-              {['precision_series','competition_result','standard_medal'].map((t) => (
+              <option value="">Alla typer</option>
+              {types.map((t) => (
                 <option key={t} value={t}>{getAchievementTypeLabel(t)}</option>
               ))}
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1 text-foreground">Weapon Group</label>
+            <label className="block text-sm font-medium mb-1 text-foreground">Vapengrupp</label>
             <select
               value={filterGroup || ''}
               onChange={(e) => setFilterGroup(e.target.value || null)}

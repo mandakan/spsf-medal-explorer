@@ -7,7 +7,19 @@ export default function UnlockMedalDialog({ medal, open, onClose, preferredYear 
   const calculator = useMedalCalculator()
   const { currentProfile, unlockMedal } = useProfile()
   const allowManual = !!currentProfile?.features?.allowManualUnlock
-  const [year, setYear] = useState('')
+  // Track both the user-entered year and the "session key" to detect when to reset
+  const [yearState, setYearState] = useState({ value: '', sessionKey: null })
+
+  // Create a session key from open state and preferredYear - when this changes, we should use suggested year
+  const currentSessionKey = open ? `${preferredYear}` : null
+
+  // If session changed, treat user input as empty (use suggested year)
+  const year = yearState.sessionKey === currentSessionKey ? yearState.value : ''
+
+  // Wrapper to update year while tracking the session
+  const setYear = useCallback((value) => {
+    setYearState({ value, sessionKey: currentSessionKey })
+  }, [currentSessionKey])
   const eligibleYears = useMemo(() => {
     if (!open || !calculator || !medal?.id) return []
     try {
