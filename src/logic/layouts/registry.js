@@ -1,4 +1,4 @@
-export const DEFAULT_LAYOUT_ID = 'columns'
+export const DEFAULT_LAYOUT_ID = 'timeline'
 
 const layouts = new Map()
 
