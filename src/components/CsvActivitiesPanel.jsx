@@ -68,7 +68,8 @@ export default function CsvActivitiesPanel({ profile, updateProfile, upsertAchie
   // Re-run validation when options change and we have parsed rows.
   // Note: upsertAchievements is memoized with useCallback in ProfileContext but depends on
   // currentProfile, so it will change when profile changes. This is intentional - re-validate
-  // against the new profile's existing data when profile changes.
+  // against the new profile's existing data when profile changes. Profile changes are rare
+  // during CSV import workflow, so this doesn't cause excessive re-validation in practice.
   useEffect(() => {
     if (!csvParsedRows || csvParsedRows.length === 0) return
 
@@ -286,7 +287,7 @@ export default function CsvActivitiesPanel({ profile, updateProfile, upsertAchie
                     <tr>
                       <th scope="col" className="text-left px-3 py-2 text-red-800 dark:text-red-200 font-medium">Rad</th>
                       <th scope="col" className="text-left px-3 py-2 text-red-800 dark:text-red-200 font-medium">Fel</th>
-                      <th scope="col" className="text-left px-3 py-2 text-red-800 dark:text-red-200 font-medium">Data</th>
+                      <th scope="col" className="hidden sm:table-cell text-left px-3 py-2 text-red-800 dark:text-red-200 font-medium">Data</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -298,7 +299,7 @@ export default function CsvActivitiesPanel({ profile, updateProfile, upsertAchie
                         <td className="px-3 py-2 text-red-700 dark:text-red-300">
                           {err.error}
                         </td>
-                        <td className="px-3 py-2 text-red-600 dark:text-red-400 font-mono text-xs max-w-xs truncate" title={JSON.stringify(err.record)}>
+                        <td className="hidden sm:table-cell px-3 py-2 text-red-600 dark:text-red-400 font-mono text-xs max-w-xs truncate" title={JSON.stringify(err.record)}>
                           {err.record?.type || '?'}, {err.record?.year || '?'}, {err.record?.weaponGroup || '?'}
                           {err.record?.points != null && `, p:${err.record.points}`}
                           {err.record?.score != null && `, s:${err.record.score}`}
@@ -316,13 +317,14 @@ export default function CsvActivitiesPanel({ profile, updateProfile, upsertAchie
             onClick={handleConfirmCsvImport}
             disabled={csvLoading || (csvPreview.result.added === 0 && csvPreview.result.updated === 0)}
             className="btn btn-primary w-full mt-3 min-h-[44px]"
+            aria-describedby={csvPreview.result.failed > 0 && (csvPreview.result.added > 0 || csvPreview.result.updated > 0) ? 'csv-import-warning' : undefined}
           >
             {csvPreview.result.added === 0 && csvPreview.result.updated === 0
               ? 'Inget att importera'
               : `Bekräfta import (${csvPreview.result.added + csvPreview.result.updated} rader)`}
           </button>
           {csvPreview.result.failed > 0 && (csvPreview.result.added > 0 || csvPreview.result.updated > 0) && (
-            <p className="mt-2 text-xs text-muted-foreground">
+            <p id="csv-import-warning" className="mt-2 text-xs text-muted-foreground">
               Rader med fel kommer att hoppas över vid import.
             </p>
           )}
