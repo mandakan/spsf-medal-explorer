@@ -5,7 +5,7 @@
     "isDynamicEntry": true
   },
   "index.html": {
-    "file": "assets/index-DAHMCs0-.js",
+    "file": "assets/index-CCXZd0tR.js",
     "name": "index",
     "src": "index.html",
     "isEntry": true,
@@ -18,7 +18,7 @@
       "_vendor-COGD8A5-.js"
     ],
     "css": [
-      "assets/index-CQqTzi36.css"
+      "assets/index-ixgsVrSx.css"
     ]
   },
   "src/data/air_pistol_mark.medals.json": {
@@ -28,7 +28,7 @@
     "isDynamicEntry": true
   },
   "src/data/championship_mark.medals.json": {
-    "file": "assets/championship_mark.medals-CyDDAXCu.js",
+    "file": "assets/championship_mark.medals-SVnEZktE.js",
     "name": "championship_mark.medals",
     "src": "src/data/championship_mark.medals.json",
     "isDynamicEntry": true
@@ -58,7 +58,7 @@
     "isDynamicEntry": true
   },
   "src/data/pistol_mark.medals.json": {
-    "file": "assets/pistol_mark.medals-ClgSWyPE.js",
+    "file": "assets/pistol_mark.medals-DIwwc_GX.js",
     "name": "pistol_mark.medals",
     "src": "src/data/pistol_mark.medals.json",
     "isDynamicEntry": true
@@ -82,7 +82,7 @@
     "isDynamicEntry": true
   },
   "src/utils/medalLoader.vite.js": {
-    "file": "assets/medalLoader.vite-B5BNV-Vt.js",
+    "file": "assets/medalLoader.vite-3FCSlx5P.js",
     "name": "medalLoader.vite",
     "src": "src/utils/medalLoader.vite.js",
     "isDynamicEntry": true,
