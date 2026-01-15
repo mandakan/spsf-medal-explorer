@@ -14,6 +14,11 @@ export default function CsvActivitiesPanel({ profile, updateProfile, upsertAchie
   const [csvFileName, setCsvFileName] = useState('')
   const [undoSnapshot, setUndoSnapshot] = useState(null)
 
+  // Store latest upsertAchievements in a ref to avoid including it in effect dependencies.
+  // This prevents potential infinite loops if the function reference changes frequently.
+  const upsertAchievementsRef = useRef(upsertAchievements)
+  upsertAchievementsRef.current = upsertAchievements
+
   const achievements = useMemo(
     () => (Array.isArray(profile?.prerequisites) ? profile.prerequisites : []),
     [profile?.prerequisites]
@@ -66,10 +71,8 @@ export default function CsvActivitiesPanel({ profile, updateProfile, upsertAchie
   }
 
   // Re-run validation when options change and we have parsed rows.
-  // Note: upsertAchievements is memoized with useCallback in ProfileContext but depends on
-  // currentProfile, so it will change when profile changes. This is intentional - re-validate
-  // against the new profile's existing data when profile changes. Profile changes are rare
-  // during CSV import workflow, so this doesn't cause excessive re-validation in practice.
+  // Uses ref for upsertAchievements to avoid dependency on the function reference,
+  // which could change when profile changes and cause unnecessary re-validation.
   useEffect(() => {
     if (!csvParsedRows || csvParsedRows.length === 0) return
 
@@ -77,7 +80,7 @@ export default function CsvActivitiesPanel({ profile, updateProfile, upsertAchie
     async function revalidate() {
       setCsvLoading(true)
       try {
-        const result = await upsertAchievements(csvParsedRows, { ...csvOptions, dryRun: true })
+        const result = await upsertAchievementsRef.current(csvParsedRows, { ...csvOptions, dryRun: true })
         if (!cancelled) {
           setCsvPreview({ rows: csvParsedRows, result })
         }
@@ -93,7 +96,7 @@ export default function CsvActivitiesPanel({ profile, updateProfile, upsertAchie
     }
     revalidate()
     return () => { cancelled = true }
-  }, [csvOptions, csvParsedRows, upsertAchievements])
+  }, [csvOptions, csvParsedRows])
 
   async function handleConfirmCsvImport() {
     if (!csvPreview?.rows?.length) return
